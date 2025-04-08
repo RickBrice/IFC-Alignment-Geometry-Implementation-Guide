@@ -2,7 +2,7 @@
 Richard Brice, PE
 
 ## Forward
-`IfcAlignment`, and the related geometric concepts, are new to the IFC4x3 specification. By virtual of expanding the IFC specification into the infrastructure domain, an entirely new audience is summoned into the [buildingSmart](buildingsmart.org) community. I am one of those new arrivals.
+`IfcAlignment`, and the related geometric concepts, are new to the IFC4x3 specification. By virtue of expanding the IFC specification into the infrastructure domain, an entirely new audience is summoned into the [buildingSmart](buildingsmart.org) community. I am one of those new arrivals.
 
 The IFC specification is very technical and is written with an expectation that the reader has a high level of knowledge and experience with IFC. Being a technical specification, there is no hand-holding for the novice. Industry guidance documents are generally not available to assist those new to the infrastructure and alignment aspects of IFC4x3. 
 
