@@ -466,28 +466,30 @@ Step 5b -- Map the parent curve point to the curve segment.
 Apply the translation, rotation, and curve segment placement to the
 parent curve point
 
-$${M_{h} = M_{CSP}M_{R}M_{T}M_{PC} = \begin{bmatrix}
+$$M_{h} = M_{CSP} M_{R} M_{T} M_{PC} = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}\begin{bmatrix}
+\end{bmatrix}
+\begin{bmatrix}
 0.971788979 & -0.235852028 & 0 & 0 \\
 0.235852028 & 0.971788979 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-}{\begin{bmatrix}
+\begin{bmatrix}
 1 & 0 & 0 & 142.04941746210602 \\
 0 & 1 & 0 & -11.292042785713347 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}\begin{bmatrix}
+\end{bmatrix}
+\begin{bmatrix}
 0.994944564 & 0.100425663 & 0 & -92.763220844871512 \\
- - 0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
+ -0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}}$$
+\end{bmatrix}$$
 
 $$M_{h} = \begin{bmatrix}
 0.99056175921247780 & -0.13706714116038599 & 0 & 49.825200930152405 \\
@@ -544,8 +546,7 @@ and the radius at the end is 300. The arc length of the segment is 100.
 The semantic definition is
 ~~~
 #28 = IFCCARTESIANPOINT((0., 0.));
-#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $,
-.CUBIC.);
+#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $,.CUBIC.);
 ~~~
 
 Compute the polynomial curve constants
@@ -1013,7 +1014,7 @@ point and orientation as illustrated for the clothoid curve example.
 
 ## Viennese Transition Curve
 
-$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 {A}_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s$$
+$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s$$
 
 $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s^{6} + \frac{A_{5}}{\left| A_{5}^{7} \right|}s^{5} + \frac{1}{A_{4}^{5}}s^{4} + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
