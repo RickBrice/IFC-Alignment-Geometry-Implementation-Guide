@@ -60,7 +60,7 @@ $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ 
 
 :warning: **[Discuss that a line (and the other parent curves) can be parametetized
 differently and there isn't a standards therefore the rule that
-`IfcCurveSegment.Start` and Length `I`fcCurveMeasureSelect` must be
+`IfcCurveSegment.Start` and Length `IfcCurveMeasureSelect` must be
 `IfcLengthMeasure`.]** :warning:
 
 ### Semantic Definition to Geometry Mapping
@@ -389,8 +389,8 @@ $$dy = \sin{( - 0.238095237) = - 0.235852028}$$
 In matrix form
 
 $$M_{PCS} = \begin{bmatrix}
-0.971788979 & 0.235852028 & 0 & - 142.04941746210602 \\
- - 0.235852028 & 0.971788979 & 0 & 11.292042785713347 \\
+0.971788979 & 0.235852028 & 0 & -142.04941746210602 \\
+ -0.235852028 & 0.971788979 & 0 & 11.292042785713347 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -402,7 +402,7 @@ relative to (0,0).
 
 $$M_{T} = \begin{bmatrix}
 1 & 0 & 0 & 142.04941746210602 \\
-0 & 1 & 0 & - 11.292042785713347 \\
+0 & 1 & 0 & -11.292042785713347 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -413,7 +413,7 @@ Remove the start point rotation so the point under consideration tangent
 at the start point in the direction (1,0).
 
 $$M_{R} = \begin{bmatrix}
-0.971788979 & - 0.235852028 & 0 & 0 \\
+0.971788979 & -0.235852028 & 0 & 0 \\
 0.235852028 & 0.971788979 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
@@ -440,23 +440,23 @@ Step 5a -- Evaluate parent curve at `IfcCurveSegment.SegmentStart` +
 Compute point and curve tangent at 50 m from the start,
 $- 142.8571428 + \ 50\  = \  - 92.8571428$
 
-$$u = \frac{- 92.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = - 0.25306307$$
+$$u = \frac{-92.8571428}{\left|-207.0196678\sqrt{\pi} \right|} = -0.25306307$$
 
-$$x( - 0.25306307) = - 207.0196678\sqrt{\pi}\int_{0}^{- 0.25306307}{\cos{\left( \frac{\pi}{2}\frac{- 207.0196678}{| - 207.0196678|}s^{2} \right)\ }ds} = - 92.763220844871512$$
+$$x(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}s^{2} \right)\ }ds} = - 92.763220844871512$$
 
-$$y( - 0.25306307) = - 207.0196678\sqrt{\pi}\int_{0}^{- 0.25306307}{\sin{\left( \frac{\pi}{2}\frac{- 207.0196678}{| - 207.0196678|}s^{2} \right)\ }ds} = 3.1114126254443812$$
+$$y(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}s^{2} \right)\ }ds} = 3.1114126254443812$$
 
-$$\theta( - 0.25306307) = \frac{\pi}{2}\frac{- 207.0196678}{| - 207.0196678|}( - 0.25306307)^{2} = - 0.100595238$$
+$$\theta(-0.25306307) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.25306307)^{2} = -0.100595238$$
 
-$$dx = \cos( - 0.100595238) = 0.994944564$$
+$$dx = \cos(-0.100595238) = 0.994944564$$
 
-$$dy = \sin{( - 0.100595238) = - 0.100425663}$$
+$$dy = \sin{(-0.100595238) = -0.100425663}$$
 
 In matrix form
 
 $$M_{PC} = \begin{bmatrix}
-0.994944564 & 0.100425663 & 0 & - 92.763220844871512 \\
- - 0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
+0.994944564 & 0.100425663 & 0 & -92.763220844871512 \\
+ -0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -472,25 +472,25 @@ $${M_{h} = M_{CSP}M_{R}M_{T}M_{PC} = \begin{bmatrix}
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}\begin{bmatrix}
-0.971788979 & - 0.235852028 & 0 & 0 \\
+0.971788979 & -0.235852028 & 0 & 0 \\
 0.235852028 & 0.971788979 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
 }{\begin{bmatrix}
 1 & 0 & 0 & 142.04941746210602 \\
-0 & 1 & 0 & - 11.292042785713347 \\
+0 & 1 & 0 & -11.292042785713347 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}\begin{bmatrix}
-0.994944564 & 0.100425663 & 0 & - 92.763220844871512 \\
+0.994944564 & 0.100425663 & 0 & -92.763220844871512 \\
  - 0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}}$$
 
 $$M_{h} = \begin{bmatrix}
-0.99056175921247780 & - 0.13706714116038599 & 0 & 49.825200930152405 \\
+0.99056175921247780 & -0.13706714116038599 & 0 & 49.825200930152405 \\
 0.13706714116038599 & 0.99056175921247780 & 0 & 3.6744032279728032 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
@@ -512,7 +512,7 @@ parametric equations where the parameter is the distance along the
 curve. A cubic curve is represented with the `IfcPolynomialCurve` parent
 curve type. When `IfcPolynomialCurve` is used as a cubic transition curve,
 the $x$ coefficients are \[0,1\] and the $y$ coefficients are
-\[0,0,0,$A_{3}\rbrack$ resulting in a function of the form
+\[0,0,0,$A_{3}\] resulting in a function of the form
 $y(x) = A_{3}x^{3}$.
 
 The distance along the curve is defined by
@@ -553,11 +553,11 @@ Compute the polynomial curve constants
 $$A_{3} = \frac{1}{6(300m)(100m)} - \frac{1}{6(\infty)(100m)} = 5.55555 \bullet 10^{- 6}\ m^{- 2}$$
 
 :warning: **[SOMETHING IS WRONG. A3 IS IN 1/Length2 UNITS, IFC SPEC SAYS THE
-COEFFICIENTS ARE REAL NUMBERS. A3 SHOULD BE]** :warning:
+COEFFICIENTS ARE REAL NUMBERS. A3 SHOULD BE 
 
-$\frac{L}{6R_{e}} - \frac{L}{6R_{s}}$ [AND]{.mark}
+$\frac{L}{6R_{e}} - \frac{L}{6R_{s}}$ and 
 $y(x) = \frac{A_{3}x^{3}}{L^{2}}$
-:warning: **[. BUT THIS CONTRADICTS THE INFORMATION
+. BUT THIS CONTRADICTS THE INFORMATION
 IN IfcAlignmentHorizontalSegmentTypeEnum]** :warning:
 
 The geometric representation is
@@ -615,7 +615,7 @@ Axis vector is (0,0,1)
 The resulting matrix is
 
 $$M_{PC} = \begin{bmatrix}
-0.986539 & - 0.1635219 & 0 & 99.72593255 \\
+0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
@@ -625,7 +625,7 @@ For this example, $M_{CSP}$, $M_{R}$, and $M_{T}$ are identity matrices.
 The resulting point is
 
 $$M_{h} = \begin{bmatrix}
-0.986539 & - 0.1635219 & 0 & 99.72593255 \\
+0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
@@ -662,11 +662,11 @@ $$a_{2} = 2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\l
 
 Second Half
 
-$$a_{0} = - f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+$$a_{0} = -f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
 
 $$a_{1} = 4f,\ A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
 
-$$a_{2} = - 2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{2} = -2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 Consider a horizontal Helmert transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
@@ -698,11 +698,11 @@ $$a_{2} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{|0.66667|}}\frac
 
 Second Half
 
-$$a_{0} = - 0.33333 + \frac{100}{\infty} = - 0.33333,\ A_{0} = \frac{100\ m}{| - 0.33333|}\frac{- 0.33333}{| - 0.33333|} = - 300\ m$$
+$$a_{0} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{| -0.33333|}\frac{-0.33333}{|-0.33333|} = - 300\ m$$
 
 $$a_{1} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1.33333}{|1.33333|} = 86.602540378\ m$$
 
-$$a_{2} = - 2(0.33333) = - 0.66667,\ \ A_{2} = \frac{100\ m}{\sqrt[3]{| - 0.66667|}}\frac{- 0.66667}{| - 0.66667|} = - 114.4714255\ m$$
+$$a_{2} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$
 
 End point and end slope of first half is the placement of the second
 half.
@@ -733,7 +733,7 @@ The end point of the first parent curve and the start point of the
 second parent curve are offset so a rotation and translation for the
 placement of the second parent curve is needed.
 
-$$\theta_{p} = \theta_{1} - \theta_{2} = 0.0277777777 - ( - 0.0277777777) = 0.05555555$$
+$$\theta_{p} = \theta_{1} - \theta_{2} = 0.0277777777 - (-0.0277777777) = 0.05555555$$
 
 $$dx = \cos{0.05555555} = 0.998457$$
 
@@ -745,7 +745,7 @@ $$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p}$$
 
 $$x_{p} = 49.9972 - 49.9664\cos{0.0555555} - 1.73556\sin{0.0555555 =}0.011503\ m$$
 
-$$y_{p} = 0.347204 - 49.9664\sin{0.055555} + 1.73556\cos{0.0555555} = - 0.6943693\ m$$
+$$y_{p} = 0.347204 - 49.9664\sin{0.055555} + 1.73556\cos{0.0555555} = -0.6943693\ m$$
 
 The geometric representations are
 
@@ -839,7 +839,7 @@ $$a_{0} = \frac{100}{\infty} = 0,\ A_{o} = 0$$
 
 $$a_{2} = 3(0.33333) = 1,\ A_{2} = \frac{100}{\sqrt[3]{|1|}}\frac{1}{|1|} = 100\ m$$
 
-$$a_{3} = - 2(0.33333) = - 0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| - 0.66667|}}\frac{- 0.66667}{| - 0.66667|} = - 110.668192\ m$$
+$$a_{3} = - 2(0.33333) = -0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = - 110.668192\ m$$
 
 ~~~
 #45 = IFCTHIRDORDERPOLYNOMIALSPIRAL(#46, -110.668191970032, 100., $, $);
@@ -851,13 +851,13 @@ $$a_{3} = - 2(0.33333) = - 0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| - 0.66667|
 
 Evaluate at the end of the curve $u = 100$
 
-$$\theta(t) = \frac{- 110.668192}{4\left| - {110.668192}^{5} \right|}t^{4} + \frac{1}{3(100)^{3}}t^{3}$$
+$$\theta(t) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}t^{4} + \frac{1}{3(100)^{3}}t^{3}$$
 
 $$x = \int_{0}^{100}{\cos{\theta(t)}}\ dt = 99.7486$$
 
 $$y = \int_{0}^{100}{\sin{\theta(t)}}\ dt = 4.98981$$
 
-$$\theta(100) = \frac{- 110.668192}{4\left| - {110.668192}^{5} \right|}(100)^{4} + \frac{1}{3(100)^{3}}(100)^{3} = \frac{1}{6} = 0.1666667$$
+$$\theta(100) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}(100)^{4} + \frac{1}{3(100)^{3}}(100)^{3} = \frac{1}{6} = 0.1666667$$
 
 $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
@@ -891,7 +891,7 @@ Constant Term:
 $a_{0} = 0.5f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$
 
 Cosine Term:
-$a_{1} = \  - 0.5f,\ A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}$
+$a_{1} = \ -0.5f,\ A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}$
 
 Consider a horizontal cosine transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
@@ -909,7 +909,7 @@ $$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
 $$a_{0} = 0.5(0.33333) + \frac{100}{\infty} = 0.16667,\ A_{0} = \frac{100\ m}{|0.16667|}\ \frac{0.16667}{|0.16667|} = 600\ m$$
 
-$$a_{1} = - 0.5(0.33333) = - 0.16667,\ A_{1} = \frac{100}{| - 0.16667|}\ \frac{- 0.16667}{| - 0.16667|} = - 600\ m$$
+$$a_{1} = -0.5(0.33333) = -0.16667,\ A_{1} = \frac{100}{|-0.16667|}\ \frac{-0.16667}{|-0.16667|} = - 600\ m$$
 
 ~~~
 #45 = IFCCOSINESPIRAL(#46, -600., 600.);
@@ -962,7 +962,7 @@ Linear Term:
 $a_{1} = f,\ A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$
 
 Sine Term:
-$a_{2} = - \frac{1}{2\pi}f,\ A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|}$
+$a_{2} = -\frac{1}{2\pi}f,\ A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|}$
 
 Consider a horizontal sine transition curve segment that starts at (0,0)
 with a start direction of 0.0. The radius at the start is infinite and
@@ -982,7 +982,7 @@ $$a_{0} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
 $$a_{1} = 0.33333,\ A_{1} = \frac{100}{\sqrt{|0.33333|}}\frac{0.33333}{|0.33333|} = 173.2050808\ m$$
 
-$$a_{2} = - \frac{1}{2\pi}(0.33333) = - 0.053051647,\ A_{2} = \frac{100}{| - 0.053051647|}\frac{- 0.053051647}{| - 0.053051647|} = - 1884.955592\ m$$
+$$a_{2} = -\frac{1}{2\pi}(0.33333) = -0.053051647,\ A_{2} = \frac{100}{|-0.053051647|}\frac{-0.053051647}{|-0.053051647|} = -1884.955592\ m$$
 
 ~~~
 #45 = IFCSINESPIRAL(#46, -1884.95559215388, 173.205080756888, $);

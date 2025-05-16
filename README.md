@@ -12,12 +12,12 @@ This implementation guide captures what I have learned about IFC4x3 alignment ge
 
 ## Table of Contents
 
-1. [Introduction](Introduction.md)
-2. [Horizontal](Horizontal.md)
-3. [Vertical](Vertical.md)
-4. [Cant](Cant.md)
-5. [Locating a Point along an Alignment](LocatingPoints.md)
-6. [Offset Curves](OffsetCurves.md)
-7. [Linear Placement](LinearPlacement.md)
-8. [Referents and Stationing](Referents_and_Stationing.md)
-9. [Precision and Tolerance](Precision_and_Tolerance.md)
+1. [Introduction](1_Introduction.md)
+2. [Horizontal](2_Horizontal.md)
+3. [Vertical](3_Vertical.md)
+4. [Cant](4_Cant.md)
+5. [Locating a Point along an Alignment](5_LocatingPoints.md)
+6. [Offset Curves](6_OffsetCurves.md)
+7. [Linear Placement](7_LinearPlacement.md)
+8. [Referents and Stationing](8_Referents_and_Stationing.md)
+9. [Precision and Tolerance](9_Precision_and_Tolerance.md)

@@ -1,6 +1,6 @@
 # Section 7 - IfcReferent and Stationing
 
-The class `IfcReferen`t defines a position at a particular offset along an
+The class `IfcReferent` defines a position at a particular offset along an
 alignment curve. Stationing (also known as chainage) is a good example.
 
 As an example, the Point of Curvature (PC) of a horizontal curve can be
