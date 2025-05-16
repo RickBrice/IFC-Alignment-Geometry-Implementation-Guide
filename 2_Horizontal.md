@@ -1013,7 +1013,7 @@ point and orientation as illustrated for the clothoid curve example.
 
 ## Viennese Transition Curve
 
-$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|}s^{8} + \frac{1}{7A_{6}^{7}}s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|}s^{6} + \frac{1}{5A_{4}^{5}}s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|}s^{4} + \frac{1}{{3A}_{2}^{3}}s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s^{2} + \frac{1}{A_{0}}s$$
+$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 {A}_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s$$
 
 $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s^{6} + \frac{A_{5}}{\left| A_{5}^{7} \right|}s^{5} + \frac{1}{A_{4}^{5}}s^{4} + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
