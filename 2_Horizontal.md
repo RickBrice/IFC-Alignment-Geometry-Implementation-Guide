@@ -185,7 +185,7 @@ When `IfcCircle` is used as a parent curve, it represents a circular curve
 of the alignment.
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
@@ -207,8 +207,7 @@ of 300 m, and an arc length of 100 m. The semantic definition is
 
 ~~~
 #28 = IFCCARTESIANPOINT((0., 0.));
-#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 300., 300., 100.,
-$, .CIRCULARARC.);
+#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 300., 300., 100., $, .CIRCULARARC.);
 ~~~
 
 The parent curve can be defined as follows:
@@ -286,7 +285,7 @@ $$M_{h} = \begin{bmatrix}
 ## Clothoid
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
@@ -438,7 +437,8 @@ Step 5a -- Evaluate parent curve at `IfcCurveSegment.SegmentStart` +
 `IfcCurveSegment.SegmentLength`
 
 Compute point and curve tangent at 50 m from the start,
-$- 142.8571428 + \ 50\  = \  - 92.8571428$
+
+$$ -142.8571428 + 50 = -92.8571428$$
 
 $$u = \frac{-92.8571428}{\left|-207.0196678\sqrt{\pi} \right|} = -0.25306307$$
 
@@ -503,7 +503,7 @@ $$M_{h} = \begin{bmatrix}
 ## Cubic Transition Curve
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
@@ -641,7 +641,7 @@ business logic is represented geometrically by two
 `IfcSecondOrderPolynomialSpiral` objects.
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
@@ -814,7 +814,7 @@ See clothoid curve for general calculation procedure.
 Parent curve type: `IfcThirdOrderPolynomialSpiral`
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
@@ -888,7 +888,7 @@ point and orientation as illustrated for the clothoid curve example.
 ## Cosine Transition Curve
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
@@ -956,7 +956,7 @@ point and orientation as illustrated for the clothoid curve example.
 ## Sine Transition Curve
 
 Source Model:
-GENERATED\_\_HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc
+[GENERATED\_\_HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc)
 
 ### Parent Curve Parametric Equations
 
