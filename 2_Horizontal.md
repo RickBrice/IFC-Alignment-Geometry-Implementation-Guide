@@ -710,7 +710,7 @@ half.
 
 $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}} = \frac{t^{3}}{3(114.4714255)^{3}}$$
 
-$$x_{1} = \int_{0}^{L/2}{\cos{\theta(t)}}\ dt = 49.9972\ m$$
+$$x_{1} = \int_{0}^{L/2}{\cos{\theta(t)}}\ dt = 49.99724\ m$$
 
 $$y_{1} = \int_{0}^{L/2}{\sin{\theta(t)}}\ dt = 0.347204\ m$$
 
@@ -779,6 +779,22 @@ First half
 ~~~
 
 Second half
+
+:warning: **[Write this up better]** :warning:
+
+The start placement of the second half is
+
+$$x = x_s + x_1 cos(\theta_s) - y_1 sin(\theta_s)$$
+$$y = y_s + x_1 sin(\theta_s) + y_2 cos(\theta_s)$$
+$$dx = cos(\theta_s + \theta_1)$$
+$$dy = sin(\theta_s + \theta_1)$$
+
+where $x_s, y_s, \theta_s$ are the start point and angle at start of the first half
+
+$$x = 0.0 + 49.99724 cos(0.0) - 0.347204 sin(0.0) = 49.99724$$
+$$y = 0.0 + 49.99724 sin(0.0) + 0.347204 cos(0.0) = 0.347204$$
+$$dx = cos(0. + 0.02777777) = 0.999614$$
+$$dy = sin(0. + 0.02777777) = 0.027774$$
 
 ~~~
 #48 = IFCCURVESEGMENT(.CONTINUOUS., #49, IFCLENGTHMEASURE(50.), IFCLENGTHMEASURE(50.), #52);
