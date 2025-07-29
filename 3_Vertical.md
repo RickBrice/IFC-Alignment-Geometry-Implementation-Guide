@@ -184,36 +184,89 @@ Set equal to horizontal length, adjust curve length until computed value
 is equal to the specified horizontal length. Numerically solve ![](images/image11.png)
 
 ## Parabolic Arc
+The geometric representation of vertical parabolic curves as a parabola is a little bit tricky.
 
-:warning: **[Finish this] -- need to show how to compute curve length given
-horizontal length like for parabolic vertical curves** :warning:
+Consider the equation for a parabola in the form 
+ $y(x) = Ax^2 + Bx + C$
 
-A = start height
+where:
+
+A = (end gradient - start gradient)/(2 * horizontal length)
 
 B = start gradient
 
-C = (end gradient -- start gradient)/(2\*horizontal length)
+C = start height
 
-Parent curve is `IfcPolynomialCurve`
+These parameters are obtained from the semantic definition of the curve segment, `IfcAlignmentVerticalSegment`.
 
-Position = `IfcAxis2Placement2D.Location`=0,0,RefDirection=1,0
+The parent curve for `IfcCurveSegment.ParentCurve` is `IfcPolynomialCurve`. The coefficients are:
 
-CoefficientsX = (0,1)
+~~~
+IfcPolynomialCurve.CoefficientsX = (0,1)
+IfcPolynomialCurve.CoefficientsY = (C, B, A)
+~~~
 
-CoefficientsY=(A,B,C)
+:information_source: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z :information_source:
 
-:warning: **[THERE COULD BE A PROBLEM WITH THE Y-COEFFICIENTS. THE ARE SUPPOSED TO
-BE REAL VALUES]** :warning:
+:information_source: The coefficients A, B, and C must have the following unit of measure, consistent with the project units:
 
-Compute segment curve length from $s = \int_{}^{}\sqrt{y^{'2} + 1}dx$
+A = Length^-1
 
-![](images/image12.png)
+B = Unitless
 
-`IfcCurveSegment`
+C = Length
 
-.Placement = `IfcAxis2Placement2D.Location`=(start distance along, start
-height).RefDirection=`IfcDirection(1,0)`
+The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a bit of an anomaly in the IFC specification. :information_source:
 
-.SegmentStart=0.0,
+The challenging part is `IfcCurveSegment.SegmentLength`. The length along the parabolic curve is needed.
 
-SegmentLength = s
+The distance along a curve is
+
+$s(x) = \int_{}^{}(\sqrt{(y')^{2} + 1}) dx$
+
+The parabola equation is
+
+ $y(x) = Ax^2 + Bx + C$
+
+ and it's derivative is
+
+ $y'(x) = 2Ax = B$
+
+The equation along the parabolic curve is then:
+
+$s(x) = \int_{}^{}\sqrt{4A^2x^2 + 4ABx + B^2 + 1} dx$
+
+This equation can be solved numerically.
+
+Alternatively, there is a closed form solution, see https://www.integral-table.com, equation #37.
+
+$s(x)=\int_{}^{}\sqrt{ax^2 + bx + c} dx = \frac{b+2x}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$
+
+Let
+
+$a = 4A^2$
+
+$b = 4AB$
+
+$c = B^2 + 1$
+
+Substitute into the above closed form equation. The curve length is
+
+$Lc = s(L) - s(0.0)$
+
+Finally, `IfcCurveSegment.SegmentLength = Lc`
+
+In summary,
+
+~~~
+IfcCurveSegment.Placement = IfcAxis2Placement2D
+with 
+IfcAxis2Placement2D.Location=IfcCartesianPoint(start distance along, start height)
+IfcAxis2Placement2D.RefDirection=IfcDirection(1,0)
+
+IfcCurveSegment.SegmentStart=0.0
+
+IfcCurveSegment.SegmentLength=Lc
+
+IfcCurveSegment.ParentCurve = IfcPolynomialCurve
+~~~
