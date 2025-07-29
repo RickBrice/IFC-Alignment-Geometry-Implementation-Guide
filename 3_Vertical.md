@@ -206,9 +206,10 @@ IfcPolynomialCurve.CoefficientsX = (0,1)
 IfcPolynomialCurve.CoefficientsY = (C, B, A)
 ~~~
 
-:information_source: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z :information_source:
+---
+:information_source: Note 1: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z :information_source
 
-:information_source: The coefficients A, B, and C must have the following unit of measure, consistent with the project units:
+:information_source: Note 2: The coefficients A, B, and C must have the following unit of measure, consistent with the project units:
 
 A = Length^-1
 
@@ -216,7 +217,9 @@ B = Unitless
 
 C = Length
 
-The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a bit of an anomaly in the IFC specification. :information_source:
+The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a bit of an anomaly in the IFC specification.
+
+---
 
 The challenging part is `IfcCurveSegment.SegmentLength`. The length along the parabolic curve is needed.
 
@@ -230,7 +233,7 @@ The parabola equation is
 
  and it's derivative is
 
- $y'(x) = 2Ax = B$
+ $y'(x) = 2Ax + B$
 
 The equation along the parabolic curve is then:
 
