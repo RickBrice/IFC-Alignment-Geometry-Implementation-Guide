@@ -207,7 +207,7 @@ IfcPolynomialCurve.CoefficientsY = (C, B, A)
 ~~~
 
 ---
-:information_source: Note 1: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z :information_source
+:information_source: Note 1: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z.
 
 :information_source: Note 2: The coefficients A, B, and C must have the following unit of measure, consistent with the project units:
 
