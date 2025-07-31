@@ -19,3 +19,5 @@ alignment to the PC)
 
 The `IfcReferent` can have a representation, so it has a visual presence in a
 model viewer.
+
+:warning: There is an unanswered question if the IfcReferent should in the same or a different IfcRelNests as the alignment layouts.
