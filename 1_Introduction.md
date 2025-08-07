@@ -110,7 +110,7 @@ not discussed in this document.
 
 `IfcOffsetCurveByDistances` is treated in a dedication section.
 
-### Understand Geometric Representation of Alignment
+### Understanding Geometric Representation of Alignment
 
 The semantic definition of an alignment contains a lot of geometric
 information, such as segment type (line, curve, spiral) and parameters
