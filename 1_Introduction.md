@@ -200,8 +200,8 @@ For `IfcGradientCurve` and `IfcSegmentedReferenceCurve` the segments do not
 need to start or end at the same location of their base curve. These
 curves can be shorter than the horizontal alignment. This is illustrated
 in Figure 4 where the blue curve is the full horizontal curve and the
-orange curve is the portion of the horizontal curve coincide with the
-very curve. The `IfcGradientCurve` (#770) has the `IfcCompositeCurve`
+orange curve is the portion of the horizontal curve coinciding with the
+vertical curve. The `IfcGradientCurve` (#770) has the `IfcCompositeCurve`
 (#657) as its base curve. The placement of the first `IfcCurveSegment`
 (#771) in the `IfcGradientCurve` is defined by `IfcAxis2Placement2D` (#777)
 with Location as `IfcCartesianPoint` (#778). The first segment is located
