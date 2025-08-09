@@ -90,7 +90,7 @@ dy = sin(slope_angle)
 
 RefDirection, X-Direction = (dx,dy,0,0)
 
-Z-Direction = (0.0,$\cos\theta$,$\sin\theta$,0.0) **FIX THIS**
+Z-Direction = (0.0, $\cos\theta$, $\sin\theta$, 0.0)
 
 Y-Direction = Z-Direction $\bigotimes$ X-Direction
 
