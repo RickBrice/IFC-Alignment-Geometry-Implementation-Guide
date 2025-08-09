@@ -423,7 +423,7 @@ $$D(100m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(100m)^{2} + \frac{-1250
 
 $$\frac{D(s)}{L^{2}} = \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( \frac{A_{3}}{3\left| A_{3}^{5} \right|}s^{2} + \frac{1}{2A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
+$$\frac{d}{ds}D(s) = L^{2}\left( \frac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \frac{2}{A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
 
 $$D_{1} = \frac{D_{sl} + D_{sr}}{2},\ D_{2} = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_{2} - D_{1}$$
 
@@ -608,6 +608,125 @@ $$D(100m) = \frac{(100m)^{2}}{125000m} + \left( \frac{- 3535.533906m}{| - 3535.5
 
 ## Viennese Bend
 
-:warning: **[Need to finish this]** :warning:
+Parent Curve: `IfcSeventhOrderPolynomialSpiral`
 
-:warning: **[Updated for] $D(s) = L^{2}\kappa(s)$** :warning:
+$$\frac{D(s)}{L^{2}} = \frac{A_7}{|A_7^9|}s^7 + \frac{1}{A_6^7}s^6 + \frac{A_5}{|A_5^7|}s^5 + \frac{1}{A_4^5}s^4 + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+
+$$\frac{d}{ds}D(s) = L^{2}\left( \frac{7A_7}{|A_7^9|}s^6 + \frac{6}{A_6^7}s^5 + \frac{5A_5}{|A_5^7|}s^4 + \frac{4}{A_4^5}s^3 + \frac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \frac{2}{A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
+
+$$D_{1} = \frac{D_{sl} + D_{sr}}{2},\ D_{2} = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_{2} - D_{1}$$
+
+$$f = \mathrm{\Delta}D$$
+
+The polynomial coefficients must have units of length. The basic form of
+the coefficient of the $i^{th}$ term is
+
+$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
+
+Perform a dimensional analysis with $l$ representing term with length
+units. We see that the resulting coefficient $A_{i}$ has units of length.
+
+$$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$
+
+Constant Term
+
+$$a_{0} = D_{1}, A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
+
+Linear Term
+
+$$a_{1} = 0, A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$$
+
+Quadratic Term
+
+$$a_{2} = 0, A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|}$$
+
+Cubic Term
+
+$$a_{3} = 0, A_{3} = \frac{L^{\frac{5}{4}}}{\sqrt[4]{\left| a_{3} \right|}}\ \frac{a_{3}}{\left| a_{3} \right|}$$
+
+Quartic Term
+
+$$a_{4} = 35f, A_{4} = \frac{L^{\frac{6}{5}}}{\sqrt[5]{\left| a_{4} \right|}}\ \frac{a_{4}}{\left| a_{4} \right|}$$
+
+Quintic Term
+
+$$a_{5} = -84f, A_{5} = \frac{L^{\frac{7}{6}}}{\sqrt[6]{\left| a_{5} \right|}}\ \frac{a_{5}}{\left| a_{5} \right|}$$
+
+Sextic Term
+
+$$a_{6} = 70f, A_{6} = \frac{L^{\frac{8}{7}}}{\sqrt[7]{\left| a_{6} \right|}}\ \frac{a_{6}}{\left| a_{6} \right|}$$
+
+Septic Term
+
+$$a_{7} = -20f, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \frac{a_{7}}{\left| a_{7} \right|}$$
+
+### Example
+[GENERATED__CantAlignment_VienneseBend_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_VienneseBend_100.0_300_1000_1_Meter.ifc)
+
+~~~
+#61 = IFCALIGNMENTCANT('1FNFyDAJeHwv87wDZHIYI7', $, $, $, $, #134, $, 1.5);
+#62 = IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI3', #3, $, $, $, #114, #117, #64);
+#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 1.E-1, 3.E-2, .VIENNESEBEND.);
+#112 = IFCSEGMENTEDREFERENCECURVE((#113), .F., #89, #130);
+#113 = IFCCURVESEGMENT(.CONTINUOUS., #123, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #127);
+#123 = IFCAXIS2PLACEMENT3D(#124, #125, #126);
+#124 = IFCCARTESIANPOINT((0., 5.E-2, 0.));
+#125 = IFCDIRECTION((-0., 6.65190105237739E-2, 9.97785157856609E-1));
+#126 = IFCDIRECTION((1., 0., 0.));
+#127 = IFCSEVENTHORDERPOLYNOMIALSPIRAL(#128, 104.559318758736, -87.9842315113694, 83.5491645644658, -96.0224498937871, $, $, $, 2000.);
+#128 = IFCAXIS2PLACEMENT2D(#129, $);
+#129 = IFCCARTESIANPOINT((0., 0.));
+#130 = IFCAXIS2PLACEMENT3D(#131, #132, #133);
+#131 = IFCCARTESIANPOINT((100., 1.5E-2, 0.));
+#132 = IFCDIRECTION((-0., 1.99960011996001E-2, 9.99800059980007E-1));
+#133 = IFCDIRECTION((1., 0., 0.));
+~~~
+
+
+$$D_{1} = \frac{0 + 0.1}{2} = 0.05m, D_{2} = \frac{0 + 0.03}{2} = 0.015m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035m$$
+
+$$f = \mathrm{\Delta}D = -0.035m$$
+
+Constant Term
+$$a_{0} = 0.05m, A_{0} = \frac{100m^{2}}{\left| 0.05 \right|}\frac{0.05}{\left| 0.05 \right|} = 20000m$$
+
+Linear Term
+$$ a_{1} = 0, A_{1} = 0m$$
+
+Quadratic Term
+
+$$ a_{2} = 0, A_{2} = 0m$$
+
+Cubic Term
+
+$$ a_{3} = 0, A_{3} = 0m$$
+
+Quartic Term
+
+$$ a_{4} = 35(-0.035m) = -1.225m, A_{4} = \frac{100m^{\frac{6}{5}}}{\sqrt[5]{\left| -1.225 \right|}}\ \frac{-1.225}{\left| -1.225 \right|} = -241.1974890085123m$$
+
+Quintic Term
+
+$$a_{5} = -84(-0.035m)=2.94m, A_{5} = \frac{100m^{\frac{7}{6}}}{\sqrt[6]{\left| 2.94 \right|}}\ \frac{2.94}{\left| 2.94 \right|} = 180.0012184608678m$$
+
+Sextic Term
+
+$$a_{6} = 70(-0.035m)=-2.45m, A_{6} = \frac{100m^{\frac{8}{7}}}{\sqrt[7]{\left| -2.45 \right|}}\ \frac{-2.45}{\left|-2.45\right|} = -169.87095595653895m$$
+
+Septic Term
+
+$$a_{7} = -20(-0.035m) = 0.7m, A_{7} = \frac{100m^{\frac{9}{8}}}{\sqrt[8]{\left| 0.7 \right|}}\ \frac{0.7}{\left| 0.7 \right|} = 185.93568367635672m$$
+
+Evaluate at start, middle, and end of the segment
+
+:warning: These calculations don't look correct :warning:
+
+$$D(0m) = (100m)^2 \left(\frac{185.93568367635672}{|(185.93568367635672)^9|}0^7 + \frac{1}{(-169.87095595653895)^7}0^6 + \frac{180.0012184608678}{|(180.0012184608678)^7|}0^5 + \frac{1}{(-241.1974890085123)^5}0^4  + \frac{1}{20000}\right) = 0.05m$$
+
+$$D(50m) = (100m)^2 \left(\frac{185.93568367635672}{|(185.93568367635672)^9|}50^7 + \frac{1}{(-169.87095595653895)^7}50^6 + \frac{180.0012184608678}{|(180.0012184608678)^7|}50^5 + \frac{1}{(-241.1974890085123)^5}50^4  + \frac{1}{20000}\right) = 0.4825m$$
+
+$$D(100m) = (100m)^2 \left(\frac{185.93568367635672}{|(185.93568367635672)^9|}100^7 + \frac{1}{(-169.87095595653895)^7}100^6 + \frac{180.0012184608678}{|(180.0012184608678)^7|}100^5 + \frac{1}{(-241.1974890085123)^5}100^4  + \frac{1}{20000}\right) = 0.015m$$
+
+Placement
+
+$$\left( 0.0,\frac{L^{2}}{A_{0}},\ 0.0 \right) = (0.0, 0.05, 0.0)$$
