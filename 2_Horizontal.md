@@ -1030,23 +1030,100 @@ point and orientation as illustrated for the clothoid curve example.
 
 ## Viennese Transition Curve
 
+Parent curve type: `IfcSeventhOrderPolynomialSpiral`
+
+Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_VienneseBend_100.0_inf_300_1_Meter.ifc
+
+### Parent Curve Parametric Equations ###
+
 $$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s$$
 
 $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s^{6} + \frac{A_{5}}{\left| A_{5}^{7} \right|}s^{5} + \frac{1}{A_{4}^{5}}s^{4} + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
 ### Semantic Definition to Geometry Mapping
 
-$$f = \frac{1}{R_{e}} - \frac{1}{R_{s}}$$
+$h_{cg} = $ Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
 
-$$a_{0} = \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
+$d_{rh} = $ Rail Head Distance = `IfcAlignmentCant.RaliHeadDistance`
 
-$$A_{1} = 0$$
+$D_{sl} = $ `IfcAlignmentCantSegment.StartCantLeft`
 
-$$a_{2} =$$
+$D_{el} = $ `IfcAlignmentCantSegment.EndCantLeft`
 
-### Evaluate Point on Curve
+$D_{sr} = $ `IfcAlignmentCantSegment.StartCantRight`
 
-:warning: **[Add calculation]** :warning:
+$D_{er} = $ `IfcAlignmentCantSegment.EndCantRight`
+
+$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}} = $ Start Cant Angle
+
+$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}} = $ End Cant Angle
+
+$ cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)= $ Cant Factor
+
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
+
+Constant term $$a_{0} = \frac{L}{R_{s}}, A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
+
+Linear term $$a_{1} = 0, A_{1} = 0$$
+
+Quadratic term $$a_{2} = cf, A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|}$$
+
+Cubic term $$a_{3} = -4cf, A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}$$
+
+Quartic term $$a_{4} = 5cf + 35f, A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|}$$
+
+Quintic  term $$a_{5} = -2cf - 84f, A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|}$$
+
+Sextic term term $$a_{6} = 70f, A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|}$$
+
+Septic term $$a_{7} = -20f, A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|}$$
+
+### Example
+
+Consider a horizontal Viennese Bend transition curve segment that starts at (0,0) with a start direction of 0.0. The radius at the start is infinite and the radius at the end is 300. The arc length is 100. The Gravity Center Line Height is 1.8 (this optional parameter is required for the Viennese Bend). The semantic definition is
+
+~~~
+#28 = IFCCARTESIANPOINT((0., 0.));
+#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., 1.8, .VIENNESEBEND.);
+~~~
+
+Viennese Bend transition curves are unique in that the horizontal geometry of the curve depends on the cant. For the example, the cant segment horizontal length is 100, the start cant is 0.0 and the end cant is 0 at the left rail and 0.1 at the right rail. The semantic definition is
+
+~~~
+#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 1.E-1, .VIENNESEBEND.);
+~~~
+
+$$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$
+
+$$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
+
+$$ \theta_s = \frac{(0. - 0.)}{1.5} = 0.0$$
+
+$$ \theta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$
+
+$$ cf = -420\left(\frac{1.8}{100}\right)(0.066667-0.)= -0.504$$
+
+$$ a_{0} = \frac{100}{\infty} = 0, A_{0} = 0 $$
+
+$$ a_{1} = 0, A_{1} = 0 $$
+
+$$ a_{2} = -0.504, A_{2} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069$$
+
+$$ a_{3} = -4(-0.504) = 2.016, A_{3} = \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813$$
+
+$$ a_{4} = 5(-0.504) + 35(0.33333) = 9.1466655, A_{4} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406$$
+
+$$ a_{5} = -2(-0.504) - 84(0.33333) = -26.9919999, A_{5} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785$$
+
+$$ a_{6} = 70(0.33333) = 23.33333333, A_{6} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134$$
+
+$$ a_{7} = -20(0.33333) = -6.66666666, A_{6} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838$$
+
+~~~
+#75 = IFCSEVENTHORDERPOLYNOMIALSPIRAL(#76, -78.8880838459446, 63.7638813456506, -57.7378785242934, 64.2314061308743, 83.922298125931, -125.657906854859, $, $);
+#76 = IFCAXIS2PLACEMENT2D(#77, $);
+#77 = IFCCARTESIANPOINT((0., 0.));
+~~~
 
 The parent curve point is then positioned using the curve segment start
 point and orientation as illustrated for the clothoid curve example.
