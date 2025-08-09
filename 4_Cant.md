@@ -64,7 +64,7 @@ ${\theta_{e} = \tan^{- 1}}\frac{1.0}{0.0} = 1.570796$
 The cross slope at the segment mid-point is
 $\theta = \theta_{s} + \left( \frac{\theta_{e} - \theta_{s}}{D_{e} - D_{s}} \right)\left( D - D_{s} \right) = 1.46484 + \left( \frac{1.570796 - 1.46454}{0.0m - 0.08m} \right)(0.04m - 0.08m) = 1.517968$
 
-The Axis at the segment mid-point is (0.0,$\ \cos\theta$,$\sin\theta$) =
+The Axis at the segment mid-point is (0.0, $\cos\theta$, $\sin\theta$) =
 (0.0, 0.05234, 0.99863)
 
 The slope of the deviating elevation curve is the derivative of the
@@ -124,13 +124,13 @@ $$P_{v} = M_{v}'(column\ 4,\ set\ row\ 4\ value = 0)$$
 
 $$P_{c} = M_{c}'(column\ 4,\ set\ row\ 4\ value = 0)$$
 
-$${M''}_{v} = M_{v}'(column\ 4\ set\ to\ 0,0,01)$$
+$$M_{v}" = M_{v}'(column\ 4\ set\ to\ 0,0,01)$$
 
-$${M''}_{c} = M_{c}'(column\ 4\ set\ to\ 0,0,01)$$
+$$M_{c}" = M_{c}'(column\ 4\ set\ to\ 0,0,01)$$
 
 The 3D positioning vectors are computed from
 
-$$M' = M_{h}{M''}_{v}M_{c}^{''}$$
+$$M' = M_{h}M_{v}"M_{c}"$$
 
 Finally, add back the positions $P_{v}$ and $P_{c}$
 
@@ -150,7 +150,7 @@ The cant cross slope (inclination between railheads) is the Axis vector
 and this vector rotates at the same rate as the cant changes in
 elevation along the length of the segment.
 
-### Deviation from EnrichIfc4x3 Reference Implementation
+## Deviation from EnrichIfc4x3 Reference Implementation
 
 These calculations deviate from the ones performed by the EnrichIfc4x3
 reference implementation. The calculations in the reference implement
@@ -247,9 +247,9 @@ GENERATED\_\_CantAlignment_LinearTransition_100.0_300_1000_1_Meter.ifc
 #130 = IFCDIRECTION((1., 0., 0.));
 ~~~
 
-$$D_{1} = \frac{0 + 0.16}{2} = 0.08,m\ D_{2} = \frac{0 + 0}{2} = 0m,\ \mathrm{\Delta}D = 0 - 0.08 = - 0.08m$$
+$$D_{1} = \frac{0 + 0.16}{2} = 0.08,m\ D_{2} = \frac{0 + 0}{2} = 0m,\ \mathrm{\Delta}D = 0 - 0.08 = -0.08m$$
 
-$$f = \mathrm{\Delta}D = - 0.08m$$
+$$f = \mathrm{\Delta}D = -0.08m$$
 
 $$a_{0} = 0.08m$$
 
@@ -257,15 +257,15 @@ $$A_{0} = \frac{(100m)^{2}}{0.08m} = 125000m$$
 
 $$a_{1} = - 0.08m$$
 
-$$A_{1} = \frac{{(100m)}^{\frac{3}{2}}}{\sqrt{| - 0.08m|}}\frac{- 0.08m}{| - 0.08m|} = - 3535.533906m$$
+$$A_{1} = \frac{{(100m)}^{\frac{3}{2}}}{\sqrt{|-0.08m|}}\frac{-0.08m}{|-0.08m|} = - 3535.533906m$$
 
 Evaluate
 
-$$D(0m) = (100m)^{2}\left( \frac{1}{125000m} + 100m\frac{- 3535.533906m}{\left| {- 3535.533906m}^{3} \right|}0m \right) = 0.08m$$
+$$D(0m) = (100m)^{2}\left( \frac{1}{125000m} + 100m\frac{-3535.533906m}{\left| {-3535.533906m}^{3} \right|}0m \right) = 0.08m$$
 
-$$D(50m) = (100m)^{2}\left( \frac{1}{125000m} + \frac{100m( - 3535.533906m)}{\left| ( - 3535.533906m)^{3} \right|}(50m) \right) = 0.04m$$
+$$D(50m) = (100m)^{2}\left( \frac{1}{125000m} + \frac{100m(-3535.533906m)}{\left| (-3535.533906m)^{3} \right|}(50m) \right) = 0.04m$$
 
-$$D(100m) = (100m)^{2}\left( \frac{1}{125000m} + \frac{100m( - 3535.533906m)}{\left| ( - 3535.533906m)^{3} \right|}(100m) \right) = 0.0m$$
+$$D(100m) = (100m)^{2}\left( \frac{1}{125000m} + \frac{100m(-3535.533906m)}{\left| (-3535.533906m)^{3} \right|}(100m) \right) = 0.0m$$
 
 Placement
 
@@ -273,9 +273,9 @@ $$\left( DistAlong,\frac{L^{2}}{A_{0}},\ 0.0 \right) = \left( DistAlong,D_{s},\ 
 
 $$\left( 0.0,\frac{(100m)^{2}}{125000m},0.0 \right) = (0.0,\ 0.08m,\ 0.0)$$
 
-$$angle = \tan^{- 1}{\left( \frac{A_{1}L^{2}}{\left| A_{1}^{3} \right|} \right) = \tan^{- 1}\left( \frac{( - 3535.533906m)(100m)^{2}}{\left| ( - 3535.533906m)^{3} \right|} \right)} = - 0.0008$$
+$$angle = \tan^{- 1}{\left( \frac{A_{1}L^{2}}{\left| A_{1}^{3} \right|} \right) = \tan^{-1}\left( \frac{(-3535.533906m)(100m)^{2}}{\left| (-3535.533906m)^{3} \right|} \right)} = -0.0008$$
 
-$$RefDirection = \left( \cos( - 0.0008),\sin( - 0.0008),0.0 \right) = (0.99999, - 0.0008,0.0)$$
+$$RefDirection = \left( \cos(-0.0008),\sin(-0.0008),0.0 \right) = (0.99999, -0.0008, 0.0)$$
 
 ## Helmert Curve
 
@@ -292,7 +292,7 @@ $$D_{1} = D_{sl} + D_{sr},\ D_{2} = D_{el} + D_{er},\ \mathrm{\Delta}D = D_{2} -
 $$f = \mathrm{\Delta}D$$
 
 The polynomial coefficients must have units of length. The basic form of
-the coefficient of the *i^th^* term is
+the coefficient of the $i^{th}$ term is
 
 $$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
 
@@ -300,7 +300,7 @@ First half:
 
 $$\frac{D(s)}{\left( \frac{L}{2} \right)^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
-Constant Term: $a_{01} = {2D}_{1}$,
+Constant Term: $a_{01} = 2D_{1}$,
 $A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|}$
 
 Linear Term: $a_{11} = 0$,
@@ -311,13 +311,13 @@ $A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\l
 
 Second Half:
 
-Constant Term: $a_{02} = - 2f + {2D}_{1}$,
+Constant Term: $a_{02} = -2f + 2D_{1}$,
 $A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|}$
 
 Linear Term: $a_{12} = 8f$,
 $A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|}$
 
-Quadratic Term: $a_{22} = - 4f$,
+Quadratic Term: $a_{22} = -4f$,
 $A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$
 
 Example:
@@ -363,9 +363,9 @@ $$D_{1} = 0 + 0.16m = 0.16m$$
 
 $$D_{2} = 0 + 0 = 0.m$$
 
-$$\mathrm{\Delta}D = 0.0 - 0.16 = - 0.16m$$
+$$\Delta D = 0.0 - 0.16 = -0.16m$$
 
-$$f = \mathrm{\Delta}D = - 0.16m$$
+$$f = \Delta D = -0.16m$$
 
 First half:
 
@@ -375,51 +375,49 @@ $$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 4f = 4( - 0.64m) = - 0.64m$$
+$$a_{21} = 4f = 4(-0.64m) = -0.64m$$
 
-$$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100m)^{4\text{/}3}}{\sqrt[3]{| - 0.64m|}}\frac{- 0.64m}{| - 0.64m|} = - 538.6086725m$$
+$$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100m)^{4\text{/}3}}{\sqrt[3]{| - 0.64m|}}\frac{-0.64m}{|-0.64m|} = -538.6086725m$$
 
-$$D(0m) = (50m)^{2}\left( \frac{1}{31250m} + \frac{1}{( - 538.6086725m)^{3}}(0m)^{2} \right) = 0.08m$$
+$$D(0m) = (50m)^{2}\left( \frac{1}{31250m} + \frac{1}{(-538.6086725m)^{3}}(0m)^{2} \right) = 0.08m$$
 
-$$D(50m) = (50m)^{2}\left( \frac{1}{31250m} + \frac{1}{( - 538.6086725m)^{3}}(50m)^{2} \right) = 0.04m$$
+$$D(50m) = (50m)^{2}\left( \frac{1}{31250m} + \frac{1}{(-538.6086725m)^{3}}(50m)^{2} \right) = 0.04m$$
 
 Placement Y = 0.08
 
-Change in cant = D(50)-D(0) = 0.04-0.08=-0.04
+Change in cant = $D(50) - D(0) = 0.04 - 0.08= -0.04$
 
-Y = 0.08 -0.04 = 0.04
+$$Y = 0.08 - 0.04 = 0.04$$
 
-$$slope = (50m)^{2}\frac{(2)(50m)}{( - 538.6086725m)^{3}} = - 0.0016$$
+$$slope = (50m)^{2}\frac{(2)(50m)}{(-538.6086725m)^{3}} = -0.0016$$
 
-$$dx = cos(\tan^{- 1}{- 0.0016)) = 0.99999872}$$
+$$dx = cos(\tan^{-1}{-0.0016)) = 0.99999872}$$
 
-$$dy = \sin\left( \tan^{- 1}( - 0.0016) \right) = - 0.0015999795$$
+$$dy = \sin\left( \tan^{-1}(-0.0016) \right) = -0.0015999795$$
 
 Second Half:
 
-$$a_{02} = - f + D_{1} = - ( - 0.16m) + 0.16m = 0.32m$$
+$$a_{02} = -f + D_{1} = -(-0.16m) + 0.16m = 0.32m$$
 
 $$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100m)^{2}}{|0.32m|}\frac{0.32m}{|0.32m|} = 31250m$$
 
-$$a_{12} = 4f = 4( - 0.16m) = - 0.64m$$
+$$a_{12} = 4f = 4(-0.16m) = -0.64m$$
 
-$$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100m)^{\frac{3}{2}}}{\sqrt{| - 0.64m|}}\frac{- 0.64m}{| - 0.64m|} = - 1250m$$
+$$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100m)^{\frac{3}{2}}}{\sqrt{|-0.64m|}}\frac{-0.64m}{|-0.64m|} = -1250m$$
 
-$$a_{22} = - 2f = - 2( - 0.16m) = 0.32m$$
+$$a_{22} = -2f = -2(-0.16m) = 0.32m$$
 
 $$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|} = \frac{(100m)^{\frac{4}{3}}}{\sqrt[3]{|0.32m|}}\frac{0.32m}{|0.32m|} = 678.6044041m$$
 
-$$slope = (100m)^{2}\left( \frac{(2)(50m)}{(678.6044041m)^{3}} + \frac{- 1250m}{|( - 1250m)^{3}|} \right) = - 0.0032$$
+$$slope = (100m)^{2}\left( \frac{(2)(50m)}{(678.6044041m)^{3}} + \frac{-1250m}{|(-1250m)^{3}|} \right) = -0.0032$$
 
-Divide slope by 2 (not sure why, but it passes the unit tests)
+$$dx = cos(\tan^{-1}{(-0.0032)) = 0.99999488}$$
 
-$$dx = cos(\tan^{- 1}{( - 0.0032)) = 0.99999488}$$
+$$dy = \sin\left( \tan^{-1}(-0.0032) \right) = -0.0031999836$$
 
-$$dy = \sin\left( \tan^{- 1}( - 0.0032) \right) = - 0.0031999836$$
+$$D(50m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(50m)^{2} + \frac{-1250m}{\left| (-1250m)^{3} \right|}(50m) + \frac{1}{31250m} \right) = 0.02m$$
 
-$$D(50m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(50m)^{2} + \frac{- 1250m}{\left| ( - 1250m)^{3} \right|}(50m) + \frac{1}{31250m} \right) = 0.02m$$
-
-$$D(100m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(100m)^{2} + \frac{- 1250m}{\left| ( - 1250m)^{3} \right|}(100m) + \frac{1}{31250m} \right) = 0.0m$$
+$$D(100m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(100m)^{2} + \frac{-1250m}{\left| (-1250m)^{3} \right|}(100m) + \frac{1}{31250m} \right) = 0.0m$$
 
 ## Bloss Curve
 
@@ -432,12 +430,12 @@ $$D_{1} = \frac{D_{sl} + D_{sr}}{2},\ D_{2} = \frac{D_{el} + D_{er}}{2},\ \mathr
 $$f = \mathrm{\Delta}D$$
 
 The polynomial coefficients must have units of length. The basic form of
-the coefficient of the *i^th^* term is
+the coefficient of the $i^{th}$ term is
 
 $$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
 
 Perform a dimensional analysis with $l$ representing term with length
-units. We see that the resulting coefficient $A_{i}$has units of length.
+units. We see that the resulting coefficient $A_{i}$ has units of length.
 
 $$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$
 
