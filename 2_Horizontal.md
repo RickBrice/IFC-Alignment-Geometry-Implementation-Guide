@@ -1042,23 +1042,23 @@ $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s
 
 ### Semantic Definition to Geometry Mapping
 
-$h_{cg} = $ Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
+$$h_{cg}$$ = Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
 
-$d_{rh} = $ Rail Head Distance = `IfcAlignmentCant.RaliHeadDistance`
+$$d_{rh}$$ = Rail Head Distance = `IfcAlignmentCant.RaliHeadDistance`
 
-$D_{sl} = $ `IfcAlignmentCantSegment.StartCantLeft`
+$$D_{sl}$$ = `IfcAlignmentCantSegment.StartCantLeft`
 
-$D_{el} = $ `IfcAlignmentCantSegment.EndCantLeft`
+$$D_{el}$$ = `IfcAlignmentCantSegment.EndCantLeft`
 
-$D_{sr} = $ `IfcAlignmentCantSegment.StartCantRight`
+$$D_{sr}$$ = `IfcAlignmentCantSegment.StartCantRight`
 
-$D_{er} = $ `IfcAlignmentCantSegment.EndCantRight`
+$$D_{er}$$ = `IfcAlignmentCantSegment.EndCantRight`
 
-$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}} = $ Start Cant Angle
+$$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$$,  Start Cant Angle
 
-$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}} = $ End Cant Angle
+$$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$$,  End Cant Angle
 
-$ cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)= $ Cant Factor
+$$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)$$, Cant Factor
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
 
