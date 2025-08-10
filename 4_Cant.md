@@ -124,9 +124,9 @@ $$P_{v} = M_{v}'(column\ 4,\ set\ row\ 4\ value = 0)$$
 
 $$P_{c} = M_{c}'(column\ 4,\ set\ row\ 4\ value = 0)$$
 
-$$M_{v}" = M_{v}'(column\ 4\ set\ to\ 0,0,01)$$
+$$M_{v}" = M_{v}'(column\ 4\ set\ to\ 0,0,0,1)$$
 
-$$M_{c}" = M_{c}'(column\ 4\ set\ to\ 0,0,01)$$
+$$M_{c}" = M_{c}'(column\ 4\ set\ to\ 0,0,0,1)$$
 
 The 3D positioning vectors are computed from
 
@@ -664,24 +664,23 @@ $$a_{7} = -20f, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ 
 [GENERATED__CantAlignment_VienneseBend_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_VienneseBend_100.0_300_1000_1_Meter.ifc)
 
 ~~~
-#61 = IFCALIGNMENTCANT('1FNFyDAJeHwv87wDZHIYI7', $, $, $, $, #134, $, 1.5);
-#62 = IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI3', #3, $, $, $, #114, #117, #64);
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 1.E-1, 3.E-2, .VIENNESEBEND.);
-#112 = IFCSEGMENTEDREFERENCECURVE((#113), .F., #89, #130);
-#113 = IFCCURVESEGMENT(.CONTINUOUS., #123, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #127);
-#123 = IFCAXIS2PLACEMENT3D(#124, #125, #126);
-#124 = IFCCARTESIANPOINT((0., 5.E-2, 0.));
-#125 = IFCDIRECTION((-0., 6.65190105237739E-2, 9.97785157856609E-1));
-#126 = IFCDIRECTION((1., 0., 0.));
-#127 = IFCSEVENTHORDERPOLYNOMIALSPIRAL(#128, 104.559318758736, -87.9842315113694, 83.5491645644658, -96.0224498937871, $, $, $, 2000.);
-#128 = IFCAXIS2PLACEMENT2D(#129, $);
-#129 = IFCCARTESIANPOINT((0., 0.));
-#130 = IFCAXIS2PLACEMENT3D(#131, #132, #133);
-#131 = IFCCARTESIANPOINT((100., 1.5E-2, 0.));
-#132 = IFCDIRECTION((-0., 1.99960011996001E-2, 9.99800059980007E-1));
-#133 = IFCDIRECTION((1., 0., 0.));
+#61=IFCALIGNMENTCANT('1FNFyDAJeHwv87wDZHIYI7',$,$,$,$,$,$,1.5);
+#62=IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI3',#3,$,$,$,$,$,#64);
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.1,0.03,.VIENNESEBEND.);
+
+#79=IFCSEGMENTEDREFERENCECURVE((#104),.F.,#78,$);
+#99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.935683676356,-169.870955956539,180.001218460868,-241.197489008512,$,$,$,200000.);
+#100=IFCCARTESIANPOINT((0.,0.05,0.));
+#101=IFCDIRECTION((0.,0.0665190105237739,0.997785157856609));
+#102=IFCDIRECTION((1.,0.,0.));
+#103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
+#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
+$$D_{sl} = 0.0$$
+$$D_{el} = 0.0$$
+$$D_{sr} = 0.1$$
+$$D_{er} = 0.03$$
 
 $$D_{1} = \frac{0 + 0.1}{2} = 0.05m, D_{2} = \frac{0 + 0.03}{2} = 0.015m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035m$$
 
@@ -691,41 +690,51 @@ Constant Term
 $$a_{0} = 0.05m, A_{0} = \frac{100m^{2}}{\left| 0.05 \right|}\frac{0.05}{\left| 0.05 \right|} = 20000m$$
 
 Linear Term
-$$ a_{1} = 0, A_{1} = 0m$$
+$$a_{1} = 0, A_{1} = 0m$$
 
 Quadratic Term
 
-$$ a_{2} = 0, A_{2} = 0m$$
+$$a_{2} = 0, A_{2} = 0m$$
 
 Cubic Term
 
-$$ a_{3} = 0, A_{3} = 0m$$
+$$a_{3} = 0, A_{3} = 0m$$
 
 Quartic Term
 
-$$ a_{4} = 35(-0.035m) = -1.225m, A_{4} = \frac{100m^{\frac{6}{5}}}{\sqrt[5]{\left| -1.225 \right|}}\ \frac{-1.225}{\left| -1.225 \right|} = -241.1974890085123m$$
+$$a_{4} = 35(-0.035m) = -1.225m, A_{4} = \frac{100m^{\frac{6}{5}}}{\sqrt[5]{\left| -1.225m \right|}}\ \frac{-1.225m}{\left| -1.225m \right|} = -241.1974890085123m$$
 
 Quintic Term
 
-$$a_{5} = -84(-0.035m)=2.94m, A_{5} = \frac{100m^{\frac{7}{6}}}{\sqrt[6]{\left| 2.94 \right|}}\ \frac{2.94}{\left| 2.94 \right|} = 180.0012184608678m$$
+$$a_{5} = -84(-0.035m)=2.94m, A_{5} = \frac{100m^{\frac{7}{6}}}{\sqrt[6]{\left| 2.94m \right|}}\ \frac{2.94m}{\left| 2.94m \right|} = 180.0012184608678m$$
 
 Sextic Term
 
-$$a_{6} = 70(-0.035m)=-2.45m, A_{6} = \frac{100m^{\frac{8}{7}}}{\sqrt[7]{\left| -2.45 \right|}}\ \frac{-2.45}{\left|-2.45\right|} = -169.87095595653895m$$
+$$a_{6} = 70(-0.035m)=-2.45m, A_{6} = \frac{100m^{\frac{8}{7}}}{\sqrt[7]{\left| -2.45m \right|}}\ \frac{-2.45m}{\left|-2.45m\right|} = -169.87095595653895m$$
 
 Septic Term
 
-$$a_{7} = -20(-0.035m) = 0.7m, A_{7} = \frac{100m^{\frac{9}{8}}}{\sqrt[8]{\left| 0.7 \right|}}\ \frac{0.7}{\left| 0.7 \right|} = 185.93568367635672m$$
+$$a_{7} = -20(-0.035m) = 0.7m, A_{7} = \frac{100m^{\frac{9}{8}}}{\sqrt[8]{\left| 0.7m \right|}}\ \frac{0.7m}{\left| 0.7m \right|} = 185.93568367635672m$$
 
-Evaluate at start, middle, and end of the segment
+Evaluate at start, middle, and end of the segment.
 
-:warning: These calculations don't look correct :warning:
+$Cant(u) = D(u) - D(0) + Cant(0)$
 
-$$D(0m) = (100m)^2 \left(\frac{185.93568367635672}{|(185.93568367635672)^9|}0^7 + \frac{1}{(-169.87095595653895)^7}0^6 + \frac{180.0012184608678}{|(180.0012184608678)^7|}0^5 + \frac{1}{(-241.1974890085123)^5}0^4  + \frac{1}{20000}\right) = 0.05m$$
+$Cant(0)$ = `IfcCurveSegment.Placement.Location.Coordinates[2]` = $0.05m$
 
-$$D(50m) = (100m)^2 \left(\frac{185.93568367635672}{|(185.93568367635672)^9|}50^7 + \frac{1}{(-169.87095595653895)^7}50^6 + \frac{180.0012184608678}{|(180.0012184608678)^7|}50^5 + \frac{1}{(-241.1974890085123)^5}50^4  + \frac{1}{20000}\right) = 0.4825m$$
 
-$$D(100m) = (100m)^2 \left(\frac{185.93568367635672}{|(185.93568367635672)^9|}100^7 + \frac{1}{(-169.87095595653895)^7}100^6 + \frac{180.0012184608678}{|(180.0012184608678)^7|}100^5 + \frac{1}{(-241.1974890085123)^5}100^4  + \frac{1}{20000}\right) = 0.015m$$
+$$D(0m) = (100m)^2 \left(\frac{185.93568367635672m}{|(185.93568367635672m)^9|}(0m)^7 + \frac{1}{(-169.87095595653895m)^7}(0m)^6 + \frac{180.0012184608678m}{|(180.0012184608678m)^7|}(0m)^5 + \frac{1}{(-241.1974890085123m)^5}(0m)^4  + \frac{1}{20000m}\right) = 0.5m$$
+
+$$Cant(0m) = 0.5m - 0.5m + 0.05m$$
+
+$$D(50m) = (100m)^2 \left(\frac{185.93568367635672m}{|(185.93568367635672m)^9|}(50m)^7 + \frac{1}{(-169.87095595653895m)^7}(50m)^6 + \frac{180.0012184608678m}{|(180.0012184608678m)^7|}(50m)^5 + \frac{1}{(-241.1974890085123m)^5}(50m)^4  + \frac{1}{20000m}\right) = 0.4825m$$
+
+$$Cant(50m) = 0.4825m - 0.5m + 0.0325m$$
+
+
+$$D(100m) = (100m)^2 \left(\frac{185.93568367635672m}{|(185.93568367635672m)^9|}(100m)^7 + \frac{1}{(-169.87095595653895m)^7}(100m)^6 + \frac{180.0012184608678m}{|(180.0012184608678m)^7|}(100m)^5 + \frac{1}{(-241.1974890085123m)^5}(100m)^4  + \frac{1}{20000m}\right) = 0.465m$$
+
+$$Cant(100m) = 0.465m - 0.5m + 0.015m$$
 
 Placement
 
