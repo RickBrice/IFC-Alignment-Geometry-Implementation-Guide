@@ -114,9 +114,9 @@ trimmed line segment.
 
 From `IfcCurveSegment.Placement`, the direction of the segment is
 
-$$dy\  = \sin{(5.70829654085293)} = - 0.54374144087698$$
+$$dy = \sin{(5.70829654085293)} = -0.54374144087698$$
 
-$$dx\  = \ \cos{(5.70829654085293)} = 0.839252789970355$$
+$$dx = \cos{(5.70829654085293)} = 0.839252789970355$$
 
 ~~~
 #49=IFCDIRECTION((0.839252789970355,-0.54374144087698));
@@ -148,17 +148,17 @@ From the curve segment placement
 
 $$C = (500,2500)$$
 
-$$dx\  = 0.839252789970355,\ dy\  = - 0.54374144087698$$
+$$dx\  = 0.839252789970355,\ dy\  = -0.54374144087698$$
 
-$$\theta = \tan^{- 1}{\left( \frac{- 0.54374144087698}{0.839252789970355} \right) = - 0.574888766\ }$$
+$$\theta = \tan^{-1}{\left( \frac{-0.54374144087698}{0.839252789970355} \right) = -0.574888766\ }$$
 
 The point on the curve segment can be computed as
 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-$$x = 500 + \ \int_{0}^{100}{\cos{( - 0.574888766)}} = 500 + ( - \sin{( - 0.574888766))(100m - 0m) = 583.925249}$$
+$$x = 500 + \int_{0}^{100}{\cos{(-0.574888766)}} = 500 + ( - \sin{(-0.574888766))(100m - 0m) = 583.925249}$$
 
-$$y = 2500 + \ \int_{0}^{100}{\sin{( - 0.574888766)}} = 2500 + (\cos{( - 0.574888766))(100m - 0m) = 2445.625886}$$
+$$y = 2500 + \int_{0}^{100}{\sin{( -0.574888766)}} = 2500 + (\cos{(-0.574888766))(100m - 0m) = 2445.625886}$$
 
 Though it is much easier to use the following calculation
 
@@ -373,17 +373,17 @@ Start by computing the point and curve tangent at the start of the
 parent curve trim.
 
 Compute point on parent curve at
-$u = \frac{- 142.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = - 0.3893278$
+$u = \frac{-142.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = -0.3893278$
 
-$$x( - 0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{- 0.3893278}{\cos{\left( \frac{\pi}{2}\frac{- 207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = - 142.04941746210602$$
+$$x(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602$$
 
-$$y( - 0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{- 0.3893278}{\sin{\left( \frac{\pi}{2}\frac{- 207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
+$$y(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
 
-$$\theta( - 0.3893278) = \frac{\pi}{2}\frac{- 207.0196678}{| - 207.0196678|}( - 0.3893278)^{2} = - 0.238095237$$
+$$\theta(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.3893278)^{2} = -0.238095237$$
 
-$$dx = \cos( - 0.238095237) = 0.971788979$$
+$$dx = \cos(-0.238095237) = 0.971788979$$
 
-$$dy = \sin{( - 0.238095237) = - 0.235852028}$$
+$$dy = \sin{(-0.238095237) = -0.235852028}$$
 
 In matrix form
 
@@ -514,7 +514,7 @@ parametric equations where the parameter is the distance along the
 curve. A cubic curve is represented with the `IfcPolynomialCurve` parent
 curve type. When `IfcPolynomialCurve` is used as a cubic transition curve,
 the $x$ coefficients are \[0,1\] and the $y$ coefficients are
-\[0,0,0,$A_{3}\] resulting in a function of the form
+\[0,0,0, $A_{3}$\] resulting in a function of the form
 $y(x) = A_{3}x^{3}$.
 
 The distance along the curve is defined by
