@@ -153,10 +153,17 @@ elevation along the length of the segment.
 ## Deviation from EnrichIfc4x3 Reference Implementation
 
 These calculations deviate from the ones performed by the EnrichIfc4x3
-reference implementation. The calculations in the reference implement
-yield coefficients for sine, cosine, and polynomial spirals that are
-unitless. The IFC specification is clear that the coefficients have
+reference implementation. The calculations in the reference implementation
+yield coefficients for sine, cosine, and polynomial spirals that are not in units of length. The IFC specification is clear that the coefficients have
 units of length and are represented by `IfcLengthMeasure`.
+
+As an example, consider the Bloss Curve example GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc. Using the calculation process in the EnrichIfc4x3 reference implementation, the cubic term has a coefficient of $-158.113883m^{3/4}$.
+
+$D_1 = \frac{0 + 0}{2} = 0m, D_2 = \frac{0 + 0.16}{2} = 0.08m, \Delta D = 0.08-0 = 0.08m, f = \Delta D = 0.08m$
+
+Cubic term $a_{3} = -2f = -0.016m, A_{3} = \frac{100m}{\sqrt[4]{|-0.16m|}}\frac{-0.16m}{|-0.16m|} = -158.113883 m^{3/4}$
+
+As will be demonstrated below, the calculation procedure defined in this document produces a coefficient of $-500m$ which has the correct units.
 
 ## Constant Cant
 
@@ -460,21 +467,22 @@ Example
 GENERATED\_\_CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc
 
 ~~~
-#61 = IFCALIGNMENTCANT(1FNFyDAJeHwv87wDZHIYI7, $, $, $, $, #134, $, 1.5);
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 1.6E-1, .BLOSSCURVE.);
-#112 = IFCSEGMENTEDREFERENCECURVE((#113), .F., #89, #130);
-#113 = IFCCURVESEGMENT(.CONTINUOUS., #123, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #127);
-#123 = IFCAXIS2PLACEMENT3D(#124, #125, #126);
-#124 = IFCCARTESIANPOINT((0., 0., 0.));
-#125 = IFCDIRECTION((0., -0., 1.));
-#126 = IFCDIRECTION((1., 0., 0.));
-#127 = IFCTHIRDORDERPOLYNOMIALSPIRAL(#128, -158.113883008419, 160.914897434272, $, $);
-#128 = IFCAXIS2PLACEMENT2D(#129, $);
-#129 = IFCCARTESIANPOINT((0., 0.));
-#130 = IFCAXIS2PLACEMENT3D(#131, #132, #133);
-#131 = IFCCARTESIANPOINT((100., 8.E-2, 0.));
-#132 = IFCDIRECTION((-0., 1.06064981392206E-1, 9.94359200551929E-1));
-#133 = IFCDIRECTION((1., 0., 0.));
+#61=IFCALIGNMENTCANT('1FNFyDAJeHwv87wDZHIYI7',$,$,$,$,$,$,1.5);
+#62=IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI3',#3,$,$,$,$,$,#64);
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.,0.16,.BLOSSCURVE.);
+#92=IFCCARTESIANPOINT((0.,0.));
+#93=IFCDIRECTION((1.,0.));
+#94=IFCAXIS2PLACEMENT2D(#92,#93);
+#95=IFCCURVESEGMENT(.DISCONTINUOUS.,#94,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#91);
+#96=IFCCARTESIANPOINT((0.,0.));
+#97=IFCDIRECTION((1.,0.));
+#98=IFCAXIS2PLACEMENT2D(#96,#97);
+#99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,-500.,746.900791092861,$,$);
+#100=IFCCARTESIANPOINT((0.,0.,0.));
+#101=IFCDIRECTION((0.,0.,1.));
+#102=IFCDIRECTION((1.,0.,0.));
+#103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
+#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 $$D_{1} = \frac{0 + 0}{2} = 0m,\ D_{2} = \frac{0 + 0.16}{2} = 0.08m,\ \mathrm{\Delta}D = 0.08 - 0 = 0.08m$$
