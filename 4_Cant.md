@@ -165,6 +165,17 @@ Cubic term $a_{3} = -2f = -0.016m, A_{3} = \frac{100m}{\sqrt[4]{|-0.16m|}}\frac{
 
 As will be demonstrated below, the calculation procedure defined in this document produces a coefficient of $-500m$ which has the correct units.
 
+This discrepency will lead to very different mapping from semantic to geometry as shown here
+~~~
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.,0.16,.BLOSSCURVE.);
+
+From EnrichIfc4x3
+#127 = IFCTHIRDORDERPOLYNOMIALSPIRAL(#128, -158.113883008419, 160.914897434272, $, $);
+
+From calculations in this document
+#127=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,-500.,746.900791092861,$,$);
+~~~
+
 ## Constant Cant
 
 Constant cant is unique compared to the cant equations related to spiral
