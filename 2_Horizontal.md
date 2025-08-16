@@ -612,9 +612,9 @@ The geometric representation is
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-X Coefficients = ($0 m^{-1}$,$1 m^0$)
+X Coefficients = ($0 m^1$, $1 m^0$)
 
-Y Coefficients = ($0 m^{-1}$,$0 m^{0}$,$0 m^{-1}$,$5.55555E{-06} m^{-2}$)
+Y Coefficients = ($0 m^1$, $0 m^{0}$, $0 m^{-1}$, $5.55555E{-06} m^{-2}$)
 
 $$y(x) = \left( 5.55555 \bullet 10^{-6} m^{-2}\right)x^{3}$$
 
