@@ -630,7 +630,7 @@ $$x = 99.72593255 m$$
 
 Check solution
 
-$$s = \int_{0}^{99.72593255m}\sqrt{\left( 3 \bullet (5.55555 \bullet 10^{-6} m^{-2})(x m)^{2} \right)^{2} + (1m)^2}dx = 100m$$
+$$s = \int_{0}^{99.72593255m}\sqrt{\left( 3 \bullet (5.55555 \bullet 10^{-6} m^{-2})(x m)^{2} \right)^{2} + 1}dx = 100m$$
 
 Compute y
 
