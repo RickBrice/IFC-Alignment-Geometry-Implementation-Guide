@@ -122,45 +122,45 @@ a horizontal dimension. The parent curve equations need a distance along
 the curve. The following procedure is used to convert the horizontal
 distance, uh, to the arc length, u.
 
-![](images/image10.emf)
+![](images/image10.png)
 
 The center point (Cx,Cy) is computed from (Sx,Sy) and the curve tangent
 (tx,ty) at the start point.
 
-Cx = Sx -- sign(length)\*ty\*R
+$C_x = S_x - sign(length)t_yR$
 
-Cy = Sy + sign(length)\*tx\*R
+$C_y = S_y + sign(length)t_xR$
 
 From the Dx-Dy-R triangle, $R^{2} = Dx^{2} + Dy^{2}$
 
 Substitute $Dx = uh - (Cx - Sx)$ and $Dy = (Cy - y)$
 
-$$R^{2} = (uh + Sx - Cx)^{2} + (Cy - y)^{2}$$
+$R^{2} = (uh + Sx - Cx)^{2} + (Cy - y)^{2}$
 
 Solve for y
 
-$$y = Cy - \sqrt{R^{2} - (uh + Sx - Cx)^{2}}$$
+$y = Cy - \sqrt{R^{2} - (uh + Sx - Cx)^{2}}$
 
 $uh = x - S_{x}$
 
-$$y = Cy - \sqrt{R^{2} - (x - Cx)^{2}}$$
+$y = Cy - \sqrt{R^{2} - (x - Cx)^{2}}$
 
 Compute the chord distance as the distance between the start point and
-the point on the arc, c
+the point on the arc, $c$
 
-$$c = \sqrt{(x - Sx)^{2} + (y - Sy)^{2}}$$
+$c = \sqrt{(x - Sx)^{2} + (y - Sy)^{2}}$
 
 The chord distance is also $c = 2R\sin\frac{\mathrm{\Delta}}{2}$
 
 Solve for $\mathrm{\Delta}$
 
-$$\mathrm{\Delta} = 2\sin^{- 1}\frac{c}{2R}$$
+$\mathrm{\Delta} = 2\sin^{- 1}\frac{c}{2R}$
 
-Compute arc length, u
+Compute arc length, $u$
 
-$$u = R\mathrm{\Delta}$$
+$u = R\mathrm{\Delta}$
 
-The parent curve function can now be evaluated at u.
+The parent curve function can now be evaluated at $u$.
 
 This calculation can be simplified because the point on the curve (x,y)
 is computed. This is the point we want. The tangent direction at that
@@ -181,7 +181,9 @@ Start radius = start radius of curvature
 End radius = end radius of curvature
 
 Set equal to horizontal length, adjust curve length until computed value
-is equal to the specified horizontal length. Numerically solve ![](images/image11.png)
+is equal to the specified horizontal length. Numerically solve 
+
+![](images/image11.png)
 
 ## Parabolic Arc
 The geometric representation of vertical parabolic curves as a parabola is a little bit tricky.
@@ -211,13 +213,13 @@ IfcPolynomialCurve.CoefficientsY = (C, B, A)
 
 :information_source: Note 2: The coefficients A, B, and C must have the following unit of measure, consistent with the project units:
 
-A = Length^-1
+A = $Length{^-1}$
 
-B = Unitless
+B = $Length^0$
 
-C = Length
+C = $Length^1$
 
-The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a bit of an anomaly in the IFC specification.
+The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2 - Horizontal Alignment](./2_Horizontal.md). Implicent units of measure are required for the polynomial coefficients.
 
 ---
 

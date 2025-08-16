@@ -193,7 +193,9 @@ $$\theta(s) = \frac{s}{R}$$
 
 $$\kappa(s) = \frac{1}{R}$$
 
-:warning: **[Need to add the parametric forms of the integral equations]** :warning:
+$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$
+
+$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$
 
 ### Semantic Definition to Geometry Mapping
 
@@ -553,13 +555,50 @@ Compute the polynomial curve constants
 
 $$A_{3} = \frac{1}{6(300m)(100m)} - \frac{1}{6(\infty)(100m)} = 5.55555 \bullet 10^{- 6}\ m^{- 2}$$
 
-:warning: **[SOMETHING IS WRONG. A3 IS IN 1/Length2 UNITS, IFC SPEC SAYS THE
-COEFFICIENTS ARE REAL NUMBERS. A3 SHOULD BE 
+---
+:warning:
 
-$\frac{L}{6R_{e}} - \frac{L}{6R_{s}}$ and 
-$y(x) = \frac{A_{3}x^{3}}{L^{2}}$
-. BUT THIS CONTRADICTS THE INFORMATION
-IN IfcAlignmentHorizontalSegmentTypeEnum]** :warning:
+There is a flaw in the IFC Specification. [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) indicates the cubic formula is $y=\frac{x^3}{6RL}$ which means the `IfcPolynomialCurve.CoefficentY[3]` attribute must have unit of $Length^{-2}$. This is a direct contradiction to [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm) which clearly states the coefficent are real values (i.e. scalar values) with `IfcReal`.
+
+Why is this a problem? The calculation of a point on the polynomal curve is different depending on how the coefficients are defined.
+
+The parametric form of the polynomial curve is $Q(u) = ( x(u), y(u), z(u) )$. The polynomial curve represents real geometry so the resulting values, $x$, $y$, and $z$ must have units of $Length$.
+
+When $u$ is parametrized as a Length measure, as required by [IfcCurveSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcCurveSegment.htm), the parametric terms of the polynomal equation are:
+
+$x(u) = \sum\limits_{i=0}^{l} a_i u^i $
+
+$y(u) = \sum\limits_{j=0}^{m} b_j u^j $
+
+$z(u) = \sum\limits_{k=0}^{n} c_k u^k $
+
+For $x$, $y$, and $z$ to have values in $Length$ measure, the implicit unit of measure of the coefficients must be:
+
+$Length^{(1-i)}$ for $a_i$
+
+$Length^{(1-j)}$ for $b_j$
+
+$Length^{(1-k)}$ for $c_k$
+
+When $u$ is parametrized as a scalar, as required by [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm), the parametric terms of the polynomial equation are:
+
+$x(u) = L\sum\limits_{i=0}^{l} a_i u^i $
+
+$y(u) = L\sum\limits_{j=0}^{m} b_j u^j $
+
+$z(u) = L\sum\limits_{k=0}^{n} c_k u^k $
+
+The parameter $u$ and the coefficients are scalar so they must be multipled with the curve length $L$ to result values of Length.
+
+**The equations for $x$, $y$, and $z$ differ depending on the parameterization.**
+
+Concept Template [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html) and [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) provide clear direction (not withstanding typographical errors) that `IfcPolynomalCurve` is to be evaluated as $y = CoefficientsY[3]x^3$ which dictates that $CoefficientsY[3]$ must be in units of $Length^{-2}$ and must be encoded in the `IfcPolynomialCurve.CoefficientY` attribute as an `IfcReal`.
+
+While I've never been able to find an offically documented Implementer's Agreement, this interpetation is consistent with several different discussions on GitHub. 
+
+:warning:
+
+---
 
 The geometric representation is
 
@@ -573,35 +612,35 @@ The geometric representation is
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-X Coefficients = (0,1)
+X Coefficients = ($0 m^{-1}$,$1 m^0$)
 
-Y Coefficients = (0,0,0,5.55555E-06)
+Y Coefficients = ($0 m^{-1}$,$0 m^{0}$,$0 m^{-1}$,$5.55555E{-06} m^{-2}$)
 
-$$y(x) = \left( 5.55555 \bullet 10^{- 6} \right)x^{3}$$
+$$y(x) = \left( 5.55555 \bullet 10^{-6} m^{-2}\right)x^{3}$$
 
 Find $x$ such that
 
 $$s - u = \int_{0}^{x}\sqrt{\left( y'(x) \right)^{2} + 1}dx - u = 0$$
 
-$$y'(x) = 3\left( 5.55555 \bullet 10^{- 6} \right)x^{2}$$
+$$y'(x) = 3\left( 5.55555 \bullet 10^{-6}  m^{-2}\right)x^{2}$$
 
 Solve numerically
 
-$$x = 99.72593255$$
+$$x = 99.72593255 m$$
 
 Check solution
 
-$$s = \int_{0}^{99.72593255}\sqrt{\left( 3 \bullet 5.55555 \bullet 10^{- 6}x^{2} \right)^{2} + 1}dx = 100$$
+$$s = \int_{0}^{99.72593255m}\sqrt{\left( 3 \bullet (5.55555 \bullet 10^{-6} m^{-2})(x m)^{2} \right)^{2} + (1m)}dx = 100m$$
 
 Compute y
 
-$$y(x) = (5.55555 \bullet 10^{- 6}{)(99.72593255)}^{3} = 5.5100$$
+$$y(x) = (5.55555 \bullet 10^{-6} m^{-2}{)(99.72593255m)}^{3} = 5.5100m$$
 
-The tangent vector at $u = 100$ along the curve is
+The tangent vector at $u = 100m$ along the curve is
 
-$$dy = y'(99.72593255) = 3\left( 5.55555 \bullet 10^{- 6} \right){99.72593255}^{2} = 0.165753$$
+$$dy = y'(99.72593255m) = 3\left( 5.55555 \bullet 10^{-6} m^{-2}\right)(99.72593255m)^{2} = 0.165753$$
 
-$$dx = 1$$
+$$dx = 1.0$$
 
 Normalizing the tangent vector (RefDirection)
 
@@ -1042,17 +1081,17 @@ $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s
 
 ### Semantic Definition to Geometry Mapping
 
-$$h_{cg}$$ = Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
+$h_{cg}$ = Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
 
-$$d_{rh}$$ = Rail Head Distance = `IfcAlignmentCant.RaliHeadDistance`
+$d_{rh}$ = Rail Head Distance = `IfcAlignmentCant.RaliHeadDistance`
 
-$$D_{sl}$$ = `IfcAlignmentCantSegment.StartCantLeft`
+$D_{sl}$ = `IfcAlignmentCantSegment.StartCantLeft`
 
-$$D_{el}$$ = `IfcAlignmentCantSegment.EndCantLeft`
+$D_{el}$ = `IfcAlignmentCantSegment.EndCantLeft`
 
-$$D_{sr}$$ = `IfcAlignmentCantSegment.StartCantRight`
+$D_{sr}$ = `IfcAlignmentCantSegment.StartCantRight`
 
-$$D_{er}$$ = `IfcAlignmentCantSegment.EndCantRight`
+$D_{er}$ = `IfcAlignmentCantSegment.EndCantRight`
 
 $$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$$,  Start Cant Angle
 
