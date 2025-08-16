@@ -319,7 +319,7 @@ deviating elevation is a deviation from the BaseCurve elevation
 segments of an `IfcSegmentReferenceCurve` also define railhead cross
 slope.
 
-  Business Logic (`IfcAlignmentHorizontal.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
+  Business Logic (`IfcAlignmentCant.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
   -----------------------------------------|-----------------------------------
   CONSTANTCANT                             |`IfcLine`
   LINEARTRANSITION                         |`IfcClothoid`
