@@ -323,9 +323,9 @@ From the semantic definition, compute the clothoid constant, $A$
 
 $$R_{s} = 300,\ R_{e} = 1000,\ L = 100$$
 
-$$f = \frac{100}{1000} - \frac{100}{300} = - 0.23333$$
+$$f = \frac{100}{1000} - \frac{100}{300} = -0.23333$$
 
-$$A = \frac{100}{\sqrt{| - 0.23333|}}\frac{- 0.23333}{| - 0.23333|} = - 207.0196678$$
+$$A = \frac{100}{\sqrt{| -0.23333|}}\frac{-0.23333}{| -0.23333|} = -207.0196678$$
 
 The curve segment starts where the radius is 300. The distance from the
 origin where this radius occurs can be computed from the curvature
@@ -342,7 +342,7 @@ Place the parent curve at (0,0) with a tangent of (1,0)
 
 ~~~
 #45 = IFCCLOTHOID(#46, -207.019667802706);
-#46 = IFCAXIS2PLACEMENT2D(#47, \$);
+#46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
@@ -630,7 +630,7 @@ $$x = 99.72593255 m$$
 
 Check solution
 
-$$s = \int_{0}^{99.72593255m}\sqrt{\left( 3 \bullet (5.55555 \bullet 10^{-6} m^{-2})(x m)^{2} \right)^{2} + (1m)}dx = 100m$$
+$$s = \int_{0}^{99.72593255m}\sqrt{\left( 3 \bullet (5.55555 \bullet 10^{-6} m^{-2})(x m)^{2} \right)^{2} + (1m)^2}dx = 100m$$
 
 Compute y
 
