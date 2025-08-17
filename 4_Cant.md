@@ -504,23 +504,23 @@ Constant Term
 $$a_{0} = 0m,\ A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = \ 0m$$
 
 Linear Term
-$A_{1} = \ 0m$
+$A_{1} = 0m$
 
 Quadratic Term
 
-$a_{2} = 3f = 3(0.08m) = 0.24m,\ A_{2} = \frac{(100m)^{\frac{4}{3}}}{\sqrt[3]{0.24m}}\left( \frac{0.24m}{|0.24m|} \right) = 746.9007911m$
+$a_{2} = 3f = 3(0.08m) = 0.24m,\ A_{2} = \frac{(100m)^{\frac{4}{3}}}{\sqrt[3]{|0.24m|}}\left( \frac{0.24m}{|0.24m|} \right) = 746.9007911m$
 
 Cubic Term
 
-$a_{3} = - 2f = - 2(0.08m) = - 0.16m,\ A_{3} = \frac{{(100m)}^{\frac{5}{4}}}{\sqrt[4]{0.16m}}\left( \frac{0.16m}{| - 0.16m|} \right) = - 500m$
+$a_{3} = -2f = -2(0.08m) = -0.16m,\ A_{3} = \frac{{(100m)}^{\frac{5}{4}}}{\sqrt[4]{|-0.16m|}}\left( \frac{-0.16m}{| -0.16m|} \right) = -500m$
 
 Evaluate at start end of the segment
 
 $$D(0m) = \frac{A_{3}L^{2}}{\left| A_{3}^{5} \right|}0^{3} + \frac{L^{2}}{A_{2}^{3}}0^{2} = 0.0m$$
 
-$$D(50m) = \frac{- 500m}{\left| ( - 500m)^{5} \right|}(100m)^{2}(50m)^{3} + \frac{(100m)^{2}}{(746.9007811m)^{3}}(50m)^{2} = 0.04m$$
+$$D(50m) = \frac{-500m}{\left| ( -500m)^{5} \right|}(100m)^{2}(50m)^{3} + \frac{(100m)^{2}}{(746.9007811m)^{3}}(50m)^{2} = 0.04m$$
 
-$$D(100m) = \frac{- 500m}{\left| ( - 500m)^{5} \right|}(100m)^{2}(100m)^{3} + \frac{(100m)^{2}}{(746.9007811m)^{3}}(100m)^{2} = 0.08m$$
+$$D(100m) = \frac{-500m}{\left| ( -500m)^{5} \right|}(100m)^{2}(100m)^{3} + \frac{(100m)^{2}}{(746.9007811m)^{3}}(100m)^{2} = 0.08m$$
 
 Placement
 
@@ -530,12 +530,12 @@ $$\left( 0.0,\frac{L^{2}}{A_{0}},\ 0.0 \right) = (0.0,\ 0.0,\ 0.0)$$
 
 $$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L} \right)$$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( - \frac{\pi}{L}\sin\left( \pi\frac{s}{L} \right) \right)$$
+$$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{L}\sin\left( \pi\frac{s}{L} \right) \right)$$
 
 Constant term,
 $A_{0} = \frac{L^{2}}{D_{1} + \frac{1}{2}\mathrm{\Delta}D}$
 
-Cosine term, $A_{1} = \frac{L^{2}}{- \frac{1}{2}\mathrm{\Delta}D}$
+Cosine term, $A_{1} = \frac{L^{2}}{-\frac{1}{2}\mathrm{\Delta}D}$
 
 Example
 
@@ -562,9 +562,9 @@ $$D_{1} = \frac{0 + 0}{2} = 0m,\ D_{2} = \frac{0 + 0.16}{2} = 0.08m,\ \mathrm{\D
 
 $$A_{0} = \frac{({100m)}^{2}}{0 + \frac{1}{2}0.08m} = 250000\ m$$
 
-$$A_{1} = \frac{{(100m)}^{2}}{- \frac{1}{2}0.08m} = - 250000\ m$$
+$$A_{1} = \frac{{(100m)}^{2}}{- \frac{1}{2}0.08m} = -250000\ m$$
 
-$$D(s) = \frac{{(100m)}^{2}}{250000m} + (\frac{({100m)}^{2}}{- 250000m})\cos\left( \pi\frac{s}{100} \right)$$
+$$D(s) = \frac{{(100m)}^{2}}{250000m} + (\frac{({100m)}^{2}}{-250000m})\cos\left( \pi\frac{s}{100} \right)$$
 
 Evaluate
 
@@ -614,16 +614,16 @@ Constant term:
 $A_{0} = \frac{L^{2}}{D_{1}} = \frac{(100m)^{2}}{0.08m} = 125000m$
 
 Linear term:
-$A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\mathrm{\Delta}D}} = \frac{(100m)^{\frac{3}{2}}}{\sqrt{| - 0.08m|}}\frac{- 0.08m}{| - 0.08m|} = - 3535.533906m$
+$A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\mathrm{\Delta}D}} = \frac{(100m)^{\frac{3}{2}}}{\sqrt{| -0.08m|}}\frac{-0.08m}{| -0.08m|} = - 3535.533906m$
 
 Sine term:
-$A_{2} = \frac{L^{2}}{- \frac{1}{2\pi}\mathrm{\Delta}D} = \frac{(100m)^{2}}{- \frac{1}{2\pi}( - 0.08m)} = 78539.81634m$
+$A_{2} = \frac{L^{2}}{-\frac{1}{2\pi}\mathrm{\Delta}D} = \frac{(100m)^{2}}{-\frac{1}{2\pi}( -0.08m)} = 78539.81634m$
 
-$$D(0m) = \frac{(100m)^{2}}{125000m} + \left( \frac{- 3535.533906m}{| - 3535.533906m|} \right)\left( \frac{1}{- 3535.533906m} \right)^{2}(0m)(100m)^{2} + \frac{(100m)^{2}}{78539.81634m}\sin\left( 2\pi\frac{0m}{100m} \right) = 0.08m$$
+$$D(0m) = \frac{(100m)^{2}}{125000m} + \left( \frac{-3535.533906m}{| -3535.533906m|} \right)\left( \frac{1}{-3535.533906m} \right)^{2}(0m)(100m)^{2} + \frac{(100m)^{2}}{78539.81634m}\sin\left( 2\pi\frac{0m}{100m} \right) = 0.08m$$
 
-$$D(50m) = \frac{(100m)^{2}}{125000m} + \left( \frac{- 3535.533906m}{| - 3535.533906m|} \right)\left( \frac{1}{- 3535.533906m} \right)^{2}(50m)(100m)^{2} + \frac{(100m)^{2}}{78539.81634m}\sin\left( 2\pi\frac{50m}{100m} \right) = 0.04m$$
+$$D(50m) = \frac{(100m)^{2}}{125000m} + \left( \frac{- 3535.533906m}{| - 3535.533906m|} \right)\left( \frac{1}{-3535.533906m} \right)^{2}(50m)(100m)^{2} + \frac{(100m)^{2}}{78539.81634m}\sin\left( 2\pi\frac{50m}{100m} \right) = 0.04m$$
 
-$$D(100m) = \frac{(100m)^{2}}{125000m} + \left( \frac{- 3535.533906m}{| - 3535.533906m|} \right)\left( \frac{1}{- 3535.533906m} \right)^{2}(100m)(100m)^{2} + \frac{(100m)^{2}}{78539.81634m}\sin\left( 2\pi\frac{100m}{100m} \right) = 0.0m$$
+$$D(100m) = \frac{(100m)^{2}}{125000m} + \left( \frac{-3535.533906m}{| -3535.533906m|} \right)\left( \frac{1}{-3535.533906m} \right)^{2}(100m)(100m)^{2} + \frac{(100m)^{2}}{78539.81634m}\sin\left( 2\pi\frac{100m}{100m} \right) = 0.0m$$
 
 ## Viennese Bend
 
