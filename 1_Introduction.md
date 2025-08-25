@@ -156,6 +156,7 @@ alignment*
 
 *Figure 2.1 Geometric representations for the three basic alignment constructs (H, H+V, H+V+C).*
 
+
 ![](images/image2.2.png)
 
 *Figure 2.2 Geometric representations for reusing horizontal alignment.*
