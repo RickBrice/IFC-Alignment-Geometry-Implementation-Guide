@@ -1,4 +1,4 @@
-# Section 6 - Linear Placement
+# Section 7 - Linear Placement
 
 Many elements in the built environment for infrastructure works are
 located relative to an alignment. The IFC class `IfcLinearPlacement`

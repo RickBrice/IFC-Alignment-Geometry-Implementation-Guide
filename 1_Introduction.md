@@ -59,6 +59,12 @@ design parameters in a subtype of `IfcAlignmentParameterSegment`,
 `IfcAlignmentHorizontalSegment` and `IfcAlignmentVerticalSegment` in this
 case. The semantic definition model is shown in Figure 1.
 
+![](images/image1.png)
+
+*Figure 1 IFC 4.3.2 semantic alignment model*
+
+`IfcRelNests.RelatedObjects` is an ordered collection. That means there is a specific order for the alignment layouts and the alignment segments. The IFC specification doesn't explicitly define a ranking for ordering. The ordering of the alignment layous can be infered from the images in the [`IfcAlignment` documentation 5.4.3.1.5](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignment.htm#5.4.3.1.5-Concept-usage) as horizontal preceeds vertical, which preceeds cant. The ordering of `IfcAlignmentSegment` in an alignment layout is equally nebulus. For `IfcAlignmentHorizontalSegment` the only logical ordering is start to end. For `IfcAlignmentVerticalSegment` and `IfcAlignmentCantSegment` ordering in `IfcRelNests.RelatedObjects` could be anything because positional ordering can be derived from the `StartDistAlong` attribute. Such an approach is unnecessarily difficult. Segments should always be ordered in `IfcRelNests.RelatedObjects` in a start to end sequence.
+
 An interesting caveat of `IfcAlignmentHorizontal` and `IfcAlignmentVertical`
 (and `IfcAlignmentCant`) is that the last
 `IfcAlignmentSegment.DesignParameters` must be zero length. If a geometric
@@ -67,10 +73,6 @@ also be zero length. For a continuous composition of segments, the end
 of one segment is at the same location as the start of the next segment.
 The zero-length segment is intended to provide the end point of the last
 segment.
-
-![](images/image1.png)
-
-*Figure 1 IFC 4.3.2 semantic alignment model*
 
 ## Geometric Representation
 
@@ -98,7 +100,6 @@ representations of `IfcAlignment` are:
   2D polyline representation (such as in very early planning phases or
   as a map representation).
 
-:warning: **[Add discussion and link to github issue about IfcOffsetCurveByDistances being 2D or 3D] ** :warning:
 
 `IfcGradientCurve` and `IfcSegmentReferenceCurve` inherit from
 `IfcCompositeCurve`. These curves consist of a sequence of segments
@@ -139,7 +140,7 @@ arc of radius R starting at point B and ending at point C).
 The geometric representation of the `IfcAlignment` consists of an
 `IfcShapeRepresentation` for the plan view horizontal alignment as well as
 a 3D curve for the combined horizontal and vertical alignment. This is
-illustrated in Figure 2.
+illustrated in Figure 2, Figure 2.1 and Figure 2.2.
 
 Geometrically, the horizontal alignment is defined by an
 `IfcCompositeCurve` and the vertical alignment is defined by an
@@ -150,6 +151,14 @@ vertical alignment.
 
 *Figure 2 IFC 4.3.2 geometric representation of horizontal and vertical
 alignment*
+
+![](images/image2.1.png)
+
+*Figure 2.1 Geometric representations for the three basic alignment constructs (H, H+V, H+V+C).*
+
+![](images/image2.2.png)
+
+*Figure 2.2 Geometric representations for reusing horizontal alignment.*
 
 The horizontal alignment is defined by a sequence of straight tangent
 runs and circular horizontal curves. Transition spirals are used as
@@ -222,6 +231,8 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 *Figure 4 - Example of `IfcGradientCurve` with a start
 location different than the start of the `IfcCompositeCurve`
 BaseCurve.*
+
+
 
 ### Horizontal Alignment -- IfcCompositeCurve
 
