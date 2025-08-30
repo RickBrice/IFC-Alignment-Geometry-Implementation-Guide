@@ -21,6 +21,13 @@ Figure 8.1 shows two `IfcRelNests`, one each for alignment layout and referent. 
 
 ## Critical Alignment Points
 
+This is incorrect per https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html. IfcReferent can only be hosted by IfcAlignment. 
+
+Use IfcRelPositions to position IfcAlignmentSegment with its IfcTeferent.
+
+Update coming soon. Also need to demostrate for reusing horizontal with multiple vertical and child alignments
+
+
 Critical alignment points, such as Point Of Curvature (PC) of a horizontal curve can be located with an `IfcReferent`. These can be located in the `IfcRelNests.RelatedObjects` list for referents on the `IfcAlignment`. If there are a mix if critical points for horizontal and vertical, an logical alternative is to use `IfcRelNests.RelatingObject=IfcAlignmentHorizontal` (or `IfcRelNests.RelatingObject=IfcAlignmentVertical`) with `IfcRelNests.RelatedObjects=IfcReferent`.
 
 ![](images/image8.2.png)
