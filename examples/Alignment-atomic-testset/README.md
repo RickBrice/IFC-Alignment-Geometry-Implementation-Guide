@@ -19,3 +19,37 @@ Note 1: the vertical layout consists of a simple line with gradient 0
 
 Note 2: IFC Files with cant layout can be expected soon
 
+## IFC-Files 
+
+### horizontal layout only
+
+![](images/ExampleHorizontal.jpg)
+
+*Figure 1 IFC example file for Clothoid with horizontal layout in IFC Viewer*
+
+### horizontal layout with check data
+
+![](images/ExampleHorizontalCheck.jpg)
+
+*Figure 2 IFC example file for Clothoid with horizontal layout and check data in IFC Viewer*
+
+### horizontal layout and vertical layout (no check data)
+
+![](images/ExampleHorizontalVertical.jpg)
+
+*Figure 3 IFC example file for Clothoid with horizontal and vertical layout in IFC Viewer*
+
+
+### horizontal layout and vertical layout with check data
+
+![](images/ExampleHorizontalVerticalCheck.jpg)
+
+*Figure 4 IFC example file for Clothoid with horizontal and vertical layout and check data in IFC Viewer*
+
+
+### check data only
+
+![](images/ExampleControlalignmentOnly.jpg)
+
+*Figure 5 IFC example file with check data (controlalignment and controlpoints) for Clothoid in IFC Viewer*
+
