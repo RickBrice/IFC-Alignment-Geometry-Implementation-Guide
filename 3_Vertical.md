@@ -134,7 +134,9 @@ if $\theta_{start} < \theta_{end}$
 
 Curve is sagging (curve is on the bottom half of the circle)
 
-$R = \frac{ul}{sin(\theta_{end}) - sin(\theta_{start})}$
+$$h_l = $$ horizontal length = `IfcAlignmentVerticalSegment.HorizontalLength`
+
+$R = \frac{h_l}{sin(\theta_{end}) - sin(\theta_{start})}$
 
 $\Delta_{start} = \theta_{start} + \frac{3}{2}\pi$
 
