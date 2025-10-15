@@ -118,55 +118,102 @@ The curve segment is defined as
 ## Circular Arc
 
 Vertical circular arcs are tricky. For vertical, the "distance along" is
-a horizontal dimension. The parent curve equations need a distance along
-the curve. The following procedure is used to convert the horizontal
-distance, uh, to the arc length, u.
+a horizontal dimension. The `IfcCurveSegment` trimming parameters `SegmentStart` and `SegmentLength` are measured along the `IfcCircle`. 
 
-![](images/image10.png)
+The following procedure maps the semantic parameters of a vertical circular arc to its geometric definition.
 
-The center point (Cx,Cy) is computed from (Sx,Sy) and the curve tangent
-(tx,ty) at the start point.
+Determine the tangent slope angle at the start and end of the segment.
 
-$C_x = S_x - sign(length)t_yR$
+$\theta_{start} = tan^{-1}(g_{start})$
 
-$C_y = S_y + sign(length)t_xR$
+$\theta_{end} = tan^{-1}(g_{end})$
 
-From the Dx-Dy-R triangle, $R^{2} = Dx^{2} + Dy^{2}$
+Compute the radius of the circle and the direction of vectors that are perpendicular to the circle, directed away from the center point.
 
-Substitute $Dx = uh - (Cx - Sx)$ and $Dy = (Cy - y)$
+if $\theta_{start} < \theta_{end}$
 
-$R^{2} = (uh + Sx - Cx)^{2} + (Cy - y)^{2}$
+Curve is sagging (curve is on the bottom half of the circle)
 
-Solve for y
+$R = \frac{ul}{sin(\theta_{end}) - sin(\theta_{start})}$
 
-$y = Cy - \sqrt{R^{2} - (uh + Sx - Cx)^{2}}$
+$\Delta_{start} = \theta_{start} + \frac{3}{2}\pi$
 
-$uh = x - S_{x}$
+$\Delta_{end} = \theta_{end} + \frac{3}{2}\pi$
 
-$y = Cy - \sqrt{R^{2} - (x - Cx)^{2}}$
+else
 
-Compute the chord distance as the distance between the start point and
-the point on the arc, $c$
+Curve is cresting (curve is on top half of the circle)
 
-$c = \sqrt{(x - Sx)^{2} + (y - Sy)^{2}}$
 
-The chord distance is also $c = 2R\sin\frac{\mathrm{\Delta}}{2}$
+$R = \frac{ul}{sin(\theta_{start}) - sin(\theta_{end})}$
 
-Solve for $\mathrm{\Delta}$
+$\Delta_{start} = \theta_{start} + \frac{1}{2}\pi$
 
-$\mathrm{\Delta} = 2\sin^{- 1}\frac{c}{2R}$
+$\Delta_{end} = \theta_{end} + \frac{1}{2}\pi$
 
-Compute arc length, $u$
+Compute the curve trimming parameters `SegmentStart` and `SegmentLength`
 
-$u = R\mathrm{\Delta}$
+$Segment Start = R\Delta_{start}$
 
-The parent curve function can now be evaluated at $u$.
+$Segment Length = R(\Delta_{end} - \Delta_{start})$
 
-This calculation can be simplified because the point on the curve (x,y)
-is computed. This is the point we want. The tangent direction at that
-point is easily computed from the start tangent and the angle ∆.
+### Example
 
-:warning: **[Finish this]** :warning:
+Given the following semantic definition of a vertical circular arc, create the geometric definition.
+
+~~~
+#320 = IFCALIGNMENTVERTICALSEGMENT($, $, 144.917656958471, 239.704902937655, 25.3780433292418, -8.17722122076371E-4, -1.28040164299203E-2, -20000., .CIRCULARARC.);
+~~~
+
+#### Compute radius for the parent curve
+
+$g_{start} = -8.17722122076371E-4$
+$\theta_{start} = tan^{-1}(-8.17722122076371E-4) = -8.177219398E-4$
+
+$g_{end} = -1.28040164299203E-2$
+$\theta_{end} = tan^{-1}(-1.28040164299203E-2) = -1.2803316789E-4$
+
+$ul = 239.704902937655$
+
+$R = \frac{239.704902937655}{sin(-1.2803316789E-4) - sin(-8.177219398E-4)} = -20000.0$
+
+Radius is negative which means a CW direction, so the curve is cresting. Radius needs to be a positive value for `IfcCircle` so use the absolute value.
+
+~~~
+#1983 = IFCCIRCLE(#1984, 20000.);
+#1984 = IFCAXIS2PLACEMENT2D(#1985, #1986);
+#1985 = IFCCARTESIANPOINT((0., 0.));
+#1986 = IFCDIRECTION((1., 0.));
+~~~
+
+#### Compute curve trimming parameters
+
+$\Delta_{start} = \theta_{start} + \frac{1}{2}\pi = 1.56997860486$
+
+$\Delta_{end} = \theta_{end} + \frac{1}{2}\pi = 1.55799301001$
+
+$Segment Start = R\Delta_{start} = (20000.0)(1.56997860486) = 31399.5720971$
+
+$Segment Length = R(\Delta_{end} - \Delta_{start}) = (20000.0)(1.55799301001 - 1.56997860486) = -239.711897$
+
+~~~
+#1974 = IFCCURVESEGMENT(.CONTSAMEGRADIENT., #1980, IFCLENGTHMEASURE(31399.5720971016), IFCLENGTHMEASURE(-239.711897000001), #1983);
+~~~
+
+#### Placement of trimmed curve
+
+X = `IfcAlignmentVerticalSegment.StartDistAlong` = 144.917656958471
+
+Y = `IfcAlignmentVerticalSegment.StartHeight` = 25.3780433292418
+
+$dx = cos(\theta_{start}) = cos(-8.177219398x10^{-4} = 0.9999966566$
+$dy = sin(\theta_{start}) = sin(-8.177219398x10^{-4}) = -8.1772184868x10^{-4}$
+
+~~~
+#1980 = IFCAXIS2PLACEMENT2D(#1981, #1982);
+#1981 = IFCCARTESIANPOINT((144.917656958471, 25.3780433292418));
+#1982 = IFCDIRECTION((9.99999665665433E-1, -8.177218486836E-4));
+~~~
 
 ## Clothoid
 
