@@ -20,4 +20,5 @@ This implementation guide captures what I have learned about IFC4x3 alignment ge
 6. [Offset Curves](6_OffsetCurves.md)
 7. [Linear Placement](7_LinearPlacement.md)
 8. [Referents and Stationing](8_Referents_and_Stationing.md)
-9. [Precision and Tolerance](9_Precision_and_Tolerance.md)
+9. [LandXML to IFC](9_LandXML.md)
+10. [Precision and Tolerance](10_Precision_and_Tolerance.md)
