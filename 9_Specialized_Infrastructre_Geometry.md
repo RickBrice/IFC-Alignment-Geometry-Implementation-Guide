@@ -12,10 +12,10 @@ Describe when this surface geometry might be advantagous to use
 
 ### Breaklines
 
-Describe the concept of breaklines
+Describe the concept of breaklines for widening sections.
 
 ![](images\Figure_9.2_Sectioned_Surface_with_Breaklines.png)
 
 ### Stringlines
 
-
+Describe string lines and how they work (don't have a good implementation yet)
