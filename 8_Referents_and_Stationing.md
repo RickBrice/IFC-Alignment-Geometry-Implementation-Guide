@@ -7,7 +7,7 @@ Referents are nested to alignments, using `IfcRelNests`. `IfcRelNests.RelatedObj
 
 `IfcRelNests.PredefinedType = STATION` is not well defined in the IFC specification, however it seems most appropriate for referents that only indicate a station.
 
-The stationing value is is provided using `Pset_Stationing`. The `Station` property defines the station value at a location. Station equations (or chainage breaks) are defined by providing the `IncomingStation` and `Station` properties.
+The stationing value is provided using `Pset_Stationing`. The `Station` property defines the station value at a location. Station equations (or chainage breaks) are defined by providing the `IncomingStation` and `Station` properties.
 
 ## IfcRelNests Usage
 Alignment layouts and stationing referents both decompose `IfcAlignment` through `IfcRelNests`. The IFC specification is not clear if alignment layouts and referents belong in the same or different nests. Since alignment layout and referent are completely different things, it is recommended that they are contained within their own nest. This is illustrated in Figure 8.1.

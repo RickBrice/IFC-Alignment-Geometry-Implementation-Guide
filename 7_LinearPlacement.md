@@ -26,16 +26,17 @@ documentation (See [Default value for `IfcAxis2PlacementLinear.Axis` is
 not defined · Issue #125 ·
 buildingSMART/IFC4.x-IF](https://github.com/buildingSMART/IFC4.x-IF/issues/125)).
 
-The most logical default `Axis` is "perpendicular" to the `RefDirection` in
-the general direction of global Z-axis. This can be computed as follows:
+The most logical default `Axis` is "perpendicular" to the `RefDirection` in the general direction of global Z-axis. However, the most common interpetation is that `Axis` is up (0,0,1). 
 
-1.  From the horizontal projection of the 3D curve, compute tangent
-    vector.
+When `Axis` and `RefDirection` are not provided, the local coordinate system can be computed as follows:
 
-2.  Compute Y from cross product of this tangent vector and (0,0,1)
+1. Set Axis = Z = (0,0,1)
+2. Compute the tangent vector to the 3D curve. This is the RefDirection.
+3. Y = cross product of Z and RefDirection.
+4. X = cross product of Y and Z.
 
-3.  Axis = cross product of Y and RefDirection.
+X, Y, Z are orthoginal axes.
 
 ## Linear Placement along IfcOffsetCurveByDistances
 
-Linear placement along an `IfcOffsetCurveByDistances` is not precise. `IfcOffsetCurveByDistances` is an interpoloated curve defined by offsets from a basis curve. The offset values are linearly  interpolated forming a segmented curve. The length of the offset curve is approximate and depends on the frequency of the interpoloated points along the curve. For this reason, `IfcAxis2PlacementLinear.Location.DistanceAlong` cannot be precisely determined.
+Linear placement along an `IfcOffsetCurveByDistances` is not precise. `IfcOffsetCurveByDistances` is an interpoloated curve defined by offsets from a basis curve. The offset values are linearly interpolated forming a segmented curve. The length of the offset curve is approximate and depends on the frequency of the interpoloated points along the curve. For this reason, `IfcAxis2PlacementLinear.Location.DistanceAlong` cannot be precisely determined.
