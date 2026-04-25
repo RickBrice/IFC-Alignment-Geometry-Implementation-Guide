@@ -979,9 +979,9 @@ direction $(1, 0)$, the placement matrix at the start of the trim is the
 identity matrix:
 
 $$M_{PCS} = \begin{bmatrix}
-1 & 0 & 0 & 0 \
-0 & 1 & 0 & 0 \
-0 & 0 & 1 & 0 \
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -994,9 +994,9 @@ evaluations, placing the result relative to $(0, 0)$. Because
 $x(0) = y(0) = 0$, this is also the identity matrix:
 
 $$M_T = \begin{bmatrix}
-1 & 0 & 0 & 0 \
-0 & 1 & 0 & 0 \
-0 & 0 & 1 & 0 \
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -1009,9 +1009,9 @@ start is aligned with the direction $(1, 0)$. Because $\theta(0) = 0$,
 the inverse rotation is also the identity:
 
 $$M_R = \begin{bmatrix}
-1 & 0 & 0 & 0 \
-0 & 1 & 0 & 0 \
-0 & 0 & 1 & 0 \
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -1023,9 +1023,9 @@ The curve segment placement `#42` is at $(0, 0)$ with RefDirection
 $(1, 0)$, so $M_{CSP}$ is also the identity matrix:
 
 $$M_{CSP} = \begin{bmatrix}
-1 & 0 & 0 & 0 \
-0 & 1 & 0 & 0 \
-0 & 0 & 1 & 0 \
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -1070,9 +1070,9 @@ $$dy = \sin\left(\frac{1}{32}\right) = 0.0312449$$
 In matrix form:
 
 $$M_{PC} = \begin{bmatrix}
-0.9995118 & -0.0312449 & 0 & 49.9962110 \
-0.0312449 &  0.9995118 & 0 & 0.4166388 \
-0 & 0 & 1 & 0 \
+0.9995118 & -0.0312449 & 0 & 49.9962110 \\
+0.0312449 &  0.9995118 & 0 & 0.4166388 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -1080,15 +1080,15 @@ $$M_{PC} = \begin{bmatrix}
 
 **Step 5b — Map the parent curve point to the curve segment**
 
-$$M_h = M_{CSP}, M_R, M_T, M_{PC}$$
+$$M_h = M_{CSP} M_R M_T M_{PC}$$
 
 Because $M_{CSP}$, $M_R$, and $M_T$ are all identity matrices in this
 example, the result is simply:
 
 $$M_h = M_{PC} = \begin{bmatrix}
-0.9995118 & -0.0312449 & 0 & 49.9962110 \
-0.0312449 &  0.9995118 & 0 & 0.4166388 \
-0 & 0 & 1 & 0 \
+0.9995118 & -0.0312449 & 0 & 49.9962110 \\
+0.0312449 &  0.9995118 & 0 & 0.4166388 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
