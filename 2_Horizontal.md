@@ -44,10 +44,6 @@ Axis.
 When `IfcLine` is used as a parent curve, it represents a tangent run of
 the alignment.
 
-**Source Model: FHWA Alignment Model**
-
-1.  Parent Curve Parametric Equations
-
 ### Parent Curve Parametric Equations
 
 The orientation and curvature of a line are given by the following equations
@@ -65,16 +61,15 @@ A line can also be parameters with an **arc length parameterization** where the 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
 
-Other parent curve types can also be parameterized by unit value or arc length. However, the polynomial spirals do not have a well defined unit value parameterization. For this reason, the IFC specification mandates that all parameterization for alignment geometry be by arc length. [TODO: Cite reference and link to IFC spec]
+Other parent curve types can also be parameterized by unit value or arc length. However, the polynomial spirals do not have a well defined unit value parameterization. For this reason, the IFC specification mandates that all parameterization for alignment geometry be by arc length. For 
+`IfcCurveSegment`, the `SegmentStart` and `SegmentLength` attributes **must** 
+be of type `IfcLengthMeasure`. See [Section 8.9.3.28 IfcCurveSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcCurveSegment.htm), Informal Proposition 1.
 
 This matters because `IfcCurveSegment.SegmentStart` and 
 `IfcCurveSegment.SegmentLength` are of type `IfcCurveMeasureSelect`, which 
 can be either `IfcParameterValue` (a dimensionless scalar based on unit value) or 
 `IfcLengthMeasure` (a physical length). 
 
-The IFC 4x3 specification resolves this ambiguity with an explicit rule: for 
-`IfcCurveSegment`, the `SegmentStart` and `SegmentLength` attributes **must** 
-be of type `IfcLengthMeasure`.
 
 ### Semantic Definition to Geometry Mapping
 
@@ -82,7 +77,7 @@ Mapping of the semantic definition of the linear segment to the
 geometric definition is described with the following example.
 
 Given a horizontal alignment segment is a line segment starting at point
-(500,2500), bearing in the direction N 57 E (5.70829654085293 radian) and has a length of 1956.785654. This segment is represented as
+(500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. This segment is represented as
 
 ~~~
 #31=IFCCARTESIANPOINT((500.,2500.));
