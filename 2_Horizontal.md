@@ -48,20 +48,33 @@ the alignment.
 
 1.  Parent Curve Parametric Equations
 
-The equation of a line is parameterized as
+### Parent Curve Parametric Equations
+
+The orientation and curvature of a line are given by the following equations
 
 $$\theta(t) = \theta$$
 
 $$\kappa(t) = 0$$
 
+The equation of a line can be parameterized with a **unit parameterization** where the parameter $u$ ranges from $0$ to $1$ over the full extent of the curve, independent of its physical length.
+
 $$\lambda(u) = C + L\left( \int_{0}^{u = 1}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = 1}{\sin\left( \theta(t) \right)}dt\ y \right)$$
+
+A line can also be parameters with an **arc length parameterization** where the parameter $u$ equals the distance along the line in units of length, so $u = s$.
 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-:warning: **[Discuss that a line (and the other parent curves) can be parametetized
-differently and there isn't a standards therefore the rule that
-`IfcCurveSegment.Start` and Length `IfcCurveMeasureSelect` must be
-`IfcLengthMeasure`.]** :warning:
+
+Other parent curve types can also be parameterized by unit value or arc length. However, the polynomial spirals do not have a well defined unit value parameterization. For this reason, the IFC specification mandates that all parameterization for alignment geometry be by arc length. [TODO: Cite reference and link to IFC spec]
+
+This matters because `IfcCurveSegment.SegmentStart` and 
+`IfcCurveSegment.SegmentLength` are of type `IfcCurveMeasureSelect`, which 
+can be either `IfcParameterValue` (a dimensionless scalar based on unit value) or 
+`IfcLengthMeasure` (a physical length). 
+
+The IFC 4x3 specification resolves this ambiguity with an explicit rule: for 
+`IfcCurveSegment`, the `SegmentStart` and `SegmentLength` attributes **must** 
+be of type `IfcLengthMeasure`.
 
 ### Semantic Definition to Geometry Mapping
 
@@ -69,12 +82,11 @@ Mapping of the semantic definition of the linear segment to the
 geometric definition is described with the following example.
 
 Given a horizontal alignment segment is a line segment starting at point
-(500,2500), bearing in the direction 5.70829654085293 and has a length
-of 1956.785654. This segment is represented as
+(500,2500), bearing in the direction N 57 E (5.70829654085293 radian) and has a length of 1956.785654. This segment is represented as
 
 ~~~
-#23=IFCCARTESIANPOINT((500.,2500.));
-#32=IFCALIGNMENTHORIZONTALSEGMENT($,$,#23,5.70829654085293,0.,0.,1956.785654,$,.LINE.);
+#31=IFCCARTESIANPOINT((500.,2500.));
+#32=IFCALIGNMENTHORIZONTALSEGMENT($,$,#31,5.70829654085293,0.,0.,1956.785654,$,.LINE.);
 ~~~
 
 The geometric representation is an `IfcLine`. The line can be defined in
@@ -98,14 +110,14 @@ placed and oriented in the X-Y plane.
 
 `IfcCurveSegment.SegmentStart` defines where the parent curve trimming
 begins. It can be anywhere along the line. It's easiest to begin the
-trimming at the origin but could be anywhere. The SegmentStart attribute
+trimming at the origin but could be anywhere. The `SegmentStart` attribute
 is 0.0 in this case.
 
 `IfcCurveSegment.SegmentLength` defines where the parent curve trimming
-ends relative to SegmentStart. This is the length of the curve we want
-to trim. The SegmentLength attribute is 1956.785654 for this example.
+ends relative to `SegmentStart`. This is the length of the curve we want
+to trim. The `SegmentLength` attribute is 1956.785654 for this example.
 
-The SegmentStart and SegmentLength attributes trims a portion of the
+The `SegmentStart` and `SegmentLength` attributes trims a portion of the
 `IfcLine` parent curve, which is oriented in the direction (1,0) with
 origin at (0,0). The trimmed portion of the curve needs to be placed and
 oriented into the horizontal alignment, but in this case, it is trivial
@@ -126,7 +138,7 @@ The trimmed line segment is placed at (500,2500). The curve segment
 placement is
 
 ~~~
-#50=IFCAXIS2PLACEMENT2D(#23,#49);
+#50=IFCAXIS2PLACEMENT2D(#31,#49);
 ~~~
 
 Finally, the `IfcCurveSegment` can be defined as
