@@ -306,9 +306,12 @@ $$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \ri
 
 $$y(u) = A\sqrt{\pi}\int_{0}^{u}{\sin{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$
 
-A clothoid curve is parameterized by
+IFC provides a unit parametrization of clothoid curve.
+
 $$u = \frac{s}{\left| A\sqrt{\pi} \right|}\ $$ with
-$- \infty < u < \infty$. When $\theta = \pi/2$, $u = 1.0$.
+$-\infty < u < \infty$. When $\theta = \pi/2$, $u = 1.0$.
+
+Care must be taken when evaluating clothoids because `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength` are defined with arc length. The details are illustreated in the example calculations.
 
 ### Semantic Definition to Geometry Mapping
 
@@ -343,9 +346,9 @@ $$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
 
 $$\frac{1}{300} = \frac{- 207.0196678}{\left| - {207.0196678}^{3} \right|}s$$
 
-$$s = - 142.8571429$$
+$$s = -142.8571429$$
 
-Place the parent curve at (0,0) with a tangent of (1,0)
+Place the parent curve at (0,0) with a tangent direction of (1,0)
 
 ~~~
 #45 = IFCCLOTHOID(#46, -207.019667802706);
