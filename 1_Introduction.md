@@ -1,8 +1,3 @@
-outline
-* there is a good intro discussion in ifcalignment. incorporate some of it here.
-* ifcalignment says the semantic to geometry mapping is in the concept templates. need to say the full templates are good and accurate but the partial templates are lacking. this guide provides the necessary details and more
-
-
 # Section 1 - Introduction
 
 IFC 4.3.2 finalized the adoption of alignments for infrastructure works.
@@ -11,6 +6,16 @@ examples are provided in the available literature. This guide aims to
 document the relevant mathematic concepts and equations a software
 developer would need to implement alignment-based geometry. It also
 provides example calculations.
+
+The IFC specification identifies concept templates as the mechanism for
+mapping semantic alignment representations to their geometric
+counterparts. The *full* concept templates — covering aggregation to
+project, alignment layout nesting, and the three alignment geometry
+variants (horizontal; horizontal+vertical; horizontal+vertical+cant) —
+are accurate and well-structured. The *partial* concept templates that
+cover individual curve segment geometry types, however, are
+intentionally sparse: they show class relationships but provide no
+mathematical equations or parameter mappings. This guide fills that gap.
 
 ## Horizontal Alignment
 
@@ -32,7 +37,9 @@ vertical alignment is defined along the curvilinear path of a horizontal
 alignment in a "Distance Along, Elevation" coordinate system. Combined,
 the horizontal and vertical alignments define a 3D curve. This
 combination of two 2D curves is sometimes referred to as a 2.5D
-geometry.
+geometry. The IFC specification notes that contemporary alignment design
+almost always implements this 2.5D approach, with precision varying
+based on management priorities, design era, and available software tools.
 
 ## Cant Alignment
 
@@ -53,6 +60,12 @@ Specialized applications can analyze alignments using the semantic
 information. Alignments can be evaluated against design criteria such as
 speed requirements, sight distances, and maximum gradient, to name a
 few.
+
+Importantly, the semantic and geometric representations are independent
+and can be used and exchanged separately. An IFC file may legally
+contain only the semantic definition without any geometric
+representation, which is common in early design stages when geometry
+has not yet been computed.
 
 The `IfcAlignment` semantic definition is composed of an instance of
 `IfcAlignmentHorizontal` and `IfcAlignmentVertical` through an `IfcRelNests`
@@ -77,6 +90,20 @@ also be zero length. For a continuous composition of segments, the end
 of one segment is at the same location as the start of the next segment.
 The zero-length segment is intended to provide the end point of the last
 segment.
+
+**Aggregation to project.** `IfcAlignment` is a mandatory participant
+in the IFC spatial structure. Every alignment must be aggregated to
+`IfcProject` — directly, or indirectly through a parent alignment —
+via an `IfcRelAggregates` relationship. An alignment not connected to
+the project is invalid.
+
+**Referencing to site.** Because an alignment typically traverses
+multiple administrative or physical sites, `IfcAlignment` associates
+with `IfcSite` using `IfcRelReferencedInSpatialStructure` rather than
+`IfcRelContainedInSpatialStructure`. The referenced-in relationship is
+non-exclusive: a single alignment may be referenced by every `IfcSite`
+it crosses. This is the key distinction between *containment* (one
+element, one spatial zone) and *referencing* (one element, many zones).
 
 ## Geometric Representation
 
@@ -104,6 +131,19 @@ representations of `IfcAlignment` are:
   2D polyline representation (such as in very early planning phases or
   as a map representation).
 
+
+The `RepresentationIdentifier` and `RepresentationType` values required
+by the IFC concept templates for each alignment geometry variant are:
+
+| Alignment variant | Curve entity | `RepresentationIdentifier` | `RepresentationType` |
+|---|---|---|---|
+| Horizontal only | `IfcCompositeCurve` | `'Axis'` | `'Curve2D'` |
+| Horizontal + Vertical | `IfcCompositeCurve` (plan view) | `'FootPrint'` | `'Curve2D'` |
+| Horizontal + Vertical | `IfcGradientCurve` (3D) | `'Axis'` | `'Curve3D'` |
+| Horizontal + Vertical + Cant | `IfcCompositeCurve` (plan view) | `'FootPrint'` | `'Curve2D'` |
+| Horizontal + Vertical + Cant | `IfcSegmentedReferenceCurve` (3D) | `'Axis'` | `'Curve3D'` |
+
+*Table 0 — Required RepresentationIdentifier and RepresentationType for each alignment geometry variant*
 
 `IfcGradientCurve` and `IfcSegmentReferenceCurve` inherit from
 `IfcCompositeCurve`. These curves consist of a sequence of segments
@@ -156,7 +196,7 @@ vertical alignment.
 *Figure 2 IFC 4.3.2 geometric representation of horizontal and vertical
 alignment*
 
-![](images/image2.1.png)
+2![](images/image2.1.png)
 
 *Figure 2.1 Geometric representations for the three basic alignment constructs (H, H+V, H+V+C).*
 

@@ -1,7 +1,6 @@
-# Section 7 - Linear Placement
+# Section 5 - Linear Placement
 
 outline: 
-* eliminate section 5 and move this to section 5
 * describe the concept of object placement in ifc.
 * introduct the idea of linear placement for horizontal construction projects. describe locating a bridge poer on an alignment using 2D like fron traditional plans and then a drain inlet in 3d with station, offset and elevation. add a figure to illustrate.
 * discuss how linear placement is accomplished with ifc. this will include distance along diretrix with explaination of stationing which is covered in a different section, lateral and vertical offset, longitudinal offset for otherwise unreachable point (include a figure to illustrate), and the placement coordinate system with discussion of uncertaintly frim the spec on default axis and refdirection.
