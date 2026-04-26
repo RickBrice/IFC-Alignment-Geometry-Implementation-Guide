@@ -1,3 +1,7 @@
+outline
+* there is a good intro discussion in ifcalignment. incorporate some of it here.
+* ifcalignment says the semantic to geometry mapping is in the concept templates. need to say the full templates are good and accurate but the partial templates are lacking. this guide provides the necessary details and more
+
 
 # Section 1 - Introduction
 
