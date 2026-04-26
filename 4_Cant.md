@@ -1,4 +1,12 @@
 # Section 4 - Cant Alignment
+outline:
+* describe cant in terms of it being a deviation to railroad alignment vertical in curves. it provides for track banking
+* need figure the show cross slope
+* need figure that shows centerline and railhead deviation
+* reference british standard and describe the equivalent functional form of equations used for horizontal
+* horizontal and cant always use the same curve type, though technically ifc would permit mixing them
+* provide a bit more discussion in the examples. reference the example files
+* need to explain what the EnrichIFC program and repo is. the deviation discussion should be last topic in the chapter
 
 ## General
 
