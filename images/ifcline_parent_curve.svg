@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 320" width="700" height="320" font-family="Georgia, 'Times New Roman', serif">
+
+  <!-- Background -->
+  <rect width="700" height="320" fill="#f8f7f4" rx="4"/>
+
+  <!-- Grid -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d8d4c8" stroke-width="0.5"/>
+    </pattern>
+    <marker id="axisArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    </marker>
+    <marker id="dimArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L7,3.5 z" fill="#333"/>
+    </marker>
+    <marker id="dimArrowRev" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
+      <path d="M7,0 L7,7 L0,3.5 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <rect width="700" height="320" fill="url(#grid)"/>
+
+  <!--
+    x-y coordinate space.
+    IfcLine: passes through (0,0), direction (1,0), infinite.
+    Display range: x = -100 to 2100, y = -300 to 300
+
+    SVG mapping:
+      marginL=80, marginR=30, marginT=60, marginB=80
+      usable width = 700-80-30 = 590px  => scale x: 590/2200 = 0.2682 px/unit
+      usable height = 480-60-80 = 340px => scale y: 340/600  = 0.5667 px/unit
+      Use uniform scale = 0.2682 (x range dominates)
+
+      origin (0,0) in SVG:
+        svgX = 80 + (0 - (-100)) * 0.2682 = 80 + 26.8 = 106.8 ~ 107
+        svgY = 60 + (300 - 0)   * 0.2682 = 60 + 80.5 = 140.5 ~ 140
+                                            (y flipped: svgY = marginT + (yMax - surveyY)*scale)
+
+      x=2000: svgX = 107 + 2000*0.2682 = 107 + 536.4 = 643
+      x=1957: svgX = 107 + 1957*0.2682 = 107 + 524.9 = 632
+      x=-100: svgX = 107 - 100*0.2682  = 107 - 26.8  =  80
+
+      y=200:  svgY = 140 - 200*0.2682  = 140 - 53.6  =  86
+      y=-200: svgY = 140 + 200*0.2682  = 140 + 53.6  = 194
+      y=300:  svgY = 140 - 300*0.2682  = 140 - 80.5  =  60
+      y=-300: svgY = 140 + 300*0.2682  = 140 + 80.5  = 221
+
+    Axis:
+      x-axis: from svgX=80 to svgX=660, at svgY=140
+      y-axis: from svgY=30 to svgY=390, at svgX=107
+  -->
+
+  <!-- ===================== AXES ===================== -->
+  <!-- x-axis -->
+  <line x1="75" y1="140" x2="665" y2="140" stroke="#888" stroke-width="1" marker-end="url(#axisArrow)"/>
+  <!-- y-axis -->
+  <line x1="107" y1="290" x2="107" y2="28" stroke="#888" stroke-width="1" marker-end="url(#axisArrow)"/>
+
+  <!-- Axis labels -->
+  <text x="668" y="144" font-size="13" fill="#888" font-style="italic">x</text>
+  <text x="100" y="24"  font-size="13" fill="#888" font-style="italic">y</text>
+
+  <!-- x-axis tick marks and labels (every 500 units) -->
+  <!-- x=500:  svgX = 107 + 500*0.2682 = 241 -->
+  <!-- x=1000: svgX = 107 + 1000*0.2682 = 375 -->
+  <!-- x=1500: svgX = 107 + 1500*0.2682 = 509 -->
+  <!-- x=2000: svgX = 107 + 2000*0.2682 = 643 -->
+  <line x1="241" y1="138" x2="241" y2="142" stroke="#888" stroke-width="1"/>
+  <text x="241"  y="153" font-size="10" fill="#888" text-anchor="middle">500</text>
+
+  <line x1="375" y1="138" x2="375" y2="142" stroke="#888" stroke-width="1"/>
+  <text x="375"  y="153" font-size="10" fill="#888" text-anchor="middle">1000</text>
+
+  <line x1="509" y1="138" x2="509" y2="142" stroke="#888" stroke-width="1"/>
+  <text x="509"  y="153" font-size="10" fill="#888" text-anchor="middle">1500</text>
+
+  <line x1="643" y1="138" x2="643" y2="142" stroke="#888" stroke-width="1"/>
+  <text x="643"  y="153" font-size="10" fill="#888" text-anchor="middle">2000</text>
+
+  <!-- Origin label -->
+  <text x="100" y="155" font-size="10" fill="#888" text-anchor="middle">0</text>
+
+  <!-- y-axis tick marks: only show -100 and 100 for context, line is on x-axis -->
+  <!-- Not needed — y range is small and line is on axis. Skip for cleanliness. -->
+
+  <!-- ===================== IFCLINE (infinite line, shown as long gray line along x-axis) ===================== -->
+  <!-- The IfcLine passes through (0,0) in direction (1,0) — it IS the x-axis.
+       Show it as a distinct line extending slightly beyond the display range,
+       behind the trimmed segment. Use dashed to indicate it is infinite/conceptual. -->
+  <line x1="75" y1="140" x2="655" y2="140"
+        stroke="#aaa" stroke-width="2" stroke-dasharray="8,5"/>
+
+  <!-- IfcLine label -->
+  <text x="200" y="128" font-size="11" fill="#888" font-style="italic">IfcLine (infinite)</text>
+
+  <!-- ===================== TRIMMED SEGMENT (SegmentStart=0, SegmentLength=1956.786) ===================== -->
+  <!-- x=0    => svgX=107,  y=0 => svgY=140 -->
+  <!-- x=1957 => svgX=632,  y=0 => svgY=140 -->
+  <line x1="107" y1="140" x2="632" y2="140"
+        stroke="#c0392b" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- ===================== START POINT (0,0) ===================== -->
+  <circle cx="107" cy="140" r="5" fill="#1a3a5c"/>
+  <text x="107" y="125" font-size="12" fill="#1a3a5c" text-anchor="middle" font-weight="bold">P₁</text>
+  <text x="107" y="113" font-size="10" fill="#444" text-anchor="middle">(0, 0)</text>
+
+  <!-- SegmentStart label -->
+  <text x="107" y="170" font-size="10" fill="#555" text-anchor="middle">SegmentStart = 0</text>
+
+  <!-- ===================== END POINT (1956.786, 0) ===================== -->
+  <circle cx="632" cy="140" r="5" fill="#1a3a5c"/>
+  <text x="632" y="125" font-size="12" fill="#1a3a5c" text-anchor="middle" font-weight="bold">P₂</text>
+  <text x="632" y="113" font-size="10" fill="#444" text-anchor="middle">(1957, 0)</text>
+
+  <!-- SegmentLength dimension line -->
+  <!-- Offset above the line -->
+  <line x1="107" y1="140" x2="107" y2="82" stroke="#555" stroke-width="0.75" stroke-dasharray="2,2"/>
+  <line x1="632" y1="140" x2="632" y2="82" stroke="#555" stroke-width="0.75" stroke-dasharray="2,2"/>
+  <line x1="107" y1="86" x2="632" y2="86"
+        stroke="#555" stroke-width="1"
+        marker-start="url(#dimArrowRev)"
+        marker-end="url(#dimArrow)"/>
+  <text x="370" y="78" font-size="12" fill="#555" text-anchor="middle">SegmentLength = 1956.786 m</text>
+
+  <!-- ===================== LEGEND ===================== -->
+  <g transform="translate(110, 210)">
+    <rect x="-10" y="-16" width="260" height="62" fill="#f8f7f4" stroke="#ccc" stroke-width="0.75" rx="3"/>
+    <!-- IfcLine -->
+    <line x1="0" y1="0" x2="40" y2="0" stroke="#aaa" stroke-width="2" stroke-dasharray="8,5"/>
+    <text x="48" y="4" font-size="11" fill="#555">IfcLine parent curve</text>
+    <!-- Trimmed segment -->
+    <line x1="0" y1="22" x2="40" y2="22" stroke="#c0392b" stroke-width="3.5"/>
+    <text x="48" y="26" font-size="11" fill="#555">IfcCurveSegment (trimmed)</text>
+    <!-- Points -->
+    <circle cx="20" cy="44" r="4" fill="#1a3a5c"/>
+    <text x="48" y="48" font-size="11" fill="#555">Start / end point</text>
+  </g>
+
+</svg>

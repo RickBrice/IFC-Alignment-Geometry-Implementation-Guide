@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 480" width="700" height="480" font-family="Georgia, 'Times New Roman', serif">
+
+  <!-- Background -->
+  <rect width="700" height="480" fill="#f8f7f4" rx="4"/>
+
+  <!-- Grid (light, engineering-drawing style) -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d8d4c8" stroke-width="0.5"/>
+    </pattern>
+    <!-- Arrowhead marker for axes -->
+    <marker id="axisArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    </marker>
+    <!-- Arrowhead for bearing dimension line -->
+    <marker id="dimArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L7,3.5 z" fill="#333"/>
+    </marker>
+    <marker id="dimArrowRev" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
+      <path d="M7,0 L7,7 L0,3.5 z" fill="#333"/>
+    </marker>
+    <!-- North arrow marker -->
+    <marker id="northArrow" markerWidth="8" markerHeight="8" refX="4" refY="8" orient="auto">
+      <path d="M4,0 L8,8 L4,6 L0,8 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <rect width="700" height="480" fill="url(#grid)"/>
+
+  <!--
+    Coordinate system mapping:
+    Survey coords: start (500, 2500), end (2140.29, 1434.50)
+    Bearing S 57 E  => math angle = -(90-57) = -33 deg from East
+    dx = cos(-33°) = 0.83867,  dy = sin(-33°) = -0.54464
+
+    We'll map survey space to SVG space.
+    Survey range x: ~400 to 2250, y: ~1350 to 2600
+    SVG drawing area: margin 60px, so ~580 x 360 usable
+
+    Scale: fit x-range 1850 into 540px => ~0.292 px/unit
+           fit y-range 1250 into 340px => ~0.272 px/unit
+    Use 0.272 for both (uniform scale), anchor start point nicely.
+
+    SVG origin top-left, y increases downward, so flip y.
+
+    Scale s = 0.272
+    svgX = marginX + (surveyX - 400) * s
+    svgY = marginY + (2650 - surveyY) * s   (flip)
+
+    marginX = 70, marginY = 50
+
+    Start: svgX = 70 + (500-400)*0.272 = 70+27.2 = 97.2,  svgY = 50+(2650-2500)*0.272 = 50+40.8 = 90.8
+    End:   svgX = 70 + (2140.29-400)*0.272 = 70+473.4 = 543.4, svgY = 50+(2650-1434.5)*0.272 = 50+330.6 = 380.6
+  -->
+
+  <!-- Axes -->
+  <line x1="60" y1="430" x2="660" y2="430" stroke="#888" stroke-width="1" marker-end="url(#axisArrow)"/>
+  <line x1="60" y1="430" x2="60" y2="30"  stroke="#888" stroke-width="1" marker-end="url(#axisArrow)"/>
+
+
+  <!-- Tick marks and labels on axes (every ~500 survey units) -->
+  <!-- X axis ticks: 500, 1000, 1500, 2000 -->
+  <!-- svgX = 70 + (val-400)*0.272 -->
+  <line x1="97"  y1="428" x2="97"  y2="432" stroke="#888" stroke-width="1"/>
+  <text x="97"   y="443" font-size="10" fill="#888" text-anchor="middle">500</text>
+
+  <line x1="233" y1="428" x2="233" y2="432" stroke="#888" stroke-width="1"/>
+  <text x="233"  y="443" font-size="10" fill="#888" text-anchor="middle">1000</text>
+
+  <line x1="369" y1="428" x2="369" y2="432" stroke="#888" stroke-width="1"/>
+  <text x="369"  y="443" font-size="10" fill="#888" text-anchor="middle">1500</text>
+
+  <line x1="505" y1="428" x2="505" y2="432" stroke="#888" stroke-width="1"/>
+  <text x="505"  y="443" font-size="10" fill="#888" text-anchor="middle">2000</text>
+
+  <!-- Y axis ticks: 1500, 2000, 2500 -->
+  <!-- svgY = 50 + (2650-val)*0.272 -->
+  <line x1="58" y1="368" x2="62" y2="368" stroke="#888" stroke-width="1"/>
+  <text x="55"  y="372" font-size="10" fill="#888" text-anchor="end">1500</text>
+
+  <line x1="58" y1="232" x2="62" y2="232" stroke="#888" stroke-width="1"/>
+  <text x="55"  y="236" font-size="10" fill="#888" text-anchor="end">2000</text>
+
+  <line x1="58" y1="91" x2="62" y2="91" stroke="#888" stroke-width="1"/>
+  <text x="55"  y="95" font-size="10" fill="#888" text-anchor="end">2500</text>
+
+  <!-- ===================== MAIN ALIGNMENT LINE ===================== -->
+  <!-- Start: (97.2, 90.8)  End: (543.4, 380.6) -->
+  <line x1="97" y1="91" x2="544" y2="381"
+        stroke="#1a3a5c" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- ===================== START POINT ===================== -->
+  <circle cx="97" cy="91" r="5" fill="#1a3a5c"/>
+  <!-- Start point label -->
+  <text x="82" y="78" font-size="12" fill="#1a3a5c" text-anchor="middle" font-weight="bold">P₁</text>
+  <text x="82" y="91" font-size="10" fill="#444" text-anchor="end">(500, 2500)</text>
+
+  <!-- ===================== END POINT ===================== -->
+  <circle cx="544" cy="381" r="5" fill="#1a3a5c"/>
+  <text x="558" y="378" font-size="12" fill="#1a3a5c" text-anchor="start" font-weight="bold">P₂</text>
+  <text x="558" y="391" font-size="10" fill="#444" text-anchor="start">(2140, 1435)</text>
+
+  <!-- ===================== NORTH REFERENCE LINE at start ===================== -->
+  <!-- Short north arrow from start point upward -->
+  <line x1="97" y1="91" x2="97" y2="41"
+        stroke="#555" stroke-width="1" stroke-dasharray="4,3"
+        marker-end="url(#northArrow)"/>
+  <text x="97" y="36" font-size="11" fill="#555" text-anchor="middle">N</text>
+
+  <!-- ===================== BEARING ARC ===================== -->
+  <!-- Arc from North direction to the line direction, at start point -->
+  <!-- North is SVG angle -90deg (up). Line direction is SVG angle ~40.7 deg
+       (SVG: atan2(380.6-90.8, 543.4-97.2) = atan2(289.8, 446.2) ≈ 33° below horizontal = 33°)
+       Bearing angle from north = 57° to the East, clockwise
+       In SVG coords: start angle = -90° (north), end angle = -90+123 = 33° (S57E clockwise from N)
+       Arc radius 36px -->
+  <!-- SVG arc: center 97,91  radius 36
+       Start point of arc (north direction): 97+36*cos(-90°), 91+36*sin(-90°) = 97, 55
+       End point (along line direction, SVG angle 33°): 97+36*cos(33°), 91+36*sin(33°) = 127.2, 110.6 -->
+  <path d="M 97 55 A 36 36 0 0 1 127 111"
+        fill="none" stroke="#b85c00" stroke-width="1.5"/>
+
+  <!-- Bearing label -->
+  <text x="126" y="82" font-size="11" fill="#b85c00" font-style="italic">S 57° E</text>
+
+  <!-- ===================== LENGTH DIMENSION LINE ===================== -->
+  <!-- Perpendicular offset from the line, dimension line parallel to segment -->
+  <!-- Offset direction: perpendicular to segment = rotate 90° CCW from (dx,dy)=(0.839,-0.545)
+       perp = (0.545, 0.839) in SVG coords (flip y: perp_svg = (0.545, -0.839)... 
+       Actually let's just place it offset to the upper-right side -->
+  <!-- Midpoint of segment: ((97+544)/2, (91+381)/2) = (320.5, 236) -->
+  <!-- Offset 28px perpendicular (upper-left side): perp to (0.839,-0.545) is (0.545, 0.839) in math
+       In SVG y-flipped: offset dir = (0.545, -0.839)*28 = (15.3, -23.5) — goes upper right -->
+  <!-- Dim line endpoints parallel to segment, offset 22px -->
+  <!-- offset vector: (15, -23) -->
+  <line x1="97" y1="91" x2="112" y2="68"
+        stroke="#555" stroke-width="0.75" stroke-dasharray="2,2"/>
+  <line x1="544" y1="381" x2="559" y2="358"
+        stroke="#555" stroke-width="0.75" stroke-dasharray="2,2"/>
+  <line x1="112" y1="68" x2="559" y2="358"
+        stroke="#555" stroke-width="1"
+        marker-start="url(#dimArrowRev)"
+        marker-end="url(#dimArrow)"/>
+
+  <!-- Length label at midpoint of dim line, offset further -->
+  <!-- midpoint of dim line: (335.5, 213) -->
+  <!-- Rotate text to match segment angle: atan2(381-91, 544-97) = atan2(290,447) ≈ 33° -->
+  <text transform="translate(326, 200) rotate(33)"
+        font-size="12" fill="#555" text-anchor="middle">L = 1956.786 m</text>
+
+  <!-- ===================== COORDINATE LABELS ===================== -->
+  <!-- Axis labels -->
+  <text x="18"  y="240" font-size="11" fill="#666" text-anchor="middle"
+        transform="rotate(-90,18,240)">Northing (m)</text>
+
+
+
+</svg>
