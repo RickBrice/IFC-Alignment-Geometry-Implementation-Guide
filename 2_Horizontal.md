@@ -1,5 +1,10 @@
 # Section 2 - Horizontal Alignment
 
+outline:
+* this chapter is in good shape, add the following
+* introduction to example test files
+* use the example files instead of linking to the EnrichIFC repo
+
 This section will define the mathematical relationships and equations
 for parent curve segments used to define the geometry of horizontal
 alignments.
