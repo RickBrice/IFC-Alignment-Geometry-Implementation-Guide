@@ -111,7 +111,7 @@ X.z & Y.z & Axis.z & y \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-Matrix multiple cant, horizontal, and vertical to get placement in 3D.
+Matrix multiply cant, horizontal, and vertical to get placement in 3D.
 Note however that $M_{h}$ has the X-Y plane coordinate. The "X"
 coordinate in $M_{c}$ represents the "distance along" the horizontal
 alignment. If this value is multiplied with (X,Y) in $M_{c}$, incorrect
