@@ -1,4 +1,11 @@
 # Section 8 - IfcReferent and Stationing
+outline:
+* drawing on the definition of stationing in chapter 7, describe how stationing is defined in ifc.
+* discuss stationing breaks, both gap and overlap, icnluding why there may be breaks because of realignment of a road. discuss how this relates to and influences distance along to diretrix
+* discuss what it means to inform on the position of something as semantic information
+* introduce ifcreferent and give examples
+* discuss uncertainty in how to nest referents for bim fit check report
+
 
 The class `IfcReferent` defines a position at a particular offset along an
 alignment curve. Stationing (also known as chainage) is a good example.
