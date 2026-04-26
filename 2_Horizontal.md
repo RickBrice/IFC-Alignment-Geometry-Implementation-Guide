@@ -61,7 +61,7 @@ The equation of a line can be parameterized with a **unit parameterization** whe
 
 $$\lambda(u) = C + L\left( \int_{0}^{u = 1}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = 1}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-A line can also be parameters with an **arc length parameterization** where the parameter $u$ equals the distance along the line in units of length, so $u = s$.
+A line can also be parameterized with an **arc length parameterization** where the parameter $u$ equals the distance along the line in units of length, so $u = s$.
 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
@@ -82,7 +82,11 @@ Mapping of the semantic definition of the linear segment to the
 geometric definition is described with the following example.
 
 Given a horizontal alignment segment is a line segment starting at point
-(500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. This segment is represented as
+(500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. 
+
+![Tangent Segment](images\tangent_segment.svg)
+
+This segment is represented as
 
 ~~~
 #31=IFCCARTESIANPOINT((500.,2500.));
@@ -95,6 +99,8 @@ example below. `IfcLine` is an infinitely long line that passes through a
 specified point at some direction in the X-Y plane. An easy way to
 define the `IfcLine` parent curve is to have in the X-axis direction
 passing through point (0,0).
+
+![Tangent Segment](images\ifcline_parent_curve.svg)
 
 Define the parent curve
 
