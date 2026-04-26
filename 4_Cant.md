@@ -6,7 +6,7 @@ outline:
 * reference british standard and describe the equivalent functional form of equations used for horizontal
 * horizontal and cant always use the same curve type, though technically ifc would permit mixing them
 * provide a bit more discussion in the examples. reference the example files
-* need to explain what the EnrichIFC program is. the deviation discussion should be last topic in the chapter uri is https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code. 
+* need to explain what the EnrichIFC program is. the deviation discussion should be last topic in the chapter uri is https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code. use example for bim fit check discussion with peter
 
 ## General
 
