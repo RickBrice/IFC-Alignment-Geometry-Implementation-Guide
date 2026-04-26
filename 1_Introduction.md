@@ -409,8 +409,7 @@ A source document will be cited for each calculation example.
 
 ## Units of measure
 
-Unless otherwise specified, the unit of length measure all the
-calculations in this document is meter.
+Unless otherwise specified length, distance, elevation, offset and other such parameters are in meter; angles are in radian. 
 
 
 
