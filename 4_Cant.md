@@ -30,7 +30,7 @@ Informally, a `IfcSegmentedReferenceCurve` is a curve defined in a
 system. The `IfcCurveSegment.ParentCurve` defines the change in cross
 slope between rail heads over the length of the segment. When the
 `IfcCurveSegment.Placement.Location` differs from the
-`IfcCurveSegmentPlacement.Location` of the next segment, the
+`IfcCurveSegment.Placement.Location` of the next segment, the
 `IfcCurveSegment.ParentCurve` also defines the deviating elevation. If the
 `IfcCurveSegment.Placement.Location` is the same as for the start of the
 next segment, the deviating elevation along the length of the segment is
