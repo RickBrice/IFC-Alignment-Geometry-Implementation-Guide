@@ -9,12 +9,11 @@ provides example calculations.
 
 The IFC specification identifies concept templates as the mechanism for
 mapping semantic alignment representations to their geometric
-counterparts. The *full* concept templates — covering aggregation to
+counterparts. The concept templates — covering aggregation to
 project, alignment layout nesting, and the three alignment geometry
-variants (horizontal; horizontal+vertical; horizontal+vertical+cant) —
-are accurate and well-structured. The *partial* concept templates that
-cover individual curve segment geometry types, however, are
-intentionally sparse: they show class relationships but provide no
+variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
+provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The *partial* concept templates that
+cover individual curve segment geometry types, however, are sparse: they show class relationships but provide no
 mathematical equations or parameter mappings. This guide fills that gap.
 
 ## Horizontal Alignment
@@ -26,7 +25,7 @@ to provide gradual transitions between tangents and circular curves. The
 horizontal alignment is a plan view curvilinear path in a Cartesian
 coordinate system aligned with East and North. Positions along an
 alignment, measured along the plan view projection of the 3D alignment
-curve, are denoted with stations or chainage.
+curve, are typically denoted with stations.
 
 ## Vertical Alignment
 
@@ -34,9 +33,9 @@ A vertical alignment consists of straight sections of grade lines
 connected by vertical curves. The vertical curves are typically
 parabolas, though sometimes circular arcs or clothoid curves are used. A
 vertical alignment is defined along the curvilinear path of a horizontal
-alignment in a "Distance Along, Elevation" coordinate system. Combined,
+alignment in a 2D "Distance Along, Elevation" coordinate system. Combined,
 the horizontal and vertical alignments define a 3D curve. This
-combination of two 2D curves is sometimes referred to as a 2.5D
+combination of two 2D curves is sometimes referred to as a 2.5D or 2D+1D
 geometry. The IFC specification notes that contemporary alignment design
 almost always implements this 2.5D approach, with precision varying
 based on management priorities, design era, and available software tools.
@@ -80,7 +79,7 @@ case. The semantic definition model is shown in Figure 1.
 
 *Figure 1 IFC 4.3.2 semantic alignment model*
 
-`IfcRelNests.RelatedObjects` is an ordered collection. That means there is a specific order for the alignment layouts and the alignment segments. The IFC specification doesn't explicitly define a ranking for ordering. The ordering of the alignment layous can be infered from the images in the [`IfcAlignment` documentation 5.4.3.1.5](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignment.htm#5.4.3.1.5-Concept-usage) as horizontal preceeds vertical, which preceeds cant. The ordering of `IfcAlignmentSegment` in an alignment layout is equally nebulus. For `IfcAlignmentHorizontalSegment` the only logical ordering is start to end. For `IfcAlignmentVerticalSegment` and `IfcAlignmentCantSegment` ordering in `IfcRelNests.RelatedObjects` could be anything because positional ordering can be derived from the `StartDistAlong` attribute. Such an approach is unnecessarily difficult. Segments should always be ordered in `IfcRelNests.RelatedObjects` in a start to end sequence.
+`IfcRelNests.RelatedObjects` is an ordered collection. That means there is a specific order for the alignment layouts and the alignment segments. The IFC specification doesn't explicitly define a ranking for ordering. The ordering of the alignment layouts can be infered from the images in the [`IfcAlignment` documentation 5.4.3.1.5](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignment.htm#5.4.3.1.5-Concept-usage) as horizontal preceeds vertical, which preceeds cant. The ordering of `IfcAlignmentSegment` in an alignment layout is equally nebulus. For `IfcAlignmentHorizontalSegment` the only logical ordering is start to end. For `IfcAlignmentVerticalSegment` and `IfcAlignmentCantSegment` ordering in `IfcRelNests.RelatedObjects` could be anything because positional ordering can be derived from the `StartDistAlong` attribute. Such an approach is unnecessarily difficult. Segments should always be ordered in `IfcRelNests.RelatedObjects` in a start to end sequence.
 
 An interesting caveat of `IfcAlignmentHorizontal` and `IfcAlignmentVertical`
 (and `IfcAlignmentCant`) is that the last
@@ -109,7 +108,7 @@ element, one spatial zone) and *referencing* (one element, many zones).
 
 ### Overview
 
-Section 4.1.7.1.1 of the IFC 4x3 specification indicates that the valid
+Section 4.1.7.1.1 of the IFC 4x3 specification [todo: provide link to ifc spec] indicates that the valid
 representations of `IfcAlignment` are:
 
 - `IfcCompositeCurve` as a 2D horizontal alignment (represented by its
@@ -166,12 +165,11 @@ definition serve different purposes.
 Since the semantic and geometric definitions of an alignment are so
 similar, it's easier to understand the difference by examining a
 different type of entity. Consider a highway sign. The semantic
-definition describes an object as a sign that says "Exit 101" with an
-arrow pointing upwards to the right and it is positioned at a specific
+definition describes an object as a sign that says "Exit 101" and it is positioned at a specific
 location (station and offset) relative to an alignment. The geometric
 definition describes the sign as a rectangle of certain dimension and
-thickness and is located precisely at a point X, Y, Z and the face of
-the sign oriented in a certain plane. The distinction between the
+thickness, is located precisely at a distance from the start, offset and elevation relative to the alignment curve, and the face of
+the sign is oriented in a certain direction. The distinction between the
 business and geometric information is clearer in this example, the same
 concept of separate business logic and geometric definition are
 applicable to alignments.
@@ -223,21 +221,21 @@ combined to create an `IfcCompositeCurve` to complete the plan view
 geometric representation of the horizontal alignment.
 
 A similar process is used to create the vertical alignment.
-`IfcCurveSegment` objects are cut from parent curves and combined to
+`IfcCurveSegment` trim geometry from parent curves and combine end to start to
 create an `IfcGradientCurve`. `IfcGradientCurve` is a sub-type of
-IfcCompositeCurve with the additional attribute BaseCurve. The segments
+IfcCompositeCurve with the additional attribute `BaseCurve`. The segments
 of the gradient curve are positions in a 2-dimensional plane in a
 "distance along the horizontal alignment, elevation" coordinate system.
 The `IfcGradientCurve` uses the horizontal alignment `IfcCompositeCurve` as
 its base curve, which means the horizontal coordinates of the vertical
 alignment are taken from the horizontal alignment curve as illustrated
-in Figures 1 and 2.
+in Figures 1 and 2. [todo: confirm figure numbers]
 
 `IfcSegmentedReferenceCurve` is also a sub-type of `IfcCompositeCurve`. It
 defines a deviating elevation and rail head cross slope along the base
 curve. The base curve can be either an `IfcGradientCurve` or
 `IfcCompositeCurve`. If it is an `IfcGradientCurve`, the "distance along"
-coordinate is along the gradient curve's base curve.
+coordinate is along the gradient curve's base curve. [todo: need some clarity here - should gradient curve always be the basis for segmented reference curve?]
 
 ![](images/image3.png)
 
@@ -309,7 +307,7 @@ follows:
 
 - Evaluate parent curve equation to get a point as well as tangent
   vector (RefDirection) and normal vector. The tangent vector is
-  obtained by evaluating the derivative of the parent curve equation.
+  obtained by evaluating the first derivative of the parent curve equation.
   The normal vector is a 90-degree counter-clockwise rotation of the
   tangent vector.
 
@@ -323,7 +321,7 @@ follows:
 
 - Apply the rotation of the curve segment placement.
 
-- Apply the transitional of the curve segment placement
+- Apply the transition of the curve segment placement.
 
 This algorithm can be represented as follows:
 
@@ -401,6 +399,7 @@ issues will be highlighted in this document, so the reader understands
 why the information presented herein deviates from the reference
 implementation.
 
+[todo: restate to using our own examples, derived from reference implementation]
 The example calculations use the alignment models defined with the
 reference implementation repository at
 [IFC-Rail-Unit-Test-Reference-Code/alignment_testset/IFC-WithGeneratedGeometry
