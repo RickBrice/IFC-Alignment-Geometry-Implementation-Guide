@@ -52,8 +52,8 @@ $M_T$ moves the trim-start point to the origin so that all subsequent calculatio
 $$M_T = \begin{bmatrix} 
 1 & 0 & 0 & -x_0 \\
  0 & 1 & 0 & -y_0 \\
-  0 & 0 & 1 & 0 
-  \\ 0 & 0 & 0 & 1 
+  0 & 0 & 1 & 0 \\
+  0 & 0 & 0 & 1 
   \end{bmatrix}$$
 
 **Step 3 — Form the rotation matrix $M_R$**
