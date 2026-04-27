@@ -9,25 +9,9 @@ outline:
 * need to explain what the EnrichIFC program is. the deviation discussion should be last topic in the chapter uri is https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code. use example for bim fit check discussion with peter
 
 ## General
+An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope. [todo: add a figure to illustrate the cross slope and centerline elevation deviation] An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of IfcCompositeCurve, an IfcSegmentedReferenceCurve consists of an end to start collection of IfcCurveSegment. An IfcSegmentedReferenceCurve also has a BisisCurve which us typically an IfcGradientCurve.
 
-The `IfcSegmentedReferenceCurve` is a curve defined in the linear
-parameter space of its base curve that is set in the attribute
-BaseCurve. The base curve provides a basis for the positioning of the
-collection of `IfcCurveSegment` occurrences. A deviating explicit position
-of a curve segment (`IfcCurveSegment.Placement`) from the axis of the
-basis curve produces a superelevation (i.e. depression or elevation from
-the axis of the base curve). The superelevation rate of change is
-directly proportionate to the curve segment parent curve
-parameterization (`IfcCurveSegment.ParentCurve`) in the linear parameter
-space of the base curve. If no deviation in the position of the curve
-segment to the base curve axis is specified, the axes (Axis and
-RefDirection) directions of `IfcAxis2Placement` are interpolated between
-the initial curve segment placement and the placement of the subsequent
-curve segment.
-
-Informally, a `IfcSegmentedReferenceCurve` is a curve defined in a
-"horizontal distance along base curve, deviating elevation" coordinate
-system. The `IfcCurveSegment.ParentCurve` defines the change in cross
+The `IfcCurveSegment.ParentCurve` defines the change in cross
 slope between rail heads over the length of the segment. When the
 `IfcCurveSegment.Placement.Location` differs from the
 `IfcCurveSegment.Placement.Location` of the next segment, the
@@ -35,6 +19,8 @@ slope between rail heads over the length of the segment. When the
 `IfcCurveSegment.Placement.Location` is the same as for the start of the
 next segment, the deviating elevation along the length of the segment is
 constant.
+
+[todo: changethis next section to begin with a figure with the cross section at rhevstart and end of the segment]
 
 Evaluation of a `IfcCurveSegment` that is part of a
 `IfcSegmentedReferenceCurve` is illustrated with an example (source model
