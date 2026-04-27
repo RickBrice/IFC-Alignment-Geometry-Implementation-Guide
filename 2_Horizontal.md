@@ -536,7 +536,12 @@ $$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \fra
 
 **Step 2 -- Form the translation matrix $M_T$**
 
-$$M_T = \begin{bmatrix} 1 & 0 & 0 & -x_0 \\ 0 & 1 & 0 & -y_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+$$M_T = \begin{bmatrix}
+ 1 & 0 & 0 & -x_0 \\ 
+ 0 & 1 & 0 & -y_0 \\ 
+ 0 & 0 & 1 & 0 \\ 
+ 0 & 0 & 0 & 1 
+ \end{bmatrix}
 =
 \begin{bmatrix}
 1 & 0 & 0 & 142.04941746210602 \\
@@ -548,7 +553,12 @@ $$
 
 **Step 3 -- Form the rotation matrix $M_R$**
 
-$$M_R = \begin{bmatrix} \cos\theta_0 & \sin\theta_0 & 0 & 0 \\ -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+$$M_R = \begin{bmatrix}
+ \cos\theta_0 & \sin\theta_0 & 0 & 0 \\
+  -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\
+   0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 1 
+    \end{bmatrix}
 =\begin{bmatrix}
 \cos(-0.238095237) & \sin(-0.238095237) & 0 & 0 \\
 -\sin(-0.238095237) & \cos(-0.238095237) & 0 & 0 \\
@@ -819,9 +829,15 @@ Apply the translation, rotation, and curve segment placement to the
 parent curve point
 
 $$M_{h} = M_{CSP} M_{R} M_{T} M_{PC} = 
-\begin{bmatrix}I\end{bmatrix}
-\begin{bmatrix}I\end{bmatrix}
-\begin{bmatrix}I\end{bmatrix}
+\begin{bmatrix}
+I
+\end{bmatrix}
+\begin{bmatrix}
+I
+\end{bmatrix}
+\begin{bmatrix}
+I
+\end{bmatrix}
 \begin{bmatrix}
 0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
