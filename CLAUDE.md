@@ -10,7 +10,7 @@ There are no build, lint, or test commands — the project is entirely markdown 
 
 ## Repository Structure
 
-The guide is organized as 11 numbered markdown chapters at the repository root:
+The guide is organized as numbered markdown chapters at the repository root:
 
 | File | Topic | Status |
 |------|-------|--------|
@@ -20,21 +20,31 @@ The guide is organized as 11 numbered markdown chapters at the repository root:
 | `4_Cant.md` | Rail superelevation via IfcSegmentedReferenceCurve | Complete |
 | `5_LinearPlacement.md` | Linear placement concepts | Partial |
 | `6_OffsetCurves.md` | Offset curve definitions | Partial |
+| *(missing)* | Stationing concepts (referenced by ch. 8 outline as "chapter 7") | Not yet created |
 | `8_Referents_and_Stationing.md` | Referents and stationing | Partial |
 | `9_Specialized_Infrastructure_Geometry.md` | Domain-specific geometry | Stub |
 | `10_LandXML.md` | LandXML-to-IFC conversion | Stub |
 | `11_Precision_and_Tolerance.md` | Precision and tolerance guidance | Partial |
 
+Note: there is no `7_*.md` file. The outline in `8_Referents_and_Stationing.md` references "chapter 7" as a prerequisite covering stationing definitions — that chapter is planned but not yet written.
 
-`examples/` contains IFC file examples and the `Alignment-atomic-testset/` with 48 test cases across 6 transition curve types (Clothoid, Bloss, Cosine, Sine, Helmert, VienneseBend), each with 5 IFC variants (horizontal only, with/without check data, combined horizontal+vertical). All IFC examples use schema version IFC4X3_ADD2 (ISO 16739-1:2024).
+### Examples
 
-### Testset file naming convention
+`examples/IfcOffsetCurveByDistances.ifc` is a standalone IFC example for offset curves.
+
+`examples/Alignment-atomic-testset/` contains 48 test cases across 6 transition curve types (Clothoid, Bloss, Cosine, Sine, Helmert, VienneseBend), each with 5 IFC variants. All IFC examples use schema version IFC4X3_ADD2 (ISO 16739-1:2024).
+
+#### Testset file naming convention
 
 IFC files in `Alignment-atomic-testset/` follow the pattern:
 ```
 {CurveType}_TS{N}_{length}_{StartRadius}_{EndRadius}_{StartCurvature}_{EndCurvature}_{scale}_{unit}.ifc
 ```
 Excel reports and plot images use the same base name. The five IFC variants per test case live in subdirectories: `horizontal/`, `horizontal_check/`, `horizontal_vertical/`, `horizontal_vertical_check/`, and `check/`.
+
+The **`check`** variants contain only control alignment geometry and control points (reference geometry for verifying implementations), not the primary alignment definition. The `horizontal_check` and `horizontal_vertical_check` variants combine primary alignment with this check geometry.
+
+The vertical layout in all testset cases is a flat grade (gradient = 0) — it exists solely to produce a valid 3D combined alignment for testing; it carries no elevation design intent.
 
 ## Domain Context
 
@@ -56,7 +66,7 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 ## Writing Conventions
 
 - Mathematical equations use LaTeX syntax rendered by GitHub Markdown (fenced with `$$` for display math, `$...$` for inline).
-- Figures reference files in `images/` using relative markdown links.
+- Figures reference files in `images/` using relative markdown links. Both PNG and SVG files exist in `images/`; SVGs are used for technical line-art diagrams.
 - IFC attribute names are written in `code style` (e.g., `StartRadius`, `EndRadius`, `SegmentLength`).
 - Positive curvature convention: curves to the left (from the perspective of a traveler moving in the direction of increasing chainage).
 - The guide distinguishes **semantic** alignment (business/design intent, `IfcAlignmentSegment` subtypes) from **geometric** alignment (mathematical curve representation, `IfcCurveSegment`).
@@ -66,6 +76,8 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 Two naming schemes exist in `images/`:
 - Older chapters use generic names: `image1.png`, `image2.1.png`, etc.
 - Newer/in-progress chapters use descriptive names: `Figure_9.1_Superelevation_Transition.png`. Prefer this style for new figures.
+
+Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own `images/` folder for testset plot images — these are separate from the root `images/` directory.
 
 ### Draft outline notes
 

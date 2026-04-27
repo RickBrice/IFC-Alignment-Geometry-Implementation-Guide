@@ -23,7 +23,7 @@ curve such as `IfcGradientCurve` or `IfcSegmentedReferenceCurve`, the basis
 curve is `IfcCompositeCurve` representing the projection of the 3D curve
 onto a 2D horizontal plane.
 
-## General
+## 5.1 General
 
 `IfcAxis2PlacementLinear` has optional `Axis` and `RefDirection` attributes.
 When omitted, `RefDirection` is the tangent to the 3D curve at Location.
@@ -44,6 +44,6 @@ When `Axis` and `RefDirection` are not provided, the local coordinate system can
 
 X, Y, Z are orthoginal axes.
 
-## Linear Placement along IfcOffsetCurveByDistances
+## 5.2 Linear Placement along IfcOffsetCurveByDistances
 
 Linear placement along an `IfcOffsetCurveByDistances` is not precise. `IfcOffsetCurveByDistances` is an interpoloated curve defined by offsets from a basis curve. The offset values are linearly interpolated forming a segmented curve. The length of the offset curve is approximate and depends on the frequency of the interpoloated points along the curve. For this reason, `IfcAxis2PlacementLinear.Location.DistanceAlong` cannot be precisely determined.

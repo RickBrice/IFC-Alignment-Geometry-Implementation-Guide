@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="490" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+    <marker id="oarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c05800"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="490" fill="white"/>
+
+  <!-- ══ SHARED HORIZONTAL ALIGNMENT (top) ══ -->
+  <text x="14" y="20" font-size="10" fill="#777" font-style="italic">Shared horizontal alignment</text>
+
+  <!-- IfcAlignment (parent) -->
+  <rect x="10" y="26" width="130" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="75" y="48" text-anchor="middle" font-size="11" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <!-- IfcRelNests arrow to IfcAlignmentHorizontal -->
+  <line x1="140" y1="43" x2="180" y2="43" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="160" y="37" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+
+  <!-- IfcAlignmentHorizontal -->
+  <rect x="180" y="26" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="273" y="48" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentHorizontal</text>
+
+  <!-- IfcCompositeCurve (shared) -->
+  <rect x="500" y="22" width="220" height="44" rx="3" fill="#fff3e0" stroke="#c05800" stroke-width="2"/>
+  <text x="610" y="41" text-anchor="middle" font-size="11" font-weight="bold" fill="#331a00">IfcCompositeCurve</text>
+  <text x="610" y="57" text-anchor="middle" font-size="9.5" fill="#885500" font-style="italic">'FootPrint' · 'Curve2D'   (shared)</text>
+
+  <!-- IfcRelAggregates label and vertical stem from parent alignment -->
+  <line x1="75" y1="60" x2="75" y2="95" stroke="#555" stroke-width="1.2"/>
+  <text x="83" y="82" font-size="9" fill="#666" font-style="italic">IfcRelAggregates</text>
+
+  <!-- Vertical spine branching to three child alignments -->
+  <line x1="75" y1="95" x2="75" y2="435" stroke="#555" stroke-width="1.2"/>
+
+  <!-- ══ CHILD 1: H+V+C (y=110) ══ -->
+  <line x1="75" y1="150" x2="100" y2="150" stroke="#555" stroke-width="1.2"/>
+  <line x1="100" y1="133" x2="100" y2="183" stroke="#555" stroke-width="1.2"/>
+  <line x1="100" y1="133" x2="180" y2="133" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="100" y1="183" x2="180" y2="183" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <text x="14" y="110" font-size="10" fill="#777" font-style="italic">Child alignment 1 — H+V+C</text>
+  <rect x="10" y="133" width="60" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="40" y="155" text-anchor="middle" font-size="10" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <text x="148" y="123" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+  <rect x="180" y="116" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="273" y="138" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentVertical</text>
+  <rect x="180" y="166" width="185" height="34" rx="3" fill="#f2eeff" stroke="#2050a0" stroke-width="1.8"/>
+  <text x="273" y="188" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentCant</text>
+
+  <!-- Geometric: GradientCurve → BaseCurve → SegmentedReferenceCurve -->
+  <!-- BaseCurve from shared CompositeCurve flows down into GradientCurve -->
+  <line x1="610" y1="66" x2="610" y2="116" stroke="#c05800" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="618" y="96" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <rect x="500" y="116" width="220" height="34" rx="3" fill="#fef9f0" stroke="#c05800" stroke-width="1.2" stroke-dasharray="5,3"/>
+  <text x="610" y="138" text-anchor="middle" font-size="11" font-weight="bold" fill="#aa7700">IfcGradientCurve</text>
+
+  <line x1="610" y1="150" x2="610" y2="161" stroke="#c05800" stroke-width="1.2" marker-end="url(#oarr)"/>
+  <text x="618" y="159" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <rect x="500" y="161" width="220" height="44" rx="3" fill="#f2eeff" stroke="#6030a0" stroke-width="1.8"/>
+  <text x="610" y="179" text-anchor="middle" font-size="10" font-weight="bold" fill="#301060">IfcSegmentedReferenceCurve</text>
+  <text x="610" y="195" text-anchor="middle" font-size="9.5" fill="#5030a0" font-style="italic">'Axis' · 'Curve3D'</text>
+
+  <!-- ══ CHILD 2: H+V (y=240) ══ -->
+  <text x="14" y="240" font-size="10" fill="#777" font-style="italic">Child alignment 2 — H+V</text>
+
+  <rect x="10" y="258" width="60" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="40" y="280" text-anchor="middle" font-size="10" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <line x1="75" y1="275" x2="100" y2="275" stroke="#555" stroke-width="1.2"/>
+  <line x1="100" y1="275" x2="180" y2="275" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="148" y="268" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+
+  <rect x="180" y="258" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="273" y="280" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentVertical</text>
+
+  <!-- Geometric: BaseCurve from shared CompositeCurve → GradientCurve -->
+  <line x1="610" y1="205" x2="610" y2="251" stroke="#c05800" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="618" y="233" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <rect x="500" y="251" width="220" height="44" rx="3" fill="#fff3e0" stroke="#c05800" stroke-width="1.5"/>
+  <text x="610" y="270" text-anchor="middle" font-size="11" font-weight="bold" fill="#331a00">IfcGradientCurve</text>
+  <text x="610" y="285" text-anchor="middle" font-size="9.5" fill="#885500" font-style="italic">'Axis' · 'Curve3D'</text>
+
+  <!-- ══ CHILD 3: H+V+C (y=345) ══ -->
+  <text x="14" y="345" font-size="10" fill="#777" font-style="italic">Child alignment 3 — H+V+C</text>
+
+  <rect x="10" y="363" width="60" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="40" y="385" text-anchor="middle" font-size="10" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <line x1="75" y1="380" x2="100" y2="380" stroke="#555" stroke-width="1.2"/>
+  <line x1="100" y1="363" x2="100" y2="413" stroke="#555" stroke-width="1.2"/>
+  <line x1="100" y1="363" x2="180" y2="363" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="100" y1="413" x2="180" y2="413" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <text x="148" y="353" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+  <rect x="180" y="346" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="273" y="368" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentVertical</text>
+  <rect x="180" y="396" width="185" height="34" rx="3" fill="#f2eeff" stroke="#2050a0" stroke-width="1.8"/>
+  <text x="273" y="418" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentCant</text>
+
+  <!-- Geometric: BaseCurve from shared CompositeCurve → GradientCurve → SegmentedReferenceCurve -->
+  <line x1="610" y1="295" x2="610" y2="346" stroke="#c05800" stroke-width="1.2" stroke-dasharray="4,2"/>
+  <text x="618" y="326" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <rect x="500" y="346" width="220" height="34" rx="3" fill="#fef9f0" stroke="#c05800" stroke-width="1.2" stroke-dasharray="5,3"/>
+  <text x="610" y="368" text-anchor="middle" font-size="11" font-weight="bold" fill="#aa7700">IfcGradientCurve</text>
+
+  <line x1="610" y1="380" x2="610" y2="391" stroke="#c05800" stroke-width="1.2" marker-end="url(#oarr)"/>
+  <text x="618" y="389" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <rect x="500" y="391" width="220" height="44" rx="3" fill="#f2eeff" stroke="#6030a0" stroke-width="1.8"/>
+  <text x="610" y="409" text-anchor="middle" font-size="10" font-weight="bold" fill="#301060">IfcSegmentedReferenceCurve</text>
+  <text x="610" y="425" text-anchor="middle" font-size="9.5" fill="#5030a0" font-style="italic">'Axis' · 'Curve3D'</text>
+
+  <!-- Row separators -->
+  <line x1="0" y1="105" x2="860" y2="105" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="0" y1="235" x2="860" y2="235" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="0" y1="340" x2="860" y2="340" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>
+
+</svg>

@@ -5,11 +5,27 @@ outline:
 * introduction to example test files
 * use the example files instead of linking to the EnrichIFC repo
 
-This section will define the mathematical relationships and equations
-for parent curve segments used to define the geometry of horizontal
-alignments.
+The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
 
-## General
+Table 2.1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding parent curve type.
+
+  Business Logic (`IfcAlignmentHorizontal.PredefinedType`)|Geometric Representation (`IfcCurveSegment.ParentCurve`)
+  -----------------------------------------|-----------------------------------
+  LINE                                     |`IfcLine`
+  CIRCULARARC                              |`IfcCircle`
+  CLOTHOID                                 |`IfcClothoid`
+  CUBIC                                    |`IfcPolynomialCurve`
+  HELMERTCURVE                             |`IfcSecondOrderPolynomialSpiral`
+  BLOSSCURVE                               |`IfcThirdOrderPolynomialSpiral`
+  COSINECURVE                              |`IfcCosineSpiral`
+  SINECURVE                                |`IfcSineSpiral`
+  VIENNESEBEND                             |`IfcSeventhOrderPolynomialSpiral`
+
+  *Table 2.1 — Mapping of business logic to geometric representation for horizontal alignment*
+
+## 2.1 General
+
+The following parameters are common to all horizontal alignment curve types. Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from `IfcAlignmentHorizontalSegment.StartRadius` and `EndRadius`; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). The segment length $L$ is `IfcAlignmentHorizontalSegment.SegmentLength`. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the `RefDirection` of the curve at $s$.
 
 Parameter | Equation
 ----------|-----------------------------------
@@ -21,47 +37,62 @@ X-ordinate as a function of curve length s | $$x(s) = \int_{}^{}{\cos\left( \the
 Y-ordinate as a function of curve length s | $$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$
   
 
-### IfcCurveSegment Placement
+## 2.2 Curve Segment Evaluation Algorithm
 
-The `IfcCurveSegment` placement is provided in the IFC. This placement is
-represented in matrix form as
+This algorithm evaluates the 2D position and tangent direction of a point on an `IfcCurveSegment` in the alignment coordinate system. Let $s_0$ = `SegmentStart` and $s$ = the arc-length parameter of the point to evaluate, where $s_0 \leq s < s_0 + \texttt{SegmentLength}$.
 
-$$M_{PC} = \begin{bmatrix}
-dx & - dy & 0 & x \\
-dy & dx & 0 & y \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
+**Step 1 — Evaluate the parent curve at the trim start**
 
-Column 1 represents the RefDirection (dx,dy,0)
+Compute the position $(x_0, y_0)$ and tangent angle $\theta_0$ of the parent curve at $s_0$. This establishes the frame of the parent curve at the point where trimming begins.
 
-Column 3 represents the Axis (0,0,1). Axis is always "up" normal to the
-2D plane
+**Step 2 — Form the translation matrix $M_T$**
 
-Column 4 represents the Location (x,y,0). Z is always zero because the
-horizontal curve lies in the X-Y plane
+$M_T$ moves the trim-start point to the origin so that all subsequent calculations are relative to the beginning of the trimmed segment.
 
-Column 2 is the Y direction is the cross product of RefDirection and
-Axis.
+$$M_T = \begin{bmatrix} 1 & 0 & 0 & -x_0 \\ 0 & 1 & 0 & -y_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
 
-## Line
+**Step 3 — Form the rotation matrix $M_R$**
+
+$M_R$ rotates so that the tangent at the trim start aligns with the positive $x$-direction $(1, 0)$. This is the inverse of the rotational part of $M_{PCS}$, which for a pure rotation matrix equals the transpose.
+
+$$M_R = \begin{bmatrix} \cos\theta_0 & \sin\theta_0 & 0 & 0 \\ -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+
+**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
+
+$M_{CSP}$ places the trimmed segment into the alignment coordinate system. It is constructed directly from `IfcCurveSegment.Placement`, where $(x_p, y_p)$ is the `Location` and $\theta_p$ is the bearing of the `RefDirection`.
+
+$$M_{CSP} = \begin{bmatrix} \cos\theta_p & -\sin\theta_p & 0 & x_p \\ \sin\theta_p & \cos\theta_p & 0 & y_p \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+
+**Step 5 — Evaluate and map each point**
+
+For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:
+
+$$M_{PC} = \begin{bmatrix} \cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ \sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+
+Apply the translation, rotation, and placement in sequence:
+
+$$M_h = M_{CSP}\, M_R\, M_T\, M_{PC}$$
+
+The position of the point in the alignment coordinate system is the fourth column of $M_h$, and its tangent direction is the first column. Numerical examples of this algorithm are given in Sections 2.3 through 2.11.
+
+## 2.3 Line
 
 When `IfcLine` is used as a parent curve, it represents a tangent run of
 the alignment.
 
-### Parent Curve Parametric Equations
+### 2.3.1 Parent Curve Parametric Equations
 
-The orientation and curvature of a line are given by the following equations
+The curve tangent angle and curvature are given by the following equations
 
 $$\theta(t) = \theta$$
 
 $$\kappa(t) = 0$$
 
-The equation of a line can be parameterized with a **unit parameterization** where the parameter $u$ ranges from $0$ to $1$ over the full extent of the curve, independent of its physical length.
+The point on line equation can be parameterized with a **unit parameterization** where the parameter $u$ ranges from $0$ to $1$ over the full extent of the curve, independent of its physical length.
 
 $$\lambda(u) = C + L\left( \int_{0}^{u = 1}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = 1}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-A line can also be parameterized with an **arc length parameterization** where the parameter $u$ equals the distance along the line in units of length, so $u = s$.
+It can also be parameterized with an **arc length parameterization** where the parameter $u$ equals the distance along the line in units of length, so $u = s$.
 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
@@ -76,7 +107,7 @@ can be either `IfcParameterValue` (a dimensionless scalar based on unit value) o
 `IfcLengthMeasure` (a physical length). 
 
 
-### Semantic Definition to Geometry Mapping
+### 2.3.2 Semantic Definition to Geometry Mapping
 
 Mapping of the semantic definition of the linear segment to the
 geometric definition is described with the following example.
@@ -86,7 +117,7 @@ Given a horizontal alignment segment is a line segment starting at point
 
 ![Tangent Segment](images\tangent_segment.svg)
 
-This segment is represented as
+This semantic definition of this segment is:
 
 ~~~
 #31=IFCCARTESIANPOINT((500.,2500.));
@@ -96,13 +127,18 @@ This segment is represented as
 The geometric representation is an `IfcLine`. The line can be defined in
 different ways and is generally not important, as will be shown in the
 example below. `IfcLine` is an infinitely long line that passes through a
-specified point at some direction in the X-Y plane. An easy way to
-define the `IfcLine` parent curve is to have in the X-axis direction
+specified point at some direction in the X-Y plane. For example, a line passing through (1000, −100) at a bearing of 175° from the x-axis:
+
+[todo: replace this figure with one with a segment length of 1956.786 at an angle of 175 deg - claude is working on this but it needs to be resumed around 5pm]
+
+![IfcLine at arbitrary placement](images/Figure_2.3_IfcLine_arbitrary_placement.svg)
+
+An easy way to define the `IfcLine` parent curve is to have it the X-axis direction
 passing through point (0,0).
 
 ![Tangent Segment](images\ifcline_parent_curve.svg)
 
-Define the parent curve
+The parent curve definition is:
 
 ~~~
 #51=IFCCARTESIANPOINT((0.,0.));
@@ -115,7 +151,7 @@ Define the parent curve
 placed and oriented in the X-Y plane.
 
 `IfcCurveSegment.SegmentStart` defines where the parent curve trimming
-begins. It can be anywhere along the line. It's easiest to begin the
+begins. It can be anywhere along the line. It is easiest to begin the
 trimming at the origin but could be anywhere. The `SegmentStart` attribute
 is 0.0 in this case.
 
@@ -125,58 +161,73 @@ to trim. The `SegmentLength` attribute is 1956.785654 for this example.
 
 The `SegmentStart` and `SegmentLength` attributes trims a portion of the
 `IfcLine` parent curve, which is oriented in the direction (1,0) with
-origin at (0,0). The trimmed portion of the curve needs to be placed and
-oriented into the horizontal alignment, but in this case, it is trivial
-and the `IfcCurveSegment.Placement` is sufficient to place and orient the
-trimmed line segment.
+origin at (0,0). 
 
-From `IfcCurveSegment.Placement`, the direction of the segment is
+The trimmed portion of the curve needs to be placed and
+oriented into the horizontal alignment. The tangent segment begins at (500,2500) and runs in the direction 5.70829654085293 radian.
+
+From the segment direction, 
 
 $$dy = \sin{(5.70829654085293)} = -0.54374144087698$$
 
 $$dx = \cos{(5.70829654085293)} = 0.839252789970355$$
 
+The segment placement is 
 ~~~
+#31=IFCCARTESIANPOINT((500.,2500.));
 #49=IFCDIRECTION((0.839252789970355,-0.54374144087698));
-~~~
-
-The trimmed line segment is placed at (500,2500). The curve segment
-placement is
-
-~~~
 #50=IFCAXIS2PLACEMENT2D(#31,#49);
 ~~~
 
-Finally, the `IfcCurveSegment` can be defined as
+The `IfcCurveSegment` is be defined as:
 
 ~~~
 #55=IFCCURVESEGMENT(.CONTSAMEGRADIENT.,#50,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(1956.785654),#54);
 ~~~
 
-### Compute Point on Curve
+### 2.3.3 Compute Point on Curve
 
 Compute the position matrix for a point 100 m from the start of the
 curve segment.
 
-The `IfcCurveSegment.Placement` is sufficient to locate a point on the
-segment. The position and orientation of the parent curve are irrelevant
-for `IfcLine`.
+**Step 1 - Evaluate the parent curve at the trim start**
 
-From the curve segment placement
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
 
-$$C = (500,2500)$$
+**Step 2 - Form the translation matrix $M_T$**
+
+The trimmed curve starts at (0,0) so $M_T$ is an identity matrix.
+
+**Step 3 - Form the rotation matrix $M_R$**
+
+The trimmed curve in the direction (1,0) so $M_R$ is an identity matrix.
+
+**Step 4 - Form the curve segment placement matrix $M_{CSP}$**
+
+From the `IfcCurveSegment.Placement`:
+
+$$x = 500, y = 2500$$
 
 $$dx\  = 0.839252789970355,\ dy\  = -0.54374144087698$$
 
-$$\theta = \tan^{-1}{\left( \frac{-0.54374144087698}{0.839252789970355} \right) = -0.574888766\ }$$
+$$M_{CSP} = \begin{bmatrix}
+0.839252789970355 & 0.54374144087698 & 0 & 500 \\
+ -0.54374144087698 & 0.839252789970355 & 0 & 2500 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
 
-The point on the curve segment can be computed as
+**Step 5 - Evaluate and map each point**
+
+Evaluate the parent curve at $u = 100$
 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-$$x = 500 + \int_{0}^{100}{\cos{(-0.574888766)}} = 500 + ( - \sin{(-0.574888766))(100m - 0m) = 583.925249}$$
+$$\theta(100) = \arctan\left(\frac{0}{1}\right) = 0$$
 
-$$y = 2500 + \int_{0}^{100}{\sin{( -0.574888766)}} = 2500 + (\cos{(-0.574888766))(100m - 0m) = 2445.625886}$$
+$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(100m - 0m) = 100$$
+
+$$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(100m - 0m) = 0$$
 
 Though it is much easier to use the following calculation
 
@@ -184,11 +235,39 @@ $$x(u) = p_{x} + u(dx)$$
 
 $$y(u) = p_{y} + u(dy)$$
 
-$$x = 500 + 0.839252789970355(100) = 583.925249$$
+$$x = 0 + 1(100) = 100$$
 
-$$y = 2500 - 0.54374144087698(100) = 2445.625886$$
+$$y = 0 - 0(100) = 0$$
+
+$$M_{PC} = \begin{bmatrix}
+1 & 0 & 0 & 100 \\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
 
 The resulting position matrix is
+
+$$M_h = M_{CSP} M_T M_R M_{PC}$$
+
+$$M_h = \begin{bmatrix}
+0.839252789970355 & 0.54374144087698 & 0 & 500 \\
+ -0.54374144087698 & 0.839252789970355 & 0 & 2500 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix} 
+\begin{bmatrix}
+I
+\end{bmatrix} 
+\begin{bmatrix}
+I
+\end{bmatrix} 
+\begin{bmatrix}
+1 & 0 & 0 & 100\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+ \end{bmatrix}$$
 
 $$M_{h} = \begin{bmatrix}
 0.83925279 & 0.54374114 & 0 & 583.925249 \\
@@ -197,7 +276,7 @@ $$M_{h} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-## Circular Arc
+## 2.4 Circular Arc
 
 When `IfcCircle` is used as a parent curve, it represents a circular curve
 of the alignment.
@@ -205,7 +284,9 @@ of the alignment.
 Source Model:
 [GENERATED\_\_HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.4.1 Parent Curve Parametric Equations
+
+The curve tangent angle, curvature, and point on the curve are given by the following equations
 
 $$\theta(s) = \frac{s}{R}$$
 
@@ -215,12 +296,10 @@ $$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$
 
 $$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$
 
-### Semantic Definition to Geometry Mapping
+### 2.4.2 Semantic Definition to Geometry Mapping
 
 `IfcCircle` is defined by its center (`IfcCircle.Position`) and radius
-(`IfcCircle.Radius`). The position of the circle is irrelevant. The
-mapping from the semantic definition of radius to the geometric
-definition of radius is trivial.
+(`IfcCircle.Radius`).
 
 Consider a horizontal curve segment that starts at (0,0), has a radius
 of 300 m, and an arc length of 100 m. The semantic definition is
@@ -240,78 +319,111 @@ The parent curve can be defined as follows:
 ~~~
 
 This is a circle centered at point (0,300) with the local X-axis aligned
-with the negative global Y-axis. This aligns the trimmed curve with its
-final placement.
+with the negative global Y-axis.
 
-The trimmed curve segment is placed such that the start point is at
-(0,0) and the tangent at the start point is in the direction (1,0).
+[todo: add a figure of the circle along with the local and global coordinate systems.]
 
-~~~
-#42 = IFCAXIS2PLACEMENT2D(#43, #44);
-#43 = IFCCARTESIANPOINT((0., 0.));
-#44 = IFCDIRECTION((1., 0.));
-~~~
+The parent curve is placed such that a trim starting at 0.0 is at
+(0,0) and the tangent is in the direction (1,0).
 
 The curve segment is defined by its placement at a segment trimmed from
 the parent curve starting at 0.0 for a length of 100.0 along the curve.
 
 ~~~
+#42 = IFCAXIS2PLACEMENT2D(#43, #44);
+#43 = IFCCARTESIANPOINT((0., 0.));
+#44 = IFCDIRECTION((1., 0.));
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.), #45);
 ~~~
 
-### Compute Point on Curve
+### 2.4.3 Compute Point on Curve
 
 Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
+**Step 1 -- Evaluate the parent curve at the trim start**
+
+The trim begins where the local x-axis of the circle intersects the circumfrance. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
+
+**Step 2 -- Form the translation matrix $M_T$**
+
+$M_T = I$
+
+**Step 3 -- Form the rotaton matrix $M_R$**
+
+$M_R = I$
+
+**Step 4 -- Form the curve segment placement matrix $M_{CSP}$**
+
+$M_{CSP} = I$
+
+**Step 5 -- Evaluate and map each point**
+
 Compute point on parent curve at $u = 50$
 
-$$\theta(s) = \frac{s}{R}$$
+$$\theta(s) = \frac{s}{R} = \frac{50}{300} $$
 
-$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$
+$$d_x = \cos(\theta(s)) = \cos(\frac{50}{300}) = 0.98614323$$
 
-$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$
+$$d_y = \sin(\theta(s)) = \sin(\frac{50}{300}) = 0.16589613$$
 
-$$x(50) = \int_{0}^{50}{\cos\left( \frac{s}{300} \right)ds} = 300\sin\frac{50}{300} - 300\sin\frac{0}{300} = 49.76883981$$
+$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds} = \int_{0}^{50}{\cos\left( \frac{s}{300} \right)ds} = 300\sin\frac{50}{300} - 300\sin\frac{0}{300} = 49.76883981$$
 
-$$y(50) = \int_{0}^{50}{\sin{\left( \frac{s}{300} \right)\ ds}} = - 300\cos\frac{50}{300} - \left( - 300\cos\frac{0}{300} \right) = 4.1570305$$
+$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}} = \int_{0}^{50}{\sin{\left( \frac{s}{300} \right)\ ds}} = - 300\cos\frac{50}{300} - \left( - 300\cos\frac{0}{300} \right) = 4.1570305$$
 
-This is the point on the parent curve relative to the start of the trim.
 
-Position this point using the curve segment placement. Direction of the
-curve tangent (RefDirection) is (1,0). Apply the rotation
+$$M_{PC} = 
+\begin{bmatrix}
+0.98614323 & -0.16589613 & 0 & 49.76883981\\
+0.16589613 & 0.98614323 & 0 & 4.1570305\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
 
-$$x = 49.76883981(1) + 4.1570305(0) = 49.76883981$$
+The resulting position matrix is
 
-$$y = - 49.76883981(0) + 4.1570305(1) = 4.1570305$$
+$$M_h = M_{CSP} M_T M_R M_{PC}$$
 
-The curve segment is placed at (0,0). Apply the translation
-
-$$x = 49.76883981 + 0 = 49.76883981$$
-
-$$y = 4.1570305 + 0 = 4.1570305$$
-
-The resulting placement matrix is
+$$M_h = \begin{bmatrix}
+I
+\end{bmatrix} 
+\begin{bmatrix}
+I
+\end{bmatrix} 
+\begin{bmatrix}
+I
+\end{bmatrix} 
+\begin{bmatrix}
+0.98614323 & -0.16589613 & 0 & 49.76883981\\
+0.16589613 & 0.98614323 & 0 & 4.1570305\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+ \end{bmatrix}$$
 
 $$M_{h} = \begin{bmatrix}
-1 & 0 & 0 & 49.76883981 \\
-0 & 1 & 0 & 4.1570305 \\
-0 & 0 & 1 & 0 \\
+0.98614323 & -0.16589613 & 0 & 49.76883981\\
+0.16589613 & 0.98614323 & 0 & 4.1570305\\
+0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 ![](images/image5.png)
 
-## Clothoid
+## 2.5 Clothoid
+
+When `IfcClothoid` is used as a parent curve, it represents a spiral transition curve
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.5.1 Parent Curve Parametric Equations
 
-$$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
+The curve tangent angle, curvature, and point on the curve are given by the following equations
 
 $$\theta(s) = \int_{}^{}{\kappa(s)ds} = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$
+
+$$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
 
 $$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$
 
@@ -319,16 +431,13 @@ $$y(u) = A\sqrt{\pi}\int_{0}^{u}{\sin{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \ri
 
 IFC provides a unit parametrization of clothoid curve.
 
-$$u = \frac{s}{\left| A\sqrt{\pi} \right|}\ $$ with
+$$u = \frac{s}{\left| A\sqrt{\pi} \right|}$$
+with
 $-\infty < u < \infty$. When $\theta = \pi/2$, $u = 1.0$.
 
 Care must be taken when evaluating clothoids because `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength` are defined with arc length. The details are illustreated in the example calculations.
 
-### Semantic Definition to Geometry Mapping
-
-$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
-
-$$A = \frac{L}{\sqrt{|f|}}\frac{f}{|f|}$$
+### 2.5.2 Semantic Definition to Geometry Mapping
 
 Consider a horizontal clothoid segment that starts at (0,0) with a start
 direction of (1.0,0.0). The radii at the start and end of the segment
@@ -344,9 +453,9 @@ From the semantic definition, compute the clothoid constant, $A$
 
 $$R_{s} = 300,\ R_{e} = 1000,\ L = 100$$
 
-$$f = \frac{100}{1000} - \frac{100}{300} = -0.23333$$
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}= \frac{100}{1000} - \frac{100}{300} = -0.23333$$
 
-$$A = \frac{100}{\sqrt{| -0.23333|}}\frac{-0.23333}{| -0.23333|} = -207.0196678$$
+$$A = \frac{L}{\sqrt{|f|}}\frac{f}{|f|} = \frac{100}{\sqrt{| -0.23333|}}\frac{-0.23333}{| -0.23333|} = -207.0196678$$
 
 The curve segment starts where the radius is 300. The distance from the
 origin where this radius occurs can be computed from the curvature
@@ -382,86 +491,71 @@ Define the curve segment
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(-142.857142857143), IFCLENGTHMEASURE(100.), #45);
 ~~~
 
-### Compute Point on Curve
-
-These example calculations will reference the steps in the algorithm
-presented in 1.5.3.
-
-Step 1 -- Evaluate the parent curve at `IfcCurveSegment.SegmentStart`
+### 2.5.3 Compute Point on Curve
 
 Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
-Start by computing the point and curve tangent at the start of the
-parent curve trim.
+**Step 1 -- Evaluate the parent curve at the trim start**
 
-Compute point on parent curve at
-$u = \frac{-142.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = -0.3893278$
+Start by computing the point and curve tangent at the start of the parent curve trim.
 
-$$x(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602$$
+Recall that the clothoid equations are in terms of a unit parameterization. Compute the parametric position on the curve.
 
-$$y(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
+$$u = \frac{-142.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = -0.3893278$$
 
-$$\theta(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.3893278)^{2} = -0.238095237$$
+Compute the point on curve tangent direction
 
-$$dx = \cos(-0.238095237) = 0.971788979$$
+$$\theta_0(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.3893278)^{2} = -0.238095237$$
 
-$$dy = \sin{(-0.238095237) = -0.235852028}$$
+and compute the point on the curve
 
-In matrix form
+$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602$$
 
-$$M_{PCS} = \begin{bmatrix}
-0.971788979 & 0.235852028 & 0 & -142.04941746210602 \\
- -0.235852028 & 0.971788979 & 0 & 11.292042785713347 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
+$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
 
-Step 2 -- Create parent curve translation matrix
+**Step 2 -- Form the translation matrix $M_T$**
 
-Remove the start point location so the point under consideration is
-relative to (0,0).
-
-$$M_{T} = \begin{bmatrix}
+$$M_T = \begin{bmatrix} 1 & 0 & 0 & -x_0 \\ 0 & 1 & 0 & -y_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+=
+\begin{bmatrix}
 1 & 0 & 0 & 142.04941746210602 \\
 0 & 1 & 0 & -11.292042785713347 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
-Step 3 -- Create parent curve rotation matrix
+**Step 3 -- Form the rotation matrix $M_R$**
 
-Remove the start point rotation so the point under consideration tangent
-at the start point in the direction (1,0).
-
-$$M_{R} = \begin{bmatrix}
+$$M_R = \begin{bmatrix} \cos\theta_0 & \sin\theta_0 & 0 & 0 \\ -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}
+=\begin{bmatrix}
+\cos(-0.238095237) & \sin(-0.238095237) & 0 & 0 \\
+-\sin(-0.238095237) & \cos(-0.238095237) & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+ = \begin{bmatrix}
 0.971788979 & -0.235852028 & 0 & 0 \\
 0.235852028 & 0.971788979 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
-Step 4 -- Create matrix for `IfcCurveSegment.Placement`
+**Step 4 -- Form the curve segment placement matrix $M_{CSP}$**
 
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix. This is not true in all cases.
 
-$$M_{CSP} = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
+$$M_{CSP} = I$$
 
-Step 5 -- Compute position on `IfcCurveSegment`
-
-Step 5a -- Evaluate parent curve at `IfcCurveSegment.SegmentStart` +
-`IfcCurveSegment.SegmentLength`
+**Step 5 -- Evaluate and map each point**
 
 Compute point and curve tangent at 50 m from the start,
 
-$$ -142.8571428 + 50 = -92.8571428$$
+$$ s = -142.8571428 + 50 = -92.8571428$$
 
 $$u = \frac{-92.8571428}{\left|-207.0196678\sqrt{\pi} \right|} = -0.25306307$$
 
@@ -484,16 +578,11 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-Step 5b -- Map the parent curve point to the curve segment.
-
 Apply the translation, rotation, and curve segment placement to the
 parent curve point
 
 $$M_{h} = M_{CSP} M_{R} M_{T} M_{PC} = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+I
 \end{bmatrix}
 \begin{bmatrix}
 0.971788979 & -0.235852028 & 0 & 0 \\
@@ -523,12 +612,14 @@ $$M_{h} = \begin{bmatrix}
 
 ![](images/image6.png)
 
-## Cubic Transition Curve
+## 2.6 Cubic Transition Curve
+
+When `IfcPolynomalCurve` is used as a parent curve, it represents a spiral transition curve
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.6.1 Parent Curve Parametric Equations
 
 The approach for calculating the coordinates of a horizontal cubic curve
 is unique compared to the other curve types. For a horizontal alignment,
@@ -538,30 +629,26 @@ curve. A cubic curve is represented with the `IfcPolynomialCurve` parent
 curve type. When `IfcPolynomialCurve` is used as a cubic transition curve,
 the $x$ coefficients are \[0,1\] and the $y$ coefficients are
 \[0,0,0, $A_{3}$\] resulting in a function of the form
-$y(x) = A_{3}x^{3}$.
+$y(x) = A_{3}x^{3}$. See [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html).
 
-The distance along the curve is defined by
+The distance along a curve is defined by
 
-$$s = \int_{}^{}{\sqrt{\left( y'(x) \right)^{2} + 1}\ dx}$$
+$$d = \int_{}^{}{\sqrt{\left( y'(x) \right)^{2} + 1}\ dx}$$
 
 $$y'(x) = 3A_{3}x^{2}$$
 
-$$s = \int_{}^{}{\sqrt{9A_{3}^{2}x^{4} + 1}\ dx}$$
+$$d = \int_{}^{}{\sqrt{9A_{3}^{2}x^{4} + 1}\ dx}$$
 
 This equation is solved for $x$ and then $y$ can be computed. This can
-be accomplished with numeric methods.
+be accomplished with numeric methods. [todo: is there a closed form solution - i think i used one with in the cant section]
 
-1.  For a distance $u$ along the curve, find $x$ for $s - u = 0$
+1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$
 
 2.  Compute $y(x) = A_{3}x^{3}$
 
 3.  Compute curve tangent slope as $\frac{dy}{dx} = 3A_{3}x^{2}$
 
-### Semantic Definition to Geometry Mapping
-
-$$A_{0} = A_{1} = A_{2} = 0$$
-
-$$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L}$$
+### 2.6.2 Semantic Definition to Geometry Mapping
 
 Consider a horizontal cubic transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
@@ -572,9 +659,23 @@ The semantic definition is
 #29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $,.CUBIC.);
 ~~~
 
-Compute the polynomial curve constants
+Compute the polynomial curve coefficients
 
-$$A_{3} = \frac{1}{6(300m)(100m)} - \frac{1}{6(\infty)(100m)} = 5.55555 \bullet 10^{- 6}\ m^{- 2}$$
+$$A_{0} = A_{1} = A_{2} = 0$$
+
+$$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L} = \frac{1}{6(300m)(100m)} - \frac{1}{6(\infty)(100m)} = 5.55555 \cdot 10^{- 6}\ m^{- 2}$$
+
+The geometric representation is
+
+~~~
+#42 = IFCAXIS2PLACEMENT2D(#43, #44);
+#43 = IFCCARTESIANPOINT((0., 0.));
+#44 = IFCDIRECTION((1., 0.));
+#45 = IFCPOLYNOMIALCURVE(#46, (0., 1.), (0., 0., 0., 5.55555555555556E-6), $);
+#46 = IFCAXIS2PLACEMENT2D(#47, $);
+#47 = IFCCARTESIANPOINT((0., 0.));
+#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
+~~~
 
 ---
 :warning:
@@ -583,7 +684,7 @@ There is a flaw in the IFC Specification. [IfcAlignmentHorizontalSegment](https:
 
 Why is this a problem? The calculation of a point on the polynomal curve is different depending on how the coefficients are defined.
 
-The parametric form of the polynomial curve is $Q(u) = ( x(u), y(u), z(u) )$. The polynomial curve represents real geometry so the resulting values, $x$, $y$, and $z$ must have units of $Length$.
+The parametric form of the polynomial curve is $\lambda(u) = ( x(u), y(u), z(u) )$. The polynomial curve represents real geometry so the resulting values, $x$, $y$, and $z$ must have units of $Length$.
 
 When $u$ is parametrized as a Length measure, as required by [IfcCurveSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcCurveSegment.htm), the parametric terms of the polynomal equation are:
 
@@ -615,35 +716,53 @@ The parameter $u$ and the coefficients are scalar so they must be multipled with
 
 Concept Template [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html) and [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) provide clear direction (not withstanding typographical errors) that `IfcPolynomalCurve` is to be evaluated as $y = CoefficientsY[3]x^3$ which dictates that $CoefficientsY[3]$ must be in units of $Length^{-2}$ and must be encoded in the `IfcPolynomialCurve.CoefficientY` attribute as an `IfcReal`.
 
-While I've never been able to find an offically documented Implementer's Agreement, this interpetation is consistent with several different discussions on GitHub. 
+An offical [Implementation Agreement](https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/) doesn't seem to exist, however, this interpetation is consistent with several different discussions on [GitHub](https://github.com/buildingSMART/IFC4.x-IF/issues/169). 
 
 :warning:
 
 ---
 
-The geometric representation is
-
-~~~
-#45 = IFCPOLYNOMIALCURVE(#46, (0., 1.), (0., 0., 0., 5.55555555555556E-6), $);
-#46 = IFCAXIS2PLACEMENT2D(#47, $);
-#47 = IFCCARTESIANPOINT((0., 0.));
-~~~
-
-### Evaluate Point on Curve
+### 2.6.3 Evaluate Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
+**Step 1 -- Evaluate the parent curve at the trim start**
+
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
+
+**Step 2 - Form the translation matrix $M_T$**
+
+The trimmed curve starts at (0,0) so $M_T$ is an identity matrix.
+
+**Step 3 - Form the rotation matrix $M_R$**
+
+The trimmed curve in the direction (1,0) so $M_R$ is an identity matrix.
+
+**Step 4 -- Form the curve segment placement matrix $M_{CSP}$**
+
+Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
+placement is at (0,0) with RefDirection (1,0) which results in an
+identity matrix.
+
+$$M_{CSP} = I$$
+
+**Step 5 -- Evalute and map each point**
+
+Compute point and curve tangent at 100 m from the start.
+
+From the `IfcPolynomalCurve` definition, 
+
 X Coefficients = ($0 m^1$, $1 m^0$)
 
-Y Coefficients = ($0 m^1$, $0 m^{0}$, $0 m^{-1}$, $5.55555E{-06} m^{-2}$)
+Y Coefficients = ($0 m^1$, $0 m^{0}$, $0 m^{-1}$, $5.55555 \cdot 10^{-6} m^{-2}$)
 
-$$y(x) = \left( 5.55555 \bullet 10^{-6} m^{-2}\right)x^{3}$$
+$$y(x) = \left( 5.55555 \cdot 10^{-6} m^{-2}\right)x^{3}$$
 
 Find $x$ such that
 
-$$s - u = \int_{0}^{x}\sqrt{\left( y'(x) \right)^{2} + 1}dx - u = 0$$
+$$d - u = \int_{0}^{x}\sqrt{\left( y'(x) \right)^{2} + 1}dx - u = 0$$
 
-$$y'(x) = 3\left( 5.55555 \bullet 10^{-6}  m^{-2}\right)x^{2}$$
+$$y'(x) = 3\left( 5.55555 \cdot 10^{-6}  m^{-2}\right)x^{2}$$
 
 Solve numerically
 
@@ -651,27 +770,21 @@ $$x = 99.72593255 m$$
 
 Check solution
 
-$$s = \int_{0}^{99.72593255m}\sqrt{\left( 3 \bullet (5.55555 \bullet 10^{-6} m^{-2})(x m)^{2} \right)^{2} + 1}dx = 100m$$
+$$d = \int_{0}^{99.72593255m}\sqrt{\left( 3 \cdot (5.55555 \cdot 10^{-6} m^{-2})(x m)^{2} \right)^{2} + 1}dx = 100m$$
 
 Compute y
 
-$$y(x) = (5.55555 \bullet 10^{-6} m^{-2}{)(99.72593255m)}^{3} = 5.5100m$$
+$$y(x) = (5.55555 \cdot 10^{-6} m^{-2}{)(99.72593255m)}^{3} = 5.5100m$$
 
 The tangent vector at $u = 100m$ along the curve is
 
-$$dy = y'(99.72593255m) = 3\left( 5.55555 \bullet 10^{-6} m^{-2}\right)(99.72593255m)^{2} = 0.165753$$
+$$y'(99.72593255m) = 3\left( 5.55555 \cdot 10^{-6} m^{-2}\right)(99.72593255m)^{2} = 0.165753$$
 
-$$dx = 1.0$$
-
-Normalizing the tangent vector (RefDirection)
+Normalizing the tangent vector
 
 $$dx = \frac{1}{\sqrt{1^{2} + {0.615753}^{2}}} = 0.986539$$
 
 $$dy = \frac{0.165753}{\sqrt{1^{2} + {0.615753}^{2}}} = 0.1635219$$
-
-The Y-direction vector is (-dy,dx)
-
-Axis vector is (0,0,1)
 
 The resulting matrix is
 
@@ -682,10 +795,21 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-For this example, $M_{CSP}$, $M_{R}$, and $M_{T}$ are identity matrices.
-The resulting point is
+Apply the translation, rotation, and curve segment placement to the
+parent curve point
 
-$$M_{h} = \begin{bmatrix}
+$$M_{h} = M_{CSP} M_{R} M_{T} M_{PC} = 
+\begin{bmatrix}I\end{bmatrix}
+\begin{bmatrix}I\end{bmatrix}
+\begin{bmatrix}I\end{bmatrix}
+\begin{bmatrix}
+0.986539 & -0.1635219 & 0 & 99.72593255 \\
+0.1635219 & 0.986539 & 0 & 5.5100 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
 0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
 0 & 0 & 1 & 0 \\
@@ -694,22 +818,20 @@ $$M_{h} = \begin{bmatrix}
 
 ![](images/image7.png)
 
-## Helmert Transition Curve
+## 2.7 Helmert Transition Curve
 
-The Helmert curve is unique in that it is modeled in two halves. The
-business logic is represented geometrically by two
-`IfcSecondOrderPolynomialSpiral` objects.
+The Helmert curve is unique in that it is semantically defined as a single layout segment but geometrically defined with two composite curve segments, each representing half of the transition curve. The parent curve for a helmert transition curve is `IfcSecondOrderPolynomialSpiral`.
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.7.1 Parent Curve Parametric Equations
 
 $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$
 
 $$\kappa(t) = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
-### Semantic Definition to Geometry Mapping
+### 2.7.2 Semantic Definition to Geometry Mapping
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
 
@@ -869,20 +991,20 @@ See clothoid curve for general calculation procedure.
 
 :warning: **[Add calculation]** :warning:
 
-## Bloss Transition Curve
+## 2.8 Bloss Transition Curve
 
 Parent curve type: `IfcThirdOrderPolynomialSpiral`
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.8.1 Parent Curve Parametric Equations
 
 $$\theta(t) = \frac{A_{3}}{4\left| A_{3}^{5} \right|}t^{4} + \frac{1}{3A_{2}^{3}}t^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$
 
 $$\kappa(t) = \frac{A_{3}}{\left| A_{3}^{5} \right|}t^{3} + \frac{t^{2}}{A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
-### Semantic Definition to Geometry Mapping
+### 2.8.2 Semantic Definition to Geometry Mapping
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
 
@@ -924,7 +1046,7 @@ $$a_{3} = - 2(0.33333) = -0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### Evaluate Point on Curve
+### 2.8.3 Evaluate Point on Curve
 
 Evaluate at the end of the curve $u = 100$
 
@@ -945,13 +1067,13 @@ point and orientation as illustrated for the clothoid curve example.
 
 ![](images/image8.png)
 
-### Evaluate Point on Curve
+### 2.8.4 Evaluate Point on Curve
 
 Compute the placement matrix for a point **50 m** from the start of the
 curve segment.
 
 These example calculations follow the steps of the algorithm presented
-in Section 1.5.3.
+in Section 2.2.
 
 The parent curve for this example is
 
@@ -1119,12 +1241,12 @@ $$\left(49.9962110\ \text{m},\ 0.4166388\ \text{m}\right)$$
 
 with a tangent bearing of $\theta = 1/32 \approx 0.03125\ \text{rad}$.
 
-## Cosine Transition Curve
+## 2.9 Cosine Transition Curve
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.9.1 Parent Curve Parametric Equations
 
 $$\kappa(t) = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \frac{\pi}{L}t \right)$$
 
@@ -1134,7 +1256,7 @@ $$x = \int_{0}^{L}{\cos{\theta(t)}}\ dt$$
 
 $$y = \int_{0}^{L}{\sin{\theta(t)}}\ dt$$
 
-### Semantic Definition to Geometry Mapping 
+### 2.9.2 Semantic Definition to Geometry Mapping
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
 
@@ -1168,7 +1290,7 @@ $$a_{1} = -0.5(0.33333) = -0.16667,\ A_{1} = \frac{100}{|-0.16667|}\ \frac{-0.16
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### Evaluate Point on Curve
+### 2.9.3 Evaluate Point on Curve
 
 Evaluate at the end of the curve $u = 100$
 
@@ -1187,12 +1309,12 @@ $$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
 The parent curve point is then positioned using the curve segment start
 point and orientation as illustrated for the clothoid curve example.
 
-## Sine Transition Curve
+## 2.10 Sine Transition Curve
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc)
 
-### Parent Curve Parametric Equations
+### 2.10.1 Parent Curve Parametric Equations
 
 $$\kappa(t) = \frac{1}{A_{0}} + \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2}t + \frac{1}{A_{2}}\sin\left( \frac{2\pi}{L}t \right)\ \ $$
 
@@ -1202,7 +1324,7 @@ $$x = \int_{0}^{L}{\cos{\theta(t)}}\ dt$$
 
 $$y = \int_{0}^{L}{\sin{\theta(t)}}\ dt$$
 
-### Semantic Definition to Geometry Mapping 
+### 2.10.2 Semantic Definition to Geometry Mapping
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
 
@@ -1241,7 +1363,7 @@ $$a_{2} = -\frac{1}{2\pi}(0.33333) = -0.053051647,\ A_{2} = \frac{100}{|-0.05305
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### Evaluate Point on Curve
+### 2.10.3 Evaluate Point on Curve
 
 Evaluate at the end of the curve $u = 100$
 
@@ -1262,19 +1384,19 @@ point and orientation as illustrated for the clothoid curve example.
 
 ![](images/image9.png)
 
-## Viennese Transition Curve
+## 2.11 Viennese Transition Curve
 
 Parent curve type: `IfcSeventhOrderPolynomialSpiral`
 
 Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_VienneseBend_100.0_inf_300_1_Meter.ifc
 
-### Parent Curve Parametric Equations ###
+### 2.11.1 Parent Curve Parametric Equations ###
 
 $$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s$$
 
 $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s^{6} + \frac{A_{5}}{\left| A_{5}^{7} \right|}s^{5} + \frac{1}{A_{4}^{5}}s^{4} + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
-### Semantic Definition to Geometry Mapping
+### 2.11.2 Semantic Definition to Geometry Mapping
 
 $h_{cg}$ = Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
 
@@ -1288,11 +1410,11 @@ $D_{sr}$ = `IfcAlignmentCantSegment.StartCantRight`
 
 $D_{er}$ = `IfcAlignmentCantSegment.EndCantRight`
 
-$$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$$,  Start Cant Angle
+$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$,  Start Cant Angle
 
-$$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$$,  End Cant Angle
+$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cant Angle
 
-$$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)$$, Cant Factor
+$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)$, Cant Factor
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
 
@@ -1312,7 +1434,7 @@ Sextic term term $$a_{6} = 70f, A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}
 
 Septic term $$a_{7} = -20f, A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|}$$
 
-### Example
+### 2.11.3 Example
 
 Consider a horizontal Viennese Bend transition curve segment that starts at (0,0) with a start direction of 0.0. The radius at the start is infinite and the radius at the end is 300. The arc length is 100. The Gravity Center Line Height is 1.8 (this optional parameter is required for the Viennese Bend). The semantic definition is
 

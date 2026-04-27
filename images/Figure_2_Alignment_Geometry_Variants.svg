@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="415" font-family="Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+    <marker id="oarr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#c05800"/>
+    </marker>
+  </defs>
+
+  <rect width="820" height="415" fill="white"/>
+
+  <!-- Row backgrounds -->
+  <rect x="0" y="22" width="820" height="88" fill="#fafafa"/>
+  <rect x="0" y="110" width="820" height="132" fill="#f2f5fa"/>
+  <rect x="0" y="242" width="820" height="173" fill="#fafafa"/>
+
+  <!-- Column headers -->
+  <text x="235" y="15" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Semantic</text>
+  <text x="610" y="15" text-anchor="middle" font-size="11" font-weight="bold" fill="#333">Geometric</text>
+
+  <!-- Dashed column separator -->
+  <line x1="465" y1="18" x2="465" y2="415" stroke="#bbb" stroke-width="1" stroke-dasharray="5,3"/>
+
+  <!-- Row borders -->
+  <line x1="0" y1="110" x2="820" y2="110" stroke="#ccc" stroke-width="1"/>
+  <line x1="0" y1="242" x2="820" y2="242" stroke="#ccc" stroke-width="1"/>
+
+  <!-- ═══ ROW 1: Horizontal only ═══ -->
+  <text x="14" y="37" font-size="10" fill="#777" font-style="italic">Horizontal only</text>
+
+  <rect x="10" y="44" width="120" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="70" y="66" text-anchor="middle" font-size="11" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <line x1="130" y1="61" x2="170" y2="61" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="150" y="55" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+
+  <rect x="170" y="44" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="263" y="66" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentHorizontal</text>
+
+  <rect x="480" y="39" width="220" height="44" rx="3" fill="#fff3e0" stroke="#c05800" stroke-width="1.5"/>
+  <text x="590" y="57" text-anchor="middle" font-size="11" font-weight="bold" fill="#331a00">IfcCompositeCurve</text>
+  <text x="590" y="73" text-anchor="middle" font-size="9.5" fill="#885500" font-style="italic">'Axis' · 'Curve2D'</text>
+
+  <!-- ═══ ROW 2: H+V ═══ -->
+  <text x="14" y="124" font-size="10" fill="#777" font-style="italic">Horizontal + Vertical</text>
+
+  <!-- IfcAlignment centered between H (y=150) and V (y=200) → center y=175 -->
+  <rect x="10" y="158" width="120" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="70" y="180" text-anchor="middle" font-size="11" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <text x="140" y="170" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+  <line x1="130" y1="175" x2="150" y2="175" stroke="#555" stroke-width="1.2"/>
+  <line x1="150" y1="150" x2="150" y2="200" stroke="#555" stroke-width="1.2"/>
+  <line x1="150" y1="150" x2="170" y2="150" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="150" y1="200" x2="170" y2="200" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <rect x="170" y="133" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="263" y="155" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentHorizontal</text>
+
+  <rect x="170" y="183" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="263" y="205" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentVertical</text>
+
+  <!-- CompositeCurve (center y=150, box y=128-172) -->
+  <rect x="480" y="128" width="220" height="44" rx="3" fill="#fff3e0" stroke="#c05800" stroke-width="1.5"/>
+  <text x="590" y="147" text-anchor="middle" font-size="11" font-weight="bold" fill="#331a00">IfcCompositeCurve</text>
+  <text x="590" y="162" text-anchor="middle" font-size="9.5" fill="#885500" font-style="italic">'FootPrint' · 'Curve2D'</text>
+
+  <!-- BaseCurve arrow (172 → 182) -->
+  <line x1="590" y1="172" x2="590" y2="182" stroke="#c05800" stroke-width="1.2" marker-end="url(#oarr)"/>
+  <text x="598" y="180" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <!-- GradientCurve (center y=204, box y=182-226) -->
+  <rect x="480" y="182" width="220" height="44" rx="3" fill="#fff3e0" stroke="#c05800" stroke-width="1.5"/>
+  <text x="590" y="200" text-anchor="middle" font-size="11" font-weight="bold" fill="#331a00">IfcGradientCurve</text>
+  <text x="590" y="216" text-anchor="middle" font-size="9.5" fill="#885500" font-style="italic">'Axis' · 'Curve3D'</text>
+
+  <!-- ═══ ROW 3: H+V+C ═══ -->
+  <text x="14" y="257" font-size="10" fill="#777" font-style="italic">Horizontal + Vertical + Cant</text>
+
+  <!-- IfcAlignment centered between H (y=275), V (y=325), C (y=375) → center y=325 -->
+  <rect x="10" y="308" width="120" height="34" rx="3" fill="#dce8ff" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="70" y="330" text-anchor="middle" font-size="11" font-weight="bold" fill="#102040">IfcAlignment</text>
+
+  <text x="140" y="318" text-anchor="middle" font-size="9" fill="#666" font-style="italic">IfcRelNests</text>
+  <line x1="130" y1="325" x2="150" y2="325" stroke="#555" stroke-width="1.2"/>
+  <line x1="150" y1="275" x2="150" y2="375" stroke="#555" stroke-width="1.2"/>
+  <line x1="150" y1="275" x2="170" y2="275" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="150" y1="325" x2="170" y2="325" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="150" y1="375" x2="170" y2="375" stroke="#555" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <rect x="170" y="258" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="263" y="280" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentHorizontal</text>
+
+  <rect x="170" y="308" width="185" height="34" rx="3" fill="#f0f4fa" stroke="#2050a0" stroke-width="1.5"/>
+  <text x="263" y="330" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentVertical</text>
+
+  <rect x="170" y="358" width="185" height="34" rx="3" fill="#f2eeff" stroke="#2050a0" stroke-width="1.8"/>
+  <text x="263" y="380" text-anchor="middle" font-size="11" font-weight="bold" fill="#111">IfcAlignmentCant</text>
+
+  <!-- CompositeCurve (center y=275, box y=253-297) -->
+  <rect x="480" y="253" width="220" height="44" rx="3" fill="#fff3e0" stroke="#c05800" stroke-width="1.5"/>
+  <text x="590" y="272" text-anchor="middle" font-size="11" font-weight="bold" fill="#331a00">IfcCompositeCurve</text>
+  <text x="590" y="287" text-anchor="middle" font-size="9.5" fill="#885500" font-style="italic">'FootPrint' · 'Curve2D'</text>
+
+  <!-- BaseCurve arrow 1 (297 → 308) -->
+  <line x1="590" y1="297" x2="590" y2="308" stroke="#c05800" stroke-width="1.2" marker-end="url(#oarr)"/>
+  <text x="598" y="306" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <!-- GradientCurve — intermediate only, not a shape representation (dashed border, lighter) -->
+  <rect x="480" y="308" width="220" height="34" rx="3" fill="#fef9f0" stroke="#c05800" stroke-width="1.2" stroke-dasharray="5,3"/>
+  <text x="590" y="330" text-anchor="middle" font-size="11" font-weight="bold" fill="#aa7700">IfcGradientCurve</text>
+
+  <!-- BaseCurve arrow 2 (342 → 353) -->
+  <line x1="590" y1="342" x2="590" y2="353" stroke="#c05800" stroke-width="1.2" marker-end="url(#oarr)"/>
+  <text x="598" y="351" font-size="9" fill="#885500" font-style="italic">BaseCurve</text>
+
+  <!-- IfcSegmentedReferenceCurve (center y=375, box y=353-397) -->
+  <rect x="480" y="353" width="220" height="44" rx="3" fill="#f2eeff" stroke="#6030a0" stroke-width="1.8"/>
+  <text x="590" y="371" text-anchor="middle" font-size="10" font-weight="bold" fill="#301060">IfcSegmentedReferenceCurve</text>
+  <text x="590" y="386" text-anchor="middle" font-size="9.5" fill="#5030a0" font-style="italic">'Axis' · 'Curve3D'</text>
+
+</svg>

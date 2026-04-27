@@ -2,7 +2,7 @@
 
 Placeholder - in this section it is intended that there is a discussion of IfcSectionedSurface and IfcSectionedSolidHorizontal. These are two new surface and solid geometries developed specifcially for infrastructure and alignments.
 
-## IfcSectionedSurface
+## 9.1 IfcSectionedSurface
 
 Describe when this surface geometry might be advantagous to use
 * Roadway surface
@@ -10,17 +10,17 @@ Describe when this surface geometry might be advantagous to use
 
 ![](images\Figure_9.1_Superelevation_Transition.png)
 
-### Breaklines
+### 9.1.1 Breaklines
 
 Describe the concept of breaklines for widening sections.
 
 ![](images\Figure_9.2_Sectioned_Surface_with_Breaklines.png)
 
-### Stringlines
+### 9.1.2 Stringlines
 
 Describe string lines and how they work (don't have a good implementation yet)
 
-## IfcSectionedSolidHorizontal
+## 9.2 IfcSectionedSolidHorizontal
 
 * Describe when this geometry may be useful
 * Give examples for different kinds of rotations as defined in the documentation
