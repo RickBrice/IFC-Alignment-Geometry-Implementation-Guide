@@ -10,7 +10,7 @@ The geometric representation of a horizontal alignment is accomplished with an `
 Table 2.1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding parent curve type.
 
   Business Logic (`IfcAlignmentHorizontal.PredefinedType`)|Geometric Representation (`IfcCurveSegment.ParentCurve`)
-  -----------------------------------------|-----------------------------------
+  ————————————————————-|—————————————————-
   LINE                                     |`IfcLine`
   CIRCULARARC                              |`IfcCircle`
   CLOTHOID                                 |`IfcClothoid`
@@ -28,7 +28,7 @@ Table 2.1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding
 The following parameters are common to all horizontal alignment curve types. Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from `IfcAlignmentHorizontalSegment.StartRadius` and `EndRadius`; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). The segment length $L$ is `IfcAlignmentHorizontalSegment.SegmentLength`. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the `RefDirection` of the curve at $s$.
 
 Parameter | Equation
-----------|-----------------------------------
+—————|—————————————————-
 Start Curvature | $$\kappa_{s} = \frac{1}{R_{s}}$$
 End Curvature | $$\kappa_{e} = \frac{1}{R_{e}}$$
 Cumulative change in curvature | $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = L\left( \frac{1}{R_{e}} - \frac{1}{R_{s}} \right)$$
@@ -361,23 +361,23 @@ the parent curve starting at 0.0 for a length of 100.0 along the curve.
 Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
-**Step 1 -- Evaluate the parent curve at the trim start**
+**Step 1 — Evaluate the parent curve at the trim start**
 
 The trim begins where the local x-axis of the circle intersects the circumfrance. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
 
-**Step 2 -- Form the translation matrix $M_T$**
+**Step 2 — Form the translation matrix $M_T$**
 
 $M_T = I$
 
-**Step 3 -- Form the rotaton matrix $M_R$**
+**Step 3 — Form the rotaton matrix $M_R$**
 
 $M_R = I$
 
-**Step 4 -- Form the curve segment placement matrix $M_{CSP}$**
+**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP} = I$
 
-**Step 5 -- Evaluate and map each point**
+**Step 5 — Evaluate and map each point**
 
 Compute point on parent curve at $u = 50$
 
@@ -516,7 +516,7 @@ Define the curve segment
 Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
-**Step 1 -- Evaluate the parent curve at the trim start**
+**Step 1 — Evaluate the parent curve at the trim start**
 
 Start by computing the point and curve tangent at the start of the parent curve trim.
 
@@ -534,7 +534,7 @@ $$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \fr
 
 $$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
 
-**Step 2 -- Form the translation matrix $M_T$**
+**Step 2 — Form the translation matrix $M_T$**
 
 $$M_T = \begin{bmatrix}
  1 & 0 & 0 & -x_0 \\ 
@@ -551,7 +551,7 @@ $$M_T = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-**Step 3 -- Form the rotation matrix $M_R$**
+**Step 3 — Form the rotation matrix $M_R$**
 
 $$M_R = \begin{bmatrix}
  \cos\theta_0 & \sin\theta_0 & 0 & 0 \\
@@ -573,7 +573,7 @@ $$M_R = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-**Step 4 -- Form the curve segment placement matrix $M_{CSP}$**
+**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
 
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
@@ -581,7 +581,7 @@ identity matrix. This is not true in all cases.
 
 $$M_{CSP} = I$$
 
-**Step 5 -- Evaluate and map each point**
+**Step 5 — Evaluate and map each point**
 
 Compute point and curve tangent at 50 m from the start,
 
@@ -707,7 +707,7 @@ The geometric representation is
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
 ~~~
 
----
+—-
 :warning:
 
 There is a flaw in the IFC Specification. [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) indicates the cubic formula is $y=\frac{x^3}{6RL}$ which means the `IfcPolynomialCurve.CoefficentY[3]` attribute must have unit of $Length^{-2}$. This is a direct contradiction to [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm) which clearly states the coefficent are real values (i.e. scalar values) with `IfcReal`.
@@ -750,13 +750,13 @@ An offical [Implementation Agreement](https://standards.buildingsmart.org/docume
 
 :warning:
 
----
+—-
 
 ### 2.6.3 Evaluate Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-**Step 1 -- Evaluate the parent curve at the trim start**
+**Step 1 — Evaluate the parent curve at the trim start**
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
@@ -768,7 +768,7 @@ The trimmed curve starts at (0,0) so $M_T$ is an identity matrix.
 
 The trimmed curve in the direction (1,0) so $M_R$ is an identity matrix.
 
-**Step 4 -- Form the curve segment placement matrix $M_{CSP}$**
+**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
 
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
@@ -776,7 +776,7 @@ identity matrix.
 
 $$M_{CSP} = I$$
 
-**Step 5 -- Evalute and map each point**
+**Step 5 — Evalute and map each point**
 
 Compute point and curve tangent at 100 m from the start.
 
@@ -1131,7 +1131,7 @@ The curve segment is defined as
 `IfcCurveSegment.SegmentStart` = 0.0, so the parent curve is trimmed
 beginning at $t = 0$.
 
------
+——-
 
 **Step 1 — Evaluate the parent curve at `IfcCurveSegment.SegmentStart`**
 
@@ -1164,7 +1164,7 @@ $$M_{PCS} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
------
+——-
 
 **Step 2 — Create parent curve translation matrix $M_T$**
 
@@ -1179,7 +1179,7 @@ $$M_T = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
------
+——-
 
 **Step 3 — Create parent curve rotation matrix $M_R$**
 
@@ -1194,7 +1194,7 @@ $$M_R = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
------
+——-
 
 **Step 4 — Create matrix for `IfcCurveSegment.Placement`**
 
@@ -1216,7 +1216,7 @@ $$M_{CSP} = \begin{bmatrix}
 > will generally not be identity matrices. See the Clothoid example for
 > a case where all four matrices are non-trivial.
 
------
+——-
 
 **Step 5 — Compute position on `IfcCurveSegment`**
 
@@ -1255,7 +1255,7 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
------
+——-
 
 **Step 5b — Map the parent curve point to the curve segment**
 
