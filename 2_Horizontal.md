@@ -49,29 +49,49 @@ Compute the position $(x_0, y_0)$ and tangent angle $\theta_0$ of the parent cur
 
 $M_T$ moves the trim-start point to the origin so that all subsequent calculations are relative to the beginning of the trimmed segment.
 
-$$M_T = \begin{bmatrix} 1 & 0 & 0 & -x_0 \\ 0 & 1 & 0 & -y_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_T = \begin{bmatrix} 
+1 & 0 & 0 & -x_0 \\
+ 0 & 1 & 0 & -y_0 \\
+  0 & 0 & 1 & 0 
+  \\ 0 & 0 & 0 & 1 
+  \end{bmatrix}$$
 
 **Step 3 — Form the rotation matrix $M_R$**
 
 $M_R$ rotates so that the tangent at the trim start aligns with the positive $x$-direction $(1, 0)$. This is the inverse of the rotational part of $M_{PCS}$, which for a pure rotation matrix equals the transpose.
 
-$$M_R = \begin{bmatrix} \cos\theta_0 & \sin\theta_0 & 0 & 0 \\ -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_R = \begin{bmatrix} 
+\cos\theta_0 & \sin\theta_0 & 0 & 0 \\
+ -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 
+ 0 & 0 & 1 & 0 \\
+  0 & 0 & 0 & 1
+   \end{bmatrix}$$
 
 **Step 4 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP}$ places the trimmed segment into the alignment coordinate system. It is constructed directly from `IfcCurveSegment.Placement`, where $(x_p, y_p)$ is the `Location` and $\theta_p$ is the bearing of the `RefDirection`.
 
-$$M_{CSP} = \begin{bmatrix} \cos\theta_p & -\sin\theta_p & 0 & x_p \\ \sin\theta_p & \cos\theta_p & 0 & y_p \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{CSP} = \begin{bmatrix} 
+\cos\theta_p & -\sin\theta_p & 0 & x_p \\ 
+\sin\theta_p & \cos\theta_p & 0 & y_p \\ 
+0 & 0 & 1 & 0 \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
 **Step 5 — Evaluate and map each point**
 
 For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:
 
-$$M_{PC} = \begin{bmatrix} \cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ \sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{PC} = \begin{bmatrix} 
+\cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\
+ \sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 
+ 0 & 0 & 1 & 0 \\ 
+ 0 & 0 & 0 & 1 
+ \end{bmatrix}$$
 
 Apply the translation, rotation, and placement in sequence:
 
-$$M_h = M_{CSP}\, M_R\, M_T\, M_{PC}$$
+$$M_h = M_{CSP} M_R M_T M_{PC}$$
 
 The position of the point in the alignment coordinate system is the fourth column of $M_h$, and its tangent direction is the first column. Numerical examples of this algorithm are given in Sections 2.3 through 2.11.
 
