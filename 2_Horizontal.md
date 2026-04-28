@@ -73,8 +73,8 @@ $$M_{CSP} = \begin{bmatrix}
 For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:
 
 $$M_{PC} = \begin{bmatrix} 
-\cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\
- \sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 
+\cos(\theta(s)) & -\sin(\theta(s)) & 0 & x(s) \\
+ \sin(\theta(s)) & \cos(\theta(s)) & 0 & y(s) \\ 
  0 & 0 & 1 & 0 \\ 
  0 & 0 & 0 & 1 
  \end{bmatrix}$$
