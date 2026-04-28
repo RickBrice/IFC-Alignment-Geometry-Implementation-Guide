@@ -124,7 +124,7 @@ geometric definition is described with the following example.
 Given a horizontal alignment segment is a line segment starting at point
 (500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. 
 
-![Tangent Segment](images\tangent_segment.svg)
+![Tangent Segment](images/tangent_segment.svg)
 
 This semantic definition of this segment is:
 
@@ -145,7 +145,7 @@ specified point at some direction in the X-Y plane. For example, a line passing 
 An easy way to define the `IfcLine` parent curve is to have it the X-axis direction
 passing through point (0,0).
 
-![Tangent Segment](images\ifcline_parent_curve.svg)
+![Tangent Segment](images/ifcline_parent_curve.svg)
 
 The parent curve definition is:
 
@@ -562,9 +562,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
-I
-\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = I
 \begin{bmatrix}
 0.971788979 & -0.235852028 & 0 & 140.705309648 \\
 0.235852028 & 0.971788979 & 0 & 22.529160405 \\
@@ -573,7 +571,7 @@ I
 \end{bmatrix}
 \begin{bmatrix}
 0.994944564 & 0.100425663 & 0 & -92.763220844871512 \\
- -0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
+-0.100425663 & 0.994944564 & 0 & 3.1114126254443812 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -768,13 +766,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = 
-\begin{bmatrix}
-I
-\end{bmatrix}
-\begin{bmatrix}
-I
-\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
 \begin{bmatrix}
 0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
@@ -1169,7 +1161,7 @@ $$\theta(100) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}(100)^{4} + 
 
 $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
-$$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
+$$dy = \sin\left( \frac{1}{6} \right) = 0.16589$$
 
 In matrix form
 
@@ -1182,22 +1174,15 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
-I
-\end{bmatrix}
-
-\begin{bmatrix}
-I
-\end{bmatrix}
-
+$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7486\\
 0.16589 & 0.98614 & 0 & 4.98981\\
 0 & 0 & 1 & 0\\
 0&0&0&1
-\end{bmatrix}$$
-
-$$M_{h} = \begin{bmatrix}
+\end{bmatrix}
+=
+\begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7486\\
 0.16589 & 0.98614 & 0 & 4.98981\\
 0 & 0 & 1 & 0\\
@@ -1292,7 +1277,7 @@ $$\theta(100) = \frac{1}{600}100 - \frac{100}{600\pi}\sin\left( \frac{\pi}{100}1
 
 $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
-$$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
+$$dy = \sin\left( \frac{1}{6} \right) = 0.16589$$
 
 In matrix form
 
@@ -1305,22 +1290,15 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
-I
-\end{bmatrix}
-
-\begin{bmatrix}
-I
-\end{bmatrix}
-
+$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7485\\
 0.16589 & 0.98614 & 0 & 4.9458\\
 0 & 0 & 1 & 0\\
 0&0&0&1
-\end{bmatrix}$$
-
-$$M_{h} = \begin{bmatrix}
+\end{bmatrix}
+=
+\begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7485\\
 0.16589 & 0.98614 & 0 & 4.9458\\
 0 & 0 & 1 & 0\\
@@ -1422,7 +1400,7 @@ $$\theta(100) = \frac{1}{2}\left( \frac{100}{173.2050808} \right)^{2} + \frac{10
 
 $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
-$$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
+$$dy = \sin\left( \frac{1}{6} \right) = 0.16589$$
 
 
 In matrix form
@@ -1436,22 +1414,15 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
-I
-\end{bmatrix}
-
-\begin{bmatrix}
-I
-\end{bmatrix}
-
+$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.757\\
 0.16589 & 0.98614 & 0 & 4.70132\\
 0 & 0 & 1 & 0\\
 0&0&0&1
-\end{bmatrix}$$
-
-$$M_{h} = \begin{bmatrix}
+\end{bmatrix}
+=
+\begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.757\\
 0.16589 & 0.98614 & 0 & 4.70132\\
 0 & 0 & 1 & 0\\
@@ -1522,35 +1493,51 @@ $$ \theta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$
 $$ cf = -420\left(\frac{1.8}{100}\right)(0.066667-0.)= -0.504$$
 
 Constant term 
+
 $$a_{0} = \frac{L}{R_{s}}= \frac{100}{\infty} = 0$$
+
 $$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0 $$
 
 Linear term 
+
 $$a_{1} = 0$$
+
 $$A_{1} = 0$$
 
 Quadratic term 
+
 $$a_{2} = cf= -0.504$$
+
 $$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069\ m$$
 
 Cubic term 
+
 $$a_{3} = -4cf= -4(-0.504) = 2.016$$
+
 $$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813\ m$$
 
 Quartic term 
+
 $$a_{4} = 5cf + 35f = 5(-0.504) + 35(0.33333) = 9.1466655$$
+
 $$A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406\ m$$
 
 Quintic term 
+
 $$a_{5} = -2cf - 84f= -2(-0.504) - 84(0.33333) = -26.9919999$$
+
 $$A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785\ m$$
 
 Sextic term 
+
 $$a_{6} = 70f  = 70(0.33333) = 23.33333333$$
+
 $$A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134\ m$$
 
 Septic term 
+
 $$a_{7} = -20f = -20(0.33333) = -6.66666666$$
+
 $$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838\ m$$
 
 ~~~
@@ -1611,24 +1598,17 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
-I
-\end{bmatrix}
-
-\begin{bmatrix}
-I
-\end{bmatrix}
-
+$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
 \begin{bmatrix}
 0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
- 0.16589613269344608&  0.9861432315629198& 0 & 4.499916129045404\\
+0.16589613269344608 & 0.9861432315629198 & 0 & 4.499916129045404\\
 0 & 0 & 1 & 0\\
 0&0&0&1
-\end{bmatrix}$$
-
-$$M_{h} = \begin{bmatrix}
+\end{bmatrix}
+=
+\begin{bmatrix}
 0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
- 0.16589613269344608&  0.9861432315629198& 0 & 4.499916129045404\\
+0.16589613269344608 & 0.9861432315629198 & 0 & 4.499916129045404\\
 0 & 0 & 1 & 0\\
 0&0&0&1
 \end{bmatrix}$$
