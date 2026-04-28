@@ -1,6 +1,4 @@
 todo:
-* Finish section for Viennese Bend
-* Finish section for Helmert Curve
 * Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent
 * Add figure for IfcClothoid showing both the X < 0 and X > 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.
 * Change all figure and table numbering to be "section number"-n, e.g. Figure 2.3.2-1, Table 3.0-1. Change references in the text and the captions
@@ -232,9 +230,9 @@ $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ 
 
 $$\theta(100) = \arctan\left(\frac{0}{1}\right) = 0$$
 
-$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(100m - 0m) = 100$$
+$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(100\ m - 0\ m) = 100\ m$$
 
-$$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(100m - 0m) = 0$$
+$$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(100\ m - 0\ m) = 0\ m$$
 
 Though it is much easier to use the following calculation
 
@@ -368,9 +366,9 @@ $$d_x = \cos(\theta(s)) = \cos(\frac{50}{300}) = 0.98614323$$
 
 $$d_y = \sin(\theta(s)) = \sin(\frac{50}{300}) = 0.16589613$$
 
-$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds} = \int_{0}^{50}{\cos\left( \frac{s}{300} \right)ds} = 300\sin\frac{50}{300} - 300\sin\frac{0}{300} = 49.76883981$$
+$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds} = \int_{0}^{50}{\cos\left( \frac{s}{300} \right)ds} = 300\sin\left(\frac{50}{300}\right) - 300\sin\left(\frac{0}{300}\right) = 49.76883981$$
 
-$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}} = \int_{0}^{50}{\sin{\left( \frac{s}{300} \right)\ ds}} = - 300\cos\frac{50}{300} - \left( - 300\cos\frac{0}{300} \right) = 4.1570305$$
+$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}} = \int_{0}^{50}{\sin{\left( \frac{s}{300} \right)\ ds}} = - 300\cos\left(\frac{50}{300}\right) - \left( - 300\cos\left(\frac{0}{300}\right) \right) = 4.1570305$$
 
 
 $$M_{PC} = 
@@ -405,8 +403,6 @@ $$M_{h} = \begin{bmatrix}
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
-
-![](images/image5.png)
 
 ## 2.5 Clothoid
 
@@ -642,7 +638,7 @@ Compute the polynomial curve coefficients
 
 $$A_{0} = A_{1} = A_{2} = 0$$
 
-$$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L} = \frac{1}{6(300m)(100m)} - \frac{1}{6(\infty)(100m)} = 5.55555 \cdot 10^{- 6}\ m^{- 2}$$
+$$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L} = \frac{1}{6(300\ m)(100\ m)} - \frac{1}{6(\infty)(100\ m)} = 5.55555 \cdot 10^{- 6}\ m^{- 2}$$
 
 The geometric representation is
 
@@ -745,15 +741,15 @@ $$x = 99.72593255 m$$
 
 Check solution
 
-$$d = \int_{0}^{99.72593255m}\sqrt{\left( 3 \cdot (5.55555 \cdot 10^{-6} m^{-2})(x m)^{2} \right)^{2} + 1}dx = 100m$$
+$$d = \int_{0}^{99.72593255\ m}\sqrt{\left( 3 \cdot (5.55555 \cdot 10^{-6} m^{-2})(x\ m)^{2} \right)^{2} + 1}dx = 100\ m$$
 
 Compute y
 
-$$y(x) = (5.55555 \cdot 10^{-6} m^{-2}{)(99.72593255m)}^{3} = 5.5100m$$
+$$y(x) = (5.55555 \cdot 10^{-6} m^{-2}{)(99.72593255\ m)}^{3} = 5.5100\ m$$
 
-The tangent vector at $u = 100m$ along the curve is
+The tangent vector at $u = 100\ m$ along the curve is
 
-$$y'(99.72593255m) = 3\left( 5.55555 \cdot 10^{-6} m^{-2}\right)(99.72593255m)^{2} = 0.165753$$
+$$y'(99.72593255\ m) = 3\left( 5.55555 \cdot 10^{-6} m^{-2}\right)(99.72593255\ m)^{2} = 0.165753$$
 
 Normalizing the tangent vector
 
@@ -869,11 +865,11 @@ $$x_{1} = \int_{0}^{L/2}{\cos{\theta(t)}}\ dt = 49.99724\ m$$
 
 $$y_{1} = \int_{0}^{L/2}{\sin{\theta(t)}}\ dt = 0.347204\ m$$
 
-$$\theta_{1}\left( \frac{L}{2} \right) = \frac{{(50m)}^{3}}{3(114.4714255m)^{3}} = 0.0277777777$$
+$$\theta_{1}\left( \frac{L}{2} \right) = \frac{{(50\ m)}^{3}}{3(114.4714255\ m)^{3}} = 0.0277777777$$
 
-$$dx = \cos{0.027777777} = 0.999614$$
+$$dx = \cos(0.027777777) = 0.999614$$
 
-$$dy = \sin{0.027777777} = 0.0277742$$
+$$dy = \sin(0.027777777) = 0.0277742$$
 
 Start point of second parent curve
 
@@ -883,7 +879,7 @@ $$x_{2} = \int_{0}^{L/2}{\cos{\theta(t)}}\ dt = 49.9664\ m\ $$
 
 $$y_{2} = \int_{0}^{L/2}{\sin{\theta(t)}}\ dt = - 1.73556\ m$$
 
-$$\theta_{2}\left( \frac{L}{2} = 50\ m \right) = \frac{{(50\ m)}^{3}}{3( - 114.4714255\ m)^{3}} + \frac{86.602540378\ m}{2\left| (86.602540378\ m)^{3} \right|}({50\ m)}^{2} + \frac{50\ m}{- 300\ m} = - 0.0277777$$
+$$\theta_{2}\left( \frac{L}{2} = 50\ m \right) = \frac{{(50\ m)}^{3}}{3( - 114.4714255\ m)^{3}} + \frac{86.602540378\ m}{2\left| (86.602540378\ m)^{3} \right|}({50\ m)}^{2} + \frac{50\ m}{- 300\ m} = -0.0277777$$
 
 The end point of the first parent curve and the start point of the
 second parent curve are offset so a rotation and translation for the
@@ -891,17 +887,21 @@ placement of the second parent curve is needed.
 
 $$\theta_{p} = \theta_{1} - \theta_{2} = 0.0277777777 - (-0.0277777777) = 0.05555555$$
 
-$$dx = \cos{0.05555555} = 0.998457$$
+The `RefDirection` of the parent curve `Position` (`#55`) is $(\cos\theta_p,\, \sin\theta_p)$:
 
-$$dy = \sin{0.05555555} = 0.055526$$
+$$\cos\theta_{p} = \cos(0.05555555) = 0.998457$$
+
+$$\sin\theta_{p} = \sin(0.05555555) = 0.055526$$
 
 $$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p}$$
 
 $$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p}$$
 
-$$x_{p} = 49.9972 - 49.9664\cos{0.0555555} - 1.73556\sin{0.0555555 =}0.011503\ m$$
+The `Location` of the parent curve `Position` (`#54`) is $(x_p,\, y_p)$:
 
-$$y_{p} = 0.347204 - 49.9664\sin{0.055555} + 1.73556\cos{0.0555555} = -0.6943693\ m$$
+$$x_{p} = 49.9972 - 49.9664\cos(0.0555555) - 1.73556\sin(0.0555555) = 0.011503\ m$$
+
+$$y_{p} = 0.347204 - 49.9664\sin(0.055555) + 1.73556\cos(0.0555555) = -0.6943693\ m$$
 
 The geometric representation of the first half is
 
@@ -914,38 +914,58 @@ The geometric representation of the first half is
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
+ 
+ > Note: when a polynomial coefficient is zero, the correspond term is unused and coded as `$` in the IFC entity
 
 
-The curve segments are
+#### Two-level placement for the second half
 
-First half
+`IfcCurveSegment` evaluation normalizes the parent curve at `SegmentStart`, then applies the curve segment `Placement`. For the second half, `SegmentStart = L/2`, so the IFC machinery uses the parent curve's value at $t = L/2$ as the normalization origin. The second half parent curve's own `Position` attribute is therefore set so that
 
-~~~
-#36 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(50.), #45);
-#37 = IFCLOCALPLACEMENT($, #38);
-#38 = IFCAXIS2PLACEMENT3D(#39, $, $);
-#39 = IFCCARTESIANPOINT((0., 0., 0.));
-~~~
+$$\text{ParentCurve}_2\!\left(\frac{L}{2}\right) = (x_1,\ y_1,\ \theta_1)$$
 
-Second half
+— exactly the endpoint of the first half. With this alignment the normalization cancels the offset, and the curve segment `Placement` supplies only the world-space join position.
 
-:warning: **[Write this up better]** :warning:
+| Level | Attribute | Purpose |
+|---|---|---|
+| `IfcSecondOrderPolynomialSpiral.Position` | $(x_p,\ y_p,\ \theta_p)$ | Shift/rotate the raw spiral so its value at $t = L/2$ equals $(x_1, y_1, \theta_1)$ |
+| `IfcCurveSegment.Placement` | World-space join point | Place the normalized second-half curve at the correct position in the composite curve |
 
-The start placement of the second half is
+**Finding the parent curve Position**
 
-$$x = x_s + x_1 cos(\theta_s) - y_1 sin(\theta_s)$$
-$$y = y_s + x_1 sin(\theta_s) + y_2 cos(\theta_s)$$
-$$dx = cos(\theta_s + \theta_1)$$
-$$dy = sin(\theta_s + \theta_1)$$
+Evaluate the raw second half spiral (with `Position` at origin) at $t = L/2$ to obtain $(x_2, y_2, \theta_2)$. The rigid-body transform that maps this to $(x_1, y_1, \theta_1)$ is
 
-where $x_s, y_s, \theta_s$ are the start point and angle at start of the first half
+$$\theta_{p} = \theta_{1} - \theta_{2}$$
 
-$$x = 0.0 + 49.99724 cos(0.0) - 0.347204 sin(0.0) = 49.99724$$
-$$y = 0.0 + 49.99724 sin(0.0) + 0.347204 cos(0.0) = 0.347204$$
-$$dx = cos(0. + 0.02777777) = 0.999614$$
-$$dy = sin(0. + 0.02777777) = 0.027774$$
+$$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p}$$
 
-The geometric represention of the second half
+$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p}$$
+
+**Finding the curve segment Placement**
+
+The `Placement` is the world-space position and direction at the join point, obtained by rotating $(x_1, y_1)$ by the overall segment start direction $\theta_s$ and translating by the start point $(x_s, y_s)$:
+
+$$x_{join} = x_s + x_1\cos\theta_s - y_1\sin\theta_s$$
+
+$$y_{join} = y_s + x_1\sin\theta_s + y_1\cos\theta_s$$
+
+$$\theta_{join} = \theta_s + \theta_1$$
+
+For the example with $\theta_s = 0$:
+
+$$x_{join} = 0.0 + 49.99724\cos(0.0) - 0.347204\sin(0.0) = 49.99724\ \text{m}$$
+
+$$y_{join} = 0.0 + 49.99724\sin(0.0) + 0.347204\cos(0.0) = 0.347204\ \text{m}$$
+
+$$\theta_{join} = 0.0 + 0.02777777 = 0.02777777\ \text{rad}$$
+
+The `RefDirection` of the curve segment `Placement` (`#51`) is $(\cos\theta_{join},\, \sin\theta_{join})$:
+
+$$\cos\theta_{join} = \cos(0.02777777) = 0.999614$$
+
+$$\sin\theta_{join} = \sin(0.02777777) = 0.027774$$
+
+The geometric representation of the second half
 
 ~~~
 #48 = IFCCURVESEGMENT(.CONTINUOUS., #49, IFCLENGTHMEASURE(50.), IFCLENGTHMEASURE(50.), #52);
@@ -960,7 +980,100 @@ The geometric represention of the second half
 
 ### 2.7.3 Compute Point on Curve
 
-[todo: add calculation for the end point the second half, u = 100]
+Compute the curve coordinates at a distance along the curve, $u = 100$ (the end of the full Helmert segment).
+
+The point falls in the second half ($50 < u \leq 100$). The parent curve parameter is $t = \text{SegmentStart} + (u - 50) = 50 + 50 = 100$.
+
+**Step 1 — Evaluate the second half parent curve at SegmentStart**
+
+The second half parent curve has `Position` at $(x_p, y_p) = (0.011503,\ -0.694370)$ with direction $\theta_p = 0.055556\ \text{rad}$. This was chosen so that the parent curve at $t = L/2 = 50$ yields $(x_1, y_1, \theta_1) = (49.9972,\ 0.347204,\ 0.027778)$ — the endpoint of the first half.
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+$M_N$ maps $(x_1, y_1, \theta_1)$ to the origin with the $x$-axis tangent direction:
+
+$$M_N = \begin{bmatrix}
+\cos\theta_1 & \sin\theta_1 & 0 & -x_1\cos\theta_1 - y_1\sin\theta_1\\
+-\sin\theta_1 & \cos\theta_1 & 0 & x_1\sin\theta_1 - y_1\cos\theta_1\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_N = \begin{bmatrix}
+0.999614 & 0.027774 & 0 & -50.0\\
+-0.027774 & 0.999614 & 0 & 1.734 \times 10^{-4}\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+The curve segment `Placement` for the second half is at $(x_{join}, y_{join}) = (49.9972,\ 0.347204)$ with direction $\theta_{join} = 0.027778\ \text{rad}$:
+
+$$M_{CSP} = \begin{bmatrix}
+0.999614 & -0.027774 & 0 & 49.9972\\
+0.027774 & 0.999614 & 0 & 0.347204\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 4 — Evaluate and map the point at $t = 100$**
+
+Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying `Position`) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:
+
+$$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$
+
+$$\theta_{raw}(100) = -0.22222 + 0.66666 - 0.33333 = 0.11111\ \text{rad}$$
+
+$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 97.9866\ \text{m}$$
+
+$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = 6.0948\ \text{m}$$
+
+Apply the parent curve `Position` $(x_p, y_p, \theta_p)$:
+
+$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011503 + 97.9866(0.998457) - 6.0948(0.055527) = 97.9201\ \text{m}$$
+
+$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 97.9866(0.055527) + 6.0948(0.998457) = 10.7408\ \text{m}$$
+
+$$\theta_{pos}(100) = \theta_p + \theta_{raw}(100) = 0.055556 + 0.11111 = 0.16\overline{6}\ \text{rad}$$
+
+Note: $\theta_{pos}(100) = \frac{1}{6} = \frac{L}{2R_e} = \frac{100}{2 \times 300}$, confirming the total tangent angle change matches a Clothoid with the same endpoints.
+
+Form $M_{PC}$ from the parent curve point at $t = 100$:
+
+$$M_{PC} = \begin{bmatrix}
+\cos\theta_{pos} & -\sin\theta_{pos} & 0 & x_{pos}\\
+\sin\theta_{pos} & \cos\theta_{pos} & 0 & y_{pos}\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix} = \begin{bmatrix}
+0.98615 & -0.16590 & 0 & 97.9201\\
+0.16590 & 0.98615 & 0 & 10.7408\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+Apply normalization and curve segment placement:
+
+$$M_h = M_{CSP}\,M_N\,M_{PC}$$
+
+$$M_N M_{PC} = \begin{bmatrix}
+0.98615 & -0.16590 & 0 & 47.6227\\
+0.16590 & 0.98615 & 0 & 10.3938\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_h = M_{CSP}(M_N M_{PC}) = \begin{bmatrix}
+0.97260 & -0.23256 & 0 & 99.2496\\
+0.23256 & 0.97260 & 0 & 9.7486\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+The end point of the Helmert segment at $u = 100$:
+
+$$x = 99.2496\ \text{m},\quad y = 9.7486\ \text{m},\quad \theta = \frac{1}{6}\ \text{rad}$$
 
 ## 2.8 Bloss Transition Curve
 
@@ -1418,27 +1531,27 @@ $$A_{1} = 0$$
 
 Quadratic term 
 $$a_{2} = cf= -0.504$$
-$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069m$$
+$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069\ m$$
 
 Cubic term 
 $$a_{3} = -4cf= -4(-0.504) = 2.016$$
-$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813m$$
+$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813\ m$$
 
 Quartic term 
 $$a_{4} = 5cf + 35f = 5(-0.504) + 35(0.33333) = 9.1466655$$
-$$A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406m$$
+$$A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406\ m$$
 
 Quintic term 
 $$a_{5} = -2cf - 84f= -2(-0.504) - 84(0.33333) = -26.9919999$$
-$$A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785m$$
+$$A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785\ m$$
 
 Sextic term 
 $$a_{6} = 70f  = 70(0.33333) = 23.33333333$$
-$$A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134m$$
+$$A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134\ m$$
 
 Septic term 
 $$a_{7} = -20f = -20(0.33333) = -6.66666666$$
-$$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838m$$
+$$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838\ m$$
 
 ~~~
 #66 = IFCCURVESEGMENT(.CONTINUOUS., #72, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #75);
@@ -1472,27 +1585,26 @@ $$M_{CSP} = I$$
 
 **Step 4 — Evaluate and map each point**
 
-[todo: finish calculations]
-
 Compute point and curve tangent at 100 m from the start.
 
-$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s = $$
+$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s $$
 
-$$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = $$
+$$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = 99.76319823871657 $$
 
-$$y = \int_{0}^{100}{\sin{\theta(s)}}\ ds = $$
+$$y = \int_{0}^{100}{\sin{\theta(s)}}\ ds = 4.499916129045404 $$
 
-$$\theta(100) = $$
+$$\theta(100) =
+\frac{-78.8880838}{8\left| (-78.8880838)^{9} \right|} 100^{8} + \frac{1}{7 (63.76388134)^{7}} 100^{7} + \frac{−57.7378785}{6\left| (−57.7378785)^{7} \right|} 100^{6} + \frac{1}{5 (64.231406)^{5}} 100^{5} + \frac{83.92229813}{4\left| (83.92229813)^{5} \right|} 100^{4} + \frac{1}{3 (−125.6579069)^{3}} 100^{3} = \frac{1}{6} = 0.1666666667$$
 
-$$dx = \cos\left( \right) = $$
+$$dx = \cos\left( 0.1666666667\right) = 0.9861432315629198$$
 
-$$dy = \sin\left( \right) = $$
+$$dy = \sin\left( 0.1666666667\right) = 0.16589613269344608$$
 
 In matrix form
 
 $$M_{PC} = \begin{bmatrix}
- &  & 0 & \\
- &  & 0 & \\
+0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
+ 0.16589613269344608&  0.9861432315629198& 0 & 4.499916129045404\\
 0 & 0 & 1 & 0\\
 0&0&0&1
 \end{bmatrix}$$
@@ -1508,15 +1620,15 @@ I
 \end{bmatrix}
 
 \begin{bmatrix}
- &  & 0 & \\
- &  & 0 & \\
+0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
+ 0.16589613269344608&  0.9861432315629198& 0 & 4.499916129045404\\
 0 & 0 & 1 & 0\\
 0&0&0&1
 \end{bmatrix}$$
 
 $$M_{h} = \begin{bmatrix}
- &  & 0 & \\
- &  & 0 & \\
+0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
+ 0.16589613269344608&  0.9861432315629198& 0 & 4.499916129045404\\
 0 & 0 & 1 & 0\\
 0&0&0&1
 \end{bmatrix}$$
