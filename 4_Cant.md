@@ -1,4 +1,4 @@
-# Section 4 - Cant Alignment
+# Section 4.0 - Cant Alignment
 outline:
 * describe cant in terms of it being a deviation to railroad alignment vertical in curves. it provides for track banking
 * need figure the show cross slope
@@ -34,7 +34,7 @@ Table 4.1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding paren
 
   *Table 4.1 — Mapping of business logic to geometric representation for cant alignment*
 
-[todo: changethis next section to begin with a figure with the cross section at rhevstart and end of the segment]
+[todo: change this next section to begin with a figure with the cross section at the start and end of the segment]
 
 Evaluation of a `IfcCurveSegment` that is part of a
 `IfcSegmentedReferenceCurve` is illustrated with an example (source model
@@ -170,7 +170,12 @@ $$dx_0 = \cos\phi_0,\quad dy_0 = \sin\phi_0$$
 $$\mathbf{X}_0 = (dx_0,\ dy_0,\ 0),\quad \mathbf{Z}_0 = (0,\ \cos\theta_0,\ \sin\theta_0)$$
 $$\mathbf{Y}_0 = \mathbf{Z}_0 \times \mathbf{X}_0,\quad \mathbf{Axis}_0 = \mathbf{X}_0 \times \mathbf{Y}_0$$
 
-$$M_{PCS} = \begin{bmatrix} X_0.x & Y_0.x & Axis_0.x & d_0 \\ X_0.y & Y_0.y & Axis_0.y & 0 \\ X_0.z & Y_0.z & Axis_0.z & D_0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{PCS} = \begin{bmatrix}
+ X_0.x & Y_0.x & Axis_0.x & d_0 \\
+  X_0.y & Y_0.y & Axis_0.y & 0 \\ 
+  X_0.z & Y_0.z & Axis_0.z & D_0 \\
+   0 & 0 & 0 & 1 
+   \end{bmatrix}$$
 
 where $d_0 = x(s_0)$ is the distance along the horizontal alignment at the trim start.
 
@@ -178,13 +183,23 @@ where $d_0 = x(s_0)$ is the distance along the horizontal alignment at the trim 
 
 $M_T$ shifts the trim-start frame to the origin of the distance-along / deviating-elevation plane.
 
-$$M_T = \begin{bmatrix} 1 & 0 & 0 & -d_0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & -D_0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_T = \begin{bmatrix} 
+1 & 0 & 0 & -d_0 \\
+ 0 & 1 & 0 & 0 \\
+  0 & 0 & 1 & -D_0 \\
+   0 & 0 & 0 & 1 
+   \end{bmatrix}$$
 
 **Step 3 — Form the rotation matrix $M_R$**
 
 $M_R$ is the inverse of the rotational part of $M_{PCS}$; for a rotation matrix this equals the transpose.
 
-$$M_R = \begin{bmatrix} X_0.x & X_0.y & X_0.z & 0 \\ Y_0.x & Y_0.y & Y_0.z & 0 \\ Axis_0.x & Axis_0.y & Axis_0.z & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_R = \begin{bmatrix} 
+X_0.x & X_0.y & X_0.z & 0 \\
+ Y_0.x & Y_0.y & Y_0.z & 0 \\ 
+ Axis_0.x & Axis_0.y & Axis_0.z & 0 \\
+  0 & 0 & 0 & 1 
+  \end{bmatrix}$$
 
 **Step 4 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -193,7 +208,12 @@ $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(d_p, D_p)$ is the `
 $$\mathbf{X}_p = (\cos\phi_p,\ \sin\phi_p,\ 0),\quad \mathbf{Z}_p = (0,\ \cos\theta_p,\ \sin\theta_p)$$
 $$\mathbf{Y}_p = \mathbf{Z}_p \times \mathbf{X}_p,\quad \mathbf{Axis}_p = \mathbf{X}_p \times \mathbf{Y}_p$$
 
-$$M_{CSP} = \begin{bmatrix} X_p.x & Y_p.x & Axis_p.x & d_p \\ X_p.y & Y_p.y & Axis_p.y & 0 \\ X_p.z & Y_p.z & Axis_p.z & D_p \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{CSP} = \begin{bmatrix} 
+X_p.x & Y_p.x & Axis_p.x & d_p \\
+ X_p.y & Y_p.y & Axis_p.y & 0 \\
+  X_p.z & Y_p.z & Axis_p.z & D_p \\
+   0 & 0 & 0 & 1 
+   \end{bmatrix}$$
 
 **Step 5 — Evaluate and map each point**
 
@@ -206,7 +226,12 @@ where $\theta_s$, $\theta_e$ are the start and end cross slope angles and $D_s$,
 $$\mathbf{X} = (\cos\phi(s),\ \sin\phi(s),\ 0),\quad \mathbf{Z} = (0,\ \cos\theta,\ \sin\theta)$$
 $$\mathbf{Y} = \mathbf{Z} \times \mathbf{X},\quad \mathbf{Axis} = \mathbf{X} \times \mathbf{Y}$$
 
-$$M_{PC} = \begin{bmatrix} X.x & Y.x & Axis.x & d \\ X.y & Y.y & Axis.y & 0 \\ X.z & Y.z & Axis.z & D(s) \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{PC} = \begin{bmatrix}
+ X.x & Y.x & Axis.x & d \\
+  X.y & Y.y & Axis.y & 0 \\
+   X.z & Y.z & Axis.z & D(s) \\
+    0 & 0 & 0 & 1 
+    \end{bmatrix}$$
 
 where $d = x(s)$ is the distance along the horizontal alignment at arc-length $s$.
 
@@ -224,7 +249,12 @@ Construct $M'_v$ as described in Section 3.2.
 
 Construct $M'_c$ by zeroing the distance-along component in column 4 of $M_c$:
 
-$${M'}_c = \begin{bmatrix} X.x & Y.x & Axis.x & 0 \\ X.y & Y.y & Axis.y & 0 \\ X.z & Y.z & Axis.z & D \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$${M'}_c = \begin{bmatrix} 
+X.x & Y.x & Axis.x & 0 \\ 
+X.y & Y.y & Axis.y & 0 \\ 
+X.z & Y.z & Axis.z & D \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
 Extract position vectors from each modified matrix (setting row 4 to zero), then zero column 4 before multiplying:
 
@@ -236,7 +266,20 @@ Multiply the three orientation matrices, then add back both position offsets:
 
 $$M' = M_h \cdot M''_v \cdot M''_c$$
 
-$$M = M' + \begin{bmatrix} 0 & 0 & 0 & P_v(1) \\ 0 & 0 & 0 & P_v(2) \\ 0 & 0 & 0 & P_v(3) \\ 0 & 0 & 0 & 0 \end{bmatrix} + \begin{bmatrix} 0 & 0 & 0 & P_c(1) \\ 0 & 0 & 0 & P_c(2) \\ 0 & 0 & 0 & P_c(3) \\ 0 & 0 & 0 & 0 \end{bmatrix}$$
+$$M = M' + 
+\begin{bmatrix} 
+0 & 0 & 0 & P_v(1) \\
+ 0 & 0 & 0 & P_v(2) \\ 
+ 0 & 0 & 0 & P_v(3) \\ 
+ 0 & 0 & 0 & 0 
+ \end{bmatrix} 
+ + 
+ \begin{bmatrix} 
+ 0 & 0 & 0 & P_c(1) \\
+  0 & 0 & 0 & P_c(2) \\
+   0 & 0 & 0 & P_c(3) \\ 
+   0 & 0 & 0 & 0 
+   \end{bmatrix}$$
 
 Column 4 of the final matrix $M$ is the full 3D position of the track centerline. Column 3 is the cross-slope direction, encoding the railhead superelevation at that point.
 

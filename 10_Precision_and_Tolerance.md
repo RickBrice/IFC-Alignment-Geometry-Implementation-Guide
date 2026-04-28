@@ -1,4 +1,4 @@
-# Section 11 - Precision and Tolerance
+# Section 10.0 - Precision and Tolerance
 
 `IfcCurveSegment.Transition` defines the intended transition from the end
 of one segment to the start of the next. The options are:

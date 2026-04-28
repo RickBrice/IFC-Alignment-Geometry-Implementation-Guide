@@ -1,4 +1,4 @@
-# Section 1 - Introduction
+# Section 1.0 - Introduction
 
 IFC 4.3 ADD 2 finalized the adoption of alignments for infrastructure works.
 Since the concept of alignment is relatively new to IFC, few details and

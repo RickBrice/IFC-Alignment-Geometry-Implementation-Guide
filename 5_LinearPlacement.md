@@ -1,4 +1,4 @@
-# Section 5 - Linear Placement
+# Section 5.0 - Linear Placement
 
 outline: 
 * describe the concept of object placement in ifc.

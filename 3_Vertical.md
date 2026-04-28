@@ -1,4 +1,4 @@
-# Section 3 - Vertical Alignment
+# Section 3.0 - Vertical Alignment
 
 ## 3.1 General
 

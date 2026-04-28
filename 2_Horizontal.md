@@ -1,42 +1,44 @@
-# Section 2 - Horizontal Alignment
-
 todo:
-* revise algorithm so M_T and M_R are a single matrix
-* update calculations for line, circle, clothoid, and cubic (these are the topics that are basically complete)
-* finish other cuve typed. start with bloss. save helment for last.
-* remove source examples
-* add new main level section for examples and validation data - section 12
+* Finish section for Viennese Bend
+* Finish section for Helmert Curve
+* Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent
+* Add figure for IfcClothoid showing both the X < 0 and X > 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.
+* Remove source examples
+* Add new main level section for examples and validation data - section 11
+* Change all figure and table numbering to be "section number"-n, e.g. Figure 2.3.2-1, Table 3.0-1. Change references in the text and the captions
+
+# Section 2.0 - Horizontal Alignment
 
 The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
 
 Table 2.1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding parent curve type.
 
-  Business Logic (`IfcAlignmentHorizontal.PredefinedType`)|Geometric Representation (`IfcCurveSegment.ParentCurve`)
-  ————————————————————-|—————————————————-
-  LINE                                     |`IfcLine`
-  CIRCULARARC                              |`IfcCircle`
-  CLOTHOID                                 |`IfcClothoid`
-  CUBIC                                    |`IfcPolynomialCurve`
-  HELMERTCURVE                             |`IfcSecondOrderPolynomialSpiral`
-  BLOSSCURVE                               |`IfcThirdOrderPolynomialSpiral`
-  COSINECURVE                              |`IfcCosineSpiral`
-  SINECURVE                                |`IfcSineSpiral`
-  VIENNESEBEND                             |`IfcSeventhOrderPolynomialSpiral`
+| Business Logic (`IfcAlignmentHorizontal.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
+|---|---|
+| LINE | `IfcLine` |
+| CIRCULARARC | `IfcCircle` |
+| CLOTHOID | `IfcClothoid` |
+| CUBIC | `IfcPolynomialCurve` |
+| HELMERTCURVE | `IfcSecondOrderPolynomialSpiral` |
+| BLOSSCURVE | `IfcThirdOrderPolynomialSpiral` |
+| COSINECURVE | `IfcCosineSpiral` |
+| SINECURVE | `IfcSineSpiral` |
+| VIENNESEBEND | `IfcSeventhOrderPolynomialSpiral` |
 
-  *Table 2.1 — Mapping of business logic to geometric representation for horizontal alignment*
+*Table 2.1 — Mapping of business logic to geometric representation for horizontal alignment*
 
 ## 2.1 General
 
 The following parameters are common to all horizontal alignment curve types. Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from `IfcAlignmentHorizontalSegment.StartRadius` and `EndRadius`; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). The segment length $L$ is `IfcAlignmentHorizontalSegment.SegmentLength`. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the `RefDirection` of the curve at $s$.
 
-Parameter | Equation
-—————|—————————————————-
-Start Curvature | $$\kappa_{s} = \frac{1}{R_{s}}$$
-End Curvature | $$\kappa_{e} = \frac{1}{R_{e}}$$
-Cumulative change in curvature | $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = L\left( \frac{1}{R_{e}} - \frac{1}{R_{s}} \right)$$
-Angle of tangent line, RefDirection = $$\cos\left( \theta(s) \right),\sin\left( \theta(s) \right)$$ | $$\theta(s) = \int_{}^{}{\kappa(s)ds}$$    
-X-ordinate as a function of curve length s | $$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$
-Y-ordinate as a function of curve length s | $$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$
+| Parameter | Equation |
+|---|---|
+| Start Curvature | $$\kappa_{s} = \frac{1}{R_{s}}$$ |
+| End Curvature | $$\kappa_{e} = \frac{1}{R_{e}}$$ |
+| Cumulative change in curvature | $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = L\left( \frac{1}{R_{e}} - \frac{1}{R_{s}} \right)$$ |
+| Angle of tangent line, RefDirection = $\cos\left( \theta(s) \right),\sin\left( \theta(s) \right)$ | $$\theta(s) = \int_{}^{}{\kappa(s)ds}$$ |
+| X-ordinate as a function of curve length s | $$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$ |
+| Y-ordinate as a function of curve length s | $$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$ |
   
 
 ## 2.2 Curve Segment Evaluation Algorithm
@@ -47,29 +49,18 @@ This algorithm evaluates the 2D position and tangent direction of a point on an 
 
 Compute the position $(x_0, y_0)$ and tangent angle $\theta_0$ of the parent curve at $s_0$. This establishes the frame of the parent curve at the point where trimming begins.
 
-**Step 2 — Form the translation matrix $M_T$**
+**Step 2 — Form the normalization matrix $M_N$**
 
-$M_T$ moves the trim-start point to the origin so that all subsequent calculations are relative to the beginning of the trimmed segment.
+$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
 
-$$M_T = \begin{bmatrix} 
-1 & 0 & 0 & -x_0 \\
- 0 & 1 & 0 & -y_0 \\
-  0 & 0 & 1 & 0 \\
-  0 & 0 & 0 & 1 
-  \end{bmatrix}$$
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & \phantom{-}x_0\sin\theta_0 - y_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
 
-**Step 3 — Form the rotation matrix $M_R$**
-
-$M_R$ rotates the trimmed curve so that the tangent at the trim start aligns with the positive $x$-direction $(1, 0)$.
-
-$$M_R = \begin{bmatrix} 
-\cos\theta_0 & \sin\theta_0 & 0 & 0 \\
- -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 
- 0 & 0 & 1 & 0 \\
-  0 & 0 & 0 & 1
-   \end{bmatrix}$$
-
-**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP}$ places the trimmed segment into the alignment coordinate system. It is constructed directly from `IfcCurveSegment.Placement`, where $(x_p, y_p)$ is the `Location` and $\theta_p$ is the bearing of the `RefDirection`.
 
@@ -80,7 +71,7 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 5 — Evaluate and map each point**
+**Step 4 — Evaluate and map each point**
 
 For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:
 
@@ -91,16 +82,15 @@ $$M_{PC} = \begin{bmatrix}
  0 & 0 & 0 & 1 
  \end{bmatrix}$$
 
-Apply the translation, rotation, and placement in sequence:
+Apply the normalization and placement in sequence:
 
-$$M_h = M_{CSP} M_R M_T M_{PC}$$
+$$M_h = M_{CSP} M_N M_{PC}$$
 
 The position of the point in the alignment coordinate system is the fourth column of $M_h$, and its tangent direction is the first column. Numerical examples of this algorithm are given in Sections 2.3 through 2.11.
 
 ## 2.3 Line
 
-When `IfcLine` is used as a parent curve, it represents a tangent run of
-the alignment.
+A tangent run is geometrically represented with a segment trimmed from an `IfcLine` parent curve.
 
 ### 2.3.1 Parent Curve Parametric Equations
 
@@ -216,15 +206,11 @@ curve segment.
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
 
-**Step 2 - Form the translation matrix $M_T$**
+**Step 2 - Form the normalization matrix $M_N$**
 
-The trimmed curve starts at (0,0) so $M_T$ is an identity matrix.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
 
-**Step 3 - Form the rotation matrix $M_R$**
-
-The trimmed curve in the direction (1,0) so $M_R$ is an identity matrix.
-
-**Step 4 - Form the curve segment placement matrix $M_{CSP}$**
+**Step 3 - Form the curve segment placement matrix $M_{CSP}$**
 
 From the `IfcCurveSegment.Placement`:
 
@@ -239,7 +225,7 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 5 - Evaluate and map each point**
+**Step 4 - Evaluate and map each point**
 
 Evaluate the parent curve at $u = 100$
 
@@ -270,16 +256,13 @@ $$M_{PC} = \begin{bmatrix}
 
 The resulting position matrix is
 
-$$M_h = M_{CSP} M_T M_R M_{PC}$$
+$$M_h = M_{CSP} M_N M_{PC}$$
 
 $$M_h = \begin{bmatrix}
 0.839252789970355 & 0.54374144087698 & 0 & 500 \\
  -0.54374144087698 & 0.839252789970355 & 0 & 2500 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix} 
-\begin{bmatrix}
-I
 \end{bmatrix} 
 \begin{bmatrix}
 I
@@ -300,8 +283,7 @@ $$M_{h} = \begin{bmatrix}
 
 ## 2.4 Circular Arc
 
-When `IfcCircle` is used as a parent curve, it represents a circular curve
-of the alignment.
+Circular alignment curves are geometrically represented by an arc trimmed from an `IfcCircle` parent curve.
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc)
@@ -352,10 +334,10 @@ The curve segment is defined by its placement at a segment trimmed from
 the parent curve starting at 0.0 for a length of 100.0 along the curve.
 
 ~~~
+#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.), #45);
 #42 = IFCAXIS2PLACEMENT2D(#43, #44);
 #43 = IFCCARTESIANPOINT((0., 0.));
 #44 = IFCDIRECTION((1., 0.));
-#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.), #45);
 ~~~
 
 ### 2.4.3 Compute Point on Curve
@@ -367,19 +349,15 @@ curve segment.
 
 The trim begins where the local x-axis of the circle intersects the circumfrance. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
 
-**Step 2 — Form the translation matrix $M_T$**
+**Step 2 — Form the normalization matrix $M_N$**
 
-$M_T = I$
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
 
-**Step 3 — Form the rotaton matrix $M_R$**
-
-$M_R = I$
-
-**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP} = I$
 
-**Step 5 — Evaluate and map each point**
+**Step 4 — Evaluate and map each point**
 
 Compute point on parent curve at $u = 50$
 
@@ -405,12 +383,9 @@ $$
 
 The resulting position matrix is
 
-$$M_h = M_{CSP} M_T M_R M_{PC}$$
+$$M_h = M_{CSP} M_N M_{PC}$$
 
 $$M_h = \begin{bmatrix}
-I
-\end{bmatrix} 
-\begin{bmatrix}
 I
 \end{bmatrix} 
 \begin{bmatrix}
@@ -434,7 +409,7 @@ $$M_{h} = \begin{bmatrix}
 
 ## 2.5 Clothoid
 
-When `IfcClothoid` is used as a parent curve, it represents a spiral transition curve
+Spiral transition curves are geometrically represented by a segment trimmed from one of the many spiral types in IFC. `IfcClothoid` geometry is used for clothoid curves.
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc)
@@ -536,46 +511,22 @@ $$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \fr
 
 $$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
 
-**Step 2 — Form the translation matrix $M_T$**
+**Step 2 — Form the normalization matrix $M_N$**
 
-$$M_T = \begin{bmatrix}
- 1 & 0 & 0 & -x_0 \\ 
- 0 & 1 & 0 & -y_0 \\ 
- 0 & 0 & 1 & 0 \\ 
- 0 & 0 & 0 & 1 
- \end{bmatrix}
-=
-\begin{bmatrix}
-1 & 0 & 0 & 142.04941746210602 \\
-0 & 1 & 0 & -11.292042785713347 \\
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & \phantom{-}x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-$$
-
-**Step 3 — Form the rotation matrix $M_R$**
-
-$$M_R = \begin{bmatrix}
- \cos\theta_0 & \sin\theta_0 & 0 & 0 \\
-  -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\
-   0 & 0 & 1 & 0 \\
-    0 & 0 & 0 & 1 
-    \end{bmatrix}
-=\begin{bmatrix}
-\cos(-0.238095237) & \sin(-0.238095237) & 0 & 0 \\
--\sin(-0.238095237) & \cos(-0.238095237) & 0 & 0 \\
+= \begin{bmatrix}
+0.971788979 & -0.235852028 & 0 & 140.705309648 \\
+0.235852028 & 0.971788979 & 0 & 22.529160405 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
- = \begin{bmatrix}
-0.971788979 & -0.235852028 & 0 & 0 \\
-0.235852028 & 0.971788979 & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-$$
+\end{bmatrix}$$
 
-**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
@@ -583,7 +534,7 @@ identity matrix. This is not true in all cases.
 
 $$M_{CSP} = I$$
 
-**Step 5 — Evaluate and map each point**
+**Step 4 — Evaluate and map each point**
 
 Compute point and curve tangent at 50 m from the start,
 
@@ -610,21 +561,14 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-Apply the translation, rotation, and curve segment placement to the
-parent curve point
+Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_{R} M_{T} M_{PC} = \begin{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
 I
 \end{bmatrix}
 \begin{bmatrix}
-0.971788979 & -0.235852028 & 0 & 0 \\
-0.235852028 & 0.971788979 & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 142.04941746210602 \\
-0 & 1 & 0 & -11.292042785713347 \\
+0.971788979 & -0.235852028 & 0 & 140.705309648 \\
+0.235852028 & 0.971788979 & 0 & 22.529160405 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
@@ -642,11 +586,9 @@ $$M_{h} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-![](images/image6.png)
-
 ## 2.6 Cubic Transition Curve
 
-When `IfcPolynomalCurve` is used as a parent curve, it represents a spiral transition curve
+`IfcPolynomalCurve` is the geometric type for cubic transition spirals.
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc)
@@ -672,9 +614,9 @@ $$y'(x) = 3A_{3}x^{2}$$
 $$d = \int_{}^{}{\sqrt{9A_{3}^{2}x^{4} + 1}\ dx}$$
 
 This equation is solved for $x$ and then $y$ can be computed. This can
-be accomplished with numeric methods. [todo: is there a closed form solution - i think i used one with in the cant section]
+be accomplished with numerical methods.
 
-1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$
+1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Section 11](11_Precision_and_Tolerance.md) for a discussion on tolerances.
 
 2.  Compute $y(x) = A_{3}x^{3}$
 
@@ -700,13 +642,13 @@ $$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L} = \frac{1}{6(300m)(100m)} - \fra
 The geometric representation is
 
 ~~~
+#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
 #42 = IFCAXIS2PLACEMENT2D(#43, #44);
 #43 = IFCCARTESIANPOINT((0., 0.));
 #44 = IFCDIRECTION((1., 0.));
 #45 = IFCPOLYNOMIALCURVE(#46, (0., 1.), (0., 0., 0., 5.55555555555556E-6), $);
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
-#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
 ~~~
 
 —-
@@ -762,15 +704,11 @@ Compute the curve coordinates at a distance along the curve, $u = 100$
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-**Step 2 - Form the translation matrix $M_T$**
+**Step 2 — Form the normalization matrix $M_N$**
 
-The trimmed curve starts at (0,0) so $M_T$ is an identity matrix.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
 
-**Step 3 - Form the rotation matrix $M_R$**
-
-The trimmed curve in the direction (1,0) so $M_R$ is an identity matrix.
-
-**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
@@ -778,7 +716,7 @@ identity matrix.
 
 $$M_{CSP} = I$$
 
-**Step 5 — Evalute and map each point**
+**Step 4 — Evaluate and map each point**
 
 Compute point and curve tangent at 100 m from the start.
 
@@ -792,9 +730,9 @@ $$y(x) = \left( 5.55555 \cdot 10^{-6} m^{-2}\right)x^{3}$$
 
 Find $x$ such that
 
-$$d - u = \int_{0}^{x}\sqrt{\left( y'(x) \right)^{2} + 1}dx - u = 0$$
+$$|d - u| = \left| \int_{0}^{x}\left(\sqrt{\left( y'(x) \right)^{2} + 1}\right) dx - u \right| < 10^{-4} \approx 0$$
 
-$$y'(x) = 3\left( 5.55555 \cdot 10^{-6}  m^{-2}\right)x^{2}$$
+$$y'(x) = 3\left( 5.55555 \cdot 10^{-6} m^{-2}\right)x^{2}$$
 
 Solve numerically
 
@@ -827,13 +765,9 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-Apply the translation, rotation, and curve segment placement to the
-parent curve point
+Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_{R} M_{T} M_{PC} = 
-\begin{bmatrix}
-I
-\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = 
 \begin{bmatrix}
 I
 \end{bmatrix}
@@ -853,8 +787,6 @@ I
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
-
-![](images/image7.png)
 
 ## 2.7 Helmert Transition Curve
 
@@ -1079,6 +1011,10 @@ $$a_{2} = 3(0.33333) = 1,\ A_{2} = \frac{100}{\sqrt[3]{|1|}}\frac{1}{|1|} = 100\
 $$a_{3} = - 2(0.33333) = -0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = - 110.668192\ m$$
 
 ~~~
+#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
+#42 = IFCAXIS2PLACEMENT2D(#43, #44);
+#43 = IFCCARTESIANPOINT((0., 0.));
+#44 = IFCDIRECTION((1., 0.));
 #45 = IFCTHIRDORDERPOLYNOMIALSPIRAL(#46, -110.668191970032, 100., $, $);
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
@@ -1086,13 +1022,33 @@ $$a_{3} = - 2(0.33333) = -0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}
 
 ### 2.8.3 Evaluate Point on Curve
 
-Evaluate at the end of the curve $u = 100$
+Compute the curve coordinates at a distance along the curve, $u = 100$
 
-$$\theta(t) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}t^{4} + \frac{1}{3(100)^{3}}t^{3}$$
+**Step 1 — Evaluate the parent curve at the trim start**
 
-$$x = \int_{0}^{100}{\cos{\theta(t)}}\ dt = 99.7486$$
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-$$y = \int_{0}^{100}{\sin{\theta(t)}}\ dt = 4.98981$$
+**Step 2 — Form the normalization matrix $M_N$**
+
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
+placement is at (0,0) with RefDirection (1,0) which results in an
+identity matrix.
+
+$$M_{CSP} = I$$
+
+**Step 4 — Evaluate and map each point**
+
+Compute point and curve tangent at 100 m from the start.
+
+$$\theta(s) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}t^{4} + \frac{1}{3(100)^{3}}t^{3}$$
+
+$$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = 99.7486$$
+
+$$y = \int_{0}^{100}{\sin{\theta(s)}}\ ds = 4.98981$$
 
 $$\theta(100) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}(100)^{4} + \frac{1}{3(100)^{3}}(100)^{3} = \frac{1}{6} = 0.1666667$$
 
@@ -1100,13 +1056,42 @@ $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
 $$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
 
-The parent curve point is then positioned using the curve segment start
-point and orientation as illustrated for the clothoid curve example.
+In matrix form
 
-![](images/image8.png)
+$$M_{PC} = \begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.7486\\
+0.16589 & 0.98614 & 0 & 4.98981\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
 
+Apply the normalization and curve segment placement to the parent curve point
+
+$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.7486\\
+0.16589 & 0.98614 & 0 & 4.98981\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+$$M_{h} = \begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.7486\\
+0.16589 & 0.98614 & 0 & 4.98981\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
 
 ## 2.9 Cosine Transition Curve
+
+`IfcCosineSpiral` is the geometric type for cosine transition spirals.
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc)
@@ -1147,9 +1132,13 @@ $$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
 $$a_{0} = 0.5(0.33333) + \frac{100}{\infty} = 0.16667,\ A_{0} = \frac{100\ m}{|0.16667|}\ \frac{0.16667}{|0.16667|} = 600\ m$$
 
-$$a_{1} = -0.5(0.33333) = -0.16667,\ A_{1} = \frac{100}{|-0.16667|}\ \frac{-0.16667}{|-0.16667|} = - 600\ m$$
+$$a_{1} = -0.5(0.33333) = -0.16667,\ A_{1} = \frac{100}{|-0.16667|}\ \frac{-0.16667}{|-0.16667|} = -600\ m$$
 
 ~~~
+#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
+#42 = IFCAXIS2PLACEMENT2D(#43, #44);
+#43 = IFCCARTESIANPOINT((0., 0.));
+#44 = IFCDIRECTION((1., 0.));
 #45 = IFCCOSINESPIRAL(#46, -600., 600.);
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
@@ -1157,7 +1146,27 @@ $$a_{1} = -0.5(0.33333) = -0.16667,\ A_{1} = \frac{100}{|-0.16667|}\ \frac{-0.16
 
 ### 2.9.3 Evaluate Point on Curve
 
-Evaluate at the end of the curve $u = 100$
+Compute the curve coordinates at a distance along the curve, $u = 100$
+
+**Step 1 — Evaluate the parent curve at the trim start**
+
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
+placement is at (0,0) with RefDirection (1,0) which results in an
+identity matrix.
+
+$$M_{CSP} = I$$
+
+**Step 4 — Evaluate and map each point**
+
+Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{600}t - \frac{100}{600\pi}\sin\left( \frac{\pi}{100}t \right)$$
 
@@ -1171,10 +1180,42 @@ $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
 $$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
 
-The parent curve point is then positioned using the curve segment start
-point and orientation as illustrated for the clothoid curve example.
+In matrix form
+
+$$M_{PC} = \begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.7485\\
+0.16589 & 0.98614 & 0 & 4.9458\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+Apply the normalization and curve segment placement to the parent curve point
+
+$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.7485\\
+0.16589 & 0.98614 & 0 & 4.9458\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+$$M_{h} = \begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.7485\\
+0.16589 & 0.98614 & 0 & 4.9458\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
 
 ## 2.10 Sine Transition Curve
+
+`IfcSineSpiral` is the geometric type for sine transition spirals.
 
 Source Model:
 [GENERATED\_\_HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc)
@@ -1223,6 +1264,10 @@ $$a_{1} = 0.33333,\ A_{1} = \frac{100}{\sqrt{|0.33333|}}\frac{0.33333}{|0.33333|
 $$a_{2} = -\frac{1}{2\pi}(0.33333) = -0.053051647,\ A_{2} = \frac{100}{|-0.053051647|}\frac{-0.053051647}{|-0.053051647|} = -1884.955592\ m$$
 
 ~~~
+#36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
+#42 = IFCAXIS2PLACEMENT2D(#43, #44);
+#43 = IFCCARTESIANPOINT((0., 0.));
+#44 = IFCDIRECTION((1., 0.));
 #45 = IFCSINESPIRAL(#46, -1884.95559215388, 173.205080756888, $);
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
@@ -1230,7 +1275,27 @@ $$a_{2} = -\frac{1}{2\pi}(0.33333) = -0.053051647,\ A_{2} = \frac{100}{|-0.05305
 
 ### 2.10.3 Evaluate Point on Curve
 
-Evaluate at the end of the curve $u = 100$
+Compute the curve coordinates at a distance along the curve, $u = 100$
+
+**Step 1 — Evaluate the parent curve at the trim start**
+
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
+placement is at (0,0) with RefDirection (1,0) which results in an
+identity matrix.
+
+$$M_{CSP} = I$$
+
+**Step 4 — Evaluate and map each point**
+
+Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{2}\left( \frac{t}{173.2050808} \right)^{2} + \frac{100}{2\pi(1884.955592)}\left( \cos\left( \frac{2\pi}{100}t \right) - 1 \right)$$
 
@@ -1244,12 +1309,43 @@ $$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
 
 $$dy = \sin{\left( \frac{1}{6} \right) = 0.16589}$$
 
-The parent curve point is then positioned using the curve segment start
-point and orientation as illustrated for the clothoid curve example.
 
-![](images/image9.png)
+In matrix form
+
+$$M_{PC} = \begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.757\\
+0.16589 & 0.98614 & 0 & 4.70132\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+Apply the normalization and curve segment placement to the parent curve point
+
+$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.757\\
+0.16589 & 0.98614 & 0 & 4.70132\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+$$M_{h} = \begin{bmatrix}
+0.98614 & -0.16589 & 0 & 99.757\\
+0.16589 & 0.98614 & 0 & 4.70132\\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
 
 ## 2.11 Viennese Transition Curve
+[todo: need a description of a viennese bend and its application in railroad. also need to note the unique feature that the cant parameters factor 
+into the horizontal geometry. state the parent curve type in this description]
 
 Parent curve type: `IfcSeventhOrderPolynomialSpiral`
 
@@ -1311,7 +1407,7 @@ Consider a horizontal Viennese Bend transition curve segment that starts at (0,0
 Viennese Bend transition curves are unique in that the horizontal geometry of the curve depends on the cant. For the example, the cant segment horizontal length is 100, the start cant is 0.0 and the end cant is 0 at the left rail and 0.1 at the right rail. The semantic definition is
 
 ~~~
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 1.E-1, .VIENNESEBEND.);
+#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 0.1, .VIENNESEBEND.);
 ~~~
 
 $$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$
@@ -1341,10 +1437,13 @@ $$ a_{6} = 70(0.33333) = 23.33333333, A_{6} = \frac{100}{\sqrt[7]{\left| 23.3333
 $$ a_{7} = -20(0.33333) = -6.66666666, A_{7} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838m$$
 
 ~~~
+#66 = IFCCURVESEGMENT(.CONTINUOUS., #72, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #75);
+#72 = IFCAXIS2PLACEMENT2D(#73, #74);
+#73 = IFCCARTESIANPOINT((0., 0.));
+#74 = IFCDIRECTION((1., 0.));
 #75 = IFCSEVENTHORDERPOLYNOMIALSPIRAL(#76, -78.8880838459446, 63.7638813456506, -57.7378785242934, 64.2314061308743, 83.922298125931, -125.657906854859, $, $);
 #76 = IFCAXIS2PLACEMENT2D(#77, $);
 #77 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-The parent curve point is then positioned using the curve segment start
-point and orientation as illustrated for the clothoid curve example.
+[todo: add calculation at a point]
