@@ -3,9 +3,8 @@ todo:
 * Finish section for Helmert Curve
 * Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent
 * Add figure for IfcClothoid showing both the X < 0 and X > 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.
-* Remove source examples
-* Add new main level section for examples and validation data - section 11
 * Change all figure and table numbering to be "section number"-n, e.g. Figure 2.3.2-1, Table 3.0-1. Change references in the text and the captions
+* Review all subsections in this section for consistency
 
 # Section 2.0 - Horizontal Alignment
 
@@ -55,7 +54,7 @@ $M_N$ simultaneously translates the trim-start point to the origin and rotates s
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & \phantom{-}x_0\sin\theta_0 - y_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -285,8 +284,10 @@ $$M_{h} = \begin{bmatrix}
 
 Circular alignment curves are geometrically represented by an arc trimmed from an `IfcCircle` parent curve.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CircularArc_100.0_300_1000_1_Meter.ifc)
+-->
 
 ### 2.4.1 Parent Curve Parametric Equations
 
@@ -411,8 +412,10 @@ $$M_{h} = \begin{bmatrix}
 
 Spiral transition curves are geometrically represented by a segment trimmed from one of the many spiral types in IFC. `IfcClothoid` geometry is used for clothoid curves.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Clothoid_100.0_300_1000_1_Meter.ifc)
+-->
 
 ### 2.5.1 Parent Curve Parametric Equations
 
@@ -515,7 +518,7 @@ $$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \fra
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & \phantom{-}x_0\sin\theta_0 - y_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
@@ -590,8 +593,10 @@ $$M_{h} = \begin{bmatrix}
 
 `IfcPolynomalCurve` is the geometric type for cubic transition spirals.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_Cubic_100.0_inf_300_1_Meter.ifc)
+-->
 
 ### 2.6.1 Parent Curve Parametric Equations
 
@@ -790,36 +795,22 @@ I
 
 ## 2.7 Helmert Transition Curve
 
-The Helmert curve is unique in that it is semantically defined as a single layout segment but geometrically defined with two composite curve segments, each representing half of the transition curve. The parent curve for a helmert transition curve is `IfcSecondOrderPolynomialSpiral`.
+The Helmert curve is unique in that it is semantically defined as a single layout segment (`IfcAlignmentHorizontalSegment`) but geometrically defined with two curve segments (`IfcCurveSegment`), each representing half of the transition curve. The parent curve for a helmert transition curve is `IfcSecondOrderPolynomialSpiral`.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_HelmertCurve_100.0_inf_300_1_Meter.ifc)
+-->
 
 ### 2.7.1 Parent Curve Parametric Equations
+
+The curve tangent angle and curvature are given by the following equations
 
 $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$
 
 $$\kappa(t) = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
 ### 2.7.2 Semantic Definition to Geometry Mapping
-
-$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
-
-First Half
-
-$$a_{0} = \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
-
-$$a_{1} = 0,\ A_{1} = 0$$
-
-$$a_{2} = 2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
-
-Second Half
-
-$$a_{0} = -f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
-
-$$a_{1} = 4f,\ A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
-
-$$a_{2} = -2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 Consider a horizontal Helmert transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
@@ -839,9 +830,15 @@ $$R_{s} = \infty$$
 
 $$R_{e} = 300\ m$$
 
-$$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
 First Half
+
+$$a_{0} = \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+
+$$a_{1} = 0,\ A_{1} = 0$$
+
+$$a_{2} = 2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 $$a_{0} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
@@ -850,6 +847,12 @@ $$A_{1} = 0$$
 $$a_{2} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{|0.66667|}}\frac{0.66667}{|0.66667|} = 114.4714255\ m$$
 
 Second Half
+
+$$a_{0} = -f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+
+$$a_{1} = 4f,\ A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
+
+$$a_{2} = -2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 $$a_{0} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{| -0.33333|}\frac{-0.33333}{|-0.33333|} = - 300\ m$$
 
@@ -900,24 +903,18 @@ $$x_{p} = 49.9972 - 49.9664\cos{0.0555555} - 1.73556\sin{0.0555555 =}0.011503\ m
 
 $$y_{p} = 0.347204 - 49.9664\sin{0.055555} + 1.73556\cos{0.0555555} = -0.6943693\ m$$
 
-The geometric representations are
-
-First half
+The geometric representation of the first half is
 
 ~~~
+#36 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(50.), #45);
+#37 = IFCLOCALPLACEMENT($, #38);
+#38 = IFCAXIS2PLACEMENT3D(#39, $, $);
+#39 = IFCCARTESIANPOINT((0., 0., 0.));
 #45 = IFCSECONDORDERPOLYNOMIALSPIRAL(#46, 114.471424255333, $, $);
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-Second half
-
-~~~
-#52 = IFCSECONDORDERPOLYNOMIALSPIRAL(#53, -114.471424255333, 86.6025403784439, -300.);
-#53 = IFCAXIS2PLACEMENT2D(#54, #55);
-#54 = IFCCARTESIANPOINT((0.0115725277555399, -0.694297741112199));
-#55 = IFCDIRECTION((0.998457186998745, 0.0555269820047339));
-~~~
 
 The curve segments are
 
@@ -948,43 +945,41 @@ $$y = 0.0 + 49.99724 sin(0.0) + 0.347204 cos(0.0) = 0.347204$$
 $$dx = cos(0. + 0.02777777) = 0.999614$$
 $$dy = sin(0. + 0.02777777) = 0.027774$$
 
+The geometric represention of the second half
+
 ~~~
 #48 = IFCCURVESEGMENT(.CONTINUOUS., #49, IFCLENGTHMEASURE(50.), IFCLENGTHMEASURE(50.), #52);
 #49 = IFCAXIS2PLACEMENT2D(#50, #51);
 #50 = IFCCARTESIANPOINT((49.9972443634885, 0.347204361427475));
 #51 = IFCDIRECTION((0.999614222337484, 0.0277742056705088));
+#52 = IFCSECONDORDERPOLYNOMIALSPIRAL(#53, -114.471424255333, 86.6025403784439, -300.);
+#53 = IFCAXIS2PLACEMENT2D(#54, #55);
+#54 = IFCCARTESIANPOINT((0.0115725277555399, -0.694297741112199));
+#55 = IFCDIRECTION((0.998457186998745, 0.0555269820047339));
 ~~~
 
-3.  Evaluate Point on Curve
+### 2.7.3 Compute Point on Curve
 
-See clothoid curve for general calculation procedure.
-
-:warning: **[Add calculation]** :warning:
+[todo: add calculation for the end point the second half, u = 100]
 
 ## 2.8 Bloss Transition Curve
 
-Parent curve type: `IfcThirdOrderPolynomialSpiral`
+`IfcThirdOrderPolynomialSpiral` is the geometric type for Bloss transition spirals.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_BlossCurve_100.0_inf_300_1_Meter.ifc)
+-->
 
 ### 2.8.1 Parent Curve Parametric Equations
+
+The curve tangent angle and curvature are given by the following equations
 
 $$\theta(t) = \frac{A_{3}}{4\left| A_{3}^{5} \right|}t^{4} + \frac{1}{3A_{2}^{3}}t^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$
 
 $$\kappa(t) = \frac{A_{3}}{\left| A_{3}^{5} \right|}t^{3} + \frac{t^{2}}{A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
 ### 2.8.2 Semantic Definition to Geometry Mapping
-
-$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
-
-$$a_{0} = \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
-
-$$A_{1} = 0$$
-
-$$a_{2} = 3f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|}$$
-
-$$a_{3} = - 2f,\ A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}$$
 
 Consider a horizontal Bloss transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
@@ -996,19 +991,26 @@ The semantic definition is
 #29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $, .BLOSSCURVE.);
 ~~~
 
+Compute the polynomial spiral parameters
+
 $$L = 100\ m$$
 
 $$R_{s} = \infty$$
 
 $$R_{e} = 300\ m$$
 
-$$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
-$$a_{0} = \frac{100}{\infty} = 0,\ A_{o} = 0$$
+$$a_{0} = \frac{L}{R_{s}}= \frac{100}{\infty} = 0$$
+$$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 
-$$a_{2} = 3(0.33333) = 1,\ A_{2} = \frac{100}{\sqrt[3]{|1|}}\frac{1}{|1|} = 100\ m$$
+$$A_{1} = 0$$
 
-$$a_{3} = - 2(0.33333) = -0.66667,\ A_{3} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = - 110.668192\ m$$
+$$a_{2} = 3f = 3(0.33333) = 1$$
+$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{|1|}}\frac{1}{|1|} = 100\ m$$
+
+$$a_{3} = -2f = -2(0.33333) = -0.66667$$
+$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -110.668192\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1044,7 +1046,7 @@ $$M_{CSP} = I$$
 
 Compute point and curve tangent at 100 m from the start.
 
-$$\theta(s) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}t^{4} + \frac{1}{3(100)^{3}}t^{3}$$
+$$\theta(s) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}s^{4} + \frac{1}{3(100)^{3}}s^{3}$$
 
 $$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = 99.7486$$
 
@@ -1093,28 +1095,20 @@ $$M_{h} = \begin{bmatrix}
 
 `IfcCosineSpiral` is the geometric type for cosine transition spirals.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_CosineCurve_100.0_inf_300_1_Meter.ifc)
+-->
 
 ### 2.9.1 Parent Curve Parametric Equations
+
+The curve tangent angle and curvature are given by the following equations
 
 $$\kappa(t) = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \frac{\pi}{L}t \right)$$
 
 $$\theta(t) = \frac{1}{A_{0}}t + \frac{L}{\pi A_{1}}\sin\left( \frac{\pi}{L}t \right)$$
 
-$$x = \int_{0}^{L}{\cos{\theta(t)}}\ dt$$
-
-$$y = \int_{0}^{L}{\sin{\theta(t)}}\ dt$$
-
 ### 2.9.2 Semantic Definition to Geometry Mapping
-
-$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
-
-Constant Term:
-$a_{0} = 0.5f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$
-
-Cosine Term:
-$a_{1} = \ -0.5f,\ A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}$
 
 Consider a horizontal cosine transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
@@ -1126,13 +1120,20 @@ The semantic definition is
 #29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $, .COSINECURVE.);
 ~~~
 
+Compute the cosine spiral parameters
+
 $$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
-$$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
+Constant Term:
 
-$$a_{0} = 0.5(0.33333) + \frac{100}{\infty} = 0.16667,\ A_{0} = \frac{100\ m}{|0.16667|}\ \frac{0.16667}{|0.16667|} = 600\ m$$
+$$a_{0} = 0.5f + \frac{L}{R_{s}} = 0.5(0.33333) + \frac{100}{\infty} = 0.16667$$
+$$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}= \frac{100\ m}{|0.16667|}\ \frac{0.16667}{|0.16667|} = 600\ m$$
 
-$$a_{1} = -0.5(0.33333) = -0.16667,\ A_{1} = \frac{100}{|-0.16667|}\ \frac{-0.16667}{|-0.16667|} = -600\ m$$
+
+Cosine Term:
+$$a_{1} = -0.5f= -0.5(0.33333) = -0.16667$$
+$$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \frac{100}{|-0.16667|}\ \frac{-0.16667}{|-0.16667|} = -600\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1217,10 +1218,14 @@ $$M_{h} = \begin{bmatrix}
 
 `IfcSineSpiral` is the geometric type for sine transition spirals.
 
+<!--
 Source Model:
 [GENERATED\_\_HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_SineCurve_100.0_inf_300_1_Meter.ifc)
+-->
 
 ### 2.10.1 Parent Curve Parametric Equations
+
+The curve tangent angle and curvature are given by the following equations
 
 $$\kappa(t) = \frac{1}{A_{0}} + \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2}t + \frac{1}{A_{2}}\sin\left( \frac{2\pi}{L}t \right)\ \ $$
 
@@ -1232,17 +1237,6 @@ $$y = \int_{0}^{L}{\sin{\theta(t)}}\ dt$$
 
 ### 2.10.2 Semantic Definition to Geometry Mapping
 
-$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
-
-Constant Term:
-$a_{0} = \frac{L}{R_{s}},\ A_{o} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$
-
-Linear Term:
-$a_{1} = f,\ A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$
-
-Sine Term:
-$a_{2} = -\frac{1}{2\pi}f,\ A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|}$
-
 Consider a horizontal sine transition curve segment that starts at (0,0)
 with a start direction of 0.0. The radius at the start is infinite and
 the radius at the end is 300. The arc length of the segment is 100. The
@@ -1253,15 +1247,23 @@ semantic definition is
 #29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $, .SINECURVE.);
 ~~~
 
+Compute the sine spiral parameters
+
 $$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$
 
-$$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
-$$a_{0} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
+Constant Term:
+$$a_{0} = \frac{L}{R_{s}} = \frac{100}{\infty} = 0$$
+$$A_{o} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 
-$$a_{1} = 0.33333,\ A_{1} = \frac{100}{\sqrt{|0.33333|}}\frac{0.33333}{|0.33333|} = 173.2050808\ m$$
+Linear Term:
+$$a_{1} = f = 0.33333$$
+$$A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{\sqrt{|0.33333|}}\frac{0.33333}{|0.33333|} = 173.2050808\ m$$
 
-$$a_{2} = -\frac{1}{2\pi}(0.33333) = -0.053051647,\ A_{2} = \frac{100}{|-0.053051647|}\frac{-0.053051647}{|-0.053051647|} = -1884.955592\ m$$
+Sine Term:
+$$a_{2} = -\frac{1}{2\pi}f = -\frac{1}{2\pi}(0.33333) = -0.053051647$$
+$$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{|-0.053051647|}\frac{-0.053051647}{|-0.053051647|} = -1884.955592\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1349,15 +1351,32 @@ into the horizontal geometry. state the parent curve type in this description]
 
 Parent curve type: `IfcSeventhOrderPolynomialSpiral`
 
+<!--
 Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_VienneseBend_100.0_inf_300_1_Meter.ifc
+-->
 
 ### 2.11.1 Parent Curve Parametric Equations ###
+
+The curve tangent angle and curvature are given by the following equations
 
 $$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s$$
 
 $$\kappa(s) = \frac{A_{7}}{\left| A_{7}^{9} \right|}s^{7} + \frac{1}{A_{6}^{7}}s^{6} + \frac{A_{5}}{\left| A_{5}^{7} \right|}s^{5} + \frac{1}{A_{4}^{5}}s^{4} + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
 ### 2.11.2 Semantic Definition to Geometry Mapping
+
+Consider a horizontal Viennese Bend transition curve segment that starts at (0,0) with a start direction of 0.0. The radius at the start is infinite and the radius at the end is 300. The arc length is 100. The Gravity Center Line Height is 1.8 (this optional parameter is required for the Viennese Bend). The semantic definition is
+
+~~~
+#28 = IFCCARTESIANPOINT((0., 0.));
+#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., 1.8, .VIENNESEBEND.);
+~~~
+
+Viennese Bend transition curves are unique in that the horizontal geometry of the curve depends on the cant. For the example, the cant segment horizontal length is 100, the start cant is 0.0 and the end cant is 0 at the left rail and 0.1 at the right rail. The semantic definition is
+
+~~~
+#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 0.1, .VIENNESEBEND.);
+~~~
 
 $h_{cg}$ = Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
 
@@ -1377,42 +1396,11 @@ $\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cant Angle
 
 $cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)$, Cant Factor
 
-$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}$$
-
-Constant term $$a_{0} = \frac{L}{R_{s}}, A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
-
-Linear term $$a_{1} = 0, A_{1} = 0$$
-
-Quadratic term $$a_{2} = cf, A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|}$$
-
-Cubic term $$a_{3} = -4cf, A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}$$
-
-Quartic term $$a_{4} = 5cf + 35f, A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|}$$
-
-Quintic  term $$a_{5} = -2cf - 84f, A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|}$$
-
-Sextic term term $$a_{6} = 70f, A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|}$$
-
-Septic term $$a_{7} = -20f, A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|}$$
-
-### 2.11.3 Example
-
-Consider a horizontal Viennese Bend transition curve segment that starts at (0,0) with a start direction of 0.0. The radius at the start is infinite and the radius at the end is 300. The arc length is 100. The Gravity Center Line Height is 1.8 (this optional parameter is required for the Viennese Bend). The semantic definition is
-
-~~~
-#28 = IFCCARTESIANPOINT((0., 0.));
-#29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., 1.8, .VIENNESEBEND.);
-~~~
-
-Viennese Bend transition curves are unique in that the horizontal geometry of the curve depends on the cant. For the example, the cant segment horizontal length is 100, the start cant is 0.0 and the end cant is 0 at the left rail and 0.1 at the right rail. The semantic definition is
-
-~~~
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 0.1, .VIENNESEBEND.);
-~~~
+Compute the polynomial spiral parameters
 
 $$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$
 
-$$f = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
+$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
 $$ \theta_s = \frac{(0. - 0.)}{1.5} = 0.0$$
 
@@ -1420,21 +1408,37 @@ $$ \theta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$
 
 $$ cf = -420\left(\frac{1.8}{100}\right)(0.066667-0.)= -0.504$$
 
-$$ a_{0} = \frac{100}{\infty} = 0, A_{0} = 0 $$
+Constant term 
+$$a_{0} = \frac{L}{R_{s}}= \frac{100}{\infty} = 0$$
+$$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0 $$
 
-$$ a_{1} = 0, A_{1} = 0 $$
+Linear term 
+$$a_{1} = 0$$
+$$A_{1} = 0$$
 
-$$ a_{2} = -0.504, A_{2} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069m$$
+Quadratic term 
+$$a_{2} = cf= -0.504$$
+$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069m$$
 
-$$ a_{3} = -4(-0.504) = 2.016, A_{3} = \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813m$$
+Cubic term 
+$$a_{3} = -4cf= -4(-0.504) = 2.016$$
+$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813m$$
 
-$$ a_{4} = 5(-0.504) + 35(0.33333) = 9.1466655, A_{4} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406m$$
+Quartic term 
+$$a_{4} = 5cf + 35f = 5(-0.504) + 35(0.33333) = 9.1466655$$
+$$A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406m$$
 
-$$ a_{5} = -2(-0.504) - 84(0.33333) = -26.9919999, A_{5} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785m$$
+Quintic term 
+$$a_{5} = -2cf - 84f= -2(-0.504) - 84(0.33333) = -26.9919999$$
+$$A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785m$$
 
-$$ a_{6} = 70(0.33333) = 23.33333333, A_{6} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134m$$
+Sextic term 
+$$a_{6} = 70f  = 70(0.33333) = 23.33333333$$
+$$A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134m$$
 
-$$ a_{7} = -20(0.33333) = -6.66666666, A_{7} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838m$$
+Septic term 
+$$a_{7} = -20f = -20(0.33333) = -6.66666666$$
+$$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838m$$
 
 ~~~
 #66 = IFCCURVESEGMENT(.CONTINUOUS., #72, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #75);
@@ -1446,4 +1450,73 @@ $$ a_{7} = -20(0.33333) = -6.66666666, A_{7} = \frac{100}{\sqrt[8]{\left| -6.666
 #77 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-[todo: add calculation at a point]
+### 2.11.3 Evaluate Point on Curve
+
+Compute the curve coordinates at a distance along the curve, $u = 100$
+
+**Step 1 — Evaluate the parent curve at the trim start**
+
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = I$.
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
+placement is at (0,0) with RefDirection (1,0) which results in an
+identity matrix.
+
+$$M_{CSP} = I$$
+
+**Step 4 — Evaluate and map each point**
+
+[todo: finish calculations]
+
+Compute point and curve tangent at 100 m from the start.
+
+$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s = $$
+
+$$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = $$
+
+$$y = \int_{0}^{100}{\sin{\theta(s)}}\ ds = $$
+
+$$\theta(100) = $$
+
+$$dx = \cos\left( \right) = $$
+
+$$dy = \sin\left( \right) = $$
+
+In matrix form
+
+$$M_{PC} = \begin{bmatrix}
+ &  & 0 & \\
+ &  & 0 & \\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+Apply the normalization and curve segment placement to the parent curve point
+
+$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+I
+\end{bmatrix}
+
+\begin{bmatrix}
+ &  & 0 & \\
+ &  & 0 & \\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
+
+$$M_{h} = \begin{bmatrix}
+ &  & 0 & \\
+ &  & 0 & \\
+0 & 0 & 1 & 0\\
+0&0&0&1
+\end{bmatrix}$$
