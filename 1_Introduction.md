@@ -128,7 +128,7 @@ representations of `IfcAlignment` are:
 
 
 The `RepresentationIdentifier` and `RepresentationType` values required
-by the IFC concept templates for each alignment geometry variant are:
+by the IFC concept templates for each alignment geometry variant are listed in Table 0.
 
 | Alignment variant | Curve entity | `RepresentationIdentifier` | `RepresentationType` |
 |---|---|---|---|
