@@ -58,7 +58,7 @@ $$M_T = \begin{bmatrix}
 
 **Step 3 — Form the rotation matrix $M_R$**
 
-$M_R$ rotates so that the tangent at the trim start aligns with the positive $x$-direction $(1, 0)$. This is the inverse of the rotational part of $M_{PCS}$, which for a pure rotation matrix equals the transpose.
+$M_R$ rotates the trimmed curve so that the tangent at the trim start aligns with the positive $x$-direction $(1, 0)$.
 
 $$M_R = \begin{bmatrix} 
 \cos\theta_0 & \sin\theta_0 & 0 & 0 \\
