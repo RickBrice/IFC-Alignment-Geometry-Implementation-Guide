@@ -1,9 +1,11 @@
 # Section 2 - Horizontal Alignment
 
-outline:
-* this chapter is in good shape, add the following
-* introduction to example test files
-* use the example files instead of linking to the EnrichIFC repo
+todo:
+* revise algorithm so M_T and M_R are a single matrix
+* update calculations for line, circle, clothoid, and cubic (these are the topics that are basically complete)
+* finish other cuve typed. start with bloss. save helment for last.
+* remove source examples
+* add new main level section for examples and validation data - section 12
 
 The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
 
