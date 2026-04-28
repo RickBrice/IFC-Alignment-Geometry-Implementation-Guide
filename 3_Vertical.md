@@ -1,5 +1,9 @@
 # Section 3.0 - Vertical Alignment
 
+todo:
+* Revise section 3.2 to match that algorithm in section 2.2. There are only 4 steps now.
+
+
 ## 3.1 General
 
 The geometric representation of a vertical alignment is accomplished with `IfcGradientCurve`. This defines the vertical alignment in a "distance along, elevation" coordinate system. Distance along is measured along `IfcGradientCurve.BaseCurve` = `IfcCompositeCurve`.
@@ -27,7 +31,7 @@ $g_{e} =$ End Gradient
 
 Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation above datum. The grade angle at arc-length $s$ is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
 
-**Steps 1–5** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `SegmentStart`.
+**Steps 1–4** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `SegmentStart`.
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
@@ -35,39 +39,38 @@ Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0)$, and grade a
 
 $$M_{PCS} = \begin{bmatrix} \cos\theta_0 & -\sin\theta_0 & 0 & d_0 \\ \sin\theta_0 & \cos\theta_0 & 0 & z_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
 
-**Step 2 — Form the translation matrix $M_T$**
+**Step 2 — Form the normalization matrix $M_N$**
 
-$M_T$ moves the trim-start point to the origin of the distance-along/elevation plane.
+$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
 
-$$M_T = \begin{bmatrix} 1 & 0 & 0 & -d_0 \\ 0 & 1 & 0 & -z_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
 
-**Step 3 — Form the rotation matrix $M_R$**
-
-$M_R$ rotates so the grade direction at the trim start aligns with the positive $x$-direction, the inverse of the rotational part of $M_{PCS}$.
-
-$$M_R = \begin{bmatrix} \cos\theta_0 & \sin\theta_0 & 0 & 0 \\ -\sin\theta_0 & \cos\theta_0 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
-
-**Step 4 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, z_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
 
 $$M_{CSP} = \begin{bmatrix} \cos\theta_p & -\sin\theta_p & 0 & d_p \\ \sin\theta_p & \cos\theta_p & 0 & z_p \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
 
-**Step 5 — Evaluate and map each point in the vertical plane**
+**Step 4 — Evaluate and map each point in the vertical plane**
 
 For the point at arc-length $s$, compute $x(s)$, $y(s)$, and $\theta(s)$:
 
 $$M_{PC} = \begin{bmatrix} \cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ \sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
 
-$$M_v = M_{CSP}\, M_R\, M_T\, M_{PC}$$
+$$M_v = M_{CSP}\, M_N\, M_{PC}$$
 
 Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 6 is performed immediately for this point before moving to the next arc-length $s$.
 
 **Step 6 — Combine with the horizontal alignment to produce the 3D placement matrix**
 
-The vertical result lives in the (distance along, elevation) plane and must be merged with the horizontal alignment to form a 3D position and orientation. The two coordinate systems share one axis — distance along — but their remaining axes are orthogonal to each other: horizontal $x$ and $y$ are Easting and Northing; vertical $y$ is elevation (Z in 3D).
+The vertical result lives in the (distance along, elevation) plane and must be merged with the horizontal alignment to form a 3D position and orientation. The "distance along" axis corresponds to the curve tangent of the horizontal alignment and the vertical $y$ is elevation (Z in 3D).
 
-Evaluate the horizontal placement matrix $M_h$ at distance $d$ along the `IfcCompositeCurve`. This yields the horizontal 2D position $(x_h, y_h)$ and the horizontal tangent direction $(dx_h, dy_h) = (\cos\theta_h, \sin\theta_h)$.
+Evaluate the horizontal placement matrix $M_h$ at distance $d$ along the `IfcCompositeCurve`. This yields the horizontal 2D position $(x_h, y_h)$ and the horizontal alignment tangent direction $(dx_h, dy_h) = (\cos\theta_h, \sin\theta_h)$.
 
 $M_v$ is a two-dimensional matrix whose rows index the vertical frame: row 1 = distance-along, row 2 = elevation, row 3 = out-of-plane. Three modifications produce $M'_v$, the form required for multiplication with $M_h$.
 
@@ -99,6 +102,8 @@ Multiplying out, the columns of $M_{3D}$ are:
 
 ## 3.3 Constant Gradient
 
+A constant gradient is geometrically represented with a segment trimmed from an `IfcLine` parent curve.
+
 ### 3.3.1 Parent Curve Parametric Equations
 
 $$x(s) = p_{x} + s$$
@@ -107,6 +112,8 @@ $$y(s) = p_{y} + s(dy/dx)$$
 
 Note that these equations are different from the equations for
 horizontal.
+
+[todo: can this be reformulated to be the same as horizontal?]
 
 ### 3.3.2 Semantic Definition to Geometry Mapping
 
@@ -154,28 +161,58 @@ The curve segment is defined as
 #71 = IFCCURVESEGMENT(.CONTINUOUS., #77, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(111.803398874989), #80);
 ~~~
 
+### 3.3.3 Compute Point on Curve
+
+[todo: provide example calcs for steps 1 - 5. compute at u = 50, be clear u is horizontal]
+
 ## 3.4 Circular Arc
 
-Vertical circular arcs are tricky. For vertical, the "distance along" is
-a horizontal dimension. The `IfcCurveSegment` trimming parameters `SegmentStart` and `SegmentLength` are measured along the `IfcCircle`. 
+A circular vertical curve is geometrically represented with a segment trimmed from an `IfcCircle` parent curve.
+
+### 3.4.1 Parent Curve Parametric Equations
+
+### 3.4.2 Semantic Definition to Geometry Mapping
+
+Vertical circular arcs are tricky. The "distance along" dimension is
+horizontal while the `IfcCurveSegment` trimming parameters `SegmentStart` and `SegmentLength` are measured along the `IfcCircle`. 
 
 The following procedure maps the semantic parameters of a vertical circular arc to its geometric definition.
 
+Given the following semantic definition of a vertical circular arc, create the geometric definition.
+
+~~~
+#320 = IFCALIGNMENTVERTICALSEGMENT($, $, 144.917656958471, 239.704902937655, 25.3780433292418, -8.17722122076371E-4, -1.28040164299203E-2, -20000., .CIRCULARARC.);
+~~~
+
 Determine the tangent slope angle at the start and end of the segment.
+
+$g_{start} = -8.17722122076371 \cdot 10^{-4}$
 
 $\theta_{start} = tan^{-1}(g_{start})$
 
+$\theta_{start} = tan^{-1}(-8.17722122076371 \cdot 10^{-4}) = -8.177219398 \cdot 10^{-4}$
+
+$g_{end} = -1.28040164299203 \cdot 10^{-2}$
+
 $\theta_{end} = tan^{-1}(g_{end})$
 
-Compute the radius of the circle and the direction of vectors that are perpendicular to the circle, directed away from the center point.
+$\theta_{end} = tan^{-1}(-1.28040164299203 \cdot 10^{-2}) = -1.2803316789 \cdot 10^{-2}$
+
+Compute the radius of the circle.
+
+`IfcAlignmentVerticalSegment.RadiusOfCurvature` is optional. If provided, it should be consistent with the `HorizontalLength`, `StartGradient` and `EndGradient`, but is not guarenteed. For this reason, the radius is computed from the required  `HorizontalLength`, `StartGradient` and `EndGradient` attributes. Note that in computing the radius, it is taken to be an absolute value because `IfcCircle.Radius` is a `IfcPositiveLengthMeasure`.
+
+$R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$
+
+$h_l = $ horizontal length = `IfcAlignmentVerticalSegment.HorizontalLength` = 239.704902937655$
+
+$R = \left| \frac{239.704902937655}{sin(-1.2803316789\cdot10^{-4}) - sin(-8.177219398\cdot10^{-4})} \right | = 20000.0$
+
+ Comptue the direction of vectors that are perpendicular to the circle, directed away from the center point
 
 if $\theta_{start} < \theta_{end}$
 
 Curve is sagging (curve is on the bottom half of the circle)
-
-$$h_l = $$ horizontal length = `IfcAlignmentVerticalSegment.HorizontalLength`
-
-$R = \frac{h_l}{sin(\theta_{end}) - sin(\theta_{start})}$
 
 $\Delta_{start} = \theta_{start} + \frac{3}{2}\pi$
 
@@ -185,76 +222,46 @@ else
 
 Curve is cresting (curve is on top half of the circle)
 
-
-$R = \frac{ul}{sin(\theta_{start}) - sin(\theta_{end})}$
-
-$\Delta_{start} = \theta_{start} + \frac{1}{2}\pi$
-
-$\Delta_{end} = \theta_{end} + \frac{1}{2}\pi$
-
-Compute the curve trimming parameters `SegmentStart` and `SegmentLength`
-
-$Segment Start = R\Delta_{start}$
-
-$Segment Length = R(\Delta_{end} - \Delta_{start})$
-
-### 3.4.1 Example
-
-Given the following semantic definition of a vertical circular arc, create the geometric definition.
-
-~~~
-#320 = IFCALIGNMENTVERTICALSEGMENT($, $, 144.917656958471, 239.704902937655, 25.3780433292418, -8.17722122076371E-4, -1.28040164299203E-2, -20000., .CIRCULARARC.);
-~~~
-
-#### 3.4.1.1 Compute radius for the parent curve
-
-$g_{start} = -8.17722122076371E-4$
-$\theta_{start} = tan^{-1}(-8.17722122076371E-4) = -8.177219398E-4$
-
-$g_{end} = -1.28040164299203E-2$
-$\theta_{end} = tan^{-1}(-1.28040164299203E-2) = -1.2803316789E-4$
-
-$ul = 239.704902937655$
-
-$R = \frac{239.704902937655}{sin(-1.2803316789E-4) - sin(-8.177219398E-4)} = -20000.0$
-
-Radius is negative which means a CW direction, so the curve is cresting. Radius needs to be a positive value for `IfcCircle` so use the absolute value.
-
-~~~
-#1983 = IFCCIRCLE(#1984, 20000.);
-#1984 = IFCAXIS2PLACEMENT2D(#1985, #1986);
-#1985 = IFCCARTESIANPOINT((0., 0.));
-#1986 = IFCDIRECTION((1., 0.));
-~~~
-
-#### 3.4.1.2 Compute curve trimming parameters
-
 $\Delta_{start} = \theta_{start} + \frac{1}{2}\pi = 1.56997860486$
 
 $\Delta_{end} = \theta_{end} + \frac{1}{2}\pi = 1.55799301001$
+
+Compute the curve trimming parameters `SegmentStart` and `SegmentLength`
 
 $Segment Start = R\Delta_{start} = (20000.0)(1.56997860486) = 31399.5720971$
 
 $Segment Length = R(\Delta_{end} - \Delta_{start}) = (20000.0)(1.55799301001 - 1.56997860486) = -239.711897$
 
-~~~
-#1974 = IFCCURVESEGMENT(.CONTSAMEGRADIENT., #1980, IFCLENGTHMEASURE(31399.5720971016), IFCLENGTHMEASURE(-239.711897000001), #1983);
-~~~
+For a cresting curve, the segment length is negative which means the trim occurs in CW direction. 
 
-#### 3.4.1.3 Placement of trimmed curve
+Determine the placement of the trimmed curve
 
 X = `IfcAlignmentVerticalSegment.StartDistAlong` = 144.917656958471
 
 Y = `IfcAlignmentVerticalSegment.StartHeight` = 25.3780433292418
 
 $dx = cos(\theta_{start}) = cos(-8.177219398x10^{-4} = 0.9999966566$
+
 $dy = sin(\theta_{start}) = sin(-8.177219398x10^{-4}) = -8.1772184868x10^{-4}$
 
+
+The geometric representation is
+
 ~~~
+#1974 = IFCCURVESEGMENT(.CONTSAMEGRADIENT., #1980, IFCLENGTHMEASURE(31399.5720971016), IFCLENGTHMEASURE(-239.711897000001), #1983);
 #1980 = IFCAXIS2PLACEMENT2D(#1981, #1982);
 #1981 = IFCCARTESIANPOINT((144.917656958471, 25.3780433292418));
 #1982 = IFCDIRECTION((9.99999665665433E-1, -8.177218486836E-4));
+#1983 = IFCCIRCLE(#1984, 20000.);
+#1984 = IFCAXIS2PLACEMENT2D(#1985, #1986);
+#1985 = IFCCARTESIANPOINT((0., 0.));
+#1986 = IFCDIRECTION((1., 0.));
 ~~~
+
+
+### 3.4.3 Compute Point on Curve
+
+[todo: provide example calcs for steps 1 - 5. compute at u = 150, be clear u is horizontal]
 
 ## 3.5 Clothoid
 
@@ -274,42 +281,56 @@ is equal to the specified horizontal length. Numerically solve
 ![](images/image11.png)
 
 ## 3.6 Parabolic Arc
-The geometric representation of vertical parabolic curves as a parabola is a little bit tricky.
+The most common transition curve in a vertical profile is a parabola. The geometric representation is `IfcPolynomialCurve`. Mapping of the semantic definition to the geometric definition can be a bit tricky.
 
-Consider the equation for a parabola in the form 
- $y(x) = Ax^2 + Bx + C$
+### 3.6.1 Parent Curve Parametric Equations
 
-where:
+The general form of a parabola is 
 
-A = (end gradient - start gradient)/(2 * horizontal length)
+$$y(x) = A_2 x^2 + A_1 x + A_0 $$
 
-B = start gradient
+where: 
 
-C = start height
+$A_2$ = (end gradient - start gradient)/(2 * horizontal length)
+
+$A_1$ = start gradient
+
+$A_0$ = start height
+
+The gradient of the curve is
+
+$$y'(x) = 2A_2x + A_1$$
+
+### 3.6.2 Semantic Definition to Geometry Mapping
+
+Consider a 1600 m parabolic vertical cover that starts 1200 m along the horizontal alignment. The entry grade is 1.75% and the exit grade is -1%. The elevation at the start of the curve is 121 m.
+
+The semantic definition is
+
+~~~
+#289=IFCALIGNMENTVERTICALSEGMENT($,$,1200.,1600.,121.,0.017500000000000002,-0.01,$,.PARABOLICARC.);
+~~~
 
 These parameters are obtained from the semantic definition of the curve segment, `IfcAlignmentVerticalSegment`.
 
 The parent curve for `IfcCurveSegment.ParentCurve` is `IfcPolynomialCurve`. The coefficients are:
 
-~~~
 IfcPolynomialCurve.CoefficientsX = (0,1)
-IfcPolynomialCurve.CoefficientsY = (C, B, A)
-~~~
 
----
-:information_source: Note 1: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z.
+IfcPolynomialCurve.CoefficientsY = ($A_0$, $A_1$, $A_2$)
 
-:information_source: Note 2: The coefficients A, B, and C must have the following unit of measure, consistent with the project units:
+> Note 1: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z. See example in Section 3.7 below.
 
-A = $Length{^-1}$
+> Note 2: The coefficients $A_0$, $A_1$, and $A_2$ must have the following unit of measure, consistent with the project units:
+>
+> $A_0 = Length^1$
+>
+> $A_1 = Length^0$
+>
+> $A_2 = Length^{-1}$
+>
+> The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2.0 - Horizontal Alignment](./2_Horizontal.md). Implicit units of measure are required for the polynomial coefficients.
 
-B = $Length^0$
-
-C = $Length^1$
-
-The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2 - Horizontal Alignment](./2_Horizontal.md). Implicit units of measure are required for the polynomial coefficients.
-
----
 
 The challenging part is `IfcCurveSegment.SegmentLength`. The length along the parabolic curve is needed.
 
@@ -317,38 +338,51 @@ The distance along a curve is
 
 $s(x) = \int_{}^{}(\sqrt{(y')^{2} + 1}) dx$
 
-The parabola equation is
+The length along the parabolic curve is then:
 
- $y(x) = Ax^2 + Bx + C$
+$s(x) = \int_{}^{}\sqrt{4A_2^2x^2 + 4A_2A_1x + A_1^2 + 1} dx$
 
- and it's derivative is
+Fortunately, there is a closed form solution.
 
- $y'(x) = 2Ax + B$
+<!-- see https://www.integral-table.com, equation #37 -->
 
-The equation along the parabolic curve is then:
-
-$s(x) = \int_{}^{}\sqrt{4A^2x^2 + 4ABx + B^2 + 1} dx$
-
-This equation can be solved numerically.
-
-Alternatively, there is a closed form solution, see https://www.integral-table.com, equation #37.
-
-$s(x)=\int_{}^{}\sqrt{ax^2 + bx + c} dx = \frac{b+2x}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$
+$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2x}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$
 
 Let
 
-$a = 4A^2$
+$a = 4A_2^2$
 
-$b = 4AB$
+$b = 4A_2A_1$
 
-$c = B^2 + 1$
+$c = A_1^2 + 1$
 
 Substitute into the above closed form equation. The curve length is
 
-$Lc = s(L) - s(0.0)$
+$L_c = s(L) - s(0.0)$
 
-Finally, `IfcCurveSegment.SegmentLength = Lc`
 
+$A_0 = 121.$
+
+$A_1 = 0.0175$
+
+$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}$
+
+[todo: add the computation for Lc]
+
+$L_c = 1600.0616641340894$
+
+~~~
+#291=IFCCARTESIANPOINT((0.,0.));
+#292=IFCDIRECTION((1.,0.));
+#293=IFCAXIS2PLACEMENT2D(#291,#292);
+#294=IFCPOLYNOMIALCURVE(#293,(0.,1.),(121.,0.017500000000000002,-8.5937500000000005E-06),$);
+#295=IFCCARTESIANPOINT((1200.,121.));
+#296=IFCDIRECTION((0.99984691016192495,0.017497320927833689));
+#297=IFCAXIS2PLACEMENT2D(#295,#296);
+#298=IFCCURVESEGMENT(.CONTSAMEGRADIENT.,#297,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(1600.0616641340894),#294);
+~~~
+
+<!--
 In summary,
 
 ~~~
@@ -363,3 +397,13 @@ IfcCurveSegment.SegmentLength=Lc
 
 IfcCurveSegment.ParentCurve = IfcPolynomialCurve
 ~~~
+-->
+
+### 3.6.3 Compute Point on Curve
+
+[todo: provide example calcs for steps 1 - 5. compute at d = 1500, u = 1500-1200 = 300, be clear u is horizontal from the start of the parabola]
+
+## 3.7 Combined 3D
+
+todo:
+* in this section, recall the tangent line from Section 2 and combine it with the parabolic curve from this chapter to illustrate the calculation of the final 3D point. Do the calculation at u = 1500 (after the start of the parabola, before the end of the tangent line)
