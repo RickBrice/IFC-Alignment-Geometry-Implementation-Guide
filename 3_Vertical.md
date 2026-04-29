@@ -254,9 +254,6 @@ $$M_v = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-Column 4 of $M_v$ gives the result: **distance along = 50.0 m, elevation = 35.0 m**.
-
-
 ## 3.4 Circular Arc
 
 A circular vertical curve is geometrically represented with a segment trimmed from an `IfcCircle` parent curve.
