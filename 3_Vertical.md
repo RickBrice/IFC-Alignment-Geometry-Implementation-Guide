@@ -1,8 +1,6 @@
 # Section 3.0 - Vertical Alignment
 
-A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the complete three-dimensional geometry of a road, railway, or other linear infrastructure element. The 3D combination is described in Section 3.2 and illustrated in Section 3.7.
-
-A key distinction in vertical alignment geometry is the difference between **horizontal length** and **arc length**. The semantic representation of each segment uses `HorizontalLength` — the horizontal projection of the segment — while the geometric representation trims its parent curve by arc-length parameters (`SegmentStart` and `SegmentLength`).
+A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the complete three-dimensional geometry of a road, railway, or other linear infrastructure element. 
 
 ## 3.1 General
 
