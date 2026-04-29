@@ -35,13 +35,6 @@ Vertical segments are evaluated in a two-dimensional "distance along, elevation"
 
 Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0)$, and grade angle $\theta_0 = \theta(s_0)$.
 
-$$M_{PCS} = \begin{bmatrix} 
-\cos\theta_0 & -\sin\theta_0 & 0 & d_0 \\
-\sin\theta_0 & \cos\theta_0 & 0 & z_0 \\ 
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
 **Step 2 — Form the normalization matrix $M_N$**
 
 $M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
