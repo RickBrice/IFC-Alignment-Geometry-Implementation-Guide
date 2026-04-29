@@ -9,7 +9,11 @@ outline:
 * need to explain what the EnrichIFC program is. the deviation discussion should be last topic in the chapter uri is https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code. use example for bim fit check discussion with peter
 
 ## 4.1 General
-An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope. [todo: add a figure to illustrate the cross slope and centerline elevation deviation] An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of IfcCompositeCurve, an IfcSegmentedReferenceCurve consists of an end to start collection of IfcCurveSegment. An IfcSegmentedReferenceCurve also has a BisisCurve which us typically an IfcGradientCurve.
+An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope. 
+
+[todo: add a figure to illustrate the cross slope and centerline elevation deviation] 
+
+An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of `IfcCompositeCurve`, an `IfcSegmentedReferenceCurve` consists of an end to start collection of `IfcCurveSegment`. An `IfcSegmentedReferenceCurve` also has a `BasisCurve` which is typically an `IfcGradientCurve`.
 
 The `IfcCurveSegment.ParentCurve` defines the change in cross
 slope between rail heads over the length of the segment. When the
