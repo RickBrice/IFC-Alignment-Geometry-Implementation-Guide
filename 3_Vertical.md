@@ -86,7 +86,12 @@ $M_v$ is a two-dimensional matrix whose rows index the vertical frame: row 1 = d
 
 **Columns 2 and 3** — The row reordering reindexes the column values and exchanges the columns. $M_v$ column 2, the in-plane normal $(-dy_v,\ dx_v,\ 0)$ in [d-along, elevation, out-of-plane] ordering, becomes $(-dy_v,\ 0,\ dx_v)$ in [d-along, cross-track, elevation] ordering — the 3D up direction — and moves to column 3. $M_v$ column 3, the out-of-plane unit direction $(0,\ 0,\ 1)$, becomes $(0,\ 1,\ 0)$ — the cross-track direction — and moves to column 2.
 
-$${M'}_v = \begin{bmatrix} dx_v & 0 & -dy_v & 0 \\ 0 & 1 & 0 & 0 \\ dy_v & 0 & dx_v & z \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$${M'}_v = \begin{bmatrix} 
+dx_v & 0 & -dy_v & 0 \\
+0 & 1 & 0 & 0 \\
+dy_v & 0 & dx_v & z \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
 The columns of $M'_v$ define directions in the 3D frame local to the alignment:
 
