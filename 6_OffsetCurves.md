@@ -29,9 +29,9 @@ The `IfcOffsetCurveByDistance` geometry is derived by interpoloating the `Offset
 
 ![](images/OffsetCurves.png)
 
-*Figure 6.1 Offset curves*
+*Figure 6.0-1 Offset curves*
 
-Figure 6.1 shows two offset curves that share a single basis curve. Offset curve 1 has different offset values defined at the start and the end of the basis curve. The start offset is 10ft and the end offset is 20ft. The basis curve is 100 ft long. The point on Offset curve 1 that corresponds to the mid-point of the Basis Curve is determined by evaluating the basis curve at 50ft, then apply the linearly interpolated offsedt of 15ft.
+Figure 6.0-1 shows two offset curves that share a single basis curve. Offset curve 1 has different offset values defined at the start and the end of the basis curve. The start offset is 10ft and the end offset is 20ft. The basis curve is 100 ft long. The point on Offset curve 1 that corresponds to the mid-point of the Basis Curve is determined by evaluating the basis curve at 50ft, then apply the linearly interpolated offsedt of 15ft.
 
 Offset curve 2 has several offsets. Again, linear interpolotation is used to determine the offset from the basis curve to the offset curve. Linear interpolotation is used between each pair of consequitive offset points.
 

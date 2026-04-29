@@ -10,11 +10,15 @@ Describe when this surface geometry might be advantagous to use
 
 ![](images\Figure_9.1_Superelevation_Transition.png)
 
+*Figure 8.1-1 Superelevation transition*
+
 ### 8.1.1 Breaklines
 
 Describe the concept of breaklines for widening sections.
 
 ![](images\Figure_9.2_Sectioned_Surface_with_Breaklines.png)
+
+*Figure 8.1.1-1 Sectioned surface with breaklines*
 
 ### 8.1.2 Stringlines
 

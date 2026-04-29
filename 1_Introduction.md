@@ -128,7 +128,7 @@ representations of `IfcAlignment` are:
 
 
 The `RepresentationIdentifier` and `RepresentationType` values required
-by the IFC concept templates for each alignment geometry variant are listed in Table 0.
+by the IFC concept templates for each alignment geometry variant are listed in Table 1.5.1-1.
 
 | Alignment variant | Curve entity | `RepresentationIdentifier` | `RepresentationType` |
 |---|---|---|---|
@@ -138,7 +138,7 @@ by the IFC concept templates for each alignment geometry variant are listed in T
 | Horizontal + Vertical + Cant | `IfcCompositeCurve` (plan view) | `'FootPrint'` | `'Curve2D'` |
 | Horizontal + Vertical + Cant | `IfcSegmentedReferenceCurve` (3D) | `'Axis'` | `'Curve3D'` |
 
-*Table 0 — Required RepresentationIdentifier and RepresentationType for each alignment geometry variant*
+*Table 1.5.1-1 — Required RepresentationIdentifier and RepresentationType for each alignment geometry variant*
 
 `IfcGradientCurve` and `IfcSegmentReferenceCurve` inherit from
 `IfcCompositeCurve`. These curves consist of a sequence of segments
@@ -154,7 +154,7 @@ not discussed in this document.
 
 The semantic definition of an alignment and its geometric representation carry overlapping information — both describe segment types, lengths, and radii — but they serve different consumers. The semantic representation encodes design intent in domain vocabulary: a horizontal segment typed as `CLOTHOID` with a `StartRadius` of infinity, an `EndRadius` of 300 m, and a `SegmentLength` of 100 m tells a design application *what* the engineer specified and enables evaluation against standards for minimum radius, design speed, and sight distance. The geometric representation encodes the computed mathematical form: the exact start coordinates, the tangent bearing at each point, and parametric equations that yield position and direction at any arc-length along the curve — the form that a rendering engine, clash-detection tool, or quantity-takeoff calculation requires. Because the two representations serve different consumers, an IFC file may legally contain only the semantic definition, only the geometric representation, or both.
 
-The geometric representation of `IfcAlignment` consists of one or more `IfcShapeRepresentation` instances: a plan-view 2D curve and, where vertical or cant geometry is present, a 3D curve. These are illustrated in Figure 2.
+The geometric representation of `IfcAlignment` consists of one or more `IfcShapeRepresentation` instances: a plan-view 2D curve and, where vertical or cant geometry is present, a 3D curve. These are illustrated in Figure 1.5.2-1.
 
 Geometrically, the horizontal alignment is defined by an
 `IfcCompositeCurve` and the vertical alignment is defined by an
@@ -163,17 +163,17 @@ vertical alignment.
 
 ![](images/Figure_2_Alignment_Geometry_Variants.svg)
 
-*Figure 2 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
+*Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
 
 ![](images/Figure_2.1_Alignment_Geometry_Reuse.svg)
 
-*Figure 2.1 Reuse of a shared `IfcCompositeCurve` across multiple child alignments. Each child `IfcAlignment` nests only its own vertical and cant layouts; the horizontal `IfcCompositeCurve` is referenced as `BaseCurve` by each child's gradient or segmented reference curve.*
+*Figure 1.5.2-2 Reuse of a shared `IfcCompositeCurve` across multiple child alignments. Each child `IfcAlignment` nests only its own vertical and cant layouts; the horizontal `IfcCompositeCurve` is referenced as `BaseCurve` by each child's gradient or segmented reference curve.*
 
 
 The geometric elements are modeled with `IfcCurveSegment`. `IfcCurveSegment`
 cuts a segment from a parent curve and places it in the alignment
 coordinate system. A horizontal circular arc is modeled with an
-`IfcCurveSegment` that cuts an arc from an `IfcCircle`. Figure 3 shows an
+`IfcCurveSegment` that cuts an arc from an `IfcCircle`. Figure 1.5.2-3 shows an
 alignment consisting of a tangent run (red) and a horizontal curve
 (green). The line and curve segments are cut from their `IfcLine` and
 `IfcCircle` parent curves, respectively. The process of defining a parent
@@ -185,8 +185,7 @@ geometric representation of the horizontal alignment.
 
 ![](images/image3.png)
 
-*Figure 3 Illustration of parent curves and their placement with
-`IfcCurveSegment.Placement`*
+*Figure 1.5.2-3 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
 
 A similar process is used to create the vertical alignment.
 `IfcCurveSegment` trim geometry from parent curves and combine end to start to
@@ -215,7 +214,7 @@ starts at (0,0) and progresses in horizontal direction, but the tangent segment 
 For `IfcGradientCurve` and `IfcSegmentedReferenceCurve` the segments do not
 need to start or end at the same location of their base curve. These
 curves can be shorter or longer than the horizontal alignment. This is illustrated
-in Figure 4 where the blue curve is the full horizontal curve and the
+in Figure 1.5.2.2-1 where the blue curve is the full horizontal curve and the
 orange curve is the portion of the horizontal curve coinciding with the
 vertical curve. The `IfcGradientCurve` (#770) has the `IfcCompositeCurve`
 (#657) as its base curve. The placement of the first `IfcCurveSegment`
@@ -237,9 +236,7 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 
 ![](images/image4.png)
 
-*Figure 4 - Example of `IfcGradientCurve` with a start
-location and length different than the `IfcCompositeCurve`
-BaseCurve.*
+*Figure 1.5.2.2-1 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
 
 
 
@@ -266,6 +263,8 @@ Unless otherwise specified, the following unit conventions apply throughout this
 | Curvature ($\kappa = 1/R$) | reciprocal meter (m⁻¹) |
 | Angles (bearings, grade angles, cross-slope angles) | radian (rad) |
 | Gradient (vertical slope) | dimensionless ratio (m/m) |
+
+*Table 1.7-1 — Unit conventions used throughout this guide*
 
 Gradient is expressed as a decimal rise-over-run value — 0.02 represents a 2% grade — not as a percentage or angle.
 

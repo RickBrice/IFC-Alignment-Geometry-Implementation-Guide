@@ -20,6 +20,8 @@ The following table provides a high-level mapping of the two data models.
 |`<StaEquation>`               |`IfcReferent` with stationing attributes                       |
 |`<Units>`                     |`IfcUnitAssignment` in `IfcProject`                            |
 
+*Table 9.2-1 — LandXML to IFC schema conceptual comparison*
+
 The key conceptual difference between the two schemas is that LandXML describes geometry procedurally — PI-based for vertical alignment, point-to-point for horizontal — whereas IFC describes segments declaratively as typed business objects with a start point, radii, and length.
 
 ## 9.3 Units
@@ -91,6 +93,7 @@ The following table maps LandXML `spiType` values to `IfcAlignmentHorizontalSegm
 |`radioid`            |—             |No IFC equivalent, log warning and skip         |
 |`weinerBogen`        |—             |No IFC equivalent, log warning and skip         |
 
+*Table 9.4.4-1 — LandXML spiType to IFC type mapping*
 
 > **Note on `sineHalfWave`.** The LandXML specification describes the sine half-wavelength spiral as an approximation of a cosine spiral. Mapping it to `COSINECURVE` is therefore reasonable but not exact. Implementations should log a warning when this substitution is made.
 
@@ -194,6 +197,8 @@ LandXML `<StaEquation>` records station breaks where the back station and ahead 
 |`staBack`        |Station value before the equation (incoming)|
 |`staAhead`       |Station value after the equation (outgoing) |
 |`staInternal`    |Continuous internal station (no breaks)     |
+
+*Table 9.7.2-1 — LandXML station equation attributes*
 
 The `staInternal` value should equal `staAhead` in a well-formed LandXML file. Log a warning if `staInternal != staAhead`, as this indicates an unusual stationing condition that may require manual review.
 

@@ -24,7 +24,7 @@ slope between rail heads over the length of the segment. When the
 next segment, the deviating elevation along the length of the segment is
 constant.
 
-Table 4.1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding parent curve type.
+Table 4.1-1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding parent curve type.
 
   Business Logic (`IfcAlignmentCant.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
   -----------------------------------------|-----------------------------------
@@ -36,7 +36,7 @@ Table 4.1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding paren
   SINECURVE                                |`IfcSineSpiral`
   VIENNESEBEND                             |`IfcSeventhOrderPolynomialSpiral`
 
-  *Table 4.1 — Mapping of business logic to geometric representation for cant alignment*
+  *Table 4.1-1 — Mapping of business logic to geometric representation for cant alignment*
 
 [todo: change this next section to begin with a figure with the cross section at the start and end of the segment]
 
@@ -63,6 +63,8 @@ $D_{e} = D(100) = 0.0\ m$
 graphs)] :warning:
 
 ![](images/image13.png)
+
+*Figure 4.1-1 Deviating elevation along the cant segment*
 
 The deviating elevation at the segment mid-point is
 $D = (100m)^{2}\left( \frac{1}{250000m} + \frac{1}{250000m}\cos\left( \pi\frac{50m}{100m} \right) \right) = 0.04m$

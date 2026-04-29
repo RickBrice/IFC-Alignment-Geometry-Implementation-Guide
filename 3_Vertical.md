@@ -6,7 +6,7 @@ A vertical alignment defines the elevation profile of a route as a function of d
 
 The geometric representation of a vertical alignment is accomplished with `IfcGradientCurve`. This defines the vertical alignment in a "distance along, elevation" coordinate system. Distance along is measured along `IfcGradientCurve.BaseCurve` = `IfcCompositeCurve`.
 
-Table 3.1 maps each `IfcAlignmentVertical.PredefinedType` to its corresponding parent curve type.
+Table 3.1-1 maps each `IfcAlignmentVertical.PredefinedType` to its corresponding parent curve type.
 
   Business Logic (`IfcAlignmentVertical.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
   ---------------------------------------|-----------------------------------
@@ -15,11 +15,11 @@ Table 3.1 maps each `IfcAlignmentVertical.PredefinedType` to its corresponding p
   CLOTHOID                               |`IfcClothoid`
   PARABOLICARC                           |`IfcPolynomialCurve`
 
-  *Table 3.1 — Mapping of business logic to geometric representation for vertical alignment*
+  *Table 3.1-1 — Mapping of business logic to geometric representation for vertical alignment*
 
 The following parameters are used throughout this section:
 
-$L =$ Horizontal Length
+$h_l =$ Horizontal Length
 
 $g_{s} =$ Start Gradient
 
@@ -27,13 +27,13 @@ $g_{e} =$ End Gradient
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
-Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle at arc-length $s$ is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
+Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
 
-**Steps 1–4** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `SegmentStart`.
+**Steps 1–4** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
-Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0)$, and grade angle $\theta_0 = \theta(s_0)$.
+Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{`IfcAlignmentVerticalSegment.StartHeight`}$, and grade angle $\theta_0 = \theta(s_0)$.
 
 **Step 2 — Form the normalization matrix $M_N$**
 
@@ -59,7 +59,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 **Step 4 — Evaluate and map each point in the vertical plane**
 
-For the point at arc-length $s$, compute $x(s)$, $y(s)$, and $\theta(s)$:
+For the point at distance along $s$, compute $x(s)$, $y(s)$, and $\theta(s)$:
 
 $$M_{PC} = \begin{bmatrix} 
 \cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ 
@@ -70,9 +70,9 @@ $$M_{PC} = \begin{bmatrix}
 
 $$M_v = M_{CSP} M_N M_{PC}$$
 
-Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 6 is performed immediately for this point before moving to the next arc-length $s$.
+Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 6 is performed immediately for this point before moving to the next point.
 
-**Step 6 — Combine with the horizontal alignment to produce the 3D placement matrix**
+**Step 6 — Combine with the horizontal alignment point to produce the 3D placement matrix**
 
 The vertical result lives in the (distance along, elevation) plane and must be merged with the horizontal alignment to form a 3D position and orientation. The "distance along" axis corresponds to the curve tangent of the horizontal alignment and the vertical $y$ is elevation (Z in 3D).
 
@@ -180,7 +180,7 @@ Compute the vertical placement matrix for the point at horizontal distance $u = 
 
 The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (0.894427191,\ 0.447213595)$:
 
-$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = \arctan\!\left(\frac{dy}{dx}\right) = \arctan(0.5) = 0.463647609\ \text{rad}$$
+$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.894427191}{0.447213595}\right) = 0.463647609\ \text{rad}$$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
@@ -293,11 +293,7 @@ Compute the radius of the circle.
 
 $R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$
 
-$h_l = horizontal length$
-
-`IfcAlignmentVerticalSegment.HorizontalLength` $= 239.704902937655$
-
- $h_l = 239.704902937655$
+$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} = 239.704902937655$
 
 $R = \left| \frac{239.704902937655}{sin(-1.2803316789\cdot10^{-4}) - sin(-8.177219398\cdot10^{-4})} \right | = 20000.0$
 
@@ -321,11 +317,11 @@ $\Delta_{end} = \theta_{end} + \frac{1}{2}\pi = 1.55799301001$
 
 Compute the curve trimming parameters `SegmentStart` and `SegmentLength`
 
-$Segment Start = R\Delta_{start} = (20000.0)(1.56997860486) = 31399.5720971$
+$\text{Segment Start} = R\Delta_{start} = (20000.0)(1.56997860486) = 31399.5720971$
 
-$Segment Length = R(\Delta_{end} - \Delta_{start}) = (20000.0)(1.55799301001 - 1.56997860486) = -239.711897$
+$\text{Segment Length} = R(\Delta_{end} - \Delta_{start}) = (20000.0)(1.55799301001 - 1.56997860486) = -239.711897$
 
-For a cresting curve, the segment length is negative which means the trim occurs in CW direction. 
+For a cresting curve, the segment length is negative which means the trim occurs in clock-wise direction. 
 
 Determine the placement of the trimmed curve
 
@@ -373,6 +369,8 @@ is equal to the specified horizontal length. Numerically solve
 
 ![](images/image11.png)
 
+*Figure 3.5-1 Vertical clothoid*
+
 ## 3.6 Parabolic Arc
 The most common transition curve in a vertical profile is a parabola. The geometric representation is `IfcPolynomialCurve`. Mapping of the semantic definition to the geometric definition can be a bit tricky.
 
@@ -404,15 +402,25 @@ The semantic definition is
 #289=IFCALIGNMENTVERTICALSEGMENT($,$,1200.,1600.,121.,0.017500000000000002,-0.01,$,.PARABOLICARC.);
 ~~~
 
-These parameters are obtained from the semantic definition of the curve segment, `IfcAlignmentVerticalSegment`.
+Compute the polynomai curve coefficients
 
-The parent curve for `IfcCurveSegment.ParentCurve` is `IfcPolynomialCurve`. The coefficients are:
 
-IfcPolynomialCurve.CoefficientsX = (0,1)
+$A_0 = 121.$
 
-IfcPolynomialCurve.CoefficientsY = ($A_0$, $A_1$, $A_2$)
+$A_1 = 0.0175$
 
-> Note 1: Even though vertical is typically Z, we are using 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z. See example in Section 3.7 below.
+$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}$
+
+It is easiest to place the parent curve at the origin and orient it with the global coordinate system. The parent curve is defined as
+
+~~~
+#291=IFCCARTESIANPOINT((0.,0.));
+#292=IFCDIRECTION((1.,0.));
+#293=IFCAXIS2PLACEMENT2D(#291,#292);
+#294=IFCPOLYNOMIALCURVE(#293,(0.,1.),(121.,0.017500000000000002,-8.5937500000000005E-06),$);
+~~~
+
+> Note 1: Even though vertical is typically $z$, alignment is 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z. See example in Section 3.7 below.
 
 > Note 2: The coefficients $A_0$, $A_1$, and $A_2$ must have the following unit of measure, consistent with the project units:
 >
@@ -424,8 +432,7 @@ IfcPolynomialCurve.CoefficientsY = ($A_0$, $A_1$, $A_2$)
 >
 > The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2.0 - Horizontal Alignment](./2_Horizontal.md). Implicit units of measure are required for the polynomial coefficients.
 
-
-The challenging part is `IfcCurveSegment.SegmentLength`. The length along the parabolic curve is needed.
+The polynomial curve is trimmed using `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength`. These parameters are measured along the length of the curve. The horizontal projection of the segment length, from `IfcAlignmentVerticalSegment.HorizontalLength` is $h_l = 1600$. `SegmentLength` will be slightly longer because it is the distance along the curve.
 
 The distance along a curve is
 
@@ -435,35 +442,32 @@ The length along the parabolic curve is then:
 
 $s(x) = \int_{}^{}\sqrt{4A_2^2x^2 + 4A_2A_1x + A_1^2 + 1} dx$
 
-Fortunately, there is a closed form solution.
+The solution to this integral is:
 
 <!-- see https://www.integral-table.com, equation #37 -->
 
-$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2x}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$
+$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2ax}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$
 
-Let
+The length along the curve is $L_c = s(h_l) - s(0.0)$.
 
-$a = 4A_2^2$
+Let $\quad a = 4A_2^2 \quad b = 4A_2A_1 \quad c = A_1^2 + 1$
 
-$b = 4A_2A_1$
-
-$c = A_1^2 + 1$
-
-Substitute into the above closed form equation. The curve length is
-
-$L_c = s(L) - s(0.0)$
-
-
-$A_0 = 121.$
-
-$A_1 = 0.0175$
-
-$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}$
-
-[todo: add the computation details for Lc]
+Compute the coefficients $a, b, c$, substitute curve length equation and solve. The curve length is
 
 $L_c = 1600.0616641340894$
 
+The placement of the trimmed curve segment is noteworthy. From the `IfcAlignmentVerticalSegment` attributes, the parabolic segment of the vertical alignment starts at 1200 from the beginning of the horizontal alignment and is at an elevation of 121. The RefDirection vector at the start of the curve is needed as well.
+
+The gradient is $y'(x=0)=0.0175$
+
+$\theta_p =  tan^{-1}(0.0175) = 0.017498213869856595$
+
+$dx = cos(0.017498213869856595) = 0.017497320927833689$
+
+$dy = sin(0.017498213869856595) = 0.99984691016192495$
+
+
+The geometric representation is
 ~~~
 #291=IFCCARTESIANPOINT((0.,0.));
 #292=IFCDIRECTION((1.,0.));
@@ -475,28 +479,131 @@ $L_c = 1600.0616641340894$
 #298=IFCCURVESEGMENT(.CONTSAMEGRADIENT.,#297,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(1600.0616641340894),#294);
 ~~~
 
-<!--
-In summary,
-
-~~~
-IfcCurveSegment.Placement = IfcAxis2Placement2D
-with 
-IfcAxis2Placement2D.Location=IfcCartesianPoint(start distance along, start height)
-IfcAxis2Placement2D.RefDirection=IfcDirection(1,0)
-
-IfcCurveSegment.SegmentStart=0.0
-
-IfcCurveSegment.SegmentLength=Lc
-
-IfcCurveSegment.ParentCurve = IfcPolynomialCurve
-~~~
--->
-
 ### 3.6.3 Compute Point on Curve
 
 [todo: provide example calcs for steps 1 - 5. compute at d = 1500, u = 1500-1200 = 300, be clear u is horizontal from the start of the parabola]
 
+Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $u=1500-1200=300$ from the start of the segment.
+
+**Step 1 — Evaluate the parent curve at the trim start**
+
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+Since $x_0 = 0, y_0 = 0, \theta_0 = 0, $M_N = I$
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (1200,\ 121)$, $dx_p = 0.99984691016192495$, $dy_p = 0.017497320927833689$
+
+$$M_{CSP} = \begin{bmatrix}
+0.99984691016192495 & -0.017497320927833689 & 0 & 1200 \\
+0.017497320927833689 & 0.99984691016192495 & 0 & 121 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 4 — Evaluate and map the point**
+
+Evaluate the parent curve at $x = 300$
+
+$y(300) = -8.59375 \cdot 10^{-6} 300^2 + 0.0175(300) + 121 = 125.4765625$
+
+$y'(300_ = 2(-8.59375 \cdot 10^{-6}) 300 + 0.0175 = 0.01234375$
+
+$dx = \frac{1}{\sqrt{(0.01234375)^2+1}} = 0.999923825$
+
+$dy = \frac{0.01234375}{\sqrt{(0.01234375)^2+1}} = 0.01234281$
+
+$$M_{PC} = \begin{bmatrix}
+0.999923825 & -0.01234281 & 0 & 300 \\
+0.01234281 & 0.999923825 & 0 & 125.4765625 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+The vertical placement matrix is:
+
+$$M_v = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}
+0.99984691016192495 & -0.017497320927833689 & 0 & 1200 \\
+0.017497320927833689 & 0.99984691016192495 & 0 & 121 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+I
+\end{bmatrix}
+\begin{bmatrix}
+0.999923825 & -0.01234281 & 0 & 300 \\
+0.01234281 & 0.999923825 & 0 & 125.4765625 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_v = \begin{bmatrix}
+0.9999998299568322 & -0.0005831691921746294 & 0.0 & 1500.0 \\
+0.0005831691921746294 & 0.9999998299568322 & 0.0 & 125.4765625 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
 ## 3.7 Combined 3D
 
-todo:
-* in this section, recall the tangent line from Section 2 and combine it with the parabolic curve from this chapter to illustrate the calculation of the final 3D point. Do the calculation at u = 1500 (after the start of the parabola, before the end of the tangent line)
+To complete evaluation of a point on the alignment, the 2D vertical is combined with the 2D horizontal resulting in a point in 3D space.
+
+From Section 2.3.3, the horizontal alignment point at 1600 along a line is
+
+$$M_{h} = \begin{bmatrix}
+0.83925279 & 0.54374114 & 0 & 1758.879185 \\
+ -0.54374114 & 0.83925279 & 0 & 1684.3878387 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+From the parabolic arc example
+
+$$M_v = \begin{bmatrix}
+0.9999998299568322 & -0.0005831691921746294 & 0.0 & 1500.0 \\
+0.0005831691921746294 & 0.9999998299568322 & 0.0 & 125.4765625 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+ **Step 6 — Combine with the horizontal alignment to produce the 3D placement matrix**
+
+$${M'}_v = \begin{bmatrix} 
+dx_v & 0 & -dy_v & 0 \\
+0 & 1 & 0 & 0 \\
+dy_v & 0 & dx_v & z \\ 
+0 & 0 & 0 & 1 
+\end{bmatrix} = \begin{bmatrix}
+0.9999998299568322 & 0.0 & -0.0005831691921746294 & 0.0 \\
+0 & 1 & 0 & 0 \\
+0.0005831691921746294 & 0 & 0.9999998299568322 & 125.4765625 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+The 3D placement matrix is:
+
+$$M_{3D} = M_h \cdot {M'}_v$$
+
+$$M_{3D} = \begin{bmatrix}
+0.83925279 & 0.54374114 & 0 & 1758.879185 \\
+-0.54374114 & 0.83925279 & 0 & 1684.3878387 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.9999998299568322 & 0.0 & -0.0005831691921746294 & 0.0 \\
+0 & 1 & 0 & 0 \\
+0.0005831691921746294 & 0 & 0.9999998299568322 & 125.4765625 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_{3D} = \begin{bmatrix}
+0.8391888595725846 & 0.5437414408769801 & -0.010358737485349092 & 1758.8791849555332 \\
+-0.5437000211676682 & 0.8392527899703555 & 0.006711297136288405 & 1684.38783868453 \\
+0.012342809710188737 & 0.0 & 0.999923824622885 & 125.4765625 \\
+0.0 & 0.0 & 0.0 & 1.0
+\end{bmatrix}$$

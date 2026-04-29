@@ -1,14 +1,13 @@
 todo:
 * Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent
 * Add figure for IfcClothoid showing both the X < 0 and X > 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.
-* Change all figure and table numbering to be "section number"-n, e.g. Figure 2.3.2-1, Table 3.0-1. Change references in the text and the captions
 * Review all subsections in this section for consistency
 
 # Section 2.0 - Horizontal Alignment
 
 The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
 
-Table 2.1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding parent curve type.
+Table 2.0-1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding parent curve type.
 
 | Business Logic (`IfcAlignmentHorizontal.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
 |---|---|
@@ -22,7 +21,7 @@ Table 2.1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding
 | SINECURVE | `IfcSineSpiral` |
 | VIENNESEBEND | `IfcSeventhOrderPolynomialSpiral` |
 
-*Table 2.1 — Mapping of business logic to geometric representation for horizontal alignment*
+*Table 2.0-1 — Mapping of business logic to geometric representation for horizontal alignment*
 
 ## 2.1 General
 
@@ -36,7 +35,8 @@ The following parameters are common to all horizontal alignment curve types. Eac
 | Angle of tangent line, RefDirection = $\cos\left( \theta(s) \right),\sin\left( \theta(s) \right)$ | $$\theta(s) = \int_{}^{}{\kappa(s)ds}$$ |
 | X-ordinate as a function of curve length s | $$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$ |
 | Y-ordinate as a function of curve length s | $$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$ |
-  
+
+*Table 2.1-1 — Common horizontal alignment parameters*
 
 ## 2.2 Curve Segment Evaluation Algorithm
 
@@ -126,6 +126,8 @@ Given a horizontal alignment segment is a line segment starting at point
 
 ![Tangent Segment](images/tangent_segment.svg)
 
+*Figure 2.3.2-1 Tangent segment*
+
 This semantic definition of this segment is:
 
 ~~~
@@ -142,10 +144,14 @@ specified point at some direction in the X-Y plane. For example, a line passing 
 
 ![IfcLine at arbitrary placement](images/Figure_2.3_IfcLine_arbitrary_placement.svg)
 
+*Figure 2.3.2-2 IfcLine at arbitrary placement*
+
 An easy way to define the `IfcLine` parent curve is to have it the X-axis direction
 passing through point (0,0).
 
 ![Tangent Segment](images/ifcline_parent_curve.svg)
+
+*Figure 2.3.2-3 IfcLine parent curve at origin*
 
 The parent curve definition is:
 
@@ -196,7 +202,7 @@ The `IfcCurveSegment` is be defined as:
 
 ### 2.3.3 Compute Point on Curve
 
-Compute the position matrix for a point 100 m from the start of the
+Compute the position matrix for a point 1500 m from the start of the
 curve segment.
 
 **Step 1 - Evaluate the parent curve at the trim start**
@@ -230,9 +236,9 @@ $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ 
 
 $$\theta(100) = \arctan\left(\frac{0}{1}\right) = 0$$
 
-$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(100\ m - 0\ m) = 100\ m$$
+$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(1500\ m - 0\ m) = 1600\ m$$
 
-$$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(100\ m - 0\ m) = 0\ m$$
+$$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(1500\ m - 0\ m) = 0\ m$$
 
 Though it is much easier to use the following calculation
 
@@ -240,12 +246,12 @@ $$x(u) = p_{x} + u(dx)$$
 
 $$y(u) = p_{y} + u(dy)$$
 
-$$x = 0 + 1(100) = 100$$
+$$x = 0 + 1(1500) = 1500$$
 
-$$y = 0 - 0(100) = 0$$
+$$y = 0 - 0(1500) = 0$$
 
 $$M_{PC} = \begin{bmatrix}
-1 & 0 & 0 & 100 \\
+1 & 0 & 0 & 1500 \\
 0 & 1 & 0 & 0\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
@@ -265,15 +271,15 @@ $$M_h = \begin{bmatrix}
 I
 \end{bmatrix} 
 \begin{bmatrix}
-1 & 0 & 0 & 100\\
+1 & 0 & 0 & 1500\\
 0 & 1 & 0 & 0\\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
  \end{bmatrix}$$
 
 $$M_{h} = \begin{bmatrix}
-0.83925279 & 0.54374114 & 0 & 583.925249 \\
- -0.54374114 & 0.83925279 & 0 & 2445.625886 \\
+0.83925279 & 0.54374114 & 0 & 1758.879185 \\
+ -0.54374114 & 0.83925279 & 0 & 1684.3878387 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -922,6 +928,8 @@ $$\text{ParentCurve}_2\!\left(\frac{L}{2}\right) = (x_1,\ y_1,\ \theta_1)$$
 |---|---|---|
 | `IfcSecondOrderPolynomialSpiral.Position` | $(x_p,\ y_p,\ \theta_p)$ | Shift/rotate the raw spiral so its value at $t = L/2$ equals $(x_1, y_1, \theta_1)$ |
 | `IfcCurveSegment.Placement` | World-space join point | Place the normalized second-half curve at the correct position in the composite curve |
+
+*Table 2.7.2-1 — Two-level placement for the second Helmert half*
 
 **Finding the parent curve Position**
 
