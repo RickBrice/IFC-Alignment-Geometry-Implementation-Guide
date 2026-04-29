@@ -50,15 +50,25 @@ $$M_N = \begin{bmatrix}
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, z_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
 
-$$M_{CSP} = \begin{bmatrix} \cos\theta_p & -\sin\theta_p & 0 & d_p \\ \sin\theta_p & \cos\theta_p & 0 & z_p \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{CSP} = \begin{bmatrix} 
+\cos\theta_p & -\sin\theta_p & 0 & d_p \\
+\sin\theta_p & \cos\theta_p & 0 & z_p \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
 **Step 4 — Evaluate and map each point in the vertical plane**
 
 For the point at arc-length $s$, compute $x(s)$, $y(s)$, and $\theta(s)$:
 
-$$M_{PC} = \begin{bmatrix} \cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ \sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{PC} = \begin{bmatrix} 
+\cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ 
+\sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
-$$M_v = M_{CSP}\, M_N\, M_{PC}$$
+$$M_v = M_{CSP} M_N M_{PC}$$
 
 Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 6 is performed immediately for this point before moving to the next arc-length $s$.
 
