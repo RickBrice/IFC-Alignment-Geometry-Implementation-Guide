@@ -1,8 +1,8 @@
 # Section 3.0 - Vertical Alignment
 
-todo:
-* Revise section 3.2 to match that algorithm in section 2.2. There are only 4 steps now.
+A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the complete three-dimensional geometry of a road, railway, or other linear infrastructure element. The 3D combination is described in Section 3.2 and illustrated in Section 3.7.
 
+A key distinction in vertical alignment geometry is the difference between **horizontal length** and **arc length**. The semantic representation of each segment uses `HorizontalLength` — the horizontal projection of the segment — while the geometric representation trims its parent curve by arc-length parameters (`SegmentStart` and `SegmentLength`).
 
 ## 3.1 General
 
@@ -163,7 +163,88 @@ The curve segment is defined as
 
 ### 3.3.3 Compute Point on Curve
 
-[todo: provide example calcs for steps 1 - 5. compute at u = 50, be clear u is horizontal]
+Compute the vertical placement matrix for the point at horizontal distance $u = 50$ m from the start of the curve segment.
+
+**Step 1 — Evaluate the parent curve at the trim start**
+
+The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (0.894427191,\ 0.447213595)$:
+
+$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = \arctan\!\left(\frac{dy}{dx}\right) = \arctan(0.5) = 0.463647609\ \text{rad}$$
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+$$M_N = \begin{bmatrix}
+0.894427191 & 0.447213595 & 0 & 0 \\
+-0.447213595 & 0.894427191 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0,\ 10)$, $\theta_p = 0.463647609\ \text{rad}$:
+
+$cos\theta_p = cos(0.463647609)=0.894427191 \quad sin\theta_p = sin(0.463647609)=0.447213595$
+
+
+$$M_{CSP} = \begin{bmatrix}
+0.894427191 & -0.447213595 & 0 & 0 \\
+0.447213595 & 0.894427191 & 0 & 10 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 4 — Evaluate and map the point**
+
+The horizontal distance $u = 50$ m is not the arc-length parameter. Convert to arc-length $s$ along the `IfcLine`:
+
+$$s = s_0 + \frac{u}{dx} = 0 + \frac{50}{0.894427191} = 55.9016994\ \text{m}$$
+
+Evaluate the parent curve at $s = 55.9016994$:
+
+$$d = x(55.9016994) = 55.9016994 \times 0.894427191 = 50.000\ \text{m}$$
+
+$$z = y(55.9016994) = 55.9016994 \times 0.447213595 = 25.000\ \text{m}$$
+
+$$\theta = 0.463647609\ \text{rad} \quad \text{(constant for a line)}$$
+
+$$M_{PC} = \begin{bmatrix}
+0.894427191 & -0.447213595 & 0 & 50.000 \\
+0.447213595 & 0.894427191 & 0 & 25.000 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+The vertical placement matrix is:
+
+$$M_v = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}
+0.894427191 & -0.447213595 & 0 & 0 \\
+0.447213595 & 0.894427191 & 0 & 10 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.894427191 & 0.447213595 & 0 & 0 \\
+-0.447213595 & 0.894427191 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.894427191 & -0.447213595 & 0 & 50.000 \\
+0.447213595 & 0.894427191 & 0 & 25.000 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_v = \begin{bmatrix}
+0.894427191 & -0.447213595 & 0 & 50.000 \\
+0.447213595 & 0.894427191 & 0 & 35.000 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+Column 4 of $M_v$ gives the result: **distance along = 50.0 m, elevation = 35.0 m**.
+
 
 ## 3.4 Circular Arc
 
@@ -204,7 +285,11 @@ Compute the radius of the circle.
 
 $R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$
 
-$h_l = $ horizontal length = `IfcAlignmentVerticalSegment.HorizontalLength` = 239.704902937655$
+$h_l = horizontal length$
+
+`IfcAlignmentVerticalSegment.HorizontalLength` $= 239.704902937655$
+
+ $h_l = 239.704902937655$
 
 $R = \left| \frac{239.704902937655}{sin(-1.2803316789\cdot10^{-4}) - sin(-8.177219398\cdot10^{-4})} \right | = 20000.0$
 
@@ -367,7 +452,7 @@ $A_1 = 0.0175$
 
 $A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}$
 
-[todo: add the computation for Lc]
+[todo: add the computation details for Lc]
 
 $L_c = 1600.0616641340894$
 
