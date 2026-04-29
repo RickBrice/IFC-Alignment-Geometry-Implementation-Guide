@@ -1,3 +1,6 @@
+todo:
+* for the options of IfcCurveSegment.Transition in this section, put in a tabulated format and add the figure from the IFC documentation https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/figures/ifctransitioncode.gif
+
 # Section 10.0 - Precision and Tolerance
 
 `IfcCurveSegment.Transition` defines the intended transition from the end
