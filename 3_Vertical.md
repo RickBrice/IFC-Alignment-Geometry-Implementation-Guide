@@ -27,7 +27,7 @@ $g_{e} =$ End Gradient
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
-Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation above datum. The grade angle at arc-length $s$ is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
+Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle at arc-length $s$ is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
 
 **Steps 1–4** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `SegmentStart`.
 
@@ -35,7 +35,12 @@ Vertical segments are evaluated in a two-dimensional "distance along, elevation"
 
 Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0)$, and grade angle $\theta_0 = \theta(s_0)$.
 
-$$M_{PCS} = \begin{bmatrix} \cos\theta_0 & -\sin\theta_0 & 0 & d_0 \\ \sin\theta_0 & \cos\theta_0 & 0 & z_0 \\ 0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \end{bmatrix}$$
+$$M_{PCS} = \begin{bmatrix} 
+\cos\theta_0 & -\sin\theta_0 & 0 & d_0 \\
+\sin\theta_0 & \cos\theta_0 & 0 & z_0 \\ 
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
