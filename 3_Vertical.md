@@ -33,7 +33,7 @@ Vertical segments are evaluated in a two-dimensional "distance along, elevation"
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
-Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{`IfcAlignmentVerticalSegment.StartHeight`}$, and grade angle $\theta_0 = \theta(s_0)$.
+Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
 
 **Step 2 — Form the normalization matrix $M_N$**
 
