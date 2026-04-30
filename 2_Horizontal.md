@@ -236,7 +236,7 @@ $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ 
 
 $$\theta(100) = \arctan\left(\frac{0}{1}\right) = 0$$
 
-$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(1500\ m - 0\ m) = 1600\ m$$
+$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(1500\ m - 0\ m) = 1500\ m$$
 
 $$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(1500\ m - 0\ m) = 0\ m$$
 
