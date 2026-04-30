@@ -385,15 +385,13 @@ $dy_x = sin(-0.0007999998) = -0.0007999997$
 
 The cross-slope at the start of the segment is
 
-[todo: Review this, it seems inconsistent with the cross slope calculations before.]
-
-$\phi_s = tan^{-1}\left(\frac{D_{sr} - D{sl}}{D_{rh}}\right) = tan^{-1}\left(\frac{0.16 - 0.0}{1.5}\right) = 0.106264863$
+$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 The cross slope orientation is
 
-$dy_z = sin(\phi) = sin(0.106264863) = -0.106064981$
+$dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
 
-$dz_z = cos(\phi) = cos(0.106264863) = 0.994359201$
+$dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -425,10 +423,10 @@ $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871, 0.9943
 
 $$M_{CSP} = \begin{bmatrix} 
 0.9999996800 & 0.0007954871 & 0 & 0 \\
- -0.0007999997 & 0.9943588828 & 0.106064981 & 0.08 \\
-  0 & -0.1060649471 & 0.994359201 & 0 \\
-   0 & 0 & 0 & 1 
-   \end{bmatrix}$$
+-0.0007999997 & 0.9943588828 & 0.106064981 & 0.08 \\
+0 & -0.1060649471 & 0.994359201 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
 The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
 
@@ -486,9 +484,178 @@ As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through t
 
 ## 4.5 Helmert Curve
 
+Like the Helmert transition spiral, the Helmert cant sementic definition maps to two `IfcCurveSegment` instances for the geometric representation. The parent curve is `IfcSecondOrderPolynomialSpiral`.
+
 ### 4.5.1 Parent Curve Parametric Equations
 
+### WORKING HERE - fix Ds and De and DeltaD, use average value - then fix polynomial terms - the mapping from semantic to geometry is correct so just get the D and f terms right###
+**[to do: why aren't these average values? Is there something different about Helmert? - this might be because the f and delta_D terms were off by a factor of 2.]**
+$$D_{s} = D_{sl} + D_{sr},\ D_{e} = D_{el} + D_{er},\ \mathrm{\Delta}D = D_{e} - D_{s}$$
+$$f = \mathrm{\Delta}D$$
+
+
+The deviating elevation and its rate of change are given by the following equations.
+
+$$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+
+$$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
+
+The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{32}$ is coefficient $A_3$ for the second half. **[todo: add this description to 2_Horizonta.md]**
+
+In the first half of the cant transition
+
+Constant Term:
+
+ $a_{01} = 2D_{s}$,
+$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|}$
+
+Linear Term: 
+
+$a_{11} = 0$,
+$A_{11} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\frac{a_{11}}{\left| a_{11} \right|} = 0$
+
+Quadratic Term:
+
+$a_{21} = 4f$,
+$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|}$
+
+In the second half
+
+Constant Term: 
+
+$a_{02} = -2f + 2D_{s}$,
+$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|}$
+
+Linear Term: 
+
+$a_{12} = 8f$,
+$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|}$
+
+Quadratic Term: 
+
+$a_{22} = -4f$,
+$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$
+
+
 ### 4.5.2 Semantic Definition to Geometry Mapping
+
+Consider an alignment segment that has a Helmert transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
+
+~~~
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.HELMERTCURVE.);
+~~~
+
+Compute the parent curve parameters
+
+$$L = 100\ m$$
+
+$$D_{sl} = 0\ m,\ D_{el} = 0\ m$$
+
+$$D_{sr} = 0.16\ m,\ D_{er} = 0\ m$$
+
+$$D_{s} = 0 + 0.16\ m = 0.16\ m$$
+
+$$D_{e} = 0 + 0 = 0.\ m$$
+
+$$\Delta D = 0.0 - 0.16 = -0.16\ m$$
+
+$$f = \Delta D = -0.16\ m$$
+
+First half:
+
+$$a_{01} = 2D_{s} = 0.32\ m$$
+
+$$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|} = \frac{(100\ m)^{2}}{|0.32\ m|}\frac{0.32\ m}{|0.32\ m|} = 31250\ m$$
+
+$$a_{11} = 0,\ A_{11} = 0$$
+
+$$a_{21} = 4f = 4(-0.16\ m) = -0.64\ m$$
+
+$$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100\ m)^\frac{4}{3}}{\sqrt[3]{| - 0.64\ m|}}\frac{-0.64\ m}{|-0.64\ m|} = -538.6086725\ m$$
+
+The first half parent curve `IfcSecondOrderPolynomialSpiral` is
+~~~
+#104=IFCCARTESIANPOINT((0.,0.));
+#105=IFCDIRECTION((1.,0.));
+#106=IFCAXIS2PLACEMENT2D(#104,#105);
+#107=IFCSECONDORDERPOLYNOMIALSPIRAL(#106,-538.60867250797071,$,31250.);
+~~~
+
+Determine the first half placement and trimming.
+
+Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition. **[Need to do a better job explaining why L/2 when A is computed on full L]**
+
+The deviation elevation at the start of the first half transition is
+
+$D(0\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$
+
+The slope at $0\ m$ is $0.0$. $dx_x = 1.0,\ dx_y = 0.0$
+
+The cross slope is 
+
+$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+
+$dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
+
+$dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
+
+~~~
+#108=IFCCARTESIANPOINT((0.,0.08,0.));
+#109=IFCDIRECTION((0.,0.10606498139220574,0.99435920055192883));
+#110=IFCDIRECTION((1.,0.,0.));
+#111=IFCAXIS2PLACEMENT3D(#108,#109,#110);
+#112=IFCCURVESEGMENT(.CONTINUOUS.,#111,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(50.),#107);
+~~~
+
+Second half:
+
+$$a_{02} = -2f + 2D_{s} = -2(-0.16\ m) + 2(0.16)\ m = 0.64\ m$$
+
+$$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100\ m)^{2}}{|0.64\ m|}\frac{0.64\ m}{|0.64\ m|} = 15625\ m$$
+
+$$a_{12} = 8f = 8(-0.16\ m) = -1.28\ m$$
+$$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100\ m)^{\frac{3}{2}}}{\sqrt{|-1.28\ m|}}\frac{-1.28\ m}{|-1.28\ m|} = -883.8834765\ m$$
+
+$$a_{22} = -4f = -4(-0.16\ m) = 0.64\ m$$
+
+$$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\frac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$
+
+The second half parent curve `IfcSecondOrderPolynomialSpiral` is
+~~~
+#113=IFCCARTESIANPOINT((0.,0.));
+#114=IFCDIRECTION((1.,0.));
+#115=IFCAXIS2PLACEMENT2D(#113,#114);
+#116=IFCSECONDORDERPOLYNOMIALSPIRAL(#115,538.60867250797071,-883.8834764831845,15625.);
+~~~
+
+Determine the second half placement and trimming.
+
+The starting elevation of the second half is the end elevation of the first half
+
+$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$
+
+The slope at $50\ m$ is $\frac{dD'}{ds} = L_1^2\left(\frac{2s}{A_2^3} + \frac{A_1}{\left| A_1^3 \right|}\right) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3} + \frac{31250\ m}{\left|(31250\ m)^3 \right|} \right) = -0.00159744$
+. 
+
+$dx_x = \frac{1}{\sqrt{(-0.00159744)^2 + 1}} = 0.999998724
+,\ dx_y = \frac{-0.00159744}{\sqrt{(-0.00159744)^2 + 1}} = -0.001597438$
+
+The cross slope at the end of the first half is 
+
+$\phi(50\ m) = 1.464531464 + \left(\frac{\frac{\pi}{2} - 1.464531464}{0.08\ m}\right)(0.04\ m - 0.08\ m) = 1.517663895$
+
+$dy_z = cos(\phi_s) = cos(1.517663895) = 0.053107436$
+
+$dz_z = sin(\phi_s) = sin(1.517663895) = 0.998588804$
+
+The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the second half segment.
+~~~
+#117=IFCCARTESIANPOINT((50.,0.04,0.));
+#118=IFCDIRECTION((0.,0.053257642916150753,0.99858080467782662));
+#119=IFCDIRECTION((0.9999987200024576,-0.0015999979520039342,0.));
+#120=IFCAXIS2PLACEMENT3D(#117,#118,#119);
+#121=IFCCURVESEGMENT(.CONTINUOUS.,#120,IFCLENGTHMEASURE(50.),IFCLENGTHMEASURE(50.),#116);
+~~~
 
 ### 4.5.3 Compute Point on Curve
 
