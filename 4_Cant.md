@@ -244,6 +244,8 @@ $dz_z = cos\phi = cos(0.05328285) = 0.9985808$
 
 ### 4.3.2 Compute Point on Curve
 
+**[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]**
+
 Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.
 
 **Step 1 - Evaluate the parent curve at the trim start**
@@ -409,13 +411,29 @@ Compute the cant placement matrix for a point 50 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 0,\ x(s_0) = 0, \ y(s_0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
+$s_0 = 0,\ x(s_0) = 0$
 
-**[todo - this isn't correct, evaluate D(0) and then update M_N in step 2 and downstream calculations - See Bloss Curve example]**
+$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
+
+$y'(0) = D'(0) = 0,\ \theta_0 = 0$
+
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-Since $x(s_0) = 0, \ y(s_0) = 0,\ \theta_0 = 0, M_N = I$
+$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
+
+$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -446,7 +464,7 @@ $D(50\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\l
 
 $M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 1 & 0 & -0.04 \\
+0 & 1 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$
@@ -460,10 +478,15 @@ $M_c =
 0 & -0.053107419 & 0.9985882289 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-\begin{bmatrix} I \end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 50 \\
-0 & 1 & 0 & -0.04 \\
+0 & 1 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
@@ -659,17 +682,39 @@ The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the se
 
 Compute the cant placement matrix for a point 75 m from the start of the curve segment. 
 
-**Step 1 — Evaluate the parent curve at the trim start**
+From the parent curve 
 
-From the parent curve
+$s_0 = 50\ m,\ x(s_0) = 50\ m$
 
-$s_0 = 0,\ x_0 = 0,\ y(s_0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
+$y(s_0) = D(50\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(50\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \frac{1}{15625\ m} \right) = 0.16\ m$
 
-**[todo - this isn't correct, evaluate D(0) and then update M_N in step 2 and downstream calculations - See Bloss Curve example]**
+
+$y'(s_0) = D'(s_0) = (100\ m)^{2}\left( \frac{2(50\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$
+
+$\theta_0 = tan^{-1}(-0.0064) = -0.006399913$
+
+$cos \theta_0 = cos(-0.006399913) = 0.999979521$
+
+$sin \theta_0 = sin(-0.006399913) = -0.006399869$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-Since $x_0 = 0,\ y(s_0) = 0,\ \theta_0 = 0, M_N = I$
+$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
+
+**[todo - look at this carefully, the MN matrix doesn't look right - this will trickle down through all the calcs]**
+
+$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -706,7 +751,9 @@ $M_c =
  0 & -0.0532575749 & 0.998580805 & 0 \\
  0 & 0 & 0 & 1
 \end{bmatrix}
-\begin{bmatrix} I \end{bmatrix}
+\begin{bmatrix}
+ I = NOT\ CORRECT
+\end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 25 \\
 0 & 1 & 0 & 0.36 \\
@@ -714,6 +761,8 @@ $M_c =
 0 & 0 & 0 & 1 
 \end{bmatrix}
 $
+
+**[todo - verify matrix multiplication - final result is correct from IfcOpenShell]**
 
 $M_c = \begin{bmatrix}
 0.999999684 & 0.000799928774 & 0 & 75.0 \\
@@ -836,9 +885,16 @@ $s_0 = 0,\ x(s_0) = 0$
 
 $y(s_0) = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$
 
-$y'(0) = D'(0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
+$y'(0) = D'(0) = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
+
+$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
 
 $M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
