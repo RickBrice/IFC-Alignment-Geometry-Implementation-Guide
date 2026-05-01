@@ -4,7 +4,8 @@ outline:
 * need figure that shows centerline and railhead deviation
 * reference british standard (BS EN 13803:2017 Railway applications - Track - Track alignment design parameters - Track gauges 1 435 mm and wider, Table C.1 "C:\Users\BriceR\OneDrive - Washington State Department of Transportation\BIM for Bridges\Rail Spec\bs-en-13803-2017.pdf") and describe the equivalent functional form of equations used for horizontal. The form of the horizontal transition spirals equations is the same form as the cant equation.
 * Equivalance of functional form - state that the derivative of $\theta(t)$ equation, which is the curvature $\kappa(t)$, for horizontal has the same form as the $\frac{D(t)}{L^2}$ equation for cant.
-* Need to add a general discussion about the spiral coefficients. This is the text used in some sections - it doesn't need to be repeated everywhere. "The polynomial coefficients must have units of length. The basic form of the coefficient of the $i^{th}$ term is $A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$"
+* Need to add a general discussion about the spiral coefficients. This is the text used in some sections - it doesn't need to be repeated everywhere. "The polynomial coefficients must have units of length. The basic form of the coefficient of the $i^{th}$ term is $A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$" "Perform a dimensional analysis with $l$ representing term with length units. We see that the resulting coefficient $A_{i}$ has units of length. $\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$," - maybe this needs to go in the last segment (or maybe just the dimensionality analysis in the last section)
+
 * horizontal and cant always use the same curve type, though technically ifc would permit mixing them
 * provide a bit more discussion in the examples. reference the example files
 * need to discuss cross slope, Axis vector, and their orientation and relation to one another. Axis is normal to cross slope line. $\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{D_e - D_s}\right)\bigl(D(s) - D_s\bigr)$. Should this equation use $\Delta D$?
@@ -1320,39 +1321,19 @@ $M_c = \begin{bmatrix}
 
 ## 4.9 Viennese Bend
 
+A Viennese Bend transition in cant is represented with an `IfcSeventhOrderPolynomialSpiral`.
+
 ### 4.9.1 Parent Curve Parametric Equations
 
-### 4.9.2 Semantic Definition to Geometry Mapping
-
-### 4.9.3 Compute Point on Curve
-
-**Step 1 — Evaluate the parent curve at the trim start**
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-**Step 4 — Evaluate and map each point**
-
-Parent Curve: `IfcSeventhOrderPolynomialSpiral`
+The deviating elevation and its rate of change are given by the following equations.
 
 $$\frac{D(s)}{L^{2}} = \frac{A_7}{|A_7^9|}s^7 + \frac{1}{A_6^7}s^6 + \frac{A_5}{|A_5^7|}s^5 + \frac{1}{A_4^5}s^4 + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
 $$\frac{d}{ds}D(s) = L^{2}\left( \frac{7A_7}{|A_7^9|}s^6 + \frac{6}{A_6^7}s^5 + \frac{5A_5}{|A_5^7|}s^4 + \frac{4}{A_4^5}s^3 + \frac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \frac{2}{A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
 
-$$D_{1} = \frac{D_{sl} + D_{sr}}{2},\ D_{2} = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_{2} - D_{1}$$
+$$D_s = \frac{D_{sl} + D_{sr}}{2},\ D_e = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_e - D_s$$
 
 $$f = \mathrm{\Delta}D$$
-
-The polynomial coefficients must have units of length. The basic form of
-the coefficient of the $i^{th}$ term is
-
-$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
-
-Perform a dimensional analysis with $l$ representing term with length
-units. We see that the resulting coefficient $A_{i}$ has units of length.
-
-$$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$
 
 Constant Term
 
@@ -1386,89 +1367,187 @@ Septic Term
 
 $$a_{7} = -20f, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \frac{a_{7}}{\left| a_{7} \right|}$$
 
-### 4.9.4 Example
-[GENERATED__CantAlignment_VienneseBend_100.0_300_1000_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_VienneseBend_100.0_300_1000_1_Meter.ifc)
+### 4.9.2 Semantic Definition to Geometry Mapping
+
+Consider an alignment segment that has a Viennese Bend transition curve **???**.
+**[todo - finish the description]**
 
 ~~~
-#61=IFCALIGNMENTCANT('1FNFyDAJeHwv87wDZHIYI7',$,$,$,$,$,$,1.5);
-#62=IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI3',#3,$,$,$,$,$,#64);
-#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.1,0.03,.VIENNESEBEND.);
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.10000000000000001,0.029999999999999999,.VIENNESEBEND.);
+~~~
 
-#79=IFCSEGMENTEDREFERENCECURVE((#104),.F.,#78,$);
-#99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.935683676356,-169.870955956539,180.001218460868,-241.197489008512,$,$,$,200000.);
-#100=IFCCARTESIANPOINT((0.,0.05,0.));
-#101=IFCDIRECTION((0.,0.0665190105237739,0.997785157856609));
+Compute the parent curve parameters.
+
+$$D_{sl} = 0.0\ m$$
+$$D_{el} = 0.0\ m$$
+$$D_{sr} = 0.1\ m$$
+$$D_{er} = 0.03\ m$$
+
+$$D_s = \frac{0\ m + 0.1\ m}{2} = 0.05\ m, D_e = \frac{0\ m + 0.03\ m}{2} = 0.015\ m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035\ m$$
+
+$$f = \mathrm{\Delta}D = -0.035m$$
+
+Constant Term
+$$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 20000\ m$$
+
+Linear Term
+$$a_{1} = 0, A_{1} = 0\ m$$
+
+Quadratic Term
+
+$$a_{2} = 0, A_{2} = 0\ m$$
+
+Cubic Term
+
+$$a_{3} = 0, A_{3} = 0\ m$$
+
+Quartic Term
+
+$$a_{4} = 35(-0.035\ m) = -1.225\ m, A_{4} = \frac{(100\ m)^{\frac{6}{5}}}{\sqrt[5]{\left| -1.225\ m \right|}}\ \frac{-1.225\ m}{\left| -1.225\ m \right|} = -241.1974890085123\ m$$
+
+Quintic Term
+
+$$a_{5} = -84(-0.035\ m) = 2.94\ m, A_{5} = \frac{(100\ m)^{\frac{7}{6}}}{\sqrt[6]{\left| 2.94\ m \right|}}\ \frac{2.94\ m}{\left| 2.94\ m \right|} = 180.0012184608678\ m$$
+
+Sextic Term
+
+$$a_{6} = 70(-0.035\ m)=-2.45\ m, A_{6} = \frac{(100\ m)^{\frac{8}{7}}}{\sqrt[7]{\left| -2.45\ m \right|}}\ \frac{-2.45\ m}{\left|-2.45\ m\right|} = -169.87095595653895\ m$$
+
+Septic Term
+
+$$a_{7} = -20(-0.035\ m) = 0.7\ m, A_{7} = \frac{(100\ m)^{\frac{9}{8}}}{\sqrt[8]{\left| 0.7\ m \right|}}\ \frac{0.7\ m}{\left| 0.7\ m \right|} = 185.93568367635672\ m$$
+
+The parent curve is
+
+~~~
+#97=IFCDIRECTION((1.,0.));
+#98=IFCAXIS2PLACEMENT2D(#96,#97);
+#99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.93568367635649,-169.87095595653892,180.00121846086768,-241.19748900851218,$,$,$,200000.);
+~~~
+
+The cant segment begins with a deviating elevation of $D_s = 0.05\ m$.
+
+**[todo - fix this everywhere.... the slope is the slope equation evaluated at 0.0. for this particular example the RefDir is (1,0,0), not what is calculated here - the DeltaD/L only applies to the ifcline case]**
+
+The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.035}{100} = -0.00035$
+
+$\theta = tan^{-1}(-0.00035) = -0.00035$
+
+$dx_x = cos(\theta) = 0.999999939$
+
+$dx_y = sin(\theta) = -0.00035$
+
+The cross-slope at the start of the segment is
+
+$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr}-D{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.1-0.0} \right) = 1.504228163$
+
+The cross slope orientation is
+
+$dy_z = cos(\theta_s) = 0.066519011$
+
+$dz_z = sin(\theta_s) = 0.997785158$
+
+~~~
+#100=IFCCARTESIANPOINT((0.,0.050000000000000003,0.));
+#101=IFCDIRECTION((0.,0.066519010523773944,0.99778515785660904));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
 #104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
-$$D_{sl} = 0.0$$
-$$D_{el} = 0.0$$
-$$D_{sr} = 0.1$$
-$$D_{er} = 0.03$$
 
-$$D_{1} = \frac{0 + 0.1}{2} = 0.05m, D_{2} = \frac{0 + 0.03}{2} = 0.015m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035m$$
+### 4.9.3 Compute Point on Curve
 
-$$f = \mathrm{\Delta}D = -0.035m$$
+Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-Constant Term
-$$a_{0} = 0.05m, A_{0} = \frac{100m^{2}}{\left| 0.05 \right|}\frac{0.05}{\left| 0.05 \right|} = 20000m$$
+**Step 1 — Evaluate the parent curve at the trim start**
 
-Linear Term
-$$a_{1} = 0, A_{1} = 0m$$
+From the parent curve 
 
-Quadratic Term
+$s_0 = 0,\ x(s_0) = 0$
 
-$$a_{2} = 0, A_{2} = 0m$$
-
-Cubic Term
-
-$$a_{3} = 0, A_{3} = 0m$$
-
-Quartic Term
-
-$$a_{4} = 35(-0.035m) = -1.225m, A_{4} = \frac{100m^{\frac{6}{5}}}{\sqrt[5]{\left| -1.225m \right|}}\ \frac{-1.225m}{\left| -1.225m \right|} = -241.1974890085123m$$
-
-Quintic Term
-
-$$a_{5} = -84(-0.035m)=2.94m, A_{5} = \frac{100m^{\frac{7}{6}}}{\sqrt[6]{\left| 2.94m \right|}}\ \frac{2.94m}{\left| 2.94m \right|} = 180.0012184608678m$$
-
-Sextic Term
-
-$$a_{6} = 70(-0.035m)=-2.45m, A_{6} = \frac{100m^{\frac{8}{7}}}{\sqrt[7]{\left| -2.45m \right|}}\ \frac{-2.45m}{\left|-2.45m\right|} = -169.87095595653895m$$
-
-Septic Term
-
-$$a_{7} = -20(-0.035m) = 0.7m, A_{7} = \frac{100m^{\frac{9}{8}}}{\sqrt[8]{\left| 0.7m \right|}}\ \frac{0.7m}{\left| 0.7m \right|} = 185.93568367635672m$$
-
-Evaluate at start, middle, and end of the segment.
-
-$Cant(u) = D(u) - D(0) + Cant(0)$
-
-$Cant(0)$ = `IfcCurveSegment.Placement.Location.Coordinates[2]` = $0.05m$
+$y(s_0) = D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{20000\ m}\right) = 0.5\ m$
 
 
-$$D(0m) = (100m)^2 \left(\frac{185.93568367635672m}{|(185.93568367635672m)^9|}(0m)^7 + \frac{1}{(-169.87095595653895m)^7}(0m)^6 + \frac{180.0012184608678m}{|(180.0012184608678m)^7|}(0m)^5 + \frac{1}{(-241.1974890085123m)^5}(0m)^4  + \frac{1}{20000m}\right) = 0.5m$$
+$y'(0) = D'(0) = 0,\ \theta_0 = 0$
 
-$$Cant(0m) = 0.5m - 0.5m + 0.05m = 0.05m$$
+**Step 2 — Form the normalization matrix $M_N$**
 
-$$D(50m) = (100m)^2 \left(\frac{185.93568367635672m}{|(185.93568367635672m)^9|}(50m)^7 + \frac{1}{(-169.87095595653895m)^7}(50m)^6 + \frac{180.0012184608678m}{|(180.0012184608678m)^7|}(50m)^5 + \frac{1}{(-241.1974890085123m)^5}(50m)^4  + \frac{1}{20000m}\right) = 0.4825m$$
+$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
 
-$$Cant(50m) = 0.4825m - 0.5m + 0.05m = 0.0325m$$
+$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.5 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.06651901,0.99778516)$
+
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.99778516, -0.06651901)$
+
+$$M_{CSP} = \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 0.99778516 & 0.06651901 & 0.05 \\
+0 & -0.06651901 & 0.99778516 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+**Step 4 — Evaluate and map each point**
+
+Evaluate the parent curve at $s = 50\ m$
 
 
-$$D(100m) = (100m)^2 \left(\frac{185.93568367635672m}{|(185.93568367635672m)^9|}(100m)^7 + \frac{1}{(-169.87095595653895m)^7}(100m)^6 + \frac{180.0012184608678m}{|(180.0012184608678m)^7|}(100m)^5 + \frac{1}{(-241.1974890085123m)^5}(100m)^4  + \frac{1}{20000m}\right) = 0.465m$$
+$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.4825\ m$
 
-$$Cant(100m) = 0.465m - 0.5m + 0.05m = 0.015m$$
+$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.4825 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$
 
-Placement
+$M_c = M_{CSP}M_N M_{PC}$
 
-$$\left( 0.0,\frac{L^{2}}{A_{0}},\ 0.0 \right) = (0.0, 0.05, 0.0)$$
+$M_c = 
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 0.99778516 & 0.06651901 & 0.05 \\
+0 & -0.06651901 & 0.99778516 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.5 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.4825 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+$
+
+$M_c = \begin{bmatrix}
+1 & 0 & 0 & 50.0 \\
+0 & 0.999445843 & 0.0332779172 & 0.0325 \\
+0 & -0.0332779270 & 0.999446136 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
 
 ## 4.10 Combined 3D
 
-[do a full cant example]
+**[do a full cant example]**
 
 ## 4.11 Deviation from EnrichIfc4x3 Reference Implementation
 
@@ -1492,14 +1571,14 @@ $D_s = \frac{0 + 0}{2} = 0\ m,\ D_e = \frac{0 + 0.16}{2} = 0.08\ m,\ \Delta D = 
 
 Quadratic Term:
 
-$a_{2} = 3f = 3(0.08m) = 0.24\ m$
+$a_{2} = 3f = 3(0.08\ m) = 0.24\ m$
 
 $A_{2} = \frac{(100\ m)}{\sqrt[3]{|0.24\ m|}}\left( \frac{0.24\ m}{|0.24\ m|} \right) = 160.917897\ m^{2/3}$
 
 
 Cubic Term:
 
- $a_{3} = -2f = -0.016m$
+ $a_{3} = -2f = -0.016\ m$
  
  $A_{3} = \frac{100\ m}{\sqrt[4]{|-0.16\ m|}}\frac{-0.16\ m}{|-0.16\ m|} = -158.113883\ m^{3/4}$
 
@@ -1552,7 +1631,7 @@ $D(s)= L^2\left( \frac{A_3}{|A_3^5|}s^3 + \frac{1}{A_2^3}s^2\right)$
 
 Notice that the first term is $L^2$, not $L$ as in the reference implementation.
 
-$D(50\ m) = (100\ m)^2\left( \frac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \frac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ 1/m + 0.000006\ 1/m) = 0.04\ m$
+$D(50\ m) = (100\ m)^2\left( \frac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \frac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$
 
 Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and visa-versa. Table 4.10-2 compares the results for all the combinations of the sematic to geometry mapping and deviation elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect by a factor of 100 or 1/100. 
 
