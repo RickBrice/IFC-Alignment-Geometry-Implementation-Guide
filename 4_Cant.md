@@ -411,6 +411,8 @@ From the parent curve
 
 $s_0 = 0,\ x(s_0) = 0, \ y(s_0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
 
+**[todo - this isn't correct, evaluate D(0) and then update M_N in step 2 and downstream calculations - See Bloss Curve example]**
+
 **Step 2 — Form the normalization matrix $M_N$**
 
 Since $x(s_0) = 0, \ y(s_0) = 0,\ \theta_0 = 0, M_N = I$
@@ -663,6 +665,8 @@ From the parent curve
 
 $s_0 = 0,\ x_0 = 0,\ y(s_0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
 
+**[todo - this isn't correct, evaluate D(0) and then update M_N in step 2 and downstream calculations - See Bloss Curve example]**
+
 **Step 2 — Form the normalization matrix $M_N$**
 
 Since $x_0 = 0,\ y(s_0) = 0,\ \theta_0 = 0, M_N = I$
@@ -726,106 +730,188 @@ The $\mathbf{Axis}$ vector is closer to vertical 75% way through the cant segmen
 
 ## 4.6 Bloss Curve
 
+A Bloss transition in cant is represented with an `IfcThirdOrderPolynomialSpiral`.
+
 ### 4.6.1 Parent Curve Parametric Equations
 
-### 4.6.2 Semantic Definition to Geometry Mapping
-
-### 4.6.3 Compute Point on Curve
-
-**Step 1 — Evaluate the parent curve at the trim start**
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-**Step 4 — Evaluate and map each point**
+The deviating elevation and its rate of change are given by the following equations.
 
 $$\frac{D(s)}{L^{2}} = \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
 $$\frac{d}{ds}D(s) = L^{2}\left( \frac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \frac{2}{A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
 
-$$D_{1} = \frac{D_{sl} + D_{sr}}{2},\ D_{2} = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_{2} - D_{1}$$
-
-$$f = \mathrm{\Delta}D$$
-
-The polynomial coefficients must have units of length. The basic form of
-the coefficient of the $i^{th}$ term is
-
-$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
-
-Perform a dimensional analysis with $l$ representing term with length
-units. We see that the resulting coefficient $A_{i}$ has units of length.
-
-$$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$
-
 Constant Term
 
-$$a_{0} = D_{1},\ A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
+$a_{0} = D_s,\ A_{0} = \frac{L^{\frac{2}{1}}}{\sqrt[0]{|a_0|}}\frac{a_0}{|a_0|} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$
 
 Linear Term
 
-$$a_{1} = 0,\ A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$$
+$a_1 = 0,\ A_{1}$
 
 Quadratic Term
 
-$$a_{2} = 3f,\ A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|}$$
+$a_{2} = 3f,\ A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{|a_2|}}\frac{a_2}{|a_2|}$
 
 Cubic Term
 
-$$a_{3} = - 2f,\ A_{3} = \frac{L^{\frac{5}{4}}}{\sqrt[4]{\left| a_{3} \right|}}\ \frac{a_{3}}{\left| a_{3} \right|}$$
+$a_{3} = -2f\ A_{3} = \frac{{L}^{\frac{5}{4}}}{\sqrt[4]{|a_3|}}\frac{a_3}{|a_3|}$
 
-Example
+### 4.6.2 Semantic Definition to Geometry Mapping
 
-GENERATED\_\_CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc
+Consider an alignment segment that has a Bloss transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
 
 ~~~
-#61=IFCALIGNMENTCANT('1FNFyDAJeHwv87wDZHIYI7',$,$,$,$,$,$,1.5);
-#62=IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI3',#3,$,$,$,$,$,#64);
-#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.,0.16,.BLOSSCURVE.);
-#92=IFCCARTESIANPOINT((0.,0.));
-#93=IFCDIRECTION((1.,0.));
-#94=IFCAXIS2PLACEMENT2D(#92,#93);
-#95=IFCCURVESEGMENT(.DISCONTINUOUS.,#94,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#91);
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.BLOSSCURVE.);
+~~~
+
+Compute the parent curve parameters
+
+$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0 - 0.16 = -0.08\ m$
+
+$f = \Delta D = -0.08m$
+
+Constant Term
+
+$a_{0} = -0.08\ m,\ A_{0} = \frac{(100\ m)^{2}}{\left|-0.08\ m \right|}\frac{-0.08\ m}{\left| -0.08\ m \right|} = 125000\ m$
+
+Linear Term
+
+$A_{1} = 0\ m$
+
+Quadratic Term
+
+$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]{|-0.24\ m|}}\left( \frac{-0.24\ m}{|-0.24\ m|} \right) = -746.9007911\ m$
+
+Cubic Term
+
+$a_{3} = -2f = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{\sqrt[4]{|0.16\ m|}}\left( \frac{0.16\ m}{| 0.16\ m|} \right) = 500\ m$
+
+The parent curve is
+
+~~~
 #96=IFCCARTESIANPOINT((0.,0.));
 #97=IFCDIRECTION((1.,0.));
 #98=IFCAXIS2PLACEMENT2D(#96,#97);
-#99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,-500.,746.900791092861,$,$);
-#100=IFCCARTESIANPOINT((0.,0.,0.));
-#101=IFCDIRECTION((0.,0.,1.));
+#99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,500.00000000000006,-746.90079109286057,$,125000.);
+~~~
+
+The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
+$y = d = 0.08$
+
+The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
+
+$\theta = tan^{-1}(-0.0008) = -0.0007999998$
+
+$dx_x = cos(-0.0007999998) = 0.9999996800$
+
+$dy_x = sin(-0.0007999998) = -0.0007999997$
+
+The cross-slope at the start of the segment is
+
+$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+
+The cross slope orientation is
+
+$dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
+
+$dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
+
+~~~
+#100=IFCCARTESIANPOINT((0.,0.08,0.));
+#101=IFCDIRECTION((0.,0.10606498139220574,0.99435920055192883));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
 #104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
-$$D_{1} = \frac{0 + 0}{2} = 0m,\ D_{2} = \frac{0 + 0.16}{2} = 0.08m,\ \mathrm{\Delta}D = 0.08 - 0 = 0.08m$$
+### 4.6.3 Compute Point on Curve
 
-$$f = \mathrm{\Delta}D = 0.08m$$
+Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-Constant Term
-$$a_{0} = 0m,\ A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = \ 0m$$
+**Step 1 — Evaluate the parent curve at the trim start**
 
-Linear Term
-$A_{1} = 0m$
+From the parent curve 
 
-Quadratic Term
+$s_0 = 0,\ x(s_0) = 0$
 
-$a_{2} = 3f = 3(0.08m) = 0.24m,\ A_{2} = \frac{(100m)^{\frac{4}{3}}}{\sqrt[3]{|0.24m|}}\left( \frac{0.24m}{|0.24m|} \right) = 746.9007911m$
+$y(s_0) = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$
 
-Cubic Term
+$y'(0) = D'(0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
 
-$a_{3} = -2f = -2(0.08m) = -0.16m,\ A_{3} = \frac{{(100m)}^{\frac{5}{4}}}{\sqrt[4]{|-0.16m|}}\left( \frac{-0.16m}{| -0.16m|} \right) = -500m$
+**Step 2 — Form the normalization matrix $M_N$**
 
-Evaluate at start end of the segment
+$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
 
-$$D(0m) = \frac{A_{3}L^{2}}{\left| A_{3}^{5} \right|}0^{3} + \frac{L^{2}}{A_{2}^{3}}0^{2} = 0.0m$$
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
-$$D(50m) = \frac{-500m}{\left| ( -500m)^{5} \right|}(100m)^{2}(50m)^{3} + \frac{(100m)^{2}}{(746.9007811m)^{3}}(50m)^{2} = 0.04m$$
+$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
 
-$$D(100m) = \frac{-500m}{\left| ( -500m)^{5} \right|}(100m)^{2}(100m)^{3} + \frac{(100m)^{2}}{(746.9007811m)^{3}}(100m)^{2} = 0.08m$$
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
 
-Placement
+$$M_{CSP} = \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
 
-$$\left( 0.0,\frac{L^{2}}{A_{0}},\ 0.0 \right) = (0.0,\ 0.0,\ 0.0)$$
+The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
+
+$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$
+
+$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$
+
+With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
+
+**Step 4 — Evaluate and map each point**
+
+Evaluate the parent curve at $s = 50\ m$
+
+$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$
+
+$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$
+
+$M_c = M_{CSP}M_N M_{PC}$
+
+$M_c = 
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
+
+$M_c = \begin{bmatrix}
+0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
+-0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
+0 & 0 & 0.9985888041 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
+
 
 ## 4.7 Cosine Curve
 
