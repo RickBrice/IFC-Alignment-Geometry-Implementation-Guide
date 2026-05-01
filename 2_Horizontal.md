@@ -124,7 +124,7 @@ geometric definition is described with the following example.
 Given a horizontal alignment segment is a line segment starting at point
 (500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. 
 
-![Tangent Segment](images/tangent_segment.svg)
+![](images/tangent_segment.svg)
 
 *Figure 2.3.2-1 Tangent segment*
 
@@ -138,18 +138,17 @@ This semantic definition of this segment is:
 The geometric representation is an `IfcLine`. The line can be defined in
 different ways and is generally not important, as will be shown in the
 example below. `IfcLine` is an infinitely long line that passes through a
-specified point at some direction in the X-Y plane. For example, a line passing through (1000, −100) at a bearing of 175° from the x-axis:
+specified point at some direction in the X-Y plane. A valid, but unnecessisarly complex parent curve is show in Figure 2.3.2.2-1. The `IfcLine` passes through poin t(1000,-800) and is direct at 135° from the x-axis. The `IfcCurveSegment` trim starts 10 m from (1000,-800) and the trimmed segment has a lenght of 1956.796 m.
 
-[todo: replace this figure with one with a segment length of 1956.786 at an angle of 175 deg - claude is working on this but it needs to be resumed around 5pm]
-
-![IfcLine at arbitrary placement](images/Figure_2.3_IfcLine_arbitrary_placement.svg)
+![](images/Figure_2.3_IfcLine_arbitrary_placement.svg)
 
 *Figure 2.3.2-2 IfcLine at arbitrary placement*
 
-An easy way to define the `IfcLine` parent curve is to have it the X-axis direction
-passing through point (0,0).
+Figure 2.3.2-1 represents a valid parent curve defiition and implementations must be prepared to properly interpret this geometry. This guide defines general algorithms to accomodate this geometry.
 
-![Tangent Segment](images/ifcline_parent_curve.svg)
+In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.
+
+![](images/ifcline_parent_curve.svg)
 
 *Figure 2.3.2-3 IfcLine parent curve at origin*
 

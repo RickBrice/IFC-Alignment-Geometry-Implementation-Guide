@@ -421,20 +421,19 @@ $y'(0) = D'(0) = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
 -\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
-$
+\end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -463,16 +462,16 @@ Evaluate the parent curve at $s = 50\ m$
 
 $D(50\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(50\ m) \right) = 0.04\ m$
 
-$M_{PC} = \begin{bmatrix} 
+$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
 0 & 1 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-$M_c = 
+$$M_c = 
 \begin{bmatrix}
 0.999999680000 & 0.0007988711 & 0.0000424859 & 0 \\
 -0.000800000085 & 0.9985884845 & 0.053107402 & 0.08 \\
@@ -491,14 +490,14 @@ $M_c =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-$
+$$
 
-$M_c = \begin{bmatrix}
+$$M_c = \begin{bmatrix}
 0.9999996836000798 & 0.0007955209455802008 & 0.0 & 50.0 \\
 -0.0007909999255054242 & 0.9985884897861665 & 0.05310743567896648 & 0.04 \\
 0.0 & -0.05310740211832019 & 0.9985888044014736 & 0.0 \\
 0.0 & 0.0 & 0.0 & 1.0
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $\mathbf{\text{Axis}} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
 
@@ -700,22 +699,21 @@ $sin \theta_0 = sin(-0.006399913) = -0.006399869$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
 -\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
 **[todo - look at this carefully, the MN matrix doesn't look right - this will trickle down through all the calcs]**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
-$
+\end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -736,16 +734,16 @@ A point $75\ m$ from the start of the segment is in the second half of the helme
 
 $D(25\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(25\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(25\ m) + \frac{1}{15625\ m} \right) = 0.36\ m$
 
-$M_{PC} = \begin{bmatrix} 
+$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 25 \\
 0 & 1 & 0 & 0.36 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-$M_c = 
+$$M_c = 
 \begin{bmatrix}
 0.999998720 & 0.001597727253 & 0 & 50.0 \\
 -0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
@@ -761,16 +759,16 @@ $M_c =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
-$
+$$
 
 **[todo - verify matrix multiplication - final result is correct from IfcOpenShell]**
 
-$M_c = \begin{bmatrix}
+$$M_c = \begin{bmatrix}
 0.999999684 & 0.000799928774 & 0 & 75.0 \\
 -0.000795461553 & 0.999910964 & 0.0133204468 & 0.01 \\
 0 & -0.0133203149 & 0.999911281 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $\mathbf{Axis} = (0.0,\ 0.0133204468,\ 0.999911281)$
 
@@ -890,20 +888,19 @@ $y'(0) = D'(0) = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
 -\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
-$
+\end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -932,16 +929,16 @@ Evaluate the parent curve at $s = 50\ m$
 
 $D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$
 
-$M_{PC} = \begin{bmatrix} 
+$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
 0 & 1 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-$M_c = 
+$$M_c = 
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 0.9943592 & 0.106064981 & 0.08 \\
@@ -960,14 +957,14 @@ $M_c =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-$
+$$
 
-$M_c = \begin{bmatrix}
+$$M_c = \begin{bmatrix}
 0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
 -0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
 0 & 0 & 0.9985888041 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
 
 ## 4.7 Cosine Curve
@@ -1062,20 +1059,19 @@ $\theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
 -\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
-$
+\end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1104,16 +1100,16 @@ Evaluate the parent curve at $s = 50\ m$
 
 $D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$
 
-$M_{PC} = \begin{bmatrix} 
+$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
 0 & 1 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-$M_c = 
+$$M_c = 
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 0.9943592 & 0.106064981 & 0.08 \\
@@ -1132,14 +1128,14 @@ $M_c =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-$
+$$
 
-$M_c = \begin{bmatrix}
+$$M_c = \begin{bmatrix}
 1 & 0 & 0 & 50 \\
 0 & 0.9985888041 & 0.0531074357 & 0.04 \\
 0 & -0.05310743572 & 0.998588804 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
 **[todo - check the matrix multiplication the Y and Z columns can]**
 
@@ -1238,20 +1234,19 @@ $\theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
 -\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
-$
+\end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1280,16 +1275,16 @@ Evaluate the parent curve at $s = 50\ m$
 
 $D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$
 
-$M_{PC} = \begin{bmatrix} 
+$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
 0 & 1 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-$M_c = 
+$$M_c = 
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 0.9943592 & 0.106064981 & 0.08 \\
@@ -1308,14 +1303,14 @@ $M_c =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-$
+$$
 
-$M_c = \begin{bmatrix}
+$$M_c = \begin{bmatrix}
 1 & 0 & 0 & 50 \\
 0 & 0.9985888041 & 0.0531074357 & 0.04 \\
 0 & -0.05310743572 & 0.998588804 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
 **[todo - check the matrix multiplication the Y and Z columns can]**
 
@@ -1473,20 +1468,19 @@ $y'(0) = D'(0) = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
 -\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
-$M_N = \begin{bmatrix}
+$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 1 & 0 & -0.5 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}
-$
+\end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1508,16 +1502,16 @@ Evaluate the parent curve at $s = 50\ m$
 
 $D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.4825\ m$
 
-$M_{PC} = \begin{bmatrix} 
+$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
 0 & 1 & 0 & 0.4825 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
-\end{bmatrix}$
+\end{bmatrix}$$
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-$M_c = 
+$$M_c = 
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
 0 & 0.99778516 & 0.06651901 & 0.05 \\
@@ -1536,14 +1530,14 @@ $M_c =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
-$
+$$
 
-$M_c = \begin{bmatrix}
+$$M_c = \begin{bmatrix}
 1 & 0 & 0 & 50.0 \\
 0 & 0.999445843 & 0.0332779172 & 0.0325 \\
 0 & -0.0332779270 & 0.999446136 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$
+\end{bmatrix}$$
 
 ## 4.10 Combined 3D
 

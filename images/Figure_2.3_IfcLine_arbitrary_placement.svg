@@ -1,143 +1,285 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 450" width="700" height="450" font-family="Georgia, 'Times New Roman', serif">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1100" height="700" viewBox="0 0 1100 700"
+     font-family="Arial, Helvetica, sans-serif">
 
-  <!-- Background -->
-  <rect width="700" height="450" fill="#f8f7f4" rx="4"/>
+  <!--
+    IfcLine / IfcCurveSegment — Revised Parameters
+    ─────────────────────────────────────────────────────────────
+    Direction:    135° from +X  →  unit vec (−0.70711, +0.70711)
+    P (line passes through): (1000, −800)   SVG: (558.0, 583.5)
+    Offset:       100  →  S = P + 100·dir = (929.289, −729.289)  SVG: (536.1, 561.6)
+    Length:       1956.786  →  E = S + L·dir = (−454.367, 654.367)  SVG: (106.6, 132.1)
 
-  <!-- Grid -->
+    Coordinate mapping:
+      svgX = 247.6 + worldX · 0.3104
+      svgY = 335.2 − worldY · 0.3104
+    ─────────────────────────────────────────────────────────────
+  -->
+
   <defs>
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d8d4c8" stroke-width="0.5"/>
-    </pattern>
-    <marker id="axisArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L8,3 z" fill="#888"/>
+    <!-- Axis arrow (solid black) -->
+    <marker id="axArrow" viewBox="0 0 10 8" refX="9" refY="4"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <polygon points="0,0 10,4 0,8 2.5,4" fill="#000000"/>
     </marker>
-    <marker id="dimArrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-      <path d="M0,0 L0,7 L7,3.5 z" fill="#333"/>
+    <!-- Red dimension arrowheads -->
+    <marker id="dFwd" viewBox="0 0 10 8" refX="9" refY="4"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="0,0 10,4 0,8 2.5,4" fill="#CC0000"/>
     </marker>
-    <marker id="dimArrowRev" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
-      <path d="M7,0 L7,7 L0,3.5 z" fill="#333"/>
+    <marker id="dRev" viewBox="0 0 10 8" refX="1" refY="4"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <polygon points="10,0 0,4 10,8 7.5,4" fill="#CC0000"/>
+    </marker>
+    <!-- Blue direction arrow for segment travel indicator -->
+    <marker id="segDir" viewBox="0 0 12 8" refX="10" refY="4"
+            markerWidth="9" markerHeight="9" orient="auto">
+      <polygon points="0,0 12,4 0,8 3,4" fill="#0055CC"/>
     </marker>
   </defs>
 
-  <rect width="700" height="450" fill="url(#grid)"/>
+  <!-- White background -->
+  <rect width="1100" height="700" fill="#FFFFFF"/>
 
-  <!--
-    World coordinate mapping:
-      Display range: x [550, 1250], y [-250, 350]
-      SVG 700x450, margins left=85, top=40; usable 585x350 px
-      Uniform scale = 350/600 = 0.5833 px/world-unit  (y-constrained)
-      svgX(wx) = 85 + (wx - 550) * 0.5833
-      svgY(wy) = 40 + (350 - wy)  * 0.5833
+  <!-- ═══════════════════════════════════════════════════════════
+       GRID
+       Vertical: every 200 world units, X = −600 … 1200
+         wx=−600: svgX= 61    wx=−400: svgX=123    wx=−200: svgX=186
+         wx=   0: svgX=248    wx= 200: svgX=310    wx= 400: svgX=372
+         wx= 600: svgX=434    wx= 800: svgX=496    wx=1000: svgX=558
+         wx=1200: svgX=620
+       Horizontal: every 200 world units, Y = −1000 … 800
+         wy=−1000: svgY=646   wy=−800: svgY=584   wy=−600: svgY=521
+         wy=−400:  svgY=459   wy=−200: svgY=397   wy=   0: svgY=335
+         wy= 200:  svgY=273   wy= 400: svgY=211   wy= 600: svgY=149
+         wy= 800:  svgY= 87
+  ═══════════════════════════════════════════════════════════ -->
+  <g stroke="#DDDDDD" stroke-width="0.6" fill="none">
+    <line x1=" 61" y1="50" x2=" 61" y2="660"/>
+    <line x1="123" y1="50" x2="123" y2="660"/>
+    <line x1="186" y1="50" x2="186" y2="660"/>
+    <line x1="248" y1="50" x2="248" y2="660"/>
+    <line x1="310" y1="50" x2="310" y2="660"/>
+    <line x1="372" y1="50" x2="372" y2="660"/>
+    <line x1="434" y1="50" x2="434" y2="660"/>
+    <line x1="496" y1="50" x2="496" y2="660"/>
+    <line x1="558" y1="50" x2="558" y2="660"/>
+    <line x1="620" y1="50" x2="620" y2="660"/>
+    <line x1="682" y1="50" x2="682" y2="660"/>
 
-    IfcLine: Pnt=(1000,-100), Dir=(cos122°, sin122°)=(-0.530, 0.848)
-    SegmentStart = 0  → P1 = (1000, -100)   → SVG (348, 303)
-    SegmentLength = 350 → P2 = (814.5, 196.8) → SVG (239, 129)
-    Extended start (-120m): (1063.6, -201.8) → SVG (385, 362)
-    Extended end   (+80m):  (772.1,  264.6)  → SVG (215,  90)
-    x-axis (y=0):  svgY = 244
-    x=700 → 173, x=800 → 231, x=900 → 289, x=1000 → 348, x=1100 → 406
-    y=-200 → 361, y=-100 → 303, y=0 → 244, y=100 → 186, y=200 → 128, y=300 → 69
-  -->
-
-  <!-- ===================== AXES ===================== -->
-  <!-- x-axis at y=0 -->
-  <line x1="80" y1="244" x2="502" y2="244" stroke="#888" stroke-width="1" marker-end="url(#axisArrow)"/>
-  <text x="507" y="248" font-size="13" fill="#888" font-style="italic">x</text>
-
-  <!-- y-axis reference (x=0 is off-screen; left edge shown for scale) -->
-  <line x1="85" y1="415" x2="85" y2="44" stroke="#888" stroke-width="1" marker-end="url(#axisArrow)"/>
-  <text x="79" y="40" font-size="13" fill="#888" font-style="italic">y</text>
-
-  <!-- x-axis tick marks and labels -->
-  <line x1="173" y1="242" x2="173" y2="246" stroke="#888" stroke-width="1"/>
-  <text x="173" y="257" font-size="10" fill="#888" text-anchor="middle">700</text>
-  <line x1="231" y1="242" x2="231" y2="246" stroke="#888" stroke-width="1"/>
-  <text x="231" y="257" font-size="10" fill="#888" text-anchor="middle">800</text>
-  <line x1="289" y1="242" x2="289" y2="246" stroke="#888" stroke-width="1"/>
-  <text x="289" y="257" font-size="10" fill="#888" text-anchor="middle">900</text>
-  <line x1="348" y1="242" x2="348" y2="246" stroke="#888" stroke-width="1"/>
-  <text x="348" y="257" font-size="10" fill="#888" text-anchor="middle">1000</text>
-  <line x1="406" y1="242" x2="406" y2="246" stroke="#888" stroke-width="1"/>
-  <text x="406" y="257" font-size="10" fill="#888" text-anchor="middle">1100</text>
-
-  <!-- y-axis tick marks and labels -->
-  <line x1="83" y1="361" x2="87" y2="361" stroke="#888" stroke-width="1"/>
-  <text x="80" y="365" font-size="10" fill="#888" text-anchor="end">−200</text>
-  <line x1="83" y1="303" x2="87" y2="303" stroke="#888" stroke-width="1"/>
-  <text x="80" y="307" font-size="10" fill="#888" text-anchor="end">−100</text>
-  <text x="80" y="248" font-size="10" fill="#888" text-anchor="end">0</text>
-  <line x1="83" y1="186" x2="87" y2="186" stroke="#888" stroke-width="1"/>
-  <text x="80" y="190" font-size="10" fill="#888" text-anchor="end">100</text>
-  <line x1="83" y1="128" x2="87" y2="128" stroke="#888" stroke-width="1"/>
-  <text x="80" y="132" font-size="10" fill="#888" text-anchor="end">200</text>
-  <line x1="83" y1="69" x2="87" y2="69" stroke="#888" stroke-width="1"/>
-  <text x="80" y="73" font-size="10" fill="#888" text-anchor="end">300</text>
-
-  <!-- ===================== IFCLINE (dashed, infinite — drawn first, behind segment) ===================== -->
-  <!-- From extended start (385,362) through P1 (348,303), P2 (239,129), to extended end (215,90) -->
-  <line x1="385" y1="362" x2="215" y2="90"
-        stroke="#aaa" stroke-width="2" stroke-dasharray="8,5"/>
-
-  <!-- IfcLine label (near upper end, left of the line) -->
-  <text x="200" y="84" font-size="11" fill="#888" font-style="italic">IfcLine (infinite)</text>
-
-  <!-- ===================== IFCCURVESEGMENT (trimmed, drawn on top of dashed line) ===================== -->
-  <!-- P1 (348,303) to P2 (239,129) -->
-  <line x1="348" y1="303" x2="239" y2="129"
-        stroke="#c0392b" stroke-width="3.5" stroke-linecap="round"/>
-
-  <!-- ===================== ANGLE INDICATOR AT P1 ===================== -->
-  <!-- Dashed reference ray along +x from P1 -->
-  <line x1="348" y1="303" x2="408" y2="303"
-        stroke="#555" stroke-width="1" stroke-dasharray="4,3"/>
-  <!-- Arc: center P1=(348,303), r=40, from (388,303) to 122° CCW in world.
-       In SVG (y-down): world CCW = screen CCW, so sweep-flag=0, large-arc=0.
-       End = (348+40*cos(122°), 303-40*sin(122°)) = (348-21.2, 303-33.9) = (327,269) -->
-  <path d="M 388,303 A 40,40 0 0,0 327,269"
-        fill="none" stroke="#555" stroke-width="1"/>
-  <!-- Angle label at arc midpoint (61° from +x): offset outward from arc -->
-  <!-- Mid direction in SVG: (cos(-61°), sin(-61°)) = (0.485,-0.875); at r=58: (348+28,303-51)=(376,252) -->
-  <text x="378" y="258" font-size="11" fill="#444">122°</text>
-
-  <!-- ===================== P1 (1000, -100) ===================== -->
-  <circle cx="348" cy="303" r="5" fill="#1a3a5c"/>
-  <text x="360" y="297" font-size="12" fill="#1a3a5c" font-weight="bold">P₁</text>
-  <text x="360" y="311" font-size="10" fill="#444">(1000, −100)</text>
-  <text x="360" y="324" font-size="10" fill="#555">SegmentStart = 0</text>
-
-  <!-- ===================== P2 (814.5, 196.8) ===================== -->
-  <circle cx="239" cy="129" r="5" fill="#1a3a5c"/>
-  <text x="228" y="122" font-size="12" fill="#1a3a5c" font-weight="bold" text-anchor="end">P₂</text>
-  <text x="226" y="137" font-size="10" fill="#444" text-anchor="end">(814.5, 196.8)</text>
-
-  <!-- ===================== SEGMENTLENGTH DIMENSION ===================== -->
-  <!-- Perpendicular offset 35 world units to the right of travel direction.
-       Right perp in world (90° CW from dir): (sin122°, -cos122°)=(0.848, 0.530).
-       OffP1 = (1000+35*0.848, -100+35*0.530) = (1029.7, -81.5) → SVG (85+0.5833*479.7, 40+0.5833*431.5) = (365,292)
-       OffP2 = (814.5+35*0.848, 196.8+35*0.530) = (844.2, 215.4) → SVG (85+0.5833*294.2, 40+0.5833*134.6) = (257,119) -->
-  <!-- Leader lines from endpoints to offset -->
-  <line x1="348" y1="303" x2="365" y2="292" stroke="#555" stroke-width="0.75" stroke-dasharray="2,2"/>
-  <line x1="239" y1="129" x2="257" y2="119" stroke="#555" stroke-width="0.75" stroke-dasharray="2,2"/>
-  <!-- Dimension line with arrows -->
-  <line x1="365" y1="292" x2="257" y2="119"
-        stroke="#555" stroke-width="1"
-        marker-start="url(#dimArrowRev)"
-        marker-end="url(#dimArrow)"/>
-  <!-- Label at midpoint of dimension line: ((365+257)/2, (292+119)/2) = (311,206); offset right -->
-  <text x="328" y="197" font-size="12" fill="#555" text-anchor="middle">SegmentLength = 350 m</text>
-
-  <!-- ===================== LEGEND ===================== -->
-  <g transform="translate(452, 315)">
-    <rect x="-10" y="-16" width="240" height="62" fill="#f8f7f4" stroke="#ccc" stroke-width="0.75" rx="3"/>
-    <!-- IfcLine -->
-    <line x1="0" y1="0" x2="40" y2="0" stroke="#aaa" stroke-width="2" stroke-dasharray="8,5"/>
-    <text x="48" y="4" font-size="11" fill="#555">IfcLine parent curve</text>
-    <!-- Trimmed segment -->
-    <line x1="0" y1="22" x2="40" y2="22" stroke="#c0392b" stroke-width="3.5"/>
-    <text x="48" y="26" font-size="11" fill="#555">IfcCurveSegment (trimmed)</text>
-    <!-- Points -->
-    <circle cx="20" cy="44" r="4" fill="#1a3a5c"/>
-    <text x="48" y="48" font-size="11" fill="#555">Start / end point</text>
+    <line x1="50" y1="646" x2="700" y2="646"/>
+    <line x1="50" y1="584" x2="700" y2="584"/>
+    <line x1="50" y1="521" x2="700" y2="521"/>
+    <line x1="50" y1="459" x2="700" y2="459"/>
+    <line x1="50" y1="397" x2="700" y2="397"/>
+    <line x1="50" y1="335" x2="700" y2="335"/>
+    <line x1="50" y1="273" x2="700" y2="273"/>
+    <line x1="50" y1="211" x2="700" y2="211"/>
+    <line x1="50" y1="149" x2="700" y2="149"/>
+    <line x1="50" y1=" 87" x2="700" y2=" 87"/>
   </g>
+
+  <!-- Grid numeric labels -->
+  <g font-size="10" fill="#AAAAAA" text-anchor="middle">
+    <text x=" 61" y="351">-600</text>
+    <text x="123" y="351">-400</text>
+    <text x="186" y="351">-200</text>
+    <text x="310" y="351">200</text>
+    <text x="372" y="351">400</text>
+    <text x="434" y="351">600</text>
+    <text x="496" y="351">800</text>
+    <text x="558" y="351">1000</text>
+    <text x="620" y="351">1200</text>
+  </g>
+  <g font-size="10" fill="#AAAAAA" text-anchor="end">
+    <text x="242" y="650">-1000</text>
+    <text x="242" y="588">-800</text>
+    <text x="242" y="525">-600</text>
+    <text x="242" y="463">-400</text>
+    <text x="242" y="401">-200</text>
+    <text x="242" y="278">200</text>
+    <text x="242" y="215">400</text>
+    <text x="242" y="153">600</text>
+    <text x="242" y=" 91">800</text>
+  </g>
+  <text x="242" y="339" font-size="10" fill="#AAAAAA" text-anchor="end">0</text>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       AXES
+       X axis at wy=0: svgY=335   Y axis at wx=0: svgX=248
+  ═══════════════════════════════════════════════════════════ -->
+  <line x1="50"  y1="335" x2="700" y2="335"
+        stroke="#000000" stroke-width="1.5" marker-end="url(#axArrow)"/>
+  <line x1="248" y1="660" x2="248" y2="44"
+        stroke="#000000" stroke-width="1.5" marker-end="url(#axArrow)"/>
+  <text x="703" y="339" font-size="16" font-style="italic" fill="#000000" dominant-baseline="middle">X</text>
+  <text x="252" y="38"  font-size="16" font-style="italic" fill="#000000">Y</text>
+
+  <!-- Axis tick marks -->
+  <g stroke="#000000" stroke-width="1">
+    <line x1=" 61" y1="330" x2=" 61" y2="340"/>
+    <line x1="123" y1="330" x2="123" y2="340"/>
+    <line x1="186" y1="330" x2="186" y2="340"/>
+    <line x1="310" y1="330" x2="310" y2="340"/>
+    <line x1="372" y1="330" x2="372" y2="340"/>
+    <line x1="434" y1="330" x2="434" y2="340"/>
+    <line x1="496" y1="330" x2="496" y2="340"/>
+    <line x1="558" y1="330" x2="558" y2="340"/>
+    <line x1="620" y1="330" x2="620" y2="340"/>
+    <line x1="243" y1="646" x2="253" y2="646"/>
+    <line x1="243" y1="584" x2="253" y2="584"/>
+    <line x1="243" y1="521" x2="253" y2="521"/>
+    <line x1="243" y1="459" x2="253" y2="459"/>
+    <line x1="243" y1="397" x2="253" y2="397"/>
+    <line x1="243" y1="273" x2="253" y2="273"/>
+    <line x1="243" y1="211" x2="253" y2="211"/>
+    <line x1="243" y1="149" x2="253" y2="149"/>
+    <line x1="243" y1=" 87" x2="253" y2=" 87"/>
+  </g>
+  <circle cx="248" cy="335" r="2.5" fill="#000000"/>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       IfcLine PARENT CURVE — infinite, gray dashed
+       Passes through P(1000,−800), direction 135°
+       Displayed from top edge (24.5, 50) to bottom edge (634.5, 660)
+  ═══════════════════════════════════════════════════════════ -->
+  <line x1="24.5" y1="50" x2="634.5" y2="660"
+        stroke="#888888" stroke-width="1.5" stroke-dasharray="10,6"/>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       IfcCurveSegment — solid blue
+       E_svg = (106.6, 132.1)   S_svg = (536.1, 561.6)
+  ═══════════════════════════════════════════════════════════ -->
+  <line x1="106.6" y1="132.1" x2="536.1" y2="561.6"
+        stroke="#0055CC" stroke-width="3.5"/>
+
+  <!-- Segment endpoint markers -->
+  <circle cx="106.6" cy="132.1" r="5.5" fill="#0055CC"/>
+  <circle cx="536.1" cy="561.6" r="5.5" fill="#0055CC"/>
+
+  <!-- Travel direction arrow at ~38% from E toward S
+       38% point: (106.6 + 0.38·429.5, 132.1 + 0.38·429.5) = (269.6, 295.1)
+       34% point: (106.6 + 0.34·429.5, 132.1 + 0.34·429.5) = (252.8, 278.3)
+  -->
+  <line x1="269.6" y1="295.1" x2="252.8" y2="278.3"
+        stroke="#0055CC" stroke-width="2" marker-end="url(#segDir)"/>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       Point P (1000, −800) — red dot
+       P_svg = (558.0, 583.5)
+  ═══════════════════════════════════════════════════════════ -->
+  <circle cx="558.0" cy="583.5" r="5.5" fill="#CC0000"/>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LENGTH DIMENSION: L = 1956.786
+       Perpendicular leaders in CW direction (upper-right of segment)
+       perp = (0.7071, −0.7071),  offset = 52 px
+       E_dim = (143.4,  95.3)
+       S_dim = (572.9, 524.8)
+       Mid   = (358.1, 310.0)
+  ═══════════════════════════════════════════════════════════ -->
+  <line x1="106.6" y1="132.1" x2="143.4" y2=" 95.3" stroke="#CC0000" stroke-width="0.8"/>
+  <line x1="536.1" y1="561.6" x2="572.9" y2="524.8" stroke="#CC0000" stroke-width="0.8"/>
+  <line x1="143.4" y1=" 95.3" x2="572.9" y2="524.8"
+        stroke="#CC0000" stroke-width="1.2"
+        marker-start="url(#dRev)" marker-end="url(#dFwd)"/>
+  <!-- Label perpendicular-offset from mid of dim line, shifted upper-right -->
+  <text x="390" y="282" font-size="13" fill="#CC0000" text-anchor="middle"
+        font-style="italic">L = 1956.786</text>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       OFFSET DIMENSION: offset = 100  (P → S)
+       Perpendicular leaders in CCW direction (upper-right of P-S segment)
+       perp_CCW = (0.7071, −0.7071),  offset = 42 px
+       P_od = (587.7, 553.8)
+       S_od = (565.8, 531.9)
+       Mid  = (576.8, 542.8)
+  ═══════════════════════════════════════════════════════════ -->
+  <line x1="558.0" y1="583.5" x2="587.7" y2="553.8" stroke="#CC0000" stroke-width="0.8"/>
+  <line x1="536.1" y1="561.6" x2="565.8" y2="531.9" stroke="#CC0000" stroke-width="0.8"/>
+  <line x1="587.7" y1="553.8" x2="565.8" y2="531.9"
+        stroke="#CC0000" stroke-width="1.2"
+        marker-start="url(#dRev)" marker-end="url(#dFwd)"/>
+  <text x="605" y="533" font-size="12" fill="#CC0000" text-anchor="start">offset = 100</text>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ANGLE: 135° at P
+       Arc from 0° to 135° (CCW in math = CW in SVG screen)
+       R = 55, P_svg = (558, 583.5)
+       Start: (613, 583.5)
+       End:   (558 + 55·cos135°, 583.5 − 55·sin135°)
+            = (558 − 38.89, 583.5 − 38.89) = (519.1, 544.6)
+       135° < 180° → large-arc-flag = 0, sweep-flag = 1
+  ═══════════════════════════════════════════════════════════ -->
+  <path d="M 613.0 583.5 A 55 55 0 0 1 519.1 544.6"
+        fill="none" stroke="#CC0000" stroke-width="1.2"/>
+  <!-- Label at ~67.5° mid-arc: P + 84·(cos67.5°, −sin67.5°) = (558+32.2, 583.5−77.6) = (590, 506) -->
+  <text x="591" y="504" font-size="12" fill="#CC0000" text-anchor="middle">135°</text>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       POINT LABELS
+  ═══════════════════════════════════════════════════════════ -->
+
+  <!-- P label — below and right -->
+  <text x="565" y="600" font-size="12" fill="#CC0000" dominant-baseline="hanging">
+    <tspan font-style="italic">P</tspan>(1000, −800)
+  </text>
+
+  <!-- S label — to the left of S (segment start), with small leader -->
+  <line x1="530" y1="557" x2="506" y2="542" stroke="#0055CC" stroke-width="0.7"/>
+  <text x="504" y="540" font-size="11" fill="#0055CC" text-anchor="end" dominant-baseline="middle">
+    <tspan font-style="italic">S</tspan> (start)
+  </text>
+  <text x="504" y="554" font-size="10" fill="#0055CC" text-anchor="end">(929.289, −729.289)</text>
+
+  <!-- E label — above and right of E endpoint -->
+  <text x="115" y="121" font-size="11" fill="#0055CC" dominant-baseline="auto">
+    <tspan font-style="italic" font-weight="bold">E</tspan> (end)
+  </text>
+  <text x="115" y="135" font-size="10" fill="#0055CC">(−454.367, 654.367)</text>
+
+  <!-- IfcLine label — on the gray dashed line, mid-right portion -->
+  <text x="610" y="618" font-size="12" fill="#666666" font-style="italic" text-anchor="start">IfcLine</text>
+  <text x="610" y="632" font-size="10" fill="#888888" text-anchor="start">(parent curve — infinite)</text>
+
+  <!-- IfcCurveSegment label — to the right of the segment, mid-height -->
+  <!-- Right of mid-segment (321, 347), offset to the right -->
+  <text x="740" y="352" font-size="14" fill="#0055CC" font-weight="bold" text-anchor="start">IfcCurveSegment</text>
+  <text x="740" y="370" font-size="11" fill="#0055CC" text-anchor="start">L = 1956.786  ·  direction = 135°</text>
+  <text x="740" y="386" font-size="11" fill="#0055CC" text-anchor="start">offset from P = 100</text>
+  <!-- Leader from label to mid-segment -->
+  <line x1="737" y1="364" x2="390" y2="355" stroke="#0055CC" stroke-width="0.7" stroke-dasharray="3,2"/>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LEGEND
+  ═══════════════════════════════════════════════════════════ -->
+  <rect x="715" y="430" width="360" height="122" rx="5"
+        fill="#F8F8F8" stroke="#BBBBBB" stroke-width="0.8"/>
+  <text x="728" y="450" font-size="12" font-weight="bold" fill="#333333">Legend</text>
+
+  <line x1="728" y1="468" x2="782" y2="468"
+        stroke="#888888" stroke-width="1.5" stroke-dasharray="10,5"/>
+  <text x="790" y="472" font-size="11" fill="#555555">IfcLine (infinite parent curve)</text>
+
+  <line x1="728" y1="490" x2="782" y2="490" stroke="#0055CC" stroke-width="3.5"/>
+  <circle cx="728" cy="490" r="4" fill="#0055CC"/>
+  <circle cx="782" cy="490" r="4" fill="#0055CC"/>
+  <text x="790" y="494" font-size="11" fill="#555555">IfcCurveSegment  (trimmed, L = 1956.786)</text>
+
+  <circle cx="755" cy="513" r="5" fill="#CC0000"/>
+  <text x="790" y="517" font-size="11" fill="#555555">
+    <tspan font-style="italic">P</tspan>(1000, −800) — IfcLine passes through this point
+  </text>
+
+  <line x1="728" y1="537" x2="782" y2="537" stroke="#CC0000" stroke-width="1.2"/>
+  <text x="790" y="541" font-size="11" fill="#555555">Dimension / angle annotations</text>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FIGURE TITLE
+  ═══════════════════════════════════════════════════════════ -->
+  <text x="550" y="686" font-size="14" font-weight="bold" fill="#333333" text-anchor="middle">
+    Figure: IfcLine with Trimmed IfcCurveSegment — Arbitrary Placement
+  </text>
 
 </svg>

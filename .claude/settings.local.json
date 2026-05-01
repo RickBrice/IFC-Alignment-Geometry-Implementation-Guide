@@ -10,7 +10,14 @@
       "PowerShell(& \"F:\\\\IfcOpenShell\\\\_deps\\\\python.3.13.13\\\\tools\\\\python.exe\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\restructure.py\")",
       "PowerShell(& \"F:\\\\IfcOpenShell\\\\_deps\\\\python.3.13.13\\\\tools\\\\python.exe\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\remove_sections.py\")",
       "Bash(node *)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "PowerShell(python -m pip list 2>&1 | Select-Object -First 50)",
+      "PowerShell(python -m pip list 2>&1 | Select-Object -Skip 50 -First 60)",
+      "PowerShell(winget *)",
+      "PowerShell(python -c \"import mistune; import mistune.plugins; import pkgutil; print\\([m.name for m in pkgutil.iter_modules\\(mistune.plugins.__path__\\)]\\)\")",
+      "Bash(python *)",
+      "Bash(grep -n \"\\\\\\\\\\\\\\\\end{bmatrix}\\\\$[^\\\\$]\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")",
+      "Bash(grep -Pn \"\\\\\\\\\\\\\\\\end\\\\{bmatrix\\\\}\\\\$\\(?!\\\\$\\)\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")"
     ]
   }
 }
