@@ -845,7 +845,7 @@ The parent curve is
 ~~~
 
 The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08$
+$y = d = 0.08\ m$
 
 The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
 
@@ -971,65 +971,175 @@ $M_c = \begin{bmatrix}
 
 ## 4.7 Cosine Curve
 
+A Cosine transition in cant is represented with an `IfcCosineSpiral`.
+
 ### 4.7.1 Parent Curve Parametric Equations
+
+The deviating elevation and its rate of change are given by the following equations.
+
+$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L} \right)$
+
+$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{L}\sin\left( \pi\frac{s}{L} \right) \right)$
+
+Constant term,
+
+$A_{0} = \frac{L^{2}}{D_{s} + \frac{1}{2}\mathrm{\Delta}D}$
+
+Cosine term, 
+
+$A_{1} = \frac{L^{2}}{-\frac{1}{2}\mathrm{\Delta}D}$
 
 ### 4.7.2 Semantic Definition to Geometry Mapping
 
+Consider and alignment segment that has a Cosine transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
+
+~~~
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.COSINECURVE.);
+~~~
+
+Compute the parent curve parameters
+
+$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0 - 0.08 = -0.08\ m$
+
+$A_{0} = \frac{({100\ m)}^{2}}{0.08\ m + \frac{1}{2}(-0.08\ m)} = 250000\ m$
+
+$A_{1} = \frac{{(100\ m)}^{2}}{-\frac{1}{2}(-0.08\ m)} = 250000\ m$
+
+The parent curve is
+
+~~~
+#96=IFCCARTESIANPOINT((0.,0.));
+#97=IFCDIRECTION((1.,0.));
+#98=IFCAXIS2PLACEMENT2D(#96,#97);
+#99=IFCCOSINESPIRAL(#98,250000.,250000.);
+~~~
+
+The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
+$y = d = 0.08\ m$
+
+The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
+
+$\theta = tan^{-1}(-0.0008) = -0.0007999998$
+
+$dx_x = cos(-0.0007999998) = 0.9999996800$
+
+$dy_x = sin(-0.0007999998) = -0.0007999997$
+
+The cross-slope at the start of the segment is
+
+$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+
+The cross slope orientation is
+
+$dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
+
+$dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
+
+~~~
+#100=IFCCARTESIANPOINT((0.,0.08,0.));
+#101=IFCDIRECTION((0.,0.10606498139220574,0.99435920055192883));
+#102=IFCDIRECTION((1.,0.,0.));
+#103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
+#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+~~~
+
 ### 4.7.3 Compute Point on Curve
+
+
+Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
+From the parent curve 
+
+$s_0 = 0,\ x(s_0) = 0$
+
+$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$
+
+$y'(0) = D'(0) = (100\ m)^{2}\left( -\frac{\pi}{100\ m}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$
+
+$\theta_0 = 0$
+
 **Step 2 — Form the normalization matrix $M_N$**
+
+$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
+
+$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
+$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
+
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
+
+$$M_{CSP} = \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
+
+$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$
+
+$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$
+
+With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
+
 **Step 4 — Evaluate and map each point**
 
-$$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L} \right)$$
+Evaluate the parent curve at $s = 50\ m$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{L}\sin\left( \pi\frac{s}{L} \right) \right)$$
+$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$
 
-Constant term,
-$A_{0} = \frac{L^{2}}{D_{1} + \frac{1}{2}\mathrm{\Delta}D}$
+$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$
 
-Cosine term, $A_{1} = \frac{L^{2}}{-\frac{1}{2}\mathrm{\Delta}D}$
+$M_c = M_{CSP}M_N M_{PC}$
 
-Example
+$M_c = 
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$
 
-GENERATED\_\_CantAlignment_CosineCurve_100.0_1000_300_1_Meter.ifc
-
-~~~
-#61 = IFCALIGNMENTCANT(1FNFyDAJeHwv87wDZHIYI7, $, $, $, $, #134, $, 1.5);
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 1.6E-1, .COSINECURVE.);
-#112 = IFCSEGMENTEDREFERENCECURVE((#113), .F., #89, #130);
-#113 = IFCCURVESEGMENT(.CONTINUOUS., #123, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #127);
-#123 = IFCAXIS2PLACEMENT3D(#124, #125, #126);
-#124 = IFCCARTESIANPOINT((0., 0., 0.));
-#125 = IFCDIRECTION((0., -0., 1.));
-#126 = IFCDIRECTION((1., 0., 0.));
-#127 = IFCCOSINESPIRAL(#128, -2500., 2500.);
-#128 = IFCAXIS2PLACEMENT2D(#129, $);
-#129 = IFCCARTESIANPOINT((0., 0.));
-#130 = IFCAXIS2PLACEMENT3D(#131, #132, #133);
-#131 = IFCCARTESIANPOINT((100., 8.E-2, 0.));
-#132 = IFCDIRECTION((-0., 1.06064981392206E-1, 9.94359200551929E-1));
-~~~
-
-$$D_{1} = \frac{0 + 0}{2} = 0m,\ D_{2} = \frac{0 + 0.16}{2} = 0.08m,\ \mathrm{\Delta}D = 0.08 - 0 = 0.08m$$
-
-$$A_{0} = \frac{({100m)}^{2}}{0 + \frac{1}{2}0.08m} = 250000\ m$$
-
-$$A_{1} = \frac{{(100m)}^{2}}{- \frac{1}{2}0.08m} = -250000\ m$$
-
-$$D(s) = \frac{{(100m)}^{2}}{250000m} + (\frac{({100m)}^{2}}{-250000m})\cos\left( \pi\frac{s}{100} \right)$$
-
-Evaluate
-
-$$D(0m) = \frac{{(100m)}^{2}}{250000m} - \frac{{(100m)}^{2}}{250000m}\cos(0) = 0\ m$$
-
-$$D(50m) = \frac{({100m)}^{2}}{250000m} - \frac{(100m)^{2}}{250000m}\cos\left( \pi\frac{50m}{100m} \right) = 0.04\ m$$
-
-$$D(100m) = \frac{({100m)}^{2}}{250000m} - \frac{(100m)^{2}}{250000m}\cos\left( \pi\frac{100m}{100m} \right) = 0.08\ m$$
+$M_c = \begin{bmatrix}
+1 & 0 & 0 & 50 \\
+0 & 0.9985888041 & 0.0531074357 & 0.04 \\
+0 & -0.05310743572 & 0.998588804 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
 
 ## 4.8 Sine Curve
 
