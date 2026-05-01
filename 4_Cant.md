@@ -488,12 +488,6 @@ Like the Helmert transition spiral, the Helmert cant sementic definition maps to
 
 ### 4.5.1 Parent Curve Parametric Equations
 
-### WORKING HERE - fix Ds and De and DeltaD, use average value - then fix polynomial terms - the mapping from semantic to geometry is correct so just get the D and f terms right###
-**[to do: why aren't these average values? Is there something different about Helmert? - this might be because the f and delta_D terms were off by a factor of 2.]**
-$$D_{s} = D_{sl} + D_{sr},\ D_{e} = D_{el} + D_{er},\ \mathrm{\Delta}D = D_{e} - D_{s}$$
-$$f = \mathrm{\Delta}D$$
-
-
 The deviating elevation and its rate of change are given by the following equations.
 
 $$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
@@ -506,7 +500,7 @@ In the first half of the cant transition
 
 Constant Term:
 
- $a_{01} = 2D_{s}$,
+ $a_{01} = 4D_{s}$,
 $A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|}$
 
 Linear Term: 
@@ -516,24 +510,24 @@ $A_{11} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\frac{a_{11}}{\lef
 
 Quadratic Term:
 
-$a_{21} = 4f$,
+$a_{21} = 8f$,
 $A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|}$
 
 In the second half
 
 Constant Term: 
 
-$a_{02} = -2f + 2D_{s}$,
+$a_{02} = -4f + 4D_{s}$,
 $A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|}$
 
 Linear Term: 
 
-$a_{12} = 8f$,
+$a_{12} = 16f$,
 $A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|}$
 
 Quadratic Term: 
 
-$a_{22} = -4f$,
+$a_{22} = -8f$,
 $A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$
 
 
@@ -553,23 +547,23 @@ $$D_{sl} = 0\ m,\ D_{el} = 0\ m$$
 
 $$D_{sr} = 0.16\ m,\ D_{er} = 0\ m$$
 
-$$D_{s} = 0 + 0.16\ m = 0.16\ m$$
+$$D_{s} = \frac{0 + 0.16\ m}{2} = 0.08\ m$$
 
-$$D_{e} = 0 + 0 = 0.\ m$$
+$$D_{e} = \frac{0 + 0}{2} = 0.\ m$$
 
-$$\Delta D = 0.0 - 0.16 = -0.16\ m$$
+$$\Delta D = 0.0 - 0.08 = -0.08\ m$$
 
-$$f = \Delta D = -0.16\ m$$
+$$f = \Delta D = -0.08\ m$$
 
 First half:
 
-$$a_{01} = 2D_{s} = 0.32\ m$$
+$$a_{01} = 4D_{s} = 4(0.08\ m) = 0.32\ m$$
 
 $$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|} = \frac{(100\ m)^{2}}{|0.32\ m|}\frac{0.32\ m}{|0.32\ m|} = 31250\ m$$
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 4f = 4(-0.16\ m) = -0.64\ m$$
+$$a_{21} = 8f = 8(-0.08\ m) = -0.64\ m$$
 
 $$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100\ m)^\frac{4}{3}}{\sqrt[3]{| - 0.64\ m|}}\frac{-0.64\ m}{|-0.64\ m|} = -538.6086725\ m$$
 
@@ -609,14 +603,14 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 Second half:
 
-$$a_{02} = -2f + 2D_{s} = -2(-0.16\ m) + 2(0.16)\ m = 0.64\ m$$
+$$a_{02} = -4f + 4D_{s} = -4(-0.08\ m) + 4(0.08)\ m = 0.64\ m$$
 
 $$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100\ m)^{2}}{|0.64\ m|}\frac{0.64\ m}{|0.64\ m|} = 15625\ m$$
 
-$$a_{12} = 8f = 8(-0.16\ m) = -1.28\ m$$
+$$a_{12} = 16f = 16(-0.08\ m) = -1.28\ m$$
 $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100\ m)^{\frac{3}{2}}}{\sqrt{|-1.28\ m|}}\frac{-1.28\ m}{|-1.28\ m|} = -883.8834765\ m$$
 
-$$a_{22} = -4f = -4(-0.16\ m) = 0.64\ m$$
+$$a_{22} = -8f = -8(-0.08\ m) = 0.64\ m$$
 
 $$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\frac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$
 
@@ -629,6 +623,8 @@ The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 ~~~
 
 Determine the second half placement and trimming.
+
+**[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve]**
 
 The starting elevation of the second half is the end elevation of the first half
 
@@ -659,153 +655,74 @@ The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the se
 
 ### 4.5.3 Compute Point on Curve
 
+Compute the cant placement matrix for a point 75 m from the start of the curve segment. 
+
 **Step 1 — Evaluate the parent curve at the trim start**
+
+From the parent curve
+
+$s_0 = 0,\ x_0 = 0,\ y(s_0) = 0,\ dx_0 = 1,\ dy_0 = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
+Since $x_0 = 0,\ y(s_0) = 0,\ \theta_0 = 0, M_N = I$
+
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
+$\mathbf{RefDir_p} = (0.9999987200024576,-0.0015999979520039342,0.),\ \mathbf{Axis_p} = (0.,0.053257642916150753,0.99858080467782662)$
+
+$\mathbf{Y_p} = \mathbf{Axis_p} \times \mathbf{RefDir_p} = (0.001597727253, 0.998579530, -0.0532575749)$
+
+$$M_{CSP} = \begin{bmatrix}
+0.999998720 & 0.001597727253 & 0 & 50.0 \\
+-0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
+ 0 & -0.0532575749 & 0.998580805 & 0 \\
+ 0 & 0 & 0 & 1
+ \end{bmatrix}$$
+
 **Step 4 — Evaluate and map each point**
+ 
+A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m - 50\ m = 25\ m$
 
-`IfcSecondOrderPolynomialSpiral`
+$D(25\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(25\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(25\ m) + \frac{1}{15625\ m} \right) = 0.36\ m$
 
-$$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 25 \\
+0 & 1 & 0 & 0.36 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
+$M_c = M_{CSP}M_N M_{PC}$
 
-Business logic to geometry
+$M_c = 
+\begin{bmatrix}
+0.999998720 & 0.001597727253 & 0 & 50.0 \\
+-0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
+ 0 & -0.0532575749 & 0.998580805 & 0 \\
+ 0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix} I \end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 25 \\
+0 & 1 & 0 & 0.36 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+$
 
-$$D_{1} = D_{sl} + D_{sr},\ D_{2} = D_{el} + D_{er},\ \mathrm{\Delta}D = D_{2} - D_{1}$$
+$M_c = \begin{bmatrix}
+0.999999684 & 0.000799928774 & 0 & 75.0 \\
+-0.000795461553 & 0.999910964 & 0.0133204468 & 0.01 \\
+0 & -0.0133203149 & 0.999911281 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$
 
-$$f = \mathrm{\Delta}D$$
+$\mathbf{Axis} = (0.0,\ 0.0133204468,\ 0.999911281)$
 
-The polynomial coefficients must have units of length. The basic form of
-the coefficient of the $i^{th}$ term is
+$\phi(75\ m) = tan^{-1}\left(\frac{0.999911281}{0.0133204468}\right) = 1.557475486$
 
-$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
-
-First half:
-
-$$\frac{D(s)}{\left( \frac{L}{2} \right)^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
-
-Constant Term: $a_{01} = 2D_{1}$,
-$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|}$
-
-Linear Term: $a_{11} = 0$,
-$A_{11} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\frac{a_{11}}{\left| a_{11} \right|}$
-
-Quadratic Term: $a_{21} = 4f$,
-$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|}$
-
-Second Half:
-
-Constant Term: $a_{02} = -2f + 2D_{1}$,
-$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|}$
-
-Linear Term: $a_{12} = 8f$,
-$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|}$
-
-Quadratic Term: $a_{22} = -4f$,
-$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$
-
-Example:
-
-File: GENERATED\_\_CantAlignment_HelmertCurve_100.0_300_1000_1_Meter.ifc
-
-~~~
-#61 = IFCALIGNMENTCANT(1FNFyDAJeHwv87wDZHIYI7, $, $, $, $, #150, $, 1.5);
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0., 1.6E-1, .HELMERTCURVE.);
-#120 = IFCSEGMENTEDREFERENCECURVE((#121, #138), .F., #97, #146);
-#121 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #131, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(50.), #135);
-#131 = IFCAXIS2PLACEMENT3D(#132, #133, #134);
-#132 = IFCCARTESIANPOINT((0., 8.E-2, 0.));
-#133 = IFCDIRECTION((-0., 1.06064981392206E-1, 9.94359200551929E-1));
-#134 = IFCDIRECTION((1., 0., 0.));
-#135 = IFCSECONDORDERPOLYNOMIALSPIRAL(#136, -146.200886910643, $, 625.);
-#136 = IFCAXIS2PLACEMENT2D(#137, $);
-#137 = IFCCARTESIANPOINT((0., 0.));
-#138 = IFCCURVESEGMENT(.CONTINUOUS., #139, IFCLENGTHMEASURE(50.), IFCLENGTHMEASURE(50.), #143);
-#139 = IFCAXIS2PLACEMENT3D(#140, #141, #142);
-#140 = IFCCARTESIANPOINT((50., 4.E-2, 0.));
-#141 = IFCDIRECTION((-2.52784639988507E-4, -1.57990298878961E-1, 9.87440631916706E-1));
-#142 = IFCDIRECTION((9.99998720000819E-1, -1.59999897600066E-3, 0.));
-#143 = IFCSECONDORDERPOLYNOMIALSPIRAL(#144, 146.200886910643, -125., 312.5);
-#144 = IFCAXIS2PLACEMENT2D(#145, $);
-#145 = IFCCARTESIANPOINT((0., 0.));
-#146 = IFCAXIS2PLACEMENT3D(#147, #148, #149);
-#147 = IFCCARTESIANPOINT((100., 0., 0.));
-#148 = IFCDIRECTION((0., -0., 1.));
-#149 = IFCDIRECTION((1., 0., 0.));
-#150 = IFCLOCALPLACEMENT($, #151);
-#151 = IFCAXIS2PLACEMENT3D(#152, $, $);
-#152 = IFCCARTESIANPOINT((0., 0., 0.));
-~~~
-
-$$L = 100m$$
-
-$$D_{sl} = 0m,\ D_{el} = 0m$$
-
-$$D_{sr} = 0.16m,\ D_{er} = 0m$$
-
-$$D_{1} = 0 + 0.16m = 0.16m$$
-
-$$D_{2} = 0 + 0 = 0.m$$
-
-$$\Delta D = 0.0 - 0.16 = -0.16m$$
-
-$$f = \Delta D = -0.16m$$
-
-First half:
-
-$$a_{01} = 2D_{1} = 0.32m$$
-
-$$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|} = \frac{(100m)^{2}}{|0.32m|}\frac{0.32m}{|0.32m|} = 31250m$$
-
-$$a_{11} = 0,\ A_{11} = 0$$
-
-$$a_{21} = 4f = 4(-0.64m) = -0.64m$$
-
-$$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100m)^{4\text{/}3}}{\sqrt[3]{| - 0.64m|}}\frac{-0.64m}{|-0.64m|} = -538.6086725m$$
-
-$$D(0m) = (50m)^{2}\left( \frac{1}{31250m} + \frac{1}{(-538.6086725m)^{3}}(0m)^{2} \right) = 0.08m$$
-
-$$D(50m) = (50m)^{2}\left( \frac{1}{31250m} + \frac{1}{(-538.6086725m)^{3}}(50m)^{2} \right) = 0.04m$$
-
-Placement Y = 0.08
-
-Change in cant = $D(50) - D(0) = 0.04 - 0.08= -0.04$
-
-$$Y = 0.08 - 0.04 = 0.04$$
-
-$$slope = (50m)^{2}\frac{(2)(50m)}{(-538.6086725m)^{3}} = -0.0016$$
-
-$$dx = cos(\tan^{-1}{-0.0016)) = 0.99999872}$$
-
-$$dy = \sin\left( \tan^{-1}(-0.0016) \right) = -0.0015999795$$
-
-Second Half:
-
-$$a_{02} = -f + D_{1} = -(-0.16m) + 0.16m = 0.32m$$
-
-$$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100m)^{2}}{|0.32m|}\frac{0.32m}{|0.32m|} = 31250m$$
-
-$$a_{12} = 4f = 4(-0.16m) = -0.64m$$
-
-$$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100m)^{\frac{3}{2}}}{\sqrt{|-0.64m|}}\frac{-0.64m}{|-0.64m|} = -1250m$$
-
-$$a_{22} = -2f = -2(-0.16m) = 0.32m$$
-
-$$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|} = \frac{(100m)^{\frac{4}{3}}}{\sqrt[3]{|0.32m|}}\frac{0.32m}{|0.32m|} = 678.6044041m$$
-
-$$slope = (100m)^{2}\left( \frac{(2)(50m)}{(678.6044041m)^{3}} + \frac{-1250m}{|(-1250m)^{3}|} \right) = -0.0032$$
-
-$$dx = cos(\tan^{-1}{(-0.0032)) = 0.99999488}$$
-
-$$dy = \sin\left( \tan^{-1}(-0.0032) \right) = -0.0031999836$$
-
-$$D(50m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(50m)^{2} + \frac{-1250m}{\left| (-1250m)^{3} \right|}(50m) + \frac{1}{31250m} \right) = 0.02m$$
-
-$$D(100m) = (50m)^{2}\left( \frac{1}{(678.6044041m)^{3}}(100m)^{2} + \frac{-1250m}{\left| (-1250m)^{3} \right|}(100m) + \frac{1}{31250m} \right) = 0.0m$$
+The $\mathbf{Axis}$ vector is closer to vertical 75% way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.
 
 ## 4.6 Bloss Curve
 
