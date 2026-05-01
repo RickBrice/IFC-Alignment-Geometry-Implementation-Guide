@@ -501,7 +501,7 @@ can be either <code>IfcParameterValue</code> (a dimensionless scalar based on un
 geometric definition is described with the following example.</p>
 <p>Given a horizontal alignment segment is a line segment starting at point
 (500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654.</p>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/tangent_segment.svg" alt="Tangent Segment" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/tangent_segment.svg" alt="" /></p>
 <p><em>Figure 2.3.2-1 Tangent segment</em></p>
 <p>This semantic definition of this segment is:</p>
 <pre><code>#31=IFCCARTESIANPOINT((500.,2500.));
@@ -510,13 +510,12 @@ geometric definition is described with the following example.</p>
 <p>The geometric representation is an <code>IfcLine</code>. The line can be defined in
 different ways and is generally not important, as will be shown in the
 example below. <code>IfcLine</code> is an infinitely long line that passes through a
-specified point at some direction in the X-Y plane. For example, a line passing through (1000, −100) at a bearing of 175° from the x-axis:</p>
-<p>[todo: replace this figure with one with a segment length of 1956.786 at an angle of 175 deg - claude is working on this but it needs to be resumed around 5pm]</p>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2.3_IfcLine_arbitrary_placement.svg" alt="IfcLine at arbitrary placement" /></p>
+specified point at some direction in the X-Y plane. A valid, but unnecessisarly complex parent curve is show in Figure 2.3.2.2-1. The <code>IfcLine</code> passes through poin t(1000,-800) and is direct at 135° from the x-axis. The <code>IfcCurveSegment</code> trim starts 10 m from (1000,-800) and the trimmed segment has a lenght of 1956.796 m.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2.3_IfcLine_arbitrary_placement.svg" alt="" /></p>
 <p><em>Figure 2.3.2-2 IfcLine at arbitrary placement</em></p>
-<p>An easy way to define the <code>IfcLine</code> parent curve is to have it the X-axis direction
-passing through point (0,0).</p>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifcline_parent_curve.svg" alt="Tangent Segment" /></p>
+<p>Figure 2.3.2-1 represents a valid parent curve defiition and implementations must be prepared to properly interpret this geometry. This guide defines general algorithms to accomodate this geometry.</p>
+<p>In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifcline_parent_curve.svg" alt="" /></p>
 <p><em>Figure 2.3.2-3 IfcLine parent curve at origin</em></p>
 <p>The parent curve definition is:</p>
 <pre><code>#51=IFCCARTESIANPOINT((0.,0.));
@@ -2201,19 +2200,18 @@ $y = d = 0.08$</p>
 <p>$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$</p>
 <p>$y'(0) = D'(0) = 0,\ \theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
-<p>$M_N = \begin{bmatrix}
-\cos\theta_0 &amp; \sin\theta_0 &amp; 0 &amp; -d_0\cos\theta_0 - z_0\sin\theta_0 \
--\sin\theta_0 &amp; \cos\theta_0 &amp; 0 &amp; -d_0\sin\theta_0 - z_0\cos\theta_0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
-<p>$M_N = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}
-$</p>
+<p>$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
+<p>$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
 <p>$\mathbf{RefDir}_p = (0.9999996800,-0.0007999997,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871, 0.9943588828, -0.1060649471)$</p>
@@ -2230,39 +2228,39 @@ $</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
 <p>$D(50\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(50\ m) \right) = 0.04\ m$</p>
-<p>$M_{PC} = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
-<p>$M_c =
+<p>$$M_c = 
 \begin{bmatrix}
-0.999999680000 &amp; 0.0007988711 &amp; 0.0000424859 &amp; 0 \
--0.000800000085 &amp; 0.9985884845 &amp; 0.053107402 &amp; 0.08 \
-0 &amp; -0.053107419 &amp; 0.9985882289 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+0.999999680000 & 0.0007988711 & 0.0000424859 & 0 \\
+-0.000800000085 & 0.9985884845 & 0.053107402 & 0.08 \\
+0 & -0.053107419 & 0.9985882289 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
-$</p>
-<p>$M_c = \begin{bmatrix}
-0.9999996836000798 &amp; 0.0007955209455802008 &amp; 0.0 &amp; 50.0 \
--0.0007909999255054242 &amp; 0.9985884897861665 &amp; 0.05310743567896648 &amp; 0.04 \
-0.0 &amp; -0.05310740211832019 &amp; 0.9985888044014736 &amp; 0.0 \
-0.0 &amp; 0.0 &amp; 0.0 &amp; 1.0
-\end{bmatrix}$</p>
+$$</p>
+<p>$$M_c = \begin{bmatrix}
+0.9999996836000798 & 0.0007955209455802008 & 0.0 & 50.0 \\
+-0.0007909999255054242 & 0.9985884897861665 & 0.05310743567896648 & 0.04 \\
+0.0 & -0.05310740211832019 & 0.9985888044014736 & 0.0 \\
+0.0 & 0.0 & 0.0 & 1.0
+\end{bmatrix}$$</p>
 <p>$\mathbf{\text{Axis}} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$</p>
 <p>$\phi(50\ m) = tan^{-1}\left(\frac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$</p>
 <p>The $\mathbf{\text{Axis}}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.</p>
@@ -2375,20 +2373,19 @@ $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\le
 <p>$cos \theta_0 = cos(-0.006399913) = 0.999979521$</p>
 <p>$sin \theta_0 = sin(-0.006399913) = -0.006399869$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
-<p>$M_N = \begin{bmatrix}
-\cos\theta_0 &amp; \sin\theta_0 &amp; 0 &amp; -d_0\cos\theta_0 - z_0\sin\theta_0 \
--\sin\theta_0 &amp; \cos\theta_0 &amp; 0 &amp; -d_0\sin\theta_0 - z_0\cos\theta_0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>[todo - look at this carefully, the MN matrix doesn't look right - this will trickle down through all the calcs]</strong></p>
-<p>$M_N = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}
-$</p>
+<p>$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
 <p>$\mathbf{RefDir_p} = (0.9999987200024576,-0.0015999979520039342,0.),\ \mathbf{Axis_p} = (0.,0.053257642916150753,0.99858080467782662)$</p>
 <p>$\mathbf{Y_p} = \mathbf{Axis_p} \times \mathbf{RefDir_p} = (0.001597727253, 0.998579530, -0.0532575749)$</p>
@@ -2401,37 +2398,37 @@ $</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m - 50\ m = 25\ m$</p>
 <p>$D(25\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(25\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(25\ m) + \frac{1}{15625\ m} \right) = 0.36\ m$</p>
-<p>$M_{PC} = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 25 \
-0 &amp; 1 &amp; 0 &amp; 0.36 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 25 \\
+0 & 1 & 0 & 0.36 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
-<p>$M_c =
+<p>$$M_c = 
 \begin{bmatrix}
-0.999998720 &amp; 0.001597727253 &amp; 0 &amp; 50.0 \
--0.001599997953 &amp; 0.998579530 &amp; 0.0532576429 &amp; 0.04 \
-0 &amp; -0.0532575749 &amp; 0.998580805 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+0.999998720 & 0.001597727253 & 0 & 50.0 \\
+-0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
+ 0 & -0.0532575749 & 0.998580805 & 0 \\
+ 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-I = NOT\ CORRECT
+ I = NOT\ CORRECT
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 25 \
-0 &amp; 1 &amp; 0 &amp; 0.36 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 25 \\
+0 & 1 & 0 & 0.36 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
 \end{bmatrix}
-$</p>
+$$</p>
 <p><strong>[todo - verify matrix multiplication - final result is correct from IfcOpenShell]</strong></p>
-<p>$M_c = \begin{bmatrix}
-0.999999684 &amp; 0.000799928774 &amp; 0 &amp; 75.0 \
--0.000795461553 &amp; 0.999910964 &amp; 0.0133204468 &amp; 0.01 \
-0 &amp; -0.0133203149 &amp; 0.999911281 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_c = \begin{bmatrix}
+0.999999684 & 0.000799928774 & 0 & 75.0 \\
+-0.000795461553 & 0.999910964 & 0.0133204468 & 0.01 \\
+0 & -0.0133203149 & 0.999911281 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p>$\mathbf{Axis} = (0.0,\ 0.0133204468,\ 0.999911281)$</p>
 <p>$\phi(75\ m) = tan^{-1}\left(\frac{0.999911281}{0.0133204468}\right) = 1.557475486$</p>
 <p>The $\mathbf{Axis}$ vector is closer to vertical 75% way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.</p>
@@ -2495,19 +2492,18 @@ $y = d = 0.08\ m$</p>
 <p>$y(s_0) = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$</p>
 <p>$y'(0) = D'(0) = 0,\ \theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
-<p>$M_N = \begin{bmatrix}
-\cos\theta_0 &amp; \sin\theta_0 &amp; 0 &amp; -d_0\cos\theta_0 - z_0\sin\theta_0 \
--\sin\theta_0 &amp; \cos\theta_0 &amp; 0 &amp; -d_0\sin\theta_0 - z_0\cos\theta_0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
-<p>$M_N = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}
-$</p>
+<p>$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
+<p>$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
 <p>$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$</p>
@@ -2524,39 +2520,39 @@ $</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
 <p>$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$</p>
-<p>$M_{PC} = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
-<p>$M_c =
+<p>$$M_c = 
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 0.9943592 &amp; 0.106064981 &amp; 0.08 \
-0 &amp; -0.10606498 &amp; 0.9943592 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
-$</p>
-<p>$M_c = \begin{bmatrix}
-0.999999280 &amp; 0.00119830570 &amp; 0.0 &amp; 50.0 \
--0.00119999914 &amp; 0.998588085 &amp; 0.0531073592 &amp; 0.04 \
-0 &amp; 0 &amp; 0.9985888041 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+$$</p>
+<p>$$M_c = \begin{bmatrix}
+0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
+-0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
+0 & 0 & 0.9985888041 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <h2>4.7 Cosine Curve</h2>
 <p>A Cosine transition in cant is represented with an <code>IfcCosineSpiral</code>.</p>
 <h3>4.7.1 Parent Curve Parametric Equations</h3>
@@ -2607,19 +2603,18 @@ $y = d = 0.08\ m$</p>
 <p>$y'(0) = D'(0) = (100\ m)^{2}\left( -\frac{\pi}{100\ m}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$</p>
 <p>$\theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
-<p>$M_N = \begin{bmatrix}
-\cos\theta_0 &amp; \sin\theta_0 &amp; 0 &amp; -d_0\cos\theta_0 - z_0\sin\theta_0 \
--\sin\theta_0 &amp; \cos\theta_0 &amp; 0 &amp; -d_0\sin\theta_0 - z_0\cos\theta_0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
-<p>$M_N = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}
-$</p>
+<p>$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
+<p>$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
 <p>$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$</p>
@@ -2636,39 +2631,39 @@ $</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
 <p>$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$</p>
-<p>$M_{PC} = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
-<p>$M_c =
+<p>$$M_c = 
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 0.9943592 &amp; 0.106064981 &amp; 0.08 \
-0 &amp; -0.10606498 &amp; 0.9943592 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
-$</p>
-<p>$M_c = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 0.9985888041 &amp; 0.0531074357 &amp; 0.04 \
-0 &amp; -0.05310743572 &amp; 0.998588804 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+$$</p>
+<p>$$M_c = \begin{bmatrix}
+1 & 0 & 0 & 50 \\
+0 & 0.9985888041 & 0.0531074357 & 0.04 \\
+0 & -0.05310743572 & 0.998588804 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>[todo - check the matrix multiplication the Y and Z columns can]</strong></p>
 <h2>4.8 Sine Curve</h2>
 <p>A Sine transition in cant is represented with an <code>IfcSineSpiral</code></p>
@@ -2723,19 +2718,18 @@ $y = d = 0.08\ m$</p>
 <p>$y'(0) = D'(0) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$</p>
 <p>$\theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
-<p>$M_N = \begin{bmatrix}
-\cos\theta_0 &amp; \sin\theta_0 &amp; 0 &amp; -d_0\cos\theta_0 - z_0\sin\theta_0 \
--\sin\theta_0 &amp; \cos\theta_0 &amp; 0 &amp; -d_0\sin\theta_0 - z_0\cos\theta_0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
-<p>$M_N = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}
-$</p>
+<p>$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
+<p>$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
 <p>$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$</p>
@@ -2752,39 +2746,39 @@ $</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
 <p>$D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$</p>
-<p>$M_{PC} = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
-<p>$M_c =
+<p>$$M_c = 
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 0.9943592 &amp; 0.106064981 &amp; 0.08 \
-0 &amp; -0.10606498 &amp; 0.9943592 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.08 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.04 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.04 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
-$</p>
-<p>$M_c = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 0.9985888041 &amp; 0.0531074357 &amp; 0.04 \
-0 &amp; -0.05310743572 &amp; 0.998588804 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+$$</p>
+<p>$$M_c = \begin{bmatrix}
+1 & 0 & 0 & 50 \\
+0 & 0.9985888041 & 0.0531074357 & 0.04 \\
+0 & -0.05310743572 & 0.998588804 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>[todo - check the matrix multiplication the Y and Z columns can]</strong></p>
 <h2>4.9 Viennese Bend</h2>
 <p>A Viennese Bend transition in cant is represented with an <code>IfcSeventhOrderPolynomialSpiral</code>.</p>
@@ -2868,19 +2862,18 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 <p>$y(s_0) = D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{20000\ m}\right) = 0.5\ m$</p>
 <p>$y'(0) = D'(0) = 0,\ \theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
-<p>$M_N = \begin{bmatrix}
-\cos\theta_0 &amp; \sin\theta_0 &amp; 0 &amp; -d_0\cos\theta_0 - z_0\sin\theta_0 \
--\sin\theta_0 &amp; \cos\theta_0 &amp; 0 &amp; -d_0\sin\theta_0 - z_0\cos\theta_0 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
-<p>$M_N = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.5 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}
-$</p>
+<p>$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
+<p>$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.5 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
 <p>$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.06651901,0.99778516)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.99778516, -0.06651901)$</p>
@@ -2893,39 +2886,39 @@ $</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
 <p>$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.4825\ m$</p>
-<p>$M_{PC} = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.4825 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+<p>$$M_{PC} = \begin{bmatrix} 
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.4825 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
-<p>$M_c =
+<p>$$M_c = 
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 0.99778516 &amp; 0.06651901 &amp; 0.05 \
-0 &amp; -0.06651901 &amp; 0.99778516 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 0.99778516 & 0.06651901 & 0.05 \\
+0 & -0.06651901 & 0.99778516 & 0 \\
+0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 0 \
-0 &amp; 1 &amp; 0 &amp; -0.5 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.5 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50 \
-0 &amp; 1 &amp; 0 &amp; 0.4825 \
-0 &amp; 0 &amp; 1 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
+1 & 0 & 0 & 50 \\
+0 & 1 & 0 & 0.4825 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 
 \end{bmatrix}
-$</p>
-<p>$M_c = \begin{bmatrix}
-1 &amp; 0 &amp; 0 &amp; 50.0 \
-0 &amp; 0.999445843 &amp; 0.0332779172 &amp; 0.0325 \
-0 &amp; -0.0332779270 &amp; 0.999446136 &amp; 0 \
-0 &amp; 0 &amp; 0 &amp; 1
-\end{bmatrix}$</p>
+$$</p>
+<p>$$M_c = \begin{bmatrix}
+1 & 0 & 0 & 50.0 \\
+0 & 0.999445843 & 0.0332779172 & 0.0325 \\
+0 & -0.0332779270 & 0.999446136 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$</p>
 <h2>4.10 Combined 3D</h2>
 <p><strong>[do a full cant example]</strong></p>
 <h2>4.11 Deviation from EnrichIfc4x3 Reference Implementation</h2>
@@ -3001,7 +2994,7 @@ units of length and are represented by <code>IfcLengthMeasure</code>.</p>
 <p>$D(s)= L^2\left( \frac{A_3}{|A_3^5|}s^3 + \frac{1}{A_2^3}s^2\right)$</p>
 <p>Notice that the first term is $L^2$, not $L$ as in the reference implementation.</p>
 <p>$D(50\ m) = (100\ m)^2\left( \frac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \frac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$</p>
-<p>Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and visa-versa. Table 4.10-2 compares the results for all the combinations of the sematic to geometry mapping and deviation elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect by a factor of 100 or 1/100.</p>
+<p>Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and visa-versa. Table 4.10-2 compares the results for all the combinations of the sematic to geometry mapping and deviation elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect proportional (or inversely proportional) to the length of the segment (100 or 1/100 in this example).</p>
 <table>
 <thead>
 <tr>

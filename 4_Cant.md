@@ -219,10 +219,10 @@ The parent curve has a constant elevation at $0.08\ m$ and a slope of $0.0$.
 Define the parent curve as an `IfcLine` passing through (0,0.08) in the direction (1,0).
 
 ~~~
-#123 = IFCLINE(#124, #125);
-#124 = IFCCARTESIANPOINT((0., 0.08));
-#125 = IFCVECTOR(#126, 1.);
-#126 = IFCDIRECTION((1., 0.));
+#96=IFCCARTESIANPOINT((0.,0.));
+#97=IFCDIRECTION((1.,0.));
+#98=IFCVECTOR(#97,1.);
+#99=IFCLINE(#96,#98);
 ~~~
 
 The `IfcCurveSegment` trims a segment from the parent curve. The curve segment placement must capture the cross-slope rotation between the rail heads. For this reason the placement is an `IfcAxis2Placement3D` (instead of `IfcAxis2Placement2D` used for horizontal and vertical representations).
@@ -236,11 +236,11 @@ $dz_y = sin\phi = sin(0.05328285) = 0.0532576$
 $dz_z = cos\phi = cos(0.05328285) = 0.9985808$
 
 ~~~
-#113 = IFCCURVESEGMENT(.CONTINUOUS., #119, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #123);
-#119 = IFCAXIS2PLACEMENT3D(#120, #121, #122);
-#120 = IFCCARTESIANPOINT((0., 0.08, 0.));
-#121 = IFCDIRECTION((0.,  0.0532576, 0.9985808));
-#122 = IFCDIRECTION((1., 0., 0.));
+#100=IFCCARTESIANPOINT((0.,0.080000000000000002,0.));
+#101=IFCDIRECTION((0.,0.10606498139220574,0.99435920055192883));
+#102=IFCDIRECTION((1.,0.,0.));
+#103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
+#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 ### 4.3.2 Compute Point on Curve
@@ -291,6 +291,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0.0532576 & 0.9985808 & 0.08 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
+
+Apply the normalization and placement in sequence:
 
 $$M_c = M_{CSP}\, M_N\, M_{PC}$$
 
@@ -469,6 +471,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
+Apply the normalization and placement in sequence:
+
 $M_c = M_{CSP}M_N M_{PC}$
 
 $$M_c = 
@@ -558,7 +562,7 @@ $A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\
 
 ### 4.5.2 Semantic Definition to Geometry Mapping
 
-Consider an alignment segment that has a Helmert transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
+Consider an alignment segment that has a Helmert transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
 
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.HELMERTCURVE.);
@@ -741,6 +745,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
+Apply the normalization and placement in sequence:
+
 $M_c = M_{CSP}M_N M_{PC}$
 
 $$M_c = 
@@ -806,7 +812,7 @@ $a_{3} = -2f\ A_{3} = \frac{{L}^{\frac{5}{4}}}{\sqrt[4]{|a_3|}}\frac{a_3}{|a_3|}
 
 ### 4.6.2 Semantic Definition to Geometry Mapping
 
-Consider an alignment segment that has a Bloss transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
+Consider an alignment segment that has a Bloss transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
 
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.BLOSSCURVE.);
@@ -936,6 +942,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
+Apply the normalization and placement in sequence:
+
 $M_c = M_{CSP}M_N M_{PC}$
 
 $$M_c = 
@@ -989,7 +997,7 @@ $A_{1} = \frac{L^{2}}{-\frac{1}{2}\mathrm{\Delta}D}$
 
 ### 4.7.2 Semantic Definition to Geometry Mapping
 
-Consider and alignment segment that has a Cosine transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
+Consider and alignment segment that has a Cosine transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
 
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.COSINECURVE.);
@@ -1107,6 +1115,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
+Apply the normalization and placement in sequence:
+
 $M_c = M_{CSP}M_N M_{PC}$
 
 $$M_c = 
@@ -1159,7 +1169,7 @@ Sine term: $A_{2} = \frac{L^{2}}{- \frac{1}{2\pi}\mathrm{\Delta}D}$
 
 ### 4.8.2 Semantic Definition to Geometry Mapping
 
-Consider an alignment segment that has a Sine transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.
+Consider an alignment segment that has a Sine transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
 
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.SINECURVE.);
@@ -1281,6 +1291,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
+
+Apply the normalization and placement in sequence:
 
 $M_c = M_{CSP}M_N M_{PC}$
 
@@ -1508,6 +1520,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
+
+Apply the normalization and placement in sequence:
 
 $M_c = M_{CSP}M_N M_{PC}$
 
