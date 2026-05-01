@@ -66,44 +66,48 @@ In IFC, the semantic cant profile is encoded in `IfcAlignmentCant` and its child
 
 [todo: add a figure to illustrate the cross slope and centerline elevation deviation] 
 
-Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-dimensional coordinate system whose axes are *distance along the horizontal alignment* $d$ and *deviating elevation* $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.
+Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-dimensional coordinate system whose axes are *distance along the horizontal alignment* $s$ and *deviating elevation* $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.
 
 The `StartCantLeft` $D_{sl}$, `EndCantLeft` $D_{el}$, `StartCantRight` $D_{sr}$, and `EndCantRight` $D_{el}$ attributes of `IfcAlignmentCantSegment` determine $D_s$ and $D_e$ as the averages of their respective left and right values:
 
-$$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2}$$
+$$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2} \quad \Delta D = D_e - D_s$$
 
-The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the `Axis` vectors of the `IfcCurveSegment.Placement`, using the deviating elevation as the interpolation parameter:
+The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the `Axis` vector of the `IfcCurveSegment.Placement`, using the deviating elevation as the interpolation parameter:
 
 $$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(s) - D_s\bigr)$$
+
+$$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
 
 where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D_s$ and $D_e$ are the corresponding deviating elevations. $\Delta D = D_e - D_s$, and $D(s)$ is the deviation elevation at $s$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \frac{\pi}{2}$.
 
 Together, the distance along, the deviating elevation $D(s)$, and the cross-slope angle $\phi(s)$ fully specify a 3D placement frame for the track centerline at each arc-length $s$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.
 
+All examples use a railhead distance $D_{rh} = 1.5\ m$.
+
 ## 4.2 Curve Segment Evaluation Algorithm
 
-Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" coordinate system in which $x(s) = d$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s) = D(s)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi$, making the local frame inherently three-dimensional.
+Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" $(s,D(s))$ coordinate system in which $d$ is the distance measured along the horizontal `IfcCompositeCurve` and $D(s)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.
 
 **Steps 1—4** follow the identical procedure describe in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and deviating elevation for the horizontal y-coordinate. Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
-Compute the deviating elevation $z_0 = D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$. $d_0 = x(s_0)$ is the distance along the parent curve at the trim start.
+Compute the deviating elevation $z_0 = D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$.
 
 **Step 2 — Form the normalization matrix $M_N$**
 
 $M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
-$M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(d_p, D_p)$ is the `Location` (distance along, deviating elevation), the `RefDirection` gives slope angle $\theta_p$, and the `Axis` gives cross slope angle $\phi_p$.
+$M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation), the `RefDirection` gives slope angle $\theta_p$, and the `Axis` gives cross slope angle $\phi_p$.
 
 $$\mathbf{RefDir}_p = (\cos\theta_p,\ \sin\theta_p,\ 0),\quad \mathbf{Axis}_p = (0,\ \cos\phi_p,\ \sin\phi_p)$$
 $$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p$$
@@ -111,7 +115,7 @@ $$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \
 The placement in matrix form is
 
 $$M_{CSP} = \begin{bmatrix} 
-X_p.x & Y_p.x & Axis_p.x & d_p \\
+X_p.x & Y_p.x & Axis_p.x & s_p \\
 X_p.y & Y_p.y & Axis_p.y & 0 \\
 X_p.z & Y_p.z & Axis_p.z & D_p \\
 0 & 0 & 0 & 1 
@@ -126,12 +130,12 @@ $$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)(D(s) - D_s)$$
 Form the local frame:
 
 $$\mathbf{X} = (\cos\theta(s),\ \sin\theta(s),\ 0),\quad \mathbf{Z} = (0,\ \cos\phi,\ \sin\phi)$$
-$$\mathbf{Y} = \mathbf{Z} \times \mathbf{X},\quad \mathbf{Axis} = \mathbf{X} \times \mathbf{Y}$$
+$$\mathbf{Y} = \mathbf{Z} \times \mathbf{X}$$
 
 $$M_{PC} = \begin{bmatrix}
-X.x & Y.x & Axis.x & d \\
-X.y & Y.y & Axis.y & 0 \\
-X.z & Y.z & Axis.z & D(s) \\
+X.x & Y.x & Z.x & d \\
+X.y & Y.y & Z.y & 0 \\
+X.z & Y.z & Z.z & D(s) \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -141,7 +145,7 @@ Apply the normalization and placement in sequence:
 
 $$M_c = M_{CSP}\ M_N\ M_{PC}$$
 
-Column 4 of $M_c$ is $(d,\ 0,\ D)$ — the distance along and deviating elevation. Column 3 (Axis) is the cross-slope direction at that point. Step 5 is performed immediately for this point before moving to the next arc-length $s$.
+Column 4 of $M_c$ is $(s,\ 0,\ D(s))$ — the distance along and deviating elevation. Column 3 (Axis) is the cross-slope direction at that point. Step 5 is performed immediately for this point before moving to the next arc-length $s$.
 
 **Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
 
@@ -152,9 +156,9 @@ Construct $M'_v$ as described in Section 3.2.
 Construct $M'_c$ by zeroing the distance-along component in column 4 of $M_c$:
 
 $${M'}_c = \begin{bmatrix} 
-X.x & Y.x & Axis.x & 0 \\ 
-X.y & Y.y & Axis.y & 0 \\ 
-X.z & Y.z & Axis.z & D \\ 
+X.x & Y.x & Z.x & 0 \\ 
+X.y & Y.y & Z.y & 0 \\ 
+X.z & Y.z & Z.z & D \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -163,6 +167,8 @@ Extract position vectors from each modified matrix (setting row 4 to zero), then
 $$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ z \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ D \\ 0 \end{bmatrix}$$
 
 $$M''_v = M'_v \text{ with column 4 set to } (0,0,0,1)^T, \qquad M''_c = M'_c \text{ with column 4 set to } (0,0,0,1)^T$$
+
+**[todo: show the full $M''_v$ and $M''_c$ matrices]**
 
 Multiply the three orientation matrices, then add back both position offsets:
 
@@ -207,14 +213,14 @@ $$\frac{d}{ds}D(s) = 0.0$$
 Consider 100 m long segment of a railway that is turning towards the left. The right rail is raised 0.16 m through the circular portion of the curve. The sementic definition is
 
 ~~~
-#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 1.6E-1, 1.6E-1, .CONSTANTCANT.);
+#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0.16, 0.16, .CONSTANTCANT.);
 ~~~
 
 $D_s = \frac{0.0\ m + 0.16\ m}{2} = 0.08\ m \quad D_e = \frac{0.0\ m + 0.16\ m}{2} = 0.08\ m$
 
 $\Delta D = D_e - D_s = 0.08\ m - 0.08\ m = 0.0\ m$
 
-The parent curve has a constant elevation at $0.08\ m$ and a slope of $0.0$.
+The parent curve has a constant deviating elevation at $0.08\ m$ and a slope of $0.0$.
 
 Define the parent curve as an `IfcLine` passing through (0,0.08) in the direction (1,0).
 
@@ -424,8 +430,8 @@ $y'(0) = D'(0) = 0,\ \theta_0 = 0$
 **Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -704,8 +710,8 @@ $sin \theta_0 = sin(-0.006399913) = -0.006399869$
 **Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -895,8 +901,8 @@ $y'(0) = D'(0) = 0,\ \theta_0 = 0$
 **Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1068,8 +1074,8 @@ $\theta_0 = 0$
 **Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1245,8 +1251,8 @@ $\theta_0 = 0$
 **Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1481,8 +1487,8 @@ $y'(0) = D'(0) = 0,\ \theta_0 = 0$
 **Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
