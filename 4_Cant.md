@@ -1308,9 +1308,9 @@ $$M_{CSP} = \begin{bmatrix}
 
 Evaluate the parent curve at $s = 50\ m$
 
-$D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$
+$D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{785398.1634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$
 
-$$D'(50\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{50\ m}{100\ m} \right) \right) = -0.0016$$
+$$D'(50\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\frac{50\ m}{100\ m} \right) \right) = -0.0016$$
 
 $$M_{PC} = \begin{bmatrix} 
 0.99999872 & 0.001599998 & 0 & 50 \\
