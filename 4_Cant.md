@@ -1000,15 +1000,21 @@ The deviating elevation and its rate of change are given by the following equati
 
 $\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L} \right)$
 
-$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{L}\sin\left( \pi\frac{s}{L} \right) \right)$
+$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{A_1 L}\sin\left( \pi\frac{s}{L} \right) \right)$
+
+$f = \Delta D$
 
 Constant term,
 
-$A_{0} = \frac{L^{2}}{D_{s} + \frac{1}{2}\mathrm{\Delta}D}$
+$a_0 = D_s + \frac{f}{2}$
+
+$A_0 = L^{2}\frac{1}{a_0}\frac{a_0}{|a_0|}$
 
 Cosine term, 
 
-$A_{1} = \frac{L^{2}}{-\frac{1}{2}\mathrm{\Delta}D}$
+$a_1 = -\frac{1}{2} f$
+
+$A_1 = L^{2}\frac{1}{a_1}\frac{a_1}{|a_1|}$
 
 ### 4.7.2 Semantic Definition to Geometry Mapping
 
@@ -1022,9 +1028,13 @@ Compute the parent curve parameters
 
 $D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
 
-$A_{0} = \frac{({100\ m)}^{2}}{0.08\ m + \frac{1}{2}(-0.08\ m)} = 250000\ m$
+$a_0 = 0.08\ m + \frac{-0.08\ m}{2} = 0.04$
 
-$A_{1} = \frac{{(100\ m)}^{2}}{-\frac{1}{2}(-0.08\ m)} = 250000\ m$
+$A_0 = (100\ m)^{2} \frac{1}{0.04\ m}\frac{0.04\ m}{|0.04\ m|} = 250000\ m$
+
+$a_1 = -\frac{1}{2}(-0.08\ m) = -0.04\ m$
+
+$A_1 = (100\ m)^2\frac{1}{-0.04\ m}\frac{-0.04\ m}{|-0.04\ m|} = 250000\ m$
 
 The parent curve is
 
@@ -1035,16 +1045,11 @@ The parent curve is
 #99=IFCCOSINESPIRAL(#98,250000.,250000.);
 ~~~
 
-The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08\ m$
+$$D(0\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
 
-The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
+$$ D'(0\ m) = (100\ m)^{2}\left( -\frac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$$
 
-$\theta = tan^{-1}(-0.0008) = -0.0007999998$
-
-$dx_x = cos(-0.0007999998) = 0.9999996800$
-
-$dy_x = sin(-0.0007999998) = -0.0007999997$
+$\theta_0 = 0,\ dx_x = 1,\ dy_x = 0$
 
 The cross-slope at the start of the segment is
 
@@ -1072,11 +1077,11 @@ Compute the cant placement matrix for a point 50 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 0,\ x(s_0) = 0$
+$s_0 = 0$
 
-$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$
+$D(0\ m) = 0.08\ m$
 
-$y'(0) = D'(0) = (100\ m)^{2}\left( -\frac{\pi}{100\ m}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$
+$D'(0\ m) = 0$
 
 $\theta_0 = 0$
 
@@ -1109,23 +1114,23 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
-
-$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$
-
-$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$
-
-With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
-
 **Step 4 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
-$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$
+$$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$$
+
+$$D'(50\ m) = (100\ m)^{2}\left( -\frac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\frac{50\ m}{100\ m} \right) \right) = -0.00125664$$
+
+$\theta = tan^{-1}(-0.00125664) = -0.001256636$
+
+$dx_x = cos(\theta) = 0.99999921$
+
+$dx_y = sin(\theta) = -0.001256636$
 
 $$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999921 & 0.001256636 & 0 & 50 \\
+-0.001256636 & 0.99999921 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -1148,10 +1153,10 @@ $$M_c =
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999921 & 0.001256636 & 0 & 50 \\
+-0.001256636 & 0.99999921 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+0 & 0 & 0 & 1 
 \end{bmatrix}
 $$
 
@@ -1162,7 +1167,10 @@ $$M_c = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**[todo - check the matrix multiplication the Y and Z columns can]**
+
+<span style="background-color: yellow;color: black">
+[todo - check the matrix multiplication]
+</span>
 
 ## 4.8 Sine Curve
 
@@ -1176,11 +1184,18 @@ $$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{A_{1}}{\left| A_{1} \right|}\left
 
 $$\frac{d}{ds}D(s) = L^{2}\left( \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2} + \frac{2\pi}{LA_{2}}\cos\left( 2\pi\frac{s}{L} \right) \right)$$
 
-Constant term: $A_{0} = \frac{L^{2}}{D_{s}}\ $
+Constant term: 
+$$a_0 = D_s$$
+$$A_0 = L^2\frac{1}{a_0}\frac{a_0}{|a_0|} $$
 
-Linear term: $A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\mathrm{\Delta}D}}$
+Linear term: 
 
-Sine term: $A_{2} = \frac{L^{2}}{- \frac{1}{2\pi}\mathrm{\Delta}D}$
+$$a_1 = f$$
+$$A_1 = L^{\frac{3}{2}}\frac{1}{\sqrt{|a_1|}}\frac{a_1}{|a_1|} $$
+
+Sine term: 
+$$a_2 = -\frac{1}{2\pi} f$$
+$$A_2 = L^2\frac{1}{a_2}\frac{a_2}{|a_2|} $$
 
 ### 4.8.2 Semantic Definition to Geometry Mapping
 
@@ -1195,13 +1210,19 @@ Compute the paraent curve parameters
 $D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
 
 Constant term:
-$A_{0} = \frac{L^{2}}{D_s} = \frac{(100\ m)^{2}}{0.08\ m} = 125000\ m$
+$a_0 = 0.08\ m$
+
+$A_0 = (100\ m)^2\frac{1}{0.08\ m}\frac{0.08\ m}{|0.08\ m|} = 125000\ m$
 
 Linear term:
-$A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\mathrm{\Delta}D}} = \frac{(100\ m)^{\frac{3}{2}}}{\sqrt{| -0.08\ m|}}\frac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$
+$a_1 = -0.08\ m$
+
+$A_1 = (100\ m)^{\frac{3}{2}} \frac{1}{\sqrt{| -0.08\ m|}}\frac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$
 
 Sine term:
-$A_{2} = \frac{L^{2}}{-\frac{1}{2\pi}\mathrm{\Delta}D} = \frac{(100\ m)^{2}}{-\frac{1}{2\pi}( -0.08\ m)} = 78539.81634\ m$
+$a_2 = -\frac{1}{2\pi} (0.08\ m) = -0.0127324\ m$
+
+$A_2 = (100\ m)^2\frac{1}{-0.0127324\ m}\frac{-0.0127324\ m}{|-0.0127324\ m|} = 785398.1634\ m$
 
 The parent curve is
 
@@ -1212,16 +1233,15 @@ The parent curve is
 #99=IFCSINESPIRAL(#98,785398.16339744814,-3535.533905932738,125000.);
 ~~~
 
-The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08\ m$
+$$D(0\ m) = (100\ m)^{2}\left(\frac{1}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \frac{1}{785398.1634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
 
-The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
+$$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0.$$
 
-$\theta = tan^{-1}(-0.0008) = -0.0007999998$
+$\theta_0 = 0$
 
-$dx_x = cos(-0.0007999998) = 0.9999996800$
+$dx_x = cos(\theta_0) = 1$
 
-$dy_x = sin(-0.0007999998) = -0.0007999997$
+$dx_y = sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
@@ -1249,11 +1269,9 @@ Compute the cant placement matrix for a point 50 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 0,\ x(s_0) = 0$
+$$D(0\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) = 0.08\ m$$
 
-$y(s_0) = D(0\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) = 0.08\ m$
-
-$y'(0) = D'(0) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$
+$$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$$
 
 $\theta_0 = 0$
 
@@ -1286,23 +1304,17 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
-
-$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$
-
-$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$
-
-With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
-
 **Step 4 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
 $D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$
 
+$$D'(50\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{50\ m}{100\ m} \right) \right) = -0.0016$$
+
 $$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999872 & 0.001599998 & 0 & 50 \\
+-0.001599998 & 0.99999872 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -1325,10 +1337,10 @@ $$M_c =
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999872 & 0.001599998 & 0 & 50 \\
+-0.001599998 & 0.99999872 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+0 & 0 & 0 & 1 
 \end{bmatrix}
 $$
 
@@ -1339,7 +1351,11 @@ $$M_c = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**[todo - check the matrix multiplication the Y and Z columns can]**
+
+<span style="background-color: yellow;color: black">
+[todo - check the matrix multiplication]
+</span>
+
 
 ## 4.9 Viennese Bend
 
@@ -1392,10 +1408,12 @@ $$a_{7} = -20f, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ 
 ### 4.9.2 Semantic Definition to Geometry Mapping
 
 Consider an alignment segment that has a Viennese Bend transition curve **???**.
-**[todo - finish the description]**
+<span style="background-color: yellow;color: black">
+[todo - finish the description]
+</span>
 
 ~~~
-#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.10000000000000001,0.029999999999999999,.VIENNESEBEND.);
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.10,0.03,.VIENNESEBEND.);
 ~~~
 
 Compute the parent curve parameters.
@@ -1447,17 +1465,16 @@ The parent curve is
 #99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.93568367635649,-169.87095595653892,180.00121846086768,-241.19748900851218,$,$,$,200000.);
 ~~~
 
-The cant segment begins with a deviating elevation of $D_s = 0.05\ m$.
+$D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{20000\ m}\right) = 0.05\ m$
+<span style="background-color: yellow;color: black">
+[todo - check the math, 0.05 or 0.5?]
+</span>
 
-**[todo - fix this everywhere.... the slope is the slope equation evaluated at 0.0. for this particular example the RefDir is (1,0,0), not what is calculated here - the DeltaD/L only applies to the ifcline case]**
+$D'(0) = 0,\ \theta_0 = 0$
 
-The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.035}{100} = -0.00035$
+$dx_x = cos(\theta) = 1
 
-$\theta = tan^{-1}(-0.00035) = -0.00035$
-
-$dx_x = cos(\theta) = 0.999999939$
-
-$dx_y = sin(\theta) = -0.00035$
+$dx_y = sin(\theta) = 0
 
 The cross-slope at the start of the segment is
 
@@ -1486,12 +1503,11 @@ Compute the cant placement matrix for a point 50 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 0,\ x(s_0) = 0$
+$s_0 = 0$
 
-$y(s_0) = D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{20000\ m}\right) = 0.5\ m$
+$D(0\ m) = 0.05\ m$
 
-
-$y'(0) = D'(0) = 0,\ \theta_0 = 0$
+$D'(0) = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
@@ -1504,7 +1520,7 @@ $$M_N = \begin{bmatrix}
 
 $$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.5 \\
+0 & 1 & 0 & -0.05 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1527,11 +1543,21 @@ $$M_{CSP} = \begin{bmatrix}
 Evaluate the parent curve at $s = 50\ m$
 
 
-$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.4825\ m$
+$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.04825\ m$
+
+<span style="background-color: yellow;color: black">
+[todo - check the math, 0.04825 or 0.4825?]
+</span>
+
+$D'(50\ m) = ???$
+
+<span style="background-color: yellow;color: black">
+[todo - compute D', dx_x, dx_y and finish M_PC]
+</span>
 
 $$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.4825 \\
+0 & 1 & 0 & 0.04825 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -1539,6 +1565,11 @@ $$M_{PC} = \begin{bmatrix}
 Apply the normalization and placement in sequence:
 
 $M_c = M_{CSP}M_N M_{PC}$
+
+
+<span style="background-color: yellow;color: black">
+[todo - update matrices as needed from calcs above]
+</span>
 
 $$M_c = 
 \begin{bmatrix}
@@ -1549,13 +1580,13 @@ $$M_c =
 \end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.5 \\
+0 & 1 & 0 & -0.05 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.4825 \\
+0 & 1 & 0 & 0.04825 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
@@ -1570,7 +1601,9 @@ $$M_c = \begin{bmatrix}
 
 ## 4.10 Combined 3D
 
-**[do a full cant example]**
+<span style="background-color: yellow;color: black">
+[todo: do a full cant example]
+</span>
 
 ## 4.11 Deviation from EnrichIfc4x3 Reference Implementation
 
