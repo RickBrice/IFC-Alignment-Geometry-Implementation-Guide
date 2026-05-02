@@ -657,7 +657,7 @@ The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 Determine the second half placement and trimming.
 
 <span style="background-color: yellow;color: black">
-[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve]
+[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve - this may be more appropreate in the horizontal section, or maybe graph in both]
 </span>
 
 The starting elevation of the second half is the end elevation of the first half. Use the first half parent curve to determine the start of the second half curve.
@@ -783,7 +783,7 @@ $$M_c =
 \end{bmatrix}
 $$
 
-<span style="background-color: yellow;color: black">
+<span style="background-color: pink;color: black">
 [todo - verify matrix multiplication - final result is correct from IfcOpenShell - transformation matrix looks wacky]
 </span>
 
@@ -1428,7 +1428,7 @@ $$D_s = \frac{0\ m + 0.1\ m}{2} = 0.05\ m, D_e = \frac{0\ m + 0.03\ m}{2} = 0.01
 $$f = \mathrm{\Delta}D = -0.035m$$
 
 Constant Term
-$$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 20000\ m$$
+$$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 200000\ m$$
 
 Linear Term
 $$a_{1} = 0, A_{1} = 0\ m$$
@@ -1465,10 +1465,7 @@ The parent curve is
 #99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.93568367635649,-169.87095595653892,180.00121846086768,-241.19748900851218,$,$,$,200000.);
 ~~~
 
-$D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{20000\ m}\right) = 0.05\ m$
-<span style="background-color: yellow;color: black">
-[todo - check the math, 0.05 or 0.5?]
-</span>
+$$D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{200000\ m}\right) = 0.05\ m$$
 
 $D'(0) = 0,\ \theta_0 = 0$
 
@@ -1543,21 +1540,19 @@ $$M_{CSP} = \begin{bmatrix}
 Evaluate the parent curve at $s = 50\ m$
 
 
-$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.04825\ m$
+$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{200000\ m}\right) = 0.0325\ m$
 
-<span style="background-color: yellow;color: black">
-[todo - check the math, 0.04825 or 0.4825?]
-</span>
+$D'(50\ m) = (100\ m)^2 \left(7\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^6 + \frac{6}{(-169.87095595653895\ m)^7}(50m)^5 + 5\frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^4 + 4\frac{1}{(-241.1974890085123\ m)^5}(50\ m)^3\right) = -0.00076525$
 
-$D'(50\ m) = ???$
+$\theta = -0.00076562$
 
-<span style="background-color: yellow;color: black">
-[todo - compute D', dx_x, dx_y and finish M_PC]
-</span>
+$dx_x = cos(\theta) = 0.999999707$
+
+$dy_x = sin(\theta) = -0.00076562$
 
 $$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04825 \\
+0.999999707 & 0.00076562 & 0 & 50 \\
+-0.00076562 & 0.999999707 & 0 & 0.0325 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -1566,10 +1561,6 @@ Apply the normalization and placement in sequence:
 
 $M_c = M_{CSP}M_N M_{PC}$
 
-
-<span style="background-color: yellow;color: black">
-[todo - update matrices as needed from calcs above]
-</span>
 
 $$M_c = 
 \begin{bmatrix}
@@ -1585,8 +1576,8 @@ $$M_c =
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04825 \\
+0.999999707 & 0.00076562 & 0 & 50 \\
+-0.00076562 & 0.999999707 & 0 & 0.0325 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
@@ -1598,6 +1589,11 @@ $$M_c = \begin{bmatrix}
 0 & -0.0332779270 & 0.999446136 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
+
+
+<span style="background-color: yellow;color: black">
+[todo - check the matrix multiplication]
+</span>
 
 ## 4.10 Combined 3D
 
