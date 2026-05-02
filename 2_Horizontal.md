@@ -144,7 +144,7 @@ specified point at some direction in the X-Y plane. A valid, but unnecessisarly 
 
 *Figure 2.3.2-2 IfcLine at arbitrary placement*
 
-Figure 2.3.2-1 represents a valid parent curve defiition and implementations must be prepared to properly interpret this geometry. This guide defines general algorithms to accomodate this geometry.
+Figure 2.3.2-2 represents a valid parent curve defiition and implementations must be prepared to properly interpret this parect curve geometry. This guide defines general algorithms to accomodate this geometry.
 
 In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.
 
