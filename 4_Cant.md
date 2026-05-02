@@ -239,7 +239,9 @@ $dz_z = sin\phi = 0.99435920$
 
 ### 4.3.2 Compute Point on Curve
 
-<span style="background-color: yellow;color: black">[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]</span>
+<span style="background-color: yellow;color: black">
+[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]
+</span>
 
 Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.
 
@@ -335,7 +337,7 @@ $A_1$ is the clothoid constant.
 
 ### 4.4.2 Semantic Definition to Geometry Mapping
 
-Consider an alignment segment that has a clothoid transition curve towards the left. The track banks at a constant rate resulting in a linearly deviating elevation between the rail heads. The rail head separation is 1.5 m and the cant is 160 mm.
+Consider an alignment segment that has a clothoid transition curve towards the left. The track banks at a constantly increasing rate resulting in a linear deviation in the right rail elevation relative to the left rail. The right rail raises 160 mm over the 100 m segment length.
 
 The semantic representation of the cant alignment is
 
@@ -349,7 +351,7 @@ $D_{sl} = 0\ m\quad D_{el} = 0\ m$
 
 $D_{sr} = 0.16\ m\quad D_{er} = 0\ m$
 
-$D_s = \frac{(0.16 + 0\ m)}{2} = 0.08\ m$
+$D_s = \frac{(0.16 + 0)}{2} = 0.08\ m$
 
 $D_e = \frac{(0 + 0)}{2} = 0\ m$
 
@@ -368,22 +370,23 @@ The clothoid parent curve is
 #98=IFCCLOTHOID(#97,-3535.53390593274);
 ~~~
 
-The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08$
+The cant segment begins with a deviating elevation of
 
-The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
+$$D(0\ m) = (100\ m)^2\left(\frac{1}{125000} + \frac{-3535.533906}{|-3535.533906|^3}(0\ m)\right) = 0.08\ m$$
 
-$\theta = tan^{-1}(-0.0008) = -0.0007999998$
+The slope at the start of the segment is
 
-$dx_x = cos(-0.0007999998) = 0.9999996800$
+$$D'(0\ m) = (100\ m)^{2}\frac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$$
 
-$dy_x = sin(-0.0007999998) = -0.0007999997$
+$$\theta_0 = tan^{-1}(-0.0008) = -0.00079999$$
+
+$dx_x = cos(\theta_0) = 0.999999680$
+
+$dy_x = sin(\theta_0) = -0.000799999744$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
-
-The cross slope orientation is
+$\phi(0) = \phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 $dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
 
@@ -392,7 +395,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.106064981,0.994359201));
-#102=IFCDIRECTION((0.9999996800,-0.0007999997,0.));
+#102=IFCDIRECTION((0.999999680,-0.000799999744,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
 #104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
@@ -405,11 +408,11 @@ Compute the cant placement matrix for a point 50 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 0,\ x(s_0) = 0$
+$s_0 = 0$
 
-$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
+$D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
 
-$y'(0) = D'(0) = 0,\ \theta_0 = 0$
+$D'(0) = -0.0008,\ \theta_0 = -0.00079999$
 
 
 **Step 2 — Form the normalization matrix $M_N$**
@@ -422,32 +425,32 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 $$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
+0.999999680 & -0.000799999744 & 0 & 0 \\
+0.000799999744 & 0.999999680 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (0.9999996800,-0.0007999997,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
+$\mathbf{RefDir}_p = (0.9999996800,-0.000799999744,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871, 0.9943588828, -0.1060649471)$
 
 $$M_{CSP} = \begin{bmatrix} 
 0.9999996800 & 0.0007954871 & 0 & 0 \\
--0.0007999997 & 0.9943588828 & 0.106064981 & 0.08 \\
+-0.000799999744 & 0.9943588828 & 0.106064981 & 0.08 \\
 0 & -0.1060649471 & 0.994359201 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
+The $\mathbf{Axis}$ vector is perpendicular to the railhead cross slope line.
 
-$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.994359201)$
+$\mathbf{Axis} = (0.0,\ 0.106064981,\ 0.994359201)$
 
 $\phi_p = tan^{-1}\left(\frac{0.994359201}{0.106064981}\right) = 1.464531464$
 
-With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
+With the cross section $y$-axis to the left and $z$-axis upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right rail being superelevated.
 
 **Step 4 — Evaluate and map each point**
 
@@ -494,13 +497,13 @@ $$M_c = \begin{bmatrix}
 0.0 & 0.0 & 0.0 & 1.0
 \end{bmatrix}$$
 
-$\mathbf{\text{Axis}} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
+$\mathbf{Axis} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
 
 $\phi(50\ m) = tan^{-1}\left(\frac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$
 
-The $\mathbf{\text{Axis}}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.
+The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an excersie for the reader - repeat Step 5 with $s=100\ m$ to verify ).
 
-As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895$
+As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$
 
 ## 4.5 Helmert Curve
 
@@ -514,7 +517,10 @@ $$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} 
 
 $$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
 
-The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{32}$ is coefficient $A_3$ for the second half. **[todo: add this description to 2_Horizonta.md]**
+The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
+<span style="background-color: yellow;color: black">
+[todo: add this description to 2_Horizonta.md]
+</span>
 
 In the first half of the cant transition
 
@@ -597,13 +603,19 @@ The first half parent curve `IfcSecondOrderPolynomialSpiral` is
 
 Determine the first half placement and trimming.
 
-Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition. **[Need to do a better job explaining why L/2 when A is computed on full L]**
+Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition.
+
+<span style="background-color: yellow;color: black">
+[todo - Need to do a better job explaining why L/2 when A is computed on full L. There is a plot of the two parent curves planned, perhaps this will help explain the situation.]
+</span>
 
 The deviation elevation at the start of the first half transition is
 
-$D(0\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$
+$$D(0\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$$
 
-The slope at $0\ m$ is $0.0$. $dx_x = 1.0,\ dx_y = 0.0$
+$$D'(0\ m) = (50\ m)^{2}\left( \frac{2(0\ m)}{(-538.6086725\ m)^{3}}\right) = 0$$
+
+$\theta = 0,\ dx_x = 1, dy_x = 0$
 
 The cross slope is 
 
@@ -644,17 +656,17 @@ The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 
 Determine the second half placement and trimming.
 
-**[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve]**
+<span style="background-color: yellow;color: black">
+[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve]
+</span>
 
-The starting elevation of the second half is the end elevation of the first half
+The starting elevation of the second half is the end elevation of the first half. Use the first half parent curve to determine the start of the second half curve.
 
-$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$
+$$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$$
 
-The slope at $50\ m$ is $\frac{dD'}{ds} = L_1^2\left(\frac{2s}{A_2^3} + \frac{A_1}{\left| A_1^3 \right|}\right) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3} + \frac{31250\ m}{\left|(31250\ m)^3 \right|} \right) = -0.00159744$
-. 
+$$D'(50\ m) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = -0.0016$$
 
-$dx_x = \frac{1}{\sqrt{(-0.00159744)^2 + 1}} = 0.999998724
-,\ dx_y = \frac{-0.00159744}{\sqrt{(-0.00159744)^2 + 1}} = -0.001597438$
+$dx_x = \frac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724,\ dy_x = \frac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$
 
 The cross slope at the end of the first half is 
 
@@ -679,18 +691,17 @@ Compute the cant placement matrix for a point 75 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 50\ m,\ x(s_0) = 50\ m$
+$s_0 = 50\ m$
 
-$y(s_0) = D(50\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(50\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \frac{1}{15625\ m} \right) = 0.16\ m$
+$D(50\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(50\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \frac{1}{15625\ m} \right) = 0.16\ m$
 
-
-$y'(s_0) = D'(s_0) = (100\ m)^{2}\left( \frac{2(50\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$
+$D'(50\ m) = (100\ m)^{2}\left( \frac{2(50\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$
 
 $\theta_0 = tan^{-1}(-0.0064) = -0.006399913$
 
-$cos \theta_0 = cos(-0.006399913) = 0.999979521$
+$cos \theta_0 = cos(\theta_0) = 0.999979521$
 
-$sin \theta_0 = sin(-0.006399913) = -0.006399869$
+$sin \theta_0 = sin(\theta_0) = -0.006399869$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
@@ -701,11 +712,13 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**[todo - look at this carefully, the MN matrix doesn't look right - this will trickle down through all the calcs]**
+$-(50\ m)(0.999979521) - (0.16\ m)(-0.006399869) = -49.99795207$
+
+$-(50\ m)(-0.006399869) - (0.16\ m)(0.999979521) = 0.159996727$
 
 $$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
+0.999979521 & -0.006399869 & 0 & -49.99795207 \\
+0.006399869 & 0.999979521 & 0 & 0.159996727 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -725,13 +738,22 @@ $$M_{CSP} = \begin{bmatrix}
 
 **Step 4 — Evaluate and map each point**
  
-A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m - 50\ m = 25\ m$
+A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m$
 
-$D(25\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(25\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(25\ m) + \frac{1}{15625\ m} \right) = 0.36\ m$
+$$D(75\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(75\ m)^2 + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^3 \right|}(75\ m) + \frac{1}{15625\ m} \right) = 0.04\ m$$
+
+$$D'(75\ m) = (100\ m)^{2}\left( \frac{2(75\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.032$$
+
+$\theta = tan^{-1}(-0.0032) = -0.00319998908$
+
+$dx_x = cos(\theta) = 0.99999488004$
+
+$dx_y = sin(\theta) = -0.00319998362$
+
 
 $$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 25 \\
-0 & 1 & 0 & 0.36 \\
+0.99999488004 & 0.00319998362 & 0 & 75 \\
+-0.00319998362 & 0.99999488004 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -748,17 +770,22 @@ $$M_c =
  0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
- I = NOT\ CORRECT
+0.999979521 & -0.006399869 & 0 & -49.99795207 \\
+0.006399869 & 0.999979521 & 0 & 0.159996727 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 25 \\
-0 & 1 & 0 & 0.36 \\
+0.99999488004 & 0.00319998362 & 0 & 75 \\
+-0.00319998362 & 0.99999488004 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
 $$
 
-**[todo - verify matrix multiplication - final result is correct from IfcOpenShell]**
+<span style="background-color: yellow;color: black">
+[todo - verify matrix multiplication - final result is correct from IfcOpenShell - transformation matrix looks wacky]
+</span>
 
 $$M_c = \begin{bmatrix}
 0.999999684 & 0.000799928774 & 0 & 75.0 \\
@@ -766,12 +793,6 @@ $$M_c = \begin{bmatrix}
 0 & -0.0133203149 & 0.999911281 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
-
-$\mathbf{Axis} = (0.0,\ 0.0133204468,\ 0.999911281)$
-
-$\phi(75\ m) = tan^{-1}\left(\frac{0.999911281}{0.0133204468}\right) = 1.557475486$
-
-The $\mathbf{Axis}$ vector is closer to vertical 75% way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.
 
 ## 4.6 Bloss Curve
 
@@ -840,16 +861,14 @@ The parent curve is
 #99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,500.00000000000006,-746.90079109286057,$,125000.);
 ~~~
 
-The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08\ m$
 
-The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.
+$$D_0 = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$$
 
-$\theta = tan^{-1}(-0.0008) = -0.0007999998$
+$$D'(0) = 0,\ \theta_0 = 0$$
 
-$dx_x = cos(-0.0007999998) = 0.9999996800$
+$dx_x = cos(\theta_0) = 1$
 
-$dy_x = sin(-0.0007999998) = -0.0007999997$
+$dy_x = sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
@@ -877,11 +896,7 @@ Compute the cant placement matrix for a point 50 m from the start of the curve s
 
 From the parent curve 
 
-$s_0 = 0,\ x(s_0) = 0$
-
-$y(s_0) = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$
-
-$y'(0) = D'(0) = 0,\ \theta_0 = 0$
+$s_0 = 0,\ D(0\ m) = 0.08\ m, \ D'(0) = 0,\ \theta_0 = 0$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
@@ -924,11 +939,20 @@ With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing sl
 
 Evaluate the parent curve at $s = 50\ m$
 
-$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$
+$$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$$
+
+$$D'(50\ m) = (100\ m)^{2}\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \frac{2}{(-746.9007911\ m)^{3}}(50\ m) + \frac{125000\ m}{2\left| (125000\ m)^{3} \right|} \right) = -0.002$$
+
+$\theta = tan^{-1}(-0.002) = -0.0019997$
+
+$dx_x = cos(\theta) = 0.9999980$
+
+$dy_x = sin(\theta) = -0.0019997$
+
 
 $$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.9999980 & 0.0019997 & 0 & 50 \\
+-0.0019997 & 0.9999980 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -951,10 +975,10 @@ $$M_c =
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.9999980 & 0.0019997 & 0 & 50 \\
+-0.0019997 & 0.9999980 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+0 & 0 & 0 & 1 
 \end{bmatrix}
 $$
 
