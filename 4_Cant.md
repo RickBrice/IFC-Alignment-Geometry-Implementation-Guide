@@ -1,8 +1,6 @@
 outline:
 * need figure the show cross slope and coordinate system 3D and 2-2D elevation and section.
 * need figure that shows centerline and railhead deviation
-* provide a bit more discussion in the examples. reference the example files
-* need to discuss cross slope, Axis vector, and their orientation and relation to one another. Axis is normal to cross slope line. $\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{D_e - D_s}\right)\bigl(D(s) - D_s\bigr)$. Should this equation use $\Delta D$?
 
 
 # Section 4.0 - Cant Alignment
@@ -55,6 +53,14 @@ The deviating elevation has the same functional form as the radius of curvature 
 In IFC, the semantic cant profile is encoded in `IfcAlignmentCant` and its child `IfcAlignmentCantSegment` entities. The geometric representation is an `IfcSegmentedReferenceCurve`, which evaluates the cant at every point along the alignment and, in conjunction with the horizontal alignment `IfcCompositeCurve` and the vertical alignment `IfcGradientCurve`, produces the full 3D track centerline geometry.
 
 [todo: add a figure to illustrate the cross slope and centerline elevation deviation] 
+
+![](images/Cant.svg)
+
+*Figure 4.1-1 - Deviating elevation of rails*
+
+![](images/CrossSlopeAngle.svg)
+
+*Figure 4.1-2 - Rail head cross slope*
 
 Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-dimensional coordinate system whose axes are *distance along the horizontal alignment* $s$ and *deviating elevation* $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.
 
