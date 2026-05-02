@@ -1,15 +1,8 @@
 outline:
-* describe cant in terms of it being a deviation to railroad alignment vertical in curves. it provides for track banking
 * need figure the show cross slope and coordinate system 3D and 2-2D elevation and section.
 * need figure that shows centerline and railhead deviation
-* reference british standard (BS EN 13803:2017 Railway applications - Track - Track alignment design parameters - Track gauges 1 435 mm and wider, Table C.1 "C:\Users\BriceR\OneDrive - Washington State Department of Transportation\BIM for Bridges\Rail Spec\bs-en-13803-2017.pdf") and describe the equivalent functional form of equations used for horizontal. The form of the horizontal transition spirals equations is the same form as the cant equation.
-* Equivalance of functional form - state that the derivative of $\theta(t)$ equation, which is the curvature $\kappa(t)$, for horizontal has the same form as the $\frac{D(t)}{L^2}$ equation for cant.
-* Need to add a general discussion about the spiral coefficients. This is the text used in some sections - it doesn't need to be repeated everywhere. "The polynomial coefficients must have units of length. The basic form of the coefficient of the $i^{th}$ term is $A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$" "Perform a dimensional analysis with $l$ representing term with length units. We see that the resulting coefficient $A_{i}$ has units of length. $\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$," - maybe this needs to go in the last segment (or maybe just the dimensionality analysis in the last section)
-
-* horizontal and cant always use the same curve type, though technically ifc would permit mixing them
 * provide a bit more discussion in the examples. reference the example files
 * need to discuss cross slope, Axis vector, and their orientation and relation to one another. Axis is normal to cross slope line. $\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{D_e - D_s}\right)\bigl(D(s) - D_s\bigr)$. Should this equation use $\Delta D$?
-* state up front that the railhead distance for all examples is 1.5 m, so we don't have to keep restating this
 
 
 # Section 4.0 - Cant Alignment
@@ -19,17 +12,14 @@ Cant (also called superelevation) is the transverse inclination of a railway tra
 Cant is measured as a length — the height difference between railheads — rather than as an angle. The conversion between the two depends on track gauge. `IfcAlignmentCant.RailHeadDistance` supplies the centre-to-centre distance between railheads, which is the lever arm for this conversion.
 
 ## 4.1 General
+
 An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope. 
 
 An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of `IfcCompositeCurve`, an `IfcSegmentedReferenceCurve` consists of an end to start collection of `IfcCurveSegment`. An `IfcSegmentedReferenceCurve` also has a `BasisCurve` which is typically an `IfcGradientCurve`.
 
-The `IfcCurveSegment.ParentCurve` defines the change in cross
-slope between rail heads over the length of the segment. When the
-`IfcCurveSegment.Placement.Location` differs from the
-`IfcCurveSegment.Placement.Location` of the next segment, the
-`IfcCurveSegment.ParentCurve` also defines variation in the deviating elevation. If the
-`IfcCurveSegment.Placement.Location` is the same as for the start of the
-next segment, the deviating elevation along the length of the segment is
+The `IfcCurveSegment.ParentCurve` defines the deviating elevation over the length of the segment. When the segment start elevation differs from the
+segment start elevation of the next segment, the `IfcCurveSegment.ParentCurve` also defines variation in the deviating elevation. If the
+segment start elevation is the same as for the start of the next segment, the deviating elevation along the length of the segment is
 constant.
 
 Table 4.1-1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding parent curve type.
@@ -47,16 +37,16 @@ Table 4.1-1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding par
   *Table 4.1-1 — Mapping of business logic to geometric representation for cant alignment*
 
 
-The transition functions used to shape cant variation have the same functional form as functions used for horizontal transition curves: clothoid (linear cant), Helmert, Bloss, cosine, sine, and Viennese bend. In practice, the cant transition type always matches the horizontal transition type, though IFC does not enforce this constraint.
+The transition functions used to shape cant variation have the same functional form as functions used for horizontal transition curves: line, clothoid (linear cant), Helmert, Bloss, cosine, sine, and Viennese bend. In practice, the cant transition type always matches the horizontal transition type, though IFC does not enforce this constraint.
 
-As an example, the radius of curvature for a Helmert curve is a second order polynomial of the form
+As an example, the horizontal tangent direction, $\theta(t)$, and the radius of curvature, $\kappa(t)$, for a Helmert curve is a second order polynomial of the form
 
 
 $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$
 
 $$\kappa(t) = \frac{\theta(t)}{dt} = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
-The cant deviating elevation is of the form
+The cant deviating elevation for a Helmert transition is of the same form as the curvature
 
 $$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
 
@@ -78,7 +68,7 @@ $$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(s) - D
 
 $$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
 
-where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D_s$ and $D_e$ are the corresponding deviating elevations. $\Delta D = D_e - D_s$, and $D(s)$ is the deviation elevation at $s$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \frac{\pi}{2}$.
+where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(s)$ is the deviation elevation at $s$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \frac{\pi}{2}$.
 
 Together, the distance along, the deviating elevation $D(s)$, and the cross-slope angle $\phi(s)$ fully specify a 3D placement frame for the track centerline at each arc-length $s$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.
 
@@ -92,7 +82,7 @@ Cant segments are evaluated in a two-dimensional "distance along, deviating elev
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
-Compute the deviating elevation $z_0 = D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$.
+Compute the deviating elevation $D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$.
 
 **Step 2 — Form the normalization matrix $M_N$**
 
@@ -109,15 +99,15 @@ $$M_N = \begin{bmatrix}
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation), the `RefDirection` gives slope angle $\theta_p$, and the `Axis` gives cross slope angle $\phi_p$.
 
-$$\mathbf{RefDir}_p = (\cos\theta_p,\ \sin\theta_p,\ 0),\quad \mathbf{Axis}_p = (0,\ \cos\phi_p,\ \sin\phi_p)$$
+$$\mathbf{RefDir}_p = (\cos\theta_p,\ \sin\theta_p,\ 0),\quad \mathbf{Axis}_p = \mathbf{Z}_p = (0,\ \cos\phi_p,\ \sin\phi_p)$$
 $$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p$$
 
 The placement in matrix form is
 
 $$M_{CSP} = \begin{bmatrix} 
-X_p.x & Y_p.x & Axis_p.x & s_p \\
-X_p.y & Y_p.y & Axis_p.y & 0 \\
-X_p.z & Y_p.z & Axis_p.z & D_p \\
+X_p.x & Y_p.x & Z_p.x & s_p \\
+X_p.y & Y_p.y & Z_p.y & 0 \\
+X_p.z & Y_p.z & Z_p.z & D_p \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -133,19 +123,17 @@ $$\mathbf{X} = (\cos\theta(s),\ \sin\theta(s),\ 0),\quad \mathbf{Z} = (0,\ \cos\
 $$\mathbf{Y} = \mathbf{Z} \times \mathbf{X}$$
 
 $$M_{PC} = \begin{bmatrix}
-X.x & Y.x & Z.x & d \\
+X.x & Y.x & Z.x & s \\
 X.y & Y.y & Z.y & 0 \\
 X.z & Y.z & Z.z & D(s) \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-where $d = x(s)$ is the distance along the horizontal alignment at arc-length $s$.
-
 Apply the normalization and placement in sequence:
 
 $$M_c = M_{CSP}\ M_N\ M_{PC}$$
 
-Column 4 of $M_c$ is $(s,\ 0,\ D(s))$ — the distance along and deviating elevation. Column 3 (Axis) is the cross-slope direction at that point. Step 5 is performed immediately for this point before moving to the next arc-length $s$.
+Step 5 is performed immediately for this point before moving to the next arc-length $s$.
 
 **Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
 
@@ -162,13 +150,13 @@ X.z & Y.z & Z.z & D \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-Extract position vectors from each modified matrix (setting row 4 to zero), then zero column 4 before multiplying:
+Extract position vectors from each modified matrix, $M'_v,\ M'_c$, (setting row 4 to zero), then zero column 4 before multiplying:
 
 $$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ z \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ D \\ 0 \end{bmatrix}$$
 
 $$M''_v = M'_v \text{ with column 4 set to } (0,0,0,1)^T, \qquad M''_c = M'_c \text{ with column 4 set to } (0,0,0,1)^T$$
 
-**[todo: show the full $M''_v$ and $M''_c$ matrices]**
+<span style="background-color: yellow;color: black">[todo: show the full $M''_v$ and $M''_c$ matrices]</span>
 
 Multiply the three orientation matrices, then add back both position offsets:
 
@@ -200,7 +188,7 @@ The parent curve is `IfcLine`. The slope-intercept form of a line is $y = mx + b
 
 In the context of cant, $D(s) = y'(x)$, so the deviating elevation is a constant value, $m$, and the rate of change of the deviating elevation $D'(s) = y''(x) = 0$.
 
-### 4.3.3 Parent Curve Parametric Equations
+### 4.3.1 Parent Curve Parametric Equations
 
 The deviating elevation and its rate of change are given by the following equations.
 
@@ -233,16 +221,16 @@ Define the parent curve as an `IfcLine` passing through (0,0.08) in the directio
 
 The `IfcCurveSegment` trims a segment from the parent curve. The curve segment placement must capture the cross-slope rotation between the rail heads. For this reason the placement is an `IfcAxis2Placement3D` (instead of `IfcAxis2Placement2D` used for horizontal and vertical representations).
 
-The cross-slope angle is $\phi = tan^{-1}\left(\frac{\Delta D}{D_{rh}}\right)$, where $D_{rh}$ is the rail head distance, $1.5\ m$.
+The cross-slope angle is $\phi = tan{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$.
 
-$\phi = tan^{-1}\left(\frac{0.08}{1.5}\right) = 0.05328285$
+$\phi = tan^{-1}\left(\frac{1.5}{0.16-0.0}\right) = 1.4645314$
 
-$dz_y = sin\phi = sin(0.05328285) = 0.0532576$
+$dz_y = cos\phi = 0.10606498$
 
-$dz_z = cos\phi = cos(0.05328285) = 0.9985808$
+$dz_z = sin\phi = 0.99435920$
 
 ~~~
-#100=IFCCARTESIANPOINT((0.,0.080000000000000002,0.));
+#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.10606498139220574,0.99435920055192883));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
@@ -251,50 +239,47 @@ $dz_z = cos\phi = cos(0.05328285) = 0.9985808$
 
 ### 4.3.2 Compute Point on Curve
 
-**[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]**
+<span style="background-color: yellow;color: black">[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]</span>
 
 Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.
 
 **Step 1 - Evaluate the parent curve at the trim start**
 
-$s_0 = 0, D(0) = 0.08\ m, D'(0) = 0.$
-
-$\phi(0) = tan^{-1}\left(\frac{0.9985808}{0.0532576}\right) = 1.517513518$
+$s_0 = 0, D(0) = D_0 = 0.08\ m, D'(0) = \theta_0 = 0.$
 
 **Step 2 - Form the normalization matrix $M_N$**
 
-$$\mathbf{X}_0 = (1,\ 0,\ 0),\quad \mathbf{Z}_0 = (0,\ 0.0532576,\ 0.9985808)$$
-$$\mathbf{Y}_0 = \mathbf{Z}_0 \times \mathbf{X}_0,\quad \mathbf{Axis}_0 = \mathbf{X}_0 \times \mathbf{Y}_0$$
-
-$$\mathbf{Y}_0 = (0,\ 0.9985808,\ -0.0532576)$$
-
-$$\mathbf{Axis}_0 = (0,\ 0.0532576,\ 0.9985808)$$
-
 $$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
- 0 & 0.9985808 & -0.0532576 & 0 \\ 
- 0 & 0.0532576 & 0.9985808 & -0.08 \\
-  0 & 0 & 0 & 1 
+ 0 & 1 & 0 & -0.08 \\ 
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
 **Step 3 - Form the curve segment placement matrix $M_{CSP}$**
 
-$$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.0532576,\ 0.9985808)$$
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.0532576,\ 0.9985808),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$
+$$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.10606498,\ 0.99435920)$$
+$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ -0.10606498,\ 0.99435920),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$
 
 $$M_{CSP} = \begin{bmatrix} 
 1 & 0 & 0 & 0 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 0.99435920 & 0.10606498 & 0.08 \\
+0 & -0.10606498 & 0.99435920 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
 **Step 4 - Evaluate and map each point**
 
+Evaluate the parent curve at $s = 50\ m$.
+
+$D(50\ m) = 50\ m$
+
+$D'(50\ m) = 0$
+
 $$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 1 & 0 & 0.08 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -305,28 +290,28 @@ $$M_c = M_{CSP}\, M_N\, M_{PC}$$
 $$M_c =
 \begin{bmatrix} 
 1 & 0 & 0 & 0 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 0.99435920 & 0.10606498 & 0.08 \\
+0 & -0.10606498 & 0.99435920 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
- 0 & 0.9985808 & -0.0532576 & 0 \\ 
- 0 & 0.0532576 & 0.9985808 & -0.08 \\
-  0 & 0 & 0 & 1 
+ 0 & 1 & 0 & -0.08 \\ 
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 1 & 0 & 0.08 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
 $$
 
 $$M_c = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 0.99435920 & 0.10606498 & 0.08 \\
+0 & -0.10606498 & 0.99435920 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -1569,8 +1554,16 @@ The cant calculations in this section deviate from the ones performed by the Enr
 reference implementation. The calculations in the reference implementation, published at
 [IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
-(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry), yield coefficients for sine, cosine, and polynomial spirals that are not in units of length. The IFC specification is clear that the coefficients have
+(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry), yield coefficients for sine, cosine, clothoid, and polynomial spirals that are not in units of length. The IFC specification is clear that the coefficients have
 units of length and are represented by `IfcLengthMeasure`.
+
+The basic form of the coefficient of the $i^{th}$ term is 
+
+$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
+
+Performing a dimensional analysis with $l$ representing term with length units, we see that the resulting coefficient $A_{i}$ has units of length. 
+
+$$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$
 
 The error in the EnrichIfc4x3 reference implementation is illustrated by way of an example. Consider the Bloss Curve example [GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc). 
 
