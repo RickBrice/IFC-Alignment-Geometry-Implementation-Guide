@@ -32,7 +32,7 @@ The following parameters are common to all horizontal alignment curve types. Eac
 | Start Curvature | $$\kappa_{s} = \frac{1}{R_{s}}$$ |
 | End Curvature | $$\kappa_{e} = \frac{1}{R_{e}}$$ |
 | Cumulative change in curvature | $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = L\left( \frac{1}{R_{e}} - \frac{1}{R_{s}} \right)$$ |
-| Angle of tangent line, RefDirection = $\cos\left( \theta(s) \right),\sin\left( \theta(s) \right)$ | $$\theta(s) |
+| Angle of tangent line, RefDirection = $\cos\left( \theta(s) \right),\sin\left( \theta(s) \right)$ | $$\theta(s)$$ |
 | X-ordinate as a function of curve length s | $$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$ |
 | Y-ordinate as a function of curve length s | $$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$ |
 
