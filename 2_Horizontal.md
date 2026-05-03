@@ -424,8 +424,6 @@ The curve tangent angle, curvature, and point on the curve are given by the foll
 
 $$\theta(s) = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$
 
-**[todo: review - where does the pi/2 come from?]**
-
 $$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
 
 $$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$
