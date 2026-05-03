@@ -16,7 +16,7 @@ An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail 
 An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of `IfcCompositeCurve`, an `IfcSegmentedReferenceCurve` consists of an end to start collection of `IfcCurveSegment`. An `IfcSegmentedReferenceCurve` also has a `BasisCurve` which is typically an `IfcGradientCurve`.
 
 The `IfcCurveSegment.ParentCurve` defines the deviating elevation over the length of the segment. When the segment start elevation differs from the
-segment start elevation of the next segment, the `IfcCurveSegment.ParentCurve` also defines variation in the deviating elevation. If the
+segment start elevation of the next segment. If the
 segment start elevation is the same as for the start of the next segment, the deviating elevation along the length of the segment is
 constant.
 
