@@ -422,7 +422,7 @@ Source Model:
 
 The curve tangent angle, curvature, and point on the curve are given by the following equations
 
-$$\theta(s) = \int_{}^{}{\kappa(s)ds} = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$
+$$\theta(s) = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$
 
 $$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
 
