@@ -700,7 +700,7 @@ An offical [Implementation Agreement](https://standards.buildingsmart.org/docume
 
 —-
 
-### 2.6.3 Evaluate Point on Curve
+### 2.6.3 Compute Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
@@ -1134,7 +1134,7 @@ $$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \rig
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### 2.8.3 Evaluate Point on Curve
+### 2.8.3 Compute Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
@@ -1250,7 +1250,7 @@ $$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \fra
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### 2.9.3 Evaluate Point on Curve
+### 2.9.3 Compute Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
@@ -1373,7 +1373,7 @@ $$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \fr
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### 2.10.3 Evaluate Point on Curve
+### 2.10.3 Compute Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
@@ -1557,7 +1557,7 @@ $$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \rig
 #77 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-### 2.11.3 Evaluate Point on Curve
+### 2.11.3 Compute Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
