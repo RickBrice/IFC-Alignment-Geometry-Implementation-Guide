@@ -31,4 +31,4 @@ Describe string lines and how they work (don't have a good implementation yet)
 * Discuss error in image from the documentation with projecting geometry along the line
 * Describe string lines (guide curves) and how they work.
 * Clarify direction (CCW) for defining polygon points for the profile
-* Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue
+* Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue. https://github.com/buildingSMART/IFC4.x-IF/issues/147, and https://github.com/buildingSMART/IFC4.x-development/issues/1010. 
