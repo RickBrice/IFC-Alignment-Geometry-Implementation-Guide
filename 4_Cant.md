@@ -96,7 +96,7 @@ $M_N$ simultaneously translates the trim-start point to the origin and rotates s
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -293,7 +293,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and placement in sequence:
 
-$$M_c = M_{CSP}\, M_N\, M_{PC}$$
+$$M_c = M_{CSP}\ M_N\ M_{PC}$$
 
 $$M_c =
 \begin{bmatrix} 
@@ -425,7 +425,7 @@ $D'(0) = -0.0008,\ \theta_0 = -0.00079999$
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -473,7 +473,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and placement in sequence:
 
-$M_c = M_{CSP}M_N M_{PC}$
+$M_c = M_{CSP}\ M_N\ M_{PC}$
 
 $$M_c = 
 \begin{bmatrix}
@@ -713,18 +713,20 @@ $sin \theta_0 = sin(\theta_0) = -0.006399869$
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 $-(50\ m)(0.999979521) - (0.16\ m)(-0.006399869) = -49.99795207$
 
-$-(50\ m)(-0.006399869) - (0.16\ m)(0.999979521) = 0.159996727$
+**[todo: check the math]**
+
+$(50\ m)(-0.006399869) - (0.16\ m)(0.999979521) = -0.47999017$
 
 $$M_N = \begin{bmatrix}
 0.999979521 & -0.006399869 & 0 & -49.99795207 \\
-0.006399869 & 0.999979521 & 0 & 0.159996727 \\
+0.006399869 & 0.999979521 & 0 & -0.47999017 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -777,7 +779,7 @@ $$M_c =
 \end{bmatrix}
 \begin{bmatrix}
 0.999979521 & -0.006399869 & 0 & -49.99795207 \\
-0.006399869 & 0.999979521 & 0 & 0.159996727 \\
+0.006399869 & 0.999979521 & 0 & -0.47999017 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
