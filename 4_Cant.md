@@ -20,9 +20,9 @@ segment start elevation of the next segment. If the
 segment start elevation is the same as for the start of the next segment, the deviating elevation along the length of the segment is
 constant.
 
-Table 4.1-1 maps each `IfcAlignmentCant.PredefinedType` to its corresponding parent curve type.
+Table 4.1-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its corresponding parent curve type.
 
-  Business Logic (`IfcAlignmentCant.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
+  Business Logic (`IfcAlignmentCantSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
   -----------------------------------------|-----------------------------------
   CONSTANTCANT                             |`IfcLine`
   LINEARTRANSITION                         |`IfcClothoid`
