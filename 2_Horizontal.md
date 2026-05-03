@@ -7,9 +7,9 @@ todo:
 
 The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
 
-Table 2.0-1 maps each `IfcAlignmentHorizontal.PredefinedType` to its corresponding parent curve type.
+Table 2.0-1 maps each `IfcAlignmentHorizontalSegment.PredefinedType` to its corresponding parent curve type.
 
-| Business Logic (`IfcAlignmentHorizontal.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
+| Business Logic (`IfcAlignmentHorizontaSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
 |---|---|
 | LINE | `IfcLine` |
 | CIRCULARARC | `IfcCircle` |
@@ -776,20 +776,21 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
+$$M_{h} = M_{CSP}\ M_N\ M_{PC} = I \, I  
 \begin{bmatrix}
 0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-=
+= 
 \begin{bmatrix}
-0.986539 & -0.1635219 & 0 & 99.72593255 \\
-0.1635219 & 0.986539 & 0 & 5.5100 \\
+0.986539 & -0.1635219 & 0 & 99.72593255 \\ 
+0.1635219 & 0.986539 & 0 & 5.5100 \\  
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
-\end{bmatrix}$$
+\end{bmatrix}
+$$
 
 ## 2.7 Helmert Transition Curve
 
@@ -1304,7 +1305,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
+$$M_{h} = M_{CSP} M_N M_{PC} = I\ I\ 
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7485\\
 0.16589 & 0.98614 & 0 & 4.9458\\
@@ -1488,11 +1489,11 @@ $D_{sr}$ = `IfcAlignmentCantSegment.StartCantRight`
 
 $D_{er}$ = `IfcAlignmentCantSegment.EndCantRight`
 
-$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$,  Start Cant Angle
+$\beta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$,  Start Cross Slope
 
-$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cant Angle
+$\beta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cross Slope
 
-$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)$, Cant Factor
+$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \beta_e - \beta_s \right)$, Cant Factor
 
 Compute the polynomial spiral parameters
 
@@ -1500,9 +1501,9 @@ $$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$
 
-$$ \theta_s = \frac{(0. - 0.)}{1.5} = 0.0$$
+$$ \beta_s = \frac{(0. - 0.)}{1.5} = 0.0$$
 
-$$ \theta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$
+$$ \beta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$
 
 $$ cf = -420\left(\frac{1.8}{100}\right)(0.066667-0.)= -0.504$$
 
