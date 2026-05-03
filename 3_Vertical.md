@@ -6,9 +6,9 @@ A vertical alignment defines the elevation profile of a route as a function of d
 
 The geometric representation of a vertical alignment is accomplished with `IfcGradientCurve`. This defines the vertical alignment in a "distance along, elevation" coordinate system. Distance along is measured along `IfcGradientCurve.BaseCurve` = `IfcCompositeCurve`.
 
-Table 3.1-1 maps each `IfcAlignmentVertical.PredefinedType` to its corresponding parent curve type.
+Table 3.1-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corresponding parent curve type.
 
-  Business Logic (`IfcAlignmentVertical.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
+  Business Logic (`IfcAlignmentVerticalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
   ---------------------------------------|-----------------------------------
   CONSTANTGRADIENT                       |`IfcLine`
   CIRCULARARC                            |`IfcCircle`
