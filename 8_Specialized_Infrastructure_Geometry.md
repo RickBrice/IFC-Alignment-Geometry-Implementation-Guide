@@ -8,7 +8,7 @@ Describe when this surface geometry might be advantagous to use
 * Roadway surface
 * Visualization of superelevation transitions and widenings
 
-![](images\Figure_9.1_Superelevation_Transition.png)
+![](images/Figure_9.1_Superelevation_Transition.png)
 
 *Figure 8.1-1 Superelevation transition*
 
@@ -16,7 +16,7 @@ Describe when this surface geometry might be advantagous to use
 
 Describe the concept of breaklines for widening sections.
 
-![](images\Figure_9.2_Sectioned_Surface_with_Breaklines.png)
+![](images/Figure_9.2_Sectioned_Surface_with_Breaklines.png)
 
 *Figure 8.1.1-1 Sectioned surface with breaklines*
 
