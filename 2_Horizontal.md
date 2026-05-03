@@ -52,7 +52,7 @@ $M_N$ simultaneously translates the trim-start point to the origin and rotates s
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -x_0\sin\theta_0 - y_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -424,6 +424,8 @@ The curve tangent angle, curvature, and point on the curve are given by the foll
 
 $$\theta(s) = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$
 
+**[todo: review - where does the pi/2 come from?]**
+
 $$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
 
 $$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$
@@ -517,9 +519,11 @@ $$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \fra
 
 **Step 2 — Form the normalization matrix $M_N$**
 
+**[todo: add calc for translation terms, check the math]**
+
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -x_0\sin\theta_0 - y_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
@@ -656,6 +660,7 @@ The geometric representation is
 ~~~
 
 —-
+
 :warning:
 
 There is a flaw in the IFC Specification. [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) indicates the cubic formula is $y=\frac{x^3}{6RL}$ which means the `IfcPolynomialCurve.CoefficentY[3]` attribute must have unit of $Length^{-2}$. This is a direct contradiction to [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm) which clearly states the coefficent are real values (i.e. scalar values) with `IfcReal`.
@@ -1017,6 +1022,8 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 **Step 4 — Evaluate and map the point at $t = 100$**
+
+**[todo: review this, it is from ai. change step title to match other curve types. add figure thatbshows both half parent curves]**
 
 Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying `Position`) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:
 
