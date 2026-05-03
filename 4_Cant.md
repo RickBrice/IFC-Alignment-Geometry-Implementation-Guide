@@ -1097,7 +1097,7 @@ $\theta_0 = 0$
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1518,7 +1518,7 @@ $D'(0) = 0,\ \theta_0 = 0$
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
