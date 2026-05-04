@@ -2,6 +2,7 @@ todo:
 * Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent
 * Add figure for IfcClothoid showing both the X < 0 and X > 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.
 * Review all subsections in this section for consistency
+* think about reversing steps 3 and 4
 
 # Section 2.0 - Horizontal Alignment
 
@@ -511,13 +512,17 @@ $$\theta_0(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.389
 
 and compute the point on the curve
 
-$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602$$
+$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602\ m$$
 
-$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$
+$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347\ m$$
 
 **Step 2 — Form the normalization matrix $M_N$**
 
 **[todo: add calc for translation terms, check the math]**
+
+$$-(-142.04941746210602\ m) \cos(-0.238095237) - (11.292042785713347\ m) \sin(-0.238095237) = ?$$
+
+$$(-142.04941746210602\ m) \sin(-0.238095237) - (11.292042785713347\ m) \cos(-0.238095237) = ?$$
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
