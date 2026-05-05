@@ -518,7 +518,9 @@ $$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \fra
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-**[todo: add calc for translation terms, check the math]**
+$$\cos(-0.238095237) = 0.971788979$$
+
+$$\sin(-0.238095237) = -0.235852028$$
 
 $$-(-142.04941746210602\ m) \cos(-0.238095237) - (11.292042785713347\ m) \sin(-0.238095237) = 140.705309648\ m$$
 
