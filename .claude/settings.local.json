@@ -17,7 +17,8 @@
       "PowerShell(python -c \"import mistune; import mistune.plugins; import pkgutil; print\\([m.name for m in pkgutil.iter_modules\\(mistune.plugins.__path__\\)]\\)\")",
       "Bash(python *)",
       "Bash(grep -n \"\\\\\\\\\\\\\\\\end{bmatrix}\\\\$[^\\\\$]\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")",
-      "Bash(grep -Pn \"\\\\\\\\\\\\\\\\end\\\\{bmatrix\\\\}\\\\$\\(?!\\\\$\\)\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")"
+      "Bash(grep -Pn \"\\\\\\\\\\\\\\\\end\\\\{bmatrix\\\\}\\\\$\\(?!\\\\$\\)\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")",
+      "PowerShell(Rename-Item *)"
     ]
   }
 }

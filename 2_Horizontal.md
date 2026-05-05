@@ -1,6 +1,4 @@
 todo:
-* Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent
-* Add figure for IfcClothoid showing both the X < 0 and X > 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.
 * Review all subsections in this section for consistency
 * think about reversing steps 3 and 4
 
@@ -328,9 +326,11 @@ The parent curve can be defined as follows:
 ~~~
 
 This is a circle centered at point (0,300) with the local X-axis aligned
-with the negative global Y-axis.
+with the negative global Y-axis as shown in Figure 2.4.2-1.
 
-[todo: add a figure of the circle along with the local and global coordinate systems.]
+![](images/IfcCircle_Parent_Curve_Trimming.png)
+
+*Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve*
 
 The parent curve is placed such that a trim starting at 0.0 is at
 (0,0) and the tangent is in the direction (1,0).
@@ -459,7 +459,15 @@ $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}= \frac{100}{1000} - \frac{100}{300} = -0
 
 $$A = \frac{L}{\sqrt{|f|}}\frac{f}{|f|} = \frac{100}{\sqrt{| -0.23333|}}\frac{-0.23333}{| -0.23333|} = -207.0196678$$
 
-The curve segment starts where the radius is 300. The distance from the
+Place the parent curve at (0,0) with a tangent direction of (1,0)
+
+~~~
+#45 = IFCCLOTHOID(#46, -207.019667802706);
+#46 = IFCAXIS2PLACEMENT2D(#47, $);
+#47 = IFCCARTESIANPOINT((0., 0.));
+~~~
+
+The curve segment starts where the radius is 300. A positive radius indicates a counter-clockwise curve which is a curve towards the left. The distance from the
 origin where this radius occurs can be computed from the curvature
 equation. The curvature at the start is 1/300 and the clothoid constant
 is -207.0196678. Solve for distance from origin.
@@ -470,13 +478,11 @@ $$\frac{1}{300} = \frac{- 207.0196678}{\left| - {207.0196678}^{3} \right|}s$$
 
 $$s = -142.8571429$$
 
-Place the parent curve at (0,0) with a tangent direction of (1,0)
+Figure 2.5.2-1 shows the parent curve clothoid with the section having $\kappa_s = \frac{1}{300}$ and $\kappa_e = \frac{1}{1000}$ highlighted. This is the segment that `IfcCurveSegment` must trim from the parent curve. The negative clothoid constant results in the parent curve in quadrants 2 and 4. The curvature is positive in quadrant 2. For this reason, the `SegmentStart` attribute is negative. From ths starting point, the trimming progresses to a larger radius, which is towards the origin. For this reason `SegmentLength` is a positive value. If the trimming were to progress to a smaller radius, `SegmentLength` would be a negative value. The `SegmentStart` and `SegmentLength` attributes can be positive and negative values in any combination. This is true for all parent curve types.
 
-~~~
-#45 = IFCCLOTHOID(#46, -207.019667802706);
-#46 = IFCAXIS2PLACEMENT2D(#47, $);
-#47 = IFCCARTESIANPOINT((0., 0.));
-~~~
+![](images/IfcClothoid.svg)
+
+*Figure 2.5.2-1 - `IfcCurveSegment` trimmed from an `IfcClothoid` parent curve*
 
 Place the curve segment at (0,0) with the tangent in the direction
 (1,0).

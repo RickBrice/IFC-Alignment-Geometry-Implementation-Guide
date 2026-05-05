@@ -1,6 +1,6 @@
 # Section 3.0 - Vertical Alignment
 
-A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the complete three-dimensional geometry of a road, railway, or other linear infrastructure element. 
+A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the three-dimensional geometry of a road, railway, or other linear infrastructure element. 
 
 ## 3.1 General
 

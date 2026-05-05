@@ -13,7 +13,9 @@ OUTPUT_PDF = ROOT / "IFC_Alignment_Guide.pdf"
 EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
 CHAPTERS = [
-    "README.md",
+    "Cover.md",
+    "0_Forward.md",
+    "TableOfContents.md",
     "1_Introduction.md",
     "2_Horizontal.md",
     "3_Vertical.md",

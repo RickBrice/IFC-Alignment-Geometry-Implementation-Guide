@@ -72,14 +72,21 @@ a { color: #1a4f8a; }
 </head>
 <body>
 <h1>IFC4x3 Alignment Geometry Implementation Guide</h1>
+<p>An implementation guide for developers adding IFC4x3 alignment geometry support to infrastructure software applications.</p>
 <p>Richard Brice, PE</p>
-<h2>Forward</h2>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Cover.jpg" alt="" /></p>
+
+<div class="chapter-sep"></div>
+<h1>0.0 Forward</h1>
 <p><code>IfcAlignment</code>, and the related geometric concepts, are new to the IFC4x3 specification. By virtue of expanding the IFC specification into the infrastructure domain, an entirely new audience is summoned into the <a href="buildingsmart.org">buildingSmart</a> community. I am one of those new arrivals.</p>
 <p>The IFC specification is very technical and is written with an expectation that the reader has a high level of knowledge and experience with IFC. Being a technical specification, there is no hand-holding for the novice. Industry guidance documents are generally not available to assist those new to the infrastructure and alignment aspects of IFC4x3.</p>
 <p>I set out to add alignment geometry support to the <a href="https://www.ifcopenshell.org">IfcOpenShell Toolkit</a>. Being a bridge engineer, I am well versed in highway alignment geometry. I was completely overwhelmed and befuddled with alignment representations in the IFC specifications. Through a long and persistent struggle, I was able to figure out most all of what a developer needs to implement IFC alignment geometry in a software application.</p>
 <p>This implementation guide captures what I have learned about IFC4x3 alignment geometry and provides guidance as to how a software developer may go about creating an implementation. I hope that other developers find this guide useful, because in the end, IFC is about interoperability. We all need a common understanding of the infrastructure alignment concepts and geometry to successfully exchange information.</p>
-<h2>Table of Contents</h2>
-<p>1.0 <a href="1_Introduction.md">Introduction</a><br />
+
+<div class="chapter-sep"></div>
+<h1>Table of Contents</h1>
+<p>0.0 <a href="0_Forward.md">Forward</a><br />
+1.0 <a href="1_Introduction.md">Introduction</a><br />
 2.0 <a href="2_Horizontal.md">Horizontal</a><br />
 3.0 <a href="3_Vertical.md">Vertical</a><br />
 4.0 <a href="4_Cant.md">Cant</a><br />
@@ -313,8 +320,8 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 </code></pre>
 <p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/image4.png" alt="" /></p>
 <p><em>Figure 1.5.2.2-1 — Example of <code>IfcGradientCurve</code> with a start location and length different than the <code>IfcCompositeCurve</code> BaseCurve.</em></p>
-<h2>1.6 Reference Implementatio ans Segment Mapping:</h2>
-<p>The sections that follow cover the mapping of the semantic definition of alignment segments (<code>IfcAlignmentSegment</code> subtypes) to their corresponding geometric representation (<code>IfcCurveSegment.ParentCurve</code>). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
+<h2>1.6 Reference Implementation and Segment Mapping:</h2>
+<p>Sections <a href="2_Horizontal.md">2.0</a>, <a href="3_Vertical.md">3.0</a>, and <a href="4_Cant.md">4.0</a> discuss the mapping of the semantic definition of alignment segments (<code>IfcAlignmentSegment</code> subtypes) to their corresponding geometric representation (<code>IfcCurveSegment.ParentCurve</code>). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
 <a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry">IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 (github.com)</a>.</p>
@@ -357,17 +364,16 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 <div class="chapter-sep"></div>
 <p>todo:</p>
 <ul>
-<li>Add figure for IfcCircle showing local and global axes, along with trimmed portion and start trim tangent</li>
-<li>Add figure for IfcClothoid showing both the X &lt; 0 and X &gt; 0 sides. Show trimmed portion highlighting that SegmentStart is a negative value and SegmentLength is a positive value. Add a discussion about the sign of start and length, being clear that it is true for all IfcCurveSegment trimming, not just clothoid.</li>
 <li>Review all subsections in this section for consistency</li>
+<li>think about reversing steps 3 and 4</li>
 </ul>
 <h1>Section 2.0 - Horizontal Alignment</h1>
 <p>The geometric representation of a horizontal alignment is accomplished with an <code>IfcCompositeCurve</code>. The composite curve consists of a sequence of <code>IfcCurveSegment</code> entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.</p>
-<p>Table 2.0-1 maps each <code>IfcAlignmentHorizontal.PredefinedType</code> to its corresponding parent curve type.</p>
+<p>Table 2.0-1 maps each <code>IfcAlignmentHorizontalSegment.PredefinedType</code> to its corresponding parent curve type.</p>
 <table>
 <thead>
 <tr>
-  <th>Business Logic (<code>IfcAlignmentHorizontal.PredefinedType</code>)</th>
+  <th>Business Logic (<code>IfcAlignmentHorizontaSegment.PredefinedType</code>)</th>
   <th>Geometric Representation (<code>IfcCurveSegment.ParentCurve</code>)</th>
 </tr>
 </thead>
@@ -435,7 +441,7 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 </tr>
 <tr>
   <td>Angle of tangent line, RefDirection = $\cos\left( \theta(s) \right),\sin\left( \theta(s) \right)$</td>
-  <td>$$\theta(s) = \int_{}^{}{\kappa(s)ds}$$</td>
+  <td>$$\theta(s)$$</td>
 </tr>
 <tr>
   <td>X-ordinate as a function of curve length s</td>
@@ -456,7 +462,7 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 <p>$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.</p>
 <p>$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -x_0\sin\theta_0 - y_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -513,7 +519,7 @@ example below. <code>IfcLine</code> is an infinitely long line that passes throu
 specified point at some direction in the X-Y plane. A valid, but unnecessisarly complex parent curve is show in Figure 2.3.2.2-1. The <code>IfcLine</code> passes through poin t(1000,-800) and is direct at 135° from the x-axis. The <code>IfcCurveSegment</code> trim starts 10 m from (1000,-800) and the trimmed segment has a lenght of 1956.796 m.</p>
 <p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2.3_IfcLine_arbitrary_placement.svg" alt="" /></p>
 <p><em>Figure 2.3.2-2 IfcLine at arbitrary placement</em></p>
-<p>Figure 2.3.2-1 represents a valid parent curve defiition and implementations must be prepared to properly interpret this geometry. This guide defines general algorithms to accomodate this geometry.</p>
+<p>Figure 2.3.2-2 represents a valid parent curve defiition and implementations must be prepared to properly interpret this parect curve geometry. This guide defines general algorithms to accomodate this geometry.</p>
 <p>In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.</p>
 <p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifcline_parent_curve.svg" alt="" /></p>
 <p><em>Figure 2.3.2-3 IfcLine parent curve at origin</em></p>
@@ -633,8 +639,9 @@ of 300 m, and an arc length of 100 m. The semantic definition is</p>
 #48 = IFCDIRECTION((0., -1.));
 </code></pre>
 <p>This is a circle centered at point (0,300) with the local X-axis aligned
-with the negative global Y-axis.</p>
-<p>[todo: add a figure of the circle along with the local and global coordinate systems.]</p>
+with the negative global Y-axis as shown in Figure 2.4.2-1.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcCircle_Parent_Curve_Trimming.png" alt="" /></p>
+<p><em>Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve</em></p>
 <p>The parent curve is placed such that a trim starting at 0.0 is at
 (0,0) and the tangent is in the direction (1,0).</p>
 <p>The curve segment is defined by its placement at a segment trimmed from
@@ -697,7 +704,7 @@ Source Model:
 
 <h3>2.5.1 Parent Curve Parametric Equations</h3>
 <p>The curve tangent angle, curvature, and point on the curve are given by the following equations</p>
-<p>$$\theta(s) = \int_{}^{}{\kappa(s)ds} = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$</p>
+<p>$$\theta(s) = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$</p>
 <p>$$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$</p>
 <p>$$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$</p>
 <p>$$y(u) = A\sqrt{\pi}\int_{0}^{u}{\sin{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$</p>
@@ -718,18 +725,21 @@ The semantic definition is</p>
 <p>$$R_{s} = 300,\ R_{e} = 1000,\ L = 100$$</p>
 <p>$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}= \frac{100}{1000} - \frac{100}{300} = -0.23333$$</p>
 <p>$$A = \frac{L}{\sqrt{|f|}}\frac{f}{|f|} = \frac{100}{\sqrt{| -0.23333|}}\frac{-0.23333}{| -0.23333|} = -207.0196678$$</p>
-<p>The curve segment starts where the radius is 300. The distance from the
+<p>Place the parent curve at (0,0) with a tangent direction of (1,0)</p>
+<pre><code>#45 = IFCCLOTHOID(#46, -207.019667802706);
+#46 = IFCAXIS2PLACEMENT2D(#47, $);
+#47 = IFCCARTESIANPOINT((0., 0.));
+</code></pre>
+<p>The curve segment starts where the radius is 300. A positive radius indicates a counter-clockwise curve which is a curve towards the left. The distance from the
 origin where this radius occurs can be computed from the curvature
 equation. The curvature at the start is 1/300 and the clothoid constant
 is -207.0196678. Solve for distance from origin.</p>
 <p>$$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$</p>
 <p>$$\frac{1}{300} = \frac{- 207.0196678}{\left| - {207.0196678}^{3} \right|}s$$</p>
 <p>$$s = -142.8571429$$</p>
-<p>Place the parent curve at (0,0) with a tangent direction of (1,0)</p>
-<pre><code>#45 = IFCCLOTHOID(#46, -207.019667802706);
-#46 = IFCAXIS2PLACEMENT2D(#47, $);
-#47 = IFCCARTESIANPOINT((0., 0.));
-</code></pre>
+<p>Figure 2.5.2-1 shows the parent curve clothoid with the section having $\kappa_s = \frac{1}{300}$ and $\kappa_e = \frac{1}{1000}$ highlighted. This is the segment that <code>IfcCurveSegment</code> must trim from the parent curve. The negative clothoid constant results in the parent curve in quadrants 2 and 4. The curvature is positive in quadrant 2. For this reason, the <code>SegmentStart</code> attribute is negative. From ths starting point, the trimming progresses to a larger radius, which is towards the origin. For this reason <code>SegmentLength</code> is a positive value. If the trimming were to progress to a smaller radius, <code>SegmentLength</code> would be a negative value. The <code>SegmentStart</code> and <code>SegmentLength</code> attributes can be positive and negative values in any combination. This is true for all parent curve types.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcClothoid.svg" alt="" /></p>
+<p><em>Figure 2.5.2-1 - <code>IfcCurveSegment</code> trimmed from an <code>IfcClothoid</code> parent curve</em></p>
 <p>Place the curve segment at (0,0) with the tangent in the direction
 (1,0).</p>
 <pre><code>#42 = IFCAXIS2PLACEMENT2D(#43, #44);
@@ -749,12 +759,16 @@ curve segment.</p>
 <p>Compute the point on curve tangent direction</p>
 <p>$$\theta_0(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.3893278)^{2} = -0.238095237$$</p>
 <p>and compute the point on the curve</p>
-<p>$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602$$</p>
-<p>$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347$$</p>
+<p>$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602\ m$$</p>
+<p>$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347\ m$$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
+<p>$$\cos(-0.238095237) = 0.971788979$$</p>
+<p>$$\sin(-0.238095237) = -0.235852028$$</p>
+<p>$$-(-142.04941746210602\ m) \cos(-0.238095237) - (11.292042785713347\ m) \sin(-0.238095237) = 140.705309648\ m$$</p>
+<p>$$(-142.04941746210602\ m) \sin(-0.238095237) - (11.292042785713347\ m) \cos(-0.238095237) = 22.529160405\ m?$$</p>
 <p>$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -x_0\cos\theta_0 - y_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -x_0\sin\theta_0 - y_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & x_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
@@ -856,8 +870,8 @@ The semantic definition is</p>
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 </code></pre>
-<p>—-
-:warning:</p>
+<p>—-</p>
+<p>:warning:</p>
 <p>There is a flaw in the IFC Specification. <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm">IfcAlignmentHorizontalSegment</a> indicates the cubic formula is $y=\frac{x^3}{6RL}$ which means the <code>IfcPolynomialCurve.CoefficentY[3]</code> attribute must have unit of $Length^{-2}$. This is a direct contradiction to <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm">IfcPolynomialCurve</a> which clearly states the coefficent are real values (i.e. scalar values) with <code>IfcReal</code>.</p>
 <p>Why is this a problem? The calculation of a point on the polynomal curve is different depending on how the coefficients are defined.</p>
 <p>The parametric form of the polynomial curve is $\lambda(u) = ( x(u), y(u), z(u) )$. The polynomial curve represents real geometry so the resulting values, $x$, $y$, and $z$ must have units of $Length$.</p>
@@ -876,10 +890,10 @@ The semantic definition is</p>
 <p>The parameter $u$ and the coefficients are scalar so they must be multipled with the curve length $L$ to result values of Length.</p>
 <p><strong>The equations for $x$, $y$, and $z$ differ depending on the parameterization.</strong></p>
 <p>Concept Template <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html">4.2.2.1.5 Cubic Transition Segment</a> and <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm">IfcAlignmentHorizontalSegment</a> provide clear direction (not withstanding typographical errors) that <code>IfcPolynomalCurve</code> is to be evaluated as $y = CoefficientsY[3]x^3$ which dictates that $CoefficientsY[3]$ must be in units of $Length^{-2}$ and must be encoded in the <code>IfcPolynomialCurve.CoefficientY</code> attribute as an <code>IfcReal</code>.</p>
-<p>An offical <a href="https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/">Implementation Agreement</a> doesn't seem to exist, however, this interpetation is consistent with several different discussions on <a href="https://github.com/buildingSMART/IFC4.x-IF/issues/169">GitHub</a>.</p>
+<p>An offical <a href="https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/">Implementation Agreement</a> doesn't seem to exist, however, this interpetation is consistent with discussions on <a href="https://github.com/buildingSMART/IFC4.x-IF/issues/169">GitHub</a>.</p>
 <p>:warning:</p>
 <p>—-</p>
-<h3>2.6.3 Evaluate Point on Curve</h3>
+<h3>2.6.3 Compute Point on Curve</h3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
@@ -918,20 +932,21 @@ identity matrix.</p>
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p>Apply the normalization and curve segment placement to the parent curve point</p>
-<p>$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
+<p>$$M_{h} = M_{CSP}\ M_N\ M_{PC} = I \, I  
 \begin{bmatrix}
 0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+$$M_{h} = 
+\begin{bmatrix}
+0.986539 & -0.1635219 & 0 & 99.72593255 \\ 
+0.1635219 & 0.986539 & 0 & 5.5100 \\  
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-=
-\begin{bmatrix}
-0.986539 & -0.1635219 & 0 & 99.72593255 \\
-0.1635219 & 0.986539 & 0 & 5.5100 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$</p>
+$$</p>
 <h2>2.7 Helmert Transition Curve</h2>
 <p>The Helmert curve is unique in that it is semantically defined as a single layout segment (<code>IfcAlignmentHorizontalSegment</code>) but geometrically defined with two curve segments (<code>IfcCurveSegment</code>), each representing half of the transition curve. The parent curve for a helmert transition curve is <code>IfcSecondOrderPolynomialSpiral</code>.</p>
 <!--
@@ -1088,6 +1103,7 @@ placement of the second parent curve is needed.</p>
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p><strong>Step 4 — Evaluate and map the point at $t = 100$</strong></p>
+<p><strong>[todo: review this, it is from ai. change step title to match other curve types. add figure thatbshows both half parent curves]</strong></p>
 <p>Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying <code>Position</code>) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:</p>
 <p>$$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$</p>
 <p>$$\theta_{raw}(100) = -0.22222 + 0.66666 - 0.33333 = 0.11111\ \text{rad}$$</p>
@@ -1118,7 +1134,8 @@ placement of the second parent curve is needed.</p>
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p>$$M_h = M_{CSP}(M_N M_{PC}) = \begin{bmatrix}
+<p>$$M_h = M_{CSP}\ M_N\ M_{PC}$$
+$$M_{h} = \begin{bmatrix}
 0.97260 & -0.23256 & 0 & 99.2496\\
 0.23256 & 0.97260 & 0 & 9.7486\\
 0 & 0 & 1 & 0\\
@@ -1165,7 +1182,7 @@ $$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \rig
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 </code></pre>
-<h3>2.8.3 Evaluate Point on Curve</h3>
+<h3>2.8.3 Compute Point on Curve</h3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
@@ -1192,14 +1209,14 @@ identity matrix.</p>
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
 <p>Apply the normalization and curve segment placement to the parent curve point</p>
-<p>$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
+<p>$$M_{h} = M_{CSP} M_N M_{PC}= I \, I
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7486\\
 0.16589 & 0.98614 & 0 & 4.98981\\
 0 & 0 & 1 & 0\\
 0&0&0&1
-\end{bmatrix}
-=
+\end{bmatrix}$$
+$$M_{h} = 
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7486\\
 0.16589 & 0.98614 & 0 & 4.98981\\
@@ -1242,7 +1259,7 @@ $$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \fra
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 </code></pre>
-<h3>2.9.3 Evaluate Point on Curve</h3>
+<h3>2.9.3 Compute Point on Curve</h3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
@@ -1269,14 +1286,14 @@ identity matrix.</p>
 0&0&0&1
 \end{bmatrix}$$</p>
 <p>Apply the normalization and curve segment placement to the parent curve point</p>
-<p>$$M_{h} = M_{CSP} M_N M_{PC} = I \, I
+<p>$$M_{h} = M_{CSP} M_N M_{PC} = I\ I\ 
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7485\\
 0.16589 & 0.98614 & 0 & 4.9458\\
 0 & 0 & 1 & 0\\
 0&0&0&1
-\end{bmatrix}
-=
+\end{bmatrix}$$
+$$M_{h} = 
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.7485\\
 0.16589 & 0.98614 & 0 & 4.9458\\
@@ -1324,7 +1341,7 @@ $$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \fr
 #46 = IFCAXIS2PLACEMENT2D(#47, $);
 #47 = IFCCARTESIANPOINT((0., 0.));
 </code></pre>
-<h3>2.10.3 Evaluate Point on Curve</h3>
+<h3>2.10.3 Compute Point on Curve</h3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
@@ -1357,8 +1374,8 @@ identity matrix.</p>
 0.16589 & 0.98614 & 0 & 4.70132\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 
-\end{bmatrix}
-=
+\end{bmatrix}$$
+$$M_{h} = 
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.757\\
 0.16589 & 0.98614 & 0 & 4.70132\\
@@ -1391,14 +1408,14 @@ Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Co
 <p>$D_{el}$ = <code>IfcAlignmentCantSegment.EndCantLeft</code></p>
 <p>$D_{sr}$ = <code>IfcAlignmentCantSegment.StartCantRight</code></p>
 <p>$D_{er}$ = <code>IfcAlignmentCantSegment.EndCantRight</code></p>
-<p>$\theta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$,  Start Cant Angle</p>
-<p>$\theta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cant Angle</p>
-<p>$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \theta_e - \theta_s \right)$, Cant Factor</p>
+<p>$\beta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$,  Start Cross Slope</p>
+<p>$\beta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cross Slope</p>
+<p>$cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \beta_e - \beta_s \right)$, Cant Factor</p>
 <p>Compute the polynomial spiral parameters</p>
 <p>$$R_{s} = \infty,\ R_{e} = 300\ m,\ L = 100\ m$$</p>
 <p>$$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} = 0.33333$$</p>
-<p>$$ \theta_s = \frac{(0. - 0.)}{1.5} = 0.0$$</p>
-<p>$$ \theta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$</p>
+<p>$$ \beta_s = \frac{(0. - 0.)}{1.5} = 0.0$$</p>
+<p>$$ \beta_e = \frac{0.1 - 0.0}{1.5} = 0.066667$$</p>
 <p>$$ cf = -420\left(\frac{1.8}{100}\right)(0.066667-0.)= -0.504$$</p>
 <p>Constant term</p>
 <p>$$a_{0} = \frac{L}{R_{s}}= \frac{100}{\infty} = 0$$</p>
@@ -1432,7 +1449,7 @@ Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Co
 #76 = IFCAXIS2PLACEMENT2D(#77, $);
 #77 = IFCCARTESIANPOINT((0., 0.));
 </code></pre>
-<h3>2.11.3 Evaluate Point on Curve</h3>
+<h3>2.11.3 Compute Point on Curve</h3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
@@ -1466,8 +1483,8 @@ identity matrix.</p>
 0.16589613269344608 & 0.9861432315629198 & 0 & 4.499916129045404\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 
-\end{bmatrix}
-=
+\end{bmatrix}$$
+$$M_{h} = 
 \begin{bmatrix}
 0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
 0.16589613269344608 & 0.9861432315629198 & 0 & 4.499916129045404\\
@@ -1477,14 +1494,14 @@ identity matrix.</p>
 
 <div class="chapter-sep"></div>
 <h1>Section 3.0 - Vertical Alignment</h1>
-<p>A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the complete three-dimensional geometry of a road, railway, or other linear infrastructure element.</p>
+<p>A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the  three-dimensional geometry of a road, railway, or other linear infrastructure element.</p>
 <h2>3.1 General</h2>
 <p>The geometric representation of a vertical alignment is accomplished with <code>IfcGradientCurve</code>. This defines the vertical alignment in a &quot;distance along, elevation&quot; coordinate system. Distance along is measured along <code>IfcGradientCurve.BaseCurve</code> = <code>IfcCompositeCurve</code>.</p>
-<p>Table 3.1-1 maps each <code>IfcAlignmentVertical.PredefinedType</code> to its corresponding parent curve type.</p>
+<p>Table 3.1-1 maps each <code>IfcAlignmentVerticalSegment.PredefinedType</code> to its corresponding parent curve type.</p>
 <table>
 <thead>
 <tr>
-  <th>Business Logic (<code>IfcAlignmentVertical.PredefinedType</code>)</th>
+  <th>Business Logic (<code>IfcAlignmentVerticalSegment.PredefinedType</code>)</th>
   <th>Geometric Representation (<code>IfcCurveSegment.ParentCurve</code>)</th>
 </tr>
 </thead>
@@ -1521,7 +1538,7 @@ identity matrix.</p>
 <p>$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.</p>
 <p>$$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & d_0\sin\theta_0 - z_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -1892,48 +1909,17 @@ dy_v & 0 & dx_v & z \\
 \end{bmatrix}$$</p>
 
 <div class="chapter-sep"></div>
-<p>outline:</p>
-<ul>
-<li><p>describe cant in terms of it being a deviation to railroad alignment vertical in curves. it provides for track banking</p>
-</li>
-<li><p>need figure the show cross slope and coordinate system 3D and 2-2D elevation and section.</p>
-</li>
-<li><p>need figure that shows centerline and railhead deviation</p>
-</li>
-<li><p>reference british standard (BS EN 13803:2017 Railway applications - Track - Track alignment design parameters - Track gauges 1 435 mm and wider, Table C.1 &quot;C:\Users\BriceR\OneDrive - Washington State Department of Transportation\BIM for Bridges\Rail Spec\bs-en-13803-2017.pdf&quot;) and describe the equivalent functional form of equations used for horizontal. The form of the horizontal transition spirals equations is the same form as the cant equation.</p>
-</li>
-<li><p>Equivalance of functional form - state that the derivative of $\theta(t)$ equation, which is the curvature $\kappa(t)$, for horizontal has the same form as the $\frac{D(t)}{L^2}$ equation for cant.</p>
-</li>
-<li><p>Need to add a general discussion about the spiral coefficients. This is the text used in some sections - it doesn't need to be repeated everywhere. &quot;The polynomial coefficients must have units of length. The basic form of the coefficient of the $i^{th}$ term is $A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$&quot; &quot;Perform a dimensional analysis with $l$ representing term with length units. We see that the resulting coefficient $A_{i}$ has units of length. $\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$,&quot; - maybe this needs to go in the last segment (or maybe just the dimensionality analysis in the last section)</p>
-</li>
-<li><p>horizontal and cant always use the same curve type, though technically ifc would permit mixing them</p>
-</li>
-<li><p>provide a bit more discussion in the examples. reference the example files</p>
-</li>
-<li><p>need to discuss cross slope, Axis vector, and their orientation and relation to one another. Axis is normal to cross slope line. $\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{D_e - D_s}\right)\bigl(D(s) - D_s\bigr)$. Should this equation use $\Delta D$?</p>
-</li>
-<li><p>state up front that the railhead distance for all examples is 1.5 m, so we don't have to keep restating this</p>
-</li>
-</ul>
 <h1>Section 4.0 - Cant Alignment</h1>
 <p>Cant (also called superelevation) is the transverse inclination of a railway track cross-section: the elevation difference between the two railheads when one rail is raised above the other. By tilting the track into a curve, cant directs a component of gravitational force inward, partially offsetting the centrifugal acceleration experienced by vehicles negotiating the curve. The result is improved ride quality, reduced wheel–rail lateral forces, and the ability to operate at higher speeds through curves without exceeding comfort or safety limits.</p>
 <p>Cant is measured as a length — the height difference between railheads — rather than as an angle. The conversion between the two depends on track gauge. <code>IfcAlignmentCant.RailHeadDistance</code> supplies the centre-to-centre distance between railheads, which is the lever arm for this conversion.</p>
 <h2>4.1 General</h2>
 <p>An <code>IfcSegmentedReferenceCurve</code> describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope.</p>
 <p>An <code>IfcSegmentedReferenceCurve</code> also describes this deviation in elevation. As a subtype of <code>IfcCompositeCurve</code>, an <code>IfcSegmentedReferenceCurve</code> consists of an end to start collection of <code>IfcCurveSegment</code>. An <code>IfcSegmentedReferenceCurve</code> also has a <code>BasisCurve</code> which is typically an <code>IfcGradientCurve</code>.</p>
-<p>The <code>IfcCurveSegment.ParentCurve</code> defines the change in cross
-slope between rail heads over the length of the segment. When the
-<code>IfcCurveSegment.Placement.Location</code> differs from the
-<code>IfcCurveSegment.Placement.Location</code> of the next segment, the
-<code>IfcCurveSegment.ParentCurve</code> also defines variation in the deviating elevation. If the
-<code>IfcCurveSegment.Placement.Location</code> is the same as for the start of the
-next segment, the deviating elevation along the length of the segment is
-constant.</p>
-<p>Table 4.1-1 maps each <code>IfcAlignmentCant.PredefinedType</code> to its corresponding parent curve type.</p>
+<p>Table 4.1-1 maps each <code>IfcAlignmentCantSegment.PredefinedType</code> to its corresponding parent curve type.</p>
 <table>
 <thead>
 <tr>
-  <th>Business Logic (<code>IfcAlignmentCant.PredefinedType</code>)</th>
+  <th>Business Logic (<code>IfcAlignmentCantSegment.PredefinedType</code>)</th>
   <th>Geometric Representation (<code>IfcCurveSegment.ParentCurve</code>)</th>
 </tr>
 </thead>
@@ -1969,44 +1955,61 @@ constant.</p>
 </tbody>
 </table>
 <p><em>Table 4.1-1 — Mapping of business logic to geometric representation for cant alignment</em></p>
-<p>The transition functions used to shape cant variation have the same functional form as functions used for horizontal transition curves: clothoid (linear cant), Helmert, Bloss, cosine, sine, and Viennese bend. In practice, the cant transition type always matches the horizontal transition type, though IFC does not enforce this constraint.</p>
-<p>As an example, the radius of curvature for a Helmert curve is a second order polynomial of the form</p>
+<h3>4.1.1 Cant Transition</h3>
+<p>Cant transitions occur when the segment start elevation differs from the
+segment start elevation of the next segment. The left section in Figure 4.1-1 shows the cross section of a rail line. At the start of the segment, right rail is elevated above the left rail. The y-ordinate of <code>IfcCurveSegment.Placement.Location</code> indicates the deviating elevation at the centerline between rails, which is one-half the cant value at the right rail. The y-ordinate of <code>IfcCurveSegment.Placement.Location</code> for the next segment indicates a value of 0.0 meaning that the cant transitioned from the starting value to zero over the length of the segment. This transition is the rotation of the right rail about the left rail, and the corresponding change in deviating elevation at the centerline over the length of the segment. The cant transition is shown in the right section of Figure 4.1.1-1 as a linear transition. <code>IfcCurveSegment.ParentCurve</code> defines how the transition occurs. Figure 4.1.1-2 shows a non-linear transition of the centerline and right rail deviating elevations. Notice that the deviating elevation of the left rail is constant at zero because it is the point of rotation.</p>
+<p>When the segment start elevation is the same as the start of the next segment, the deviating elevation along the length of the segment is constant. This occurs when centrifugal forces are constant or zero, in constant radius curvature and straight sections of the railway, respectively.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcSegmentedReferenceCurve.jpg" alt="" /></p>
+<p><em>Figure 4.1.1-1 - cross section and elevation of a cant segment (source: bSI)</em></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Cant.svg" alt="" /></p>
+<p><em>Figure 4.1.1-2 - Deviating elevation of rails</em></p>
+<p>The railhead cross slope angle is defined by the <code>IfcCurveSegment.Placement.Axis</code> attribute. The <code>Axis</code> direction generally upwards. The <code>Axis</code> direction is therefore perpendicular to a line connecting the rails. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, <code>Axis</code> is (0,0,1) and the angle measured from the y-axis is $\frac{\pi}{2}$.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/CrossSlopeAngle.svg" alt="" /></p>
+<p><em>Figure 4.1.1-3 - Rail head cross slope</em></p>
+<h3>4.1.2 Coordinate System</h3>
+<p>The coordinate system is show in Figure 4.1.1-1, but it is difficult to understrand.</p>
+<p><code>IfcCurveSegment.Placement.RefDirection</code> is tangent to the &quot;distance along&quot; the base curve in the horizontal plane, (e.g. <code>IfcSegmentedReferenceCurve.BaseCurve</code> =&gt; <code>IfcGradientCurve.BaseCurve</code> =&gt; <code>IfcCompositeCurve</code>).</p>
+<p>The railway cross section is in the plane defined by <code>Y</code> and <code>Z</code>. Looking in the positive sense down the alignment, <code>Y</code> is towards the left and <code>Z</code> is upwards. The <code>Axis</code> direction is measured clockwise from <code>Y</code>.</p>
+<h3>4.1.3 Transition Functions</h3>
+<p>The transition functions used to shape cant variation have the same functional form as functions used for horizontal transition curves: line, clothoid (linear cant), Helmert, Bloss, cosine, sine, and Viennese bend. In practice, the cant transition type always matches the horizontal transition type and segment length, though IFC does not enforce this constraint.</p>
+<p>As an example, the horizontal tangent direction, $\theta(t)$, and the radius of curvature, $\kappa(t)$, for a Helmert curve is a second order polynomial of the form</p>
 <p>$$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$</p>
 <p>$$\kappa(t) = \frac{\theta(t)}{dt} = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$</p>
-<p>The cant deviating elevation is of the form</p>
+<p>The cant deviating elevation for a Helmert transition is of the same form as the curvature</p>
 <p>$$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$</p>
 <p>The deviating elevation has the same functional form as the radius of curvature of the horizontal alignment segment.</p>
 <p>In IFC, the semantic cant profile is encoded in <code>IfcAlignmentCant</code> and its child <code>IfcAlignmentCantSegment</code> entities. The geometric representation is an <code>IfcSegmentedReferenceCurve</code>, which evaluates the cant at every point along the alignment and, in conjunction with the horizontal alignment <code>IfcCompositeCurve</code> and the vertical alignment <code>IfcGradientCurve</code>, produces the full 3D track centerline geometry.</p>
-<p>[todo: add a figure to illustrate the cross slope and centerline elevation deviation]</p>
-<p>Each <code>IfcCurveSegment</code> in an <code>IfcSegmentedReferenceCurve</code> is evaluated in a two-dimensional coordinate system whose axes are <em>distance along the horizontal alignment</em> $d$ and <em>deviating elevation</em> $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.</p>
+<p>Each <code>IfcCurveSegment</code> in an <code>IfcSegmentedReferenceCurve</code> is evaluated in a two-dimensional coordinate system whose axes are <em>distance along the horizontal alignment</em> $s$ and <em>deviating elevation</em> $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.</p>
 <p>The <code>StartCantLeft</code> $D_{sl}$, <code>EndCantLeft</code> $D_{el}$, <code>StartCantRight</code> $D_{sr}$, and <code>EndCantRight</code> $D_{el}$ attributes of <code>IfcAlignmentCantSegment</code> determine $D_s$ and $D_e$ as the averages of their respective left and right values:</p>
-<p>$$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2}$$</p>
-<p>The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the <code>Axis</code> vectors of the <code>IfcCurveSegment.Placement</code>, using the deviating elevation as the interpolation parameter:</p>
+<p>$$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2} \quad \Delta D = D_e - D_s$$</p>
+<p>The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the <code>Axis</code> vector of the <code>IfcCurveSegment.Placement</code>, using the deviating elevation as the interpolation parameter:</p>
 <p>$$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(s) - D_s\bigr)$$</p>
-<p>where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D_s$ and $D_e$ are the corresponding deviating elevations. $\Delta D = D_e - D_s$, and $D(s)$ is the deviation elevation at $s$. The <code>Axis</code> vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The <code>Axis</code> vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the <code>Axis</code> vector. In sections without cant, <code>Axis</code> is (0,0,1) and $\phi = \frac{\pi}{2}$.</p>
+<p>$$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$$</p>
+<p>where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(s)$ is the deviation elevation at $s$. The <code>Axis</code> vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The <code>Axis</code> vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the <code>Axis</code> vector. In sections without cant, <code>Axis</code> is (0,0,1) and $\phi = \frac{\pi}{2}$.</p>
 <p>Together, the distance along, the deviating elevation $D(s)$, and the cross-slope angle $\phi(s)$ fully specify a 3D placement frame for the track centerline at each arc-length $s$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.</p>
+<p>All examples use a railhead distance $D_{rh} = 1.5\ m$.</p>
 <h2>4.2 Curve Segment Evaluation Algorithm</h2>
-<p>Cant segments are evaluated in a two-dimensional &quot;distance along, deviating elevation&quot; coordinate system in which $x(s) = d$ is the distance measured along the horizontal <code>IfcCompositeCurve</code> and $y(s) = D(s)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi$, making the local frame inherently three-dimensional.</p>
+<p>Cant segments are evaluated in a two-dimensional &quot;distance along, deviating elevation&quot; $(s,D(s))$ coordinate system in which $d$ is the distance measured along the horizontal <code>IfcCompositeCurve</code> and $D(s)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.</p>
 <p><strong>Steps 1—4</strong> follow the identical procedure describe in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and deviating elevation for the horizontal y-coordinate. Let $s_0 = $ <code>IfcAlignmentCantSegment.StartDistAlong</code>.</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
-<p>Compute the deviating elevation $z_0 = D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$. $d_0 = x(s_0)$ is the distance along the parent curve at the trim start.</p>
+<p>Compute the deviating elevation $D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$.</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.</p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
-<p>$M_{CSP}$ is constructed from <code>IfcCurveSegment.Placement</code>: $(d_p, D_p)$ is the <code>Location</code> (distance along, deviating elevation), the <code>RefDirection</code> gives slope angle $\theta_p$, and the <code>Axis</code> gives cross slope angle $\phi_p$.</p>
-<p>$$\mathbf{RefDir}_p = (\cos\theta_p,\ \sin\theta_p,\ 0),\quad \mathbf{Axis}_p = (0,\ \cos\phi_p,\ \sin\phi_p)$$
+<p>$M_{CSP}$ is constructed from <code>IfcCurveSegment.Placement</code>: $(s_p, D_p)$ is the <code>Location</code> (distance along, deviating elevation), the <code>RefDirection</code> gives slope angle $\theta_p$, and the <code>Axis</code> gives cross slope angle $\phi_p$.</p>
+<p>$$\mathbf{RefDir}_p = (\cos\theta_p,\ \sin\theta_p,\ 0),\quad \mathbf{Axis}_p = \mathbf{Z}_p = (0,\ \cos\phi_p,\ \sin\phi_p)$$
 $$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p$$</p>
 <p>The placement in matrix form is</p>
 <p>$$M_{CSP} = \begin{bmatrix} 
-X_p.x & Y_p.x & Axis_p.x & d_p \\
-X_p.y & Y_p.y & Axis_p.y & 0 \\
-X_p.z & Y_p.z & Axis_p.z & D_p \\
+X_p.x & Y_p.x & Z_p.x & s_p \\
+X_p.y & Y_p.y & Z_p.y & 0 \\
+X_p.z & Y_p.z & Z_p.z & D_p \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
@@ -2014,30 +2017,30 @@ X_p.z & Y_p.z & Axis_p.z & D_p \\
 <p>$$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)(D(s) - D_s)$$</p>
 <p>Form the local frame:</p>
 <p>$$\mathbf{X} = (\cos\theta(s),\ \sin\theta(s),\ 0),\quad \mathbf{Z} = (0,\ \cos\phi,\ \sin\phi)$$
-$$\mathbf{Y} = \mathbf{Z} \times \mathbf{X},\quad \mathbf{Axis} = \mathbf{X} \times \mathbf{Y}$$</p>
+$$\mathbf{Y} = \mathbf{Z} \times \mathbf{X}$$</p>
 <p>$$M_{PC} = \begin{bmatrix}
-X.x & Y.x & Axis.x & d \\
-X.y & Y.y & Axis.y & 0 \\
-X.z & Y.z & Axis.z & D(s) \\
+X.x & Y.x & Z.x & s \\
+X.y & Y.y & Z.y & 0 \\
+X.z & Y.z & Z.z & D(s) \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>where $d = x(s)$ is the distance along the horizontal alignment at arc-length $s$.</p>
 <p>Apply the normalization and placement in sequence:</p>
 <p>$$M_c = M_{CSP}\ M_N\ M_{PC}$$</p>
-<p>Column 4 of $M_c$ is $(d,\ 0,\ D)$ — the distance along and deviating elevation. Column 3 (Axis) is the cross-slope direction at that point. Step 5 is performed immediately for this point before moving to the next arc-length $s$.</p>
+<p>Step 5 is performed immediately for this point before moving to the next arc-length $s$.</p>
 <p><strong>Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix</strong></p>
 <p>The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $s$ along the <code>IfcCompositeCurve</code>) and the vertical matrix $M_v$ (evaluated at the same $s$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.</p>
 <p>Construct $M'_v$ as described in Section 3.2.</p>
 <p>Construct $M'_c$ by zeroing the distance-along component in column 4 of $M_c$:</p>
 <p>$${M'}_c = \begin{bmatrix} 
-X.x & Y.x & Axis.x & 0 \\ 
-X.y & Y.y & Axis.y & 0 \\ 
-X.z & Y.z & Axis.z & D \\ 
+X.x & Y.x & Z.x & 0 \\ 
+X.y & Y.y & Z.y & 0 \\ 
+X.z & Y.z & Z.z & D \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>Extract position vectors from each modified matrix (setting row 4 to zero), then zero column 4 before multiplying:</p>
+<p>Extract position vectors from each modified matrix, $M'_v,\ M'_c$, (setting row 4 to zero), then zero column 4 before multiplying:</p>
 <p>$$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ z \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ D \\ 0 \end{bmatrix}$$</p>
 <p>$$M''_v = M'_v \text{ with column 4 set to } (0,0,0,1)^T, \qquad M''_c = M'_c \text{ with column 4 set to } (0,0,0,1)^T$$</p>
+<p><span style="background-color: yellow;color: black">[todo: show the full $M''_v$ and $M''_c$ matrices]</span></p>
 <p>Multiply the three orientation matrices, then add back both position offsets:</p>
 <p>$$M' = M_h \cdot M''_v \cdot M''_c$$</p>
 <p>$$M_{3Dcant} = M' + 
@@ -2059,92 +2062,94 @@ X.z & Y.z & Axis.z & D \\
 <p>Cant has a constant deviating elevation and cross-slope angle in rail segments between curves or in the circular portion of curves where the tracks are banked at a constant rate.</p>
 <p>The parent curve is <code>IfcLine</code>. The slope-intercept form of a line is $y = mx + b$, where $m$ is the slope and $b$ is the $y$-intercept. The derivative is $y' = m$, and the second derivative is $y''= 0$.</p>
 <p>In the context of cant, $D(s) = y'(x)$, so the deviating elevation is a constant value, $m$, and the rate of change of the deviating elevation $D'(s) = y''(x) = 0$.</p>
-<h3>4.3.3 Parent Curve Parametric Equations</h3>
+<h3>4.3.1 Parent Curve Parametric Equations</h3>
 <p>The deviating elevation and its rate of change are given by the following equations.</p>
 <p>$$D(s) = D_s = D_e$$</p>
 <p>$$\frac{d}{ds}D(s) = 0.0$$</p>
 <h3>4.3.2 Semanic Definition to Geometry Mapping</h3>
 <p>Consider 100 m long segment of a railway that is turning towards the left. The right rail is raised 0.16 m through the circular portion of the curve. The sementic definition is</p>
-<pre><code>#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 1.6E-1, 1.6E-1, .CONSTANTCANT.);
+<pre><code>#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0.16, 0.16, .CONSTANTCANT.);
 </code></pre>
 <p>$D_s = \frac{0.0\ m + 0.16\ m}{2} = 0.08\ m \quad D_e = \frac{0.0\ m + 0.16\ m}{2} = 0.08\ m$</p>
 <p>$\Delta D = D_e - D_s = 0.08\ m - 0.08\ m = 0.0\ m$</p>
-<p>The parent curve has a constant elevation at $0.08\ m$ and a slope of $0.0$.</p>
+<p>The parent curve has a constant deviating elevation at $0.08\ m$ and a slope of $0.0$.</p>
 <p>Define the parent curve as an <code>IfcLine</code> passing through (0,0.08) in the direction (1,0).</p>
-<pre><code>#123 = IFCLINE(#124, #125);
-#124 = IFCCARTESIANPOINT((0., 0.08));
-#125 = IFCVECTOR(#126, 1.);
-#126 = IFCDIRECTION((1., 0.));
+<pre><code>#96=IFCCARTESIANPOINT((0.,0.));
+#97=IFCDIRECTION((1.,0.));
+#98=IFCVECTOR(#97,1.);
+#99=IFCLINE(#96,#98);
 </code></pre>
 <p>The <code>IfcCurveSegment</code> trims a segment from the parent curve. The curve segment placement must capture the cross-slope rotation between the rail heads. For this reason the placement is an <code>IfcAxis2Placement3D</code> (instead of <code>IfcAxis2Placement2D</code> used for horizontal and vertical representations).</p>
-<p>The cross-slope angle is $\phi = tan^{-1}\left(\frac{\Delta D}{D_{rh}}\right)$, where $D_{rh}$ is the rail head distance, $1.5\ m$.</p>
-<p>$\phi = tan^{-1}\left(\frac{0.08}{1.5}\right) = 0.05328285$</p>
-<p>$dz_y = sin\phi = sin(0.05328285) = 0.0532576$</p>
-<p>$dz_z = cos\phi = cos(0.05328285) = 0.9985808$</p>
-<pre><code>#113 = IFCCURVESEGMENT(.CONTINUOUS., #119, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #123);
-#119 = IFCAXIS2PLACEMENT3D(#120, #121, #122);
-#120 = IFCCARTESIANPOINT((0., 0.08, 0.));
-#121 = IFCDIRECTION((0.,  0.0532576, 0.9985808));
-#122 = IFCDIRECTION((1., 0., 0.));
+<p>The cross-slope angle is $\phi = tan{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$.</p>
+<p>$\phi = tan^{-1}\left(\frac{1.5}{0.16-0.0}\right) = 1.4645314$</p>
+<p>$dz_y = cos\phi = 0.10606498$</p>
+<p>$dz_z = sin\phi = 0.99435920$</p>
+<pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
+#101=IFCDIRECTION((0.,0.10606498139220574,0.99435920055192883));
+#102=IFCDIRECTION((1.,0.,0.));
+#103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
+#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 </code></pre>
 <h3>4.3.2 Compute Point on Curve</h3>
-<p><strong>[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]</strong></p>
+<span style="background-color: yellow;color: black">
+[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]
+</span>
+
 <p>Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.</p>
 <p><strong>Step 1 - Evaluate the parent curve at the trim start</strong></p>
-<p>$s_0 = 0, D(0) = 0.08\ m, D'(0) = 0.$</p>
-<p>$\phi(0) = tan^{-1}\left(\frac{0.9985808}{0.0532576}\right) = 1.517513518$</p>
+<p>$s_0 = 0, D(0) = D_0 = 0.08\ m, D'(0) = \theta_0 = 0.$</p>
 <p><strong>Step 2 - Form the normalization matrix $M_N$</strong></p>
-<p>$$\mathbf{X}_0 = (1,\ 0,\ 0),\quad \mathbf{Z}_0 = (0,\ 0.0532576,\ 0.9985808)$$
-$$\mathbf{Y}_0 = \mathbf{Z}_0 \times \mathbf{X}_0,\quad \mathbf{Axis}_0 = \mathbf{X}_0 \times \mathbf{Y}_0$$</p>
-<p>$$\mathbf{Y}_0 = (0,\ 0.9985808,\ -0.0532576)$$</p>
-<p>$$\mathbf{Axis}_0 = (0,\ 0.0532576,\ 0.9985808)$$</p>
 <p>$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
- 0 & 0.9985808 & -0.0532576 & 0 \\ 
- 0 & 0.0532576 & 0.9985808 & -0.08 \\
-  0 & 0 & 0 & 1 
+ 0 & 1 & 0 & -0.08 \\ 
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
 <p><strong>Step 3 - Form the curve segment placement matrix $M_{CSP}$</strong></p>
-<p>$$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.0532576,\ 0.9985808)$$
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.0532576,\ 0.9985808),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$</p>
+<p>$$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.10606498,\ 0.99435920)$$
+$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ -0.10606498,\ 0.99435920),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$</p>
 <p>$$M_{CSP} = \begin{bmatrix} 
 1 & 0 & 0 & 0 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 0.99435920 & 0.10606498 & 0.08 \\
+0 & -0.10606498 & 0.99435920 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
 <p><strong>Step 4 - Evaluate and map each point</strong></p>
+<p>Evaluate the parent curve at $s = 50\ m$.</p>
+<p>$D(50\ m) = 50\ m$</p>
+<p>$D'(50\ m) = 0$</p>
 <p>$$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 1 & 0 & 0.08 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>$$M_c = M_{CSP}\, M_N\, M_{PC}$$</p>
+<p>Apply the normalization and placement in sequence:</p>
+<p>$$M_c = M_{CSP}\ M_N\ M_{PC}$$</p>
 <p>$$M_c =
 \begin{bmatrix} 
 1 & 0 & 0 & 0 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 0.99435920 & 0.10606498 & 0.08 \\
+0 & -0.10606498 & 0.99435920 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
- 0 & 0.9985808 & -0.0532576 & 0 \\ 
- 0 & 0.0532576 & 0.9985808 & -0.08 \\
-  0 & 0 & 0 & 1 
+ 0 & 1 & 0 & -0.08 \\ 
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 
 \end{bmatrix}
 \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 1 & 0 & 0.08 \\
+0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
 $$</p>
 <p>$$M_c = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
-0 & 0.9985808 & 0.0532576 & 0 \\
-0 & 0.0532576 & 0.9985808 & 0.08 \\
+0 & 0.99435920 & 0.10606498 & 0.08 \\
+0 & -0.10606498 & 0.99435920 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
 <h2>4.4 Linear Transition</h2>
@@ -2157,14 +2162,14 @@ $$</p>
 <p>$$a_1 = \Delta D,\ A_1 = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$$</p>
 <p>$A_1$ is the clothoid constant.</p>
 <h3>4.4.2 Semantic Definition to Geometry Mapping</h3>
-<p>Consider an alignment segment that has a clothoid transition curve towards the left. The track banks at a constant rate resulting in a linearly deviating elevation between the rail heads. The rail head separation is 1.5 m and the cant is 160 mm.</p>
+<p>Consider an alignment segment that has a clothoid transition curve towards the left. The track banks at a constantly increasing rate resulting in a linear deviation in the right rail elevation relative to the left rail. The right rail raises 160 mm over the 100 m segment length.</p>
 <p>The semantic representation of the cant alignment is</p>
 <pre><code>#64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0.16, 0., .LINEARTRANSITION.);
 </code></pre>
 <p>Compute the parent curve parameters.</p>
 <p>$D_{sl} = 0\ m\quad D_{el} = 0\ m$</p>
 <p>$D_{sr} = 0.16\ m\quad D_{er} = 0\ m$</p>
-<p>$D_s = \frac{(0.16 + 0\ m)}{2} = 0.08\ m$</p>
+<p>$D_s = \frac{(0.16 + 0)}{2} = 0.08\ m$</p>
 <p>$D_e = \frac{(0 + 0)}{2} = 0\ m$</p>
 <p>$\Delta D = D_e - D_s = 0.0 - 0.08 = -0.08\ m$</p>
 <p>$a_0 = D_s = 0.08\ m,\ A_0 = \frac{(100\ m)^2}{0.08\ m} = 125000\ m$</p>
@@ -2175,20 +2180,20 @@ $$</p>
 #97=IFCAXIS2PLACEMENT2D(#95,#96);
 #98=IFCCLOTHOID(#97,-3535.53390593274);
 </code></pre>
-<p>The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08$</p>
-<p>The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.</p>
-<p>$\theta = tan^{-1}(-0.0008) = -0.0007999998$</p>
-<p>$dx_x = cos(-0.0007999998) = 0.9999996800$</p>
-<p>$dy_x = sin(-0.0007999998) = -0.0007999997$</p>
+<p>The cant segment begins with a deviating elevation of</p>
+<p>$$D(0\ m) = (100\ m)^2\left(\frac{1}{125000} + \frac{-3535.533906}{|-3535.533906|^3}(0\ m)\right) = 0.08\ m$$</p>
+<p>The slope at the start of the segment is</p>
+<p>$$D'(0\ m) = (100\ m)^{2}\frac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$$</p>
+<p>$$\theta_0 = tan^{-1}(-0.0008) = -0.00079999$$</p>
+<p>$dx_x = cos(\theta_0) = 0.999999680$</p>
+<p>$dy_x = sin(\theta_0) = -0.000799999744$</p>
 <p>The cross-slope at the start of the segment is</p>
-<p>$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$</p>
-<p>The cross slope orientation is</p>
+<p>$\phi(0) = \phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$</p>
 <p>$dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$</p>
 <p>$dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.106064981,0.994359201));
-#102=IFCDIRECTION((0.9999996800,-0.0007999997,0.));
+#102=IFCDIRECTION((0.999999680,-0.000799999744,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
 #104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 </code></pre>
@@ -2196,35 +2201,35 @@ $y = d = 0.08$</p>
 <p>Compute the cant placement matrix for a point 50 m from the start of the curve segment.</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>From the parent curve</p>
-<p>$s_0 = 0,\ x(s_0) = 0$</p>
-<p>$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$</p>
-<p>$y'(0) = D'(0) = 0,\ \theta_0 = 0$</p>
+<p>$s_0 = 0$</p>
+<p>$D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$</p>
+<p>$D'(0) = -0.0008,\ \theta_0 = -0.00079999$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p>$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
+0.999999680 & -0.000799999744 & 0 & 0 \\
+0.000799999744 & 0.999999680 & 0 & -0.08 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p><strong>Step 3 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
-<p>$\mathbf{RefDir}_p = (0.9999996800,-0.0007999997,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$</p>
+<p>$\mathbf{RefDir}_p = (0.9999996800,-0.000799999744,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871, 0.9943588828, -0.1060649471)$</p>
 <p>$$M_{CSP} = \begin{bmatrix} 
 0.9999996800 & 0.0007954871 & 0 & 0 \\
--0.0007999997 & 0.9943588828 & 0.106064981 & 0.08 \\
+-0.000799999744 & 0.9943588828 & 0.106064981 & 0.08 \\
 0 & -0.1060649471 & 0.994359201 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.</p>
-<p>$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.994359201)$</p>
+<p>The $\mathbf{Axis}$ vector is perpendicular to the railhead cross slope line.</p>
+<p>$\mathbf{Axis} = (0.0,\ 0.106064981,\ 0.994359201)$</p>
 <p>$\phi_p = tan^{-1}\left(\frac{0.994359201}{0.106064981}\right) = 1.464531464$</p>
-<p>With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.</p>
+<p>With the cross section $y$-axis to the left and $z$-axis upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right rail being superelevated.</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
 <p>$D(50\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(50\ m) \right) = 0.04\ m$</p>
@@ -2234,7 +2239,8 @@ $y = d = 0.08$</p>
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>$M_c = M_{CSP}M_N M_{PC}$</p>
+<p>Apply the normalization and placement in sequence:</p>
+<p>$M_c = M_{CSP}\ M_N\ M_{PC}$</p>
 <p>$$M_c = 
 \begin{bmatrix}
 0.999999680000 & 0.0007988711 & 0.0000424859 & 0 \\
@@ -2261,17 +2267,20 @@ $$</p>
 0.0 & -0.05310740211832019 & 0.9985888044014736 & 0.0 \\
 0.0 & 0.0 & 0.0 & 1.0
 \end{bmatrix}$$</p>
-<p>$\mathbf{\text{Axis}} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$</p>
+<p>$\mathbf{Axis} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$</p>
 <p>$\phi(50\ m) = tan^{-1}\left(\frac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$</p>
-<p>The $\mathbf{\text{Axis}}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.</p>
-<p>As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895$</p>
+<p>The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an excersie for the reader - repeat Step 5 with $s=100\ m$ to verify ).</p>
+<p>As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$</p>
 <h2>4.5 Helmert Curve</h2>
 <p>Like the Helmert transition spiral, the Helmert cant sementic definition maps to two <code>IfcCurveSegment</code> instances for the geometric representation. The parent curve is <code>IfcSecondOrderPolynomialSpiral</code>.</p>
 <h3>4.5.1 Parent Curve Parametric Equations</h3>
 <p>The deviating elevation and its rate of change are given by the following equations.</p>
 <p>$$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$</p>
 <p>$$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$</p>
-<p>The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{32}$ is coefficient $A_3$ for the second half. <strong>[todo: add this description to 2_Horizonta.md]</strong></p>
+<p>The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half.
+<span style="background-color: yellow;color: black">
+[todo: add this description to 2_Horizonta.md]
+</span></p>
 <p>In the first half of the cant transition</p>
 <p>Constant Term:</p>
 <p>$a_{01} = 4D_{s}$,
@@ -2293,7 +2302,7 @@ $A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\lef
 <p>$a_{22} = -8f$,
 $A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$</p>
 <h3>4.5.2 Semantic Definition to Geometry Mapping</h3>
-<p>Consider an alignment segment that has a Helmert transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.</p>
+<p>Consider an alignment segment that has a Helmert transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.</p>
 <pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.HELMERTCURVE.);
 </code></pre>
 <p>Compute the parent curve parameters</p>
@@ -2317,10 +2326,15 @@ $A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\
 #107=IFCSECONDORDERPOLYNOMIALSPIRAL(#106,-538.60867250797071,$,31250.);
 </code></pre>
 <p>Determine the first half placement and trimming.</p>
-<p>Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition. <strong>[Need to do a better job explaining why L/2 when A is computed on full L]</strong></p>
+<p>Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition.</p>
+<span style="background-color: yellow;color: black">
+[todo - Need to do a better job explaining why L/2 when A is computed on full L. There is a plot of the two parent curves planned, perhaps this will help explain the situation.]
+</span>
+
 <p>The deviation elevation at the start of the first half transition is</p>
-<p>$D(0\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$</p>
-<p>The slope at $0\ m$ is $0.0$. $dx_x = 1.0,\ dx_y = 0.0$</p>
+<p>$$D(0\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$$</p>
+<p>$$D'(0\ m) = (50\ m)^{2}\left( \frac{2(0\ m)}{(-538.6086725\ m)^{3}}\right) = 0$$</p>
+<p>$\theta = 0,\ dx_x = 1, dy_x = 0$</p>
 <p>The cross slope is</p>
 <p>$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$</p>
 <p>$dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$</p>
@@ -2345,13 +2359,14 @@ $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\le
 #116=IFCSECONDORDERPOLYNOMIALSPIRAL(#115,538.60867250797071,-883.8834764831845,15625.);
 </code></pre>
 <p>Determine the second half placement and trimming.</p>
-<p><strong>[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve]</strong></p>
-<p>The starting elevation of the second half is the end elevation of the first half</p>
-<p>$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$</p>
-<p>The slope at $50\ m$ is $\frac{dD'}{ds} = L_1^2\left(\frac{2s}{A_2^3} + \frac{A_1}{\left| A_1^3 \right|}\right) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3} + \frac{31250\ m}{\left|(31250\ m)^3 \right|} \right) = -0.00159744$
-.</p>
-<p>$dx_x = \frac{1}{\sqrt{(-0.00159744)^2 + 1}} = 0.999998724
-,\ dx_y = \frac{-0.00159744}{\sqrt{(-0.00159744)^2 + 1}} = -0.001597438$</p>
+<span style="background-color: yellow;color: black">
+[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve - this may be more appropreate in the horizontal section, or maybe graph in both]
+</span>
+
+<p>The starting elevation of the second half is the end elevation of the first half. Use the first half parent curve to determine the start of the second half curve.</p>
+<p>$$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$$</p>
+<p>$$D'(50\ m) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = -0.0016$$</p>
+<p>$dx_x = \frac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724,\ dy_x = \frac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$</p>
 <p>The cross slope at the end of the first half is</p>
 <p>$\phi(50\ m) = 1.464531464 + \left(\frac{\frac{\pi}{2} - 1.464531464}{0.08\ m}\right)(0.04\ m - 0.08\ m) = 1.517663895$</p>
 <p>$dy_z = cos(\phi_s) = cos(1.517663895) = 0.053107436$</p>
@@ -2366,23 +2381,25 @@ $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\le
 <h3>4.5.3 Compute Point on Curve</h3>
 <p>Compute the cant placement matrix for a point 75 m from the start of the curve segment.</p>
 <p>From the parent curve</p>
-<p>$s_0 = 50\ m,\ x(s_0) = 50\ m$</p>
-<p>$y(s_0) = D(50\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(50\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \frac{1}{15625\ m} \right) = 0.16\ m$</p>
-<p>$y'(s_0) = D'(s_0) = (100\ m)^{2}\left( \frac{2(50\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$</p>
+<p>$s_0 = 50\ m$</p>
+<p>$D(50\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(50\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \frac{1}{15625\ m} \right) = 0.16\ m$</p>
+<p>$D'(50\ m) = (100\ m)^{2}\left( \frac{2(50\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$</p>
 <p>$\theta_0 = tan^{-1}(-0.0064) = -0.006399913$</p>
-<p>$cos \theta_0 = cos(-0.006399913) = 0.999979521$</p>
-<p>$sin \theta_0 = sin(-0.006399913) = -0.006399869$</p>
+<p>$cos \theta_0 = cos(\theta_0) = 0.999979521$</p>
+<p>$sin \theta_0 = sin(\theta_0) = -0.006399869$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>[todo - look at this carefully, the MN matrix doesn't look right - this will trickle down through all the calcs]</strong></p>
+<p>$-(50\ m)(0.999979521) - (0.16\ m)(-0.006399869) = -49.99795207$</p>
+<p><strong>[todo: check the math]</strong></p>
+<p>$(50\ m)(-0.006399869) - (0.16\ m)(0.999979521) = -0.47999017$</p>
 <p>$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
+0.999979521 & -0.006399869 & 0 & -49.99795207 \\
+0.006399869 & 0.999979521 & 0 & -0.47999017 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -2396,14 +2413,19 @@ $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\le
  0 & 0 & 0 & 1
  \end{bmatrix}$$</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
-<p>A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m - 50\ m = 25\ m$</p>
-<p>$D(25\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(25\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(25\ m) + \frac{1}{15625\ m} \right) = 0.36\ m$</p>
+<p>A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m$</p>
+<p>$$D(75\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(75\ m)^2 + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^3 \right|}(75\ m) + \frac{1}{15625\ m} \right) = 0.04\ m$$</p>
+<p>$$D'(75\ m) = (100\ m)^{2}\left( \frac{2(75\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.032$$</p>
+<p>$\theta = tan^{-1}(-0.0032) = -0.00319998908$</p>
+<p>$dx_x = cos(\theta) = 0.99999488004$</p>
+<p>$dx_y = sin(\theta) = -0.00319998362$</p>
 <p>$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 25 \\
-0 & 1 & 0 & 0.36 \\
+0.99999488004 & 0.00319998362 & 0 & 75 \\
+-0.00319998362 & 0.99999488004 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
+<p>Apply the normalization and placement in sequence:</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
 <p>$$M_c = 
 \begin{bmatrix}
@@ -2413,25 +2435,28 @@ $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\le
  0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
- I = NOT\ CORRECT
+0.999979521 & -0.006399869 & 0 & -49.99795207 \\
+0.006399869 & 0.999979521 & 0 & -0.47999017 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 25 \\
-0 & 1 & 0 & 0.36 \\
+0.99999488004 & 0.00319998362 & 0 & 75 \\
+-0.00319998362 & 0.99999488004 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
 $$</p>
-<p><strong>[todo - verify matrix multiplication - final result is correct from IfcOpenShell]</strong></p>
+<span style="background-color: pink;color: black">
+[todo - verify matrix multiplication - final result is correct from IfcOpenShell - transformation matrix looks wacky]
+</span>
+
 <p>$$M_c = \begin{bmatrix}
 0.999999684 & 0.000799928774 & 0 & 75.0 \\
 -0.000795461553 & 0.999910964 & 0.0133204468 & 0.01 \\
 0 & -0.0133203149 & 0.999911281 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p>$\mathbf{Axis} = (0.0,\ 0.0133204468,\ 0.999911281)$</p>
-<p>$\phi(75\ m) = tan^{-1}\left(\frac{0.999911281}{0.0133204468}\right) = 1.557475486$</p>
-<p>The $\mathbf{Axis}$ vector is closer to vertical 75% way through the cant segment. At the end of the cant segment, $\mathbf{\text{Axis}}$ will be $\frac{\pi}{2}$.</p>
 <h2>4.6 Bloss Curve</h2>
 <p>A Bloss transition in cant is represented with an <code>IfcThirdOrderPolynomialSpiral</code>.</p>
 <h3>4.6.1 Parent Curve Parametric Equations</h3>
@@ -2447,7 +2472,7 @@ $$</p>
 <p>Cubic Term</p>
 <p>$a_{3} = -2f\ A_{3} = \frac{{L}^{\frac{5}{4}}}{\sqrt[4]{|a_3|}}\frac{a_3}{|a_3|}$</p>
 <h3>4.6.2 Semantic Definition to Geometry Mapping</h3>
-<p>Consider an alignment segment that has a Bloss transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.</p>
+<p>Consider an alignment segment that has a Bloss transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.</p>
 <pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.BLOSSCURVE.);
 </code></pre>
 <p>Compute the parent curve parameters</p>
@@ -2467,12 +2492,10 @@ $$</p>
 #98=IFCAXIS2PLACEMENT2D(#96,#97);
 #99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,500.00000000000006,-746.90079109286057,$,125000.);
 </code></pre>
-<p>The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08\ m$</p>
-<p>The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.</p>
-<p>$\theta = tan^{-1}(-0.0008) = -0.0007999998$</p>
-<p>$dx_x = cos(-0.0007999998) = 0.9999996800$</p>
-<p>$dy_x = sin(-0.0007999998) = -0.0007999997$</p>
+<p>$$D_0 = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$$</p>
+<p>$$D'(0) = 0,\ \theta_0 = 0$$</p>
+<p>$dx_x = cos(\theta_0) = 1$</p>
+<p>$dy_x = sin(\theta_0) = 0$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$</p>
 <p>The cross slope orientation is</p>
@@ -2488,13 +2511,11 @@ $y = d = 0.08\ m$</p>
 <p>Compute the cant placement matrix for a point 50 m from the start of the curve segment.</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>From the parent curve</p>
-<p>$s_0 = 0,\ x(s_0) = 0$</p>
-<p>$y(s_0) = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$</p>
-<p>$y'(0) = D'(0) = 0,\ \theta_0 = 0$</p>
+<p>$s_0 = 0,\ D(0\ m) = 0.08\ m, \ D'(0) = 0,\ \theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -2519,13 +2540,18 @@ $y = d = 0.08\ m$</p>
 <p>With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
-<p>$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$</p>
+<p>$$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$$</p>
+<p>$$D'(50\ m) = (100\ m)^{2}\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \frac{2}{(-746.9007911\ m)^{3}}(50\ m) + \frac{125000\ m}{2\left| (125000\ m)^{3} \right|} \right) = -0.002$$</p>
+<p>$\theta = tan^{-1}(-0.002) = -0.0019997$</p>
+<p>$dx_x = cos(\theta) = 0.9999980$</p>
+<p>$dy_x = sin(\theta) = -0.0019997$</p>
 <p>$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.9999980 & 0.0019997 & 0 & 50 \\
+-0.0019997 & 0.9999980 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
+<p>Apply the normalization and placement in sequence:</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
 <p>$$M_c = 
 \begin{bmatrix}
@@ -2541,10 +2567,10 @@ $y = d = 0.08\ m$</p>
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.9999980 & 0.0019997 & 0 & 50 \\
+-0.0019997 & 0.9999980 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+0 & 0 & 0 & 1 
 \end{bmatrix}
 $$</p>
 <p>$$M_c = \begin{bmatrix}
@@ -2558,31 +2584,33 @@ $$</p>
 <h3>4.7.1 Parent Curve Parametric Equations</h3>
 <p>The deviating elevation and its rate of change are given by the following equations.</p>
 <p>$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L} \right)$</p>
-<p>$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{L}\sin\left( \pi\frac{s}{L} \right) \right)$</p>
+<p>$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{A_1 L}\sin\left( \pi\frac{s}{L} \right) \right)$</p>
+<p>$f = \Delta D$</p>
 <p>Constant term,</p>
-<p>$A_{0} = \frac{L^{2}}{D_{s} + \frac{1}{2}\mathrm{\Delta}D}$</p>
+<p>$a_0 = D_s + \frac{f}{2}$</p>
+<p>$A_0 = L^{2}\frac{1}{a_0}\frac{a_0}{|a_0|}$</p>
 <p>Cosine term,</p>
-<p>$A_{1} = \frac{L^{2}}{-\frac{1}{2}\mathrm{\Delta}D}$</p>
+<p>$a_1 = -\frac{1}{2} f$</p>
+<p>$A_1 = L^{2}\frac{1}{a_1}\frac{a_1}{|a_1|}$</p>
 <h3>4.7.2 Semantic Definition to Geometry Mapping</h3>
-<p>Consider and alignment segment that has a Cosine transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.</p>
+<p>Consider and alignment segment that has a Cosine transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.</p>
 <pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.COSINECURVE.);
 </code></pre>
 <p>Compute the parent curve parameters</p>
 <p>$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$</p>
-<p>$A_{0} = \frac{({100\ m)}^{2}}{0.08\ m + \frac{1}{2}(-0.08\ m)} = 250000\ m$</p>
-<p>$A_{1} = \frac{{(100\ m)}^{2}}{-\frac{1}{2}(-0.08\ m)} = 250000\ m$</p>
+<p>$a_0 = 0.08\ m + \frac{-0.08\ m}{2} = 0.04$</p>
+<p>$A_0 = (100\ m)^{2} \frac{1}{0.04\ m}\frac{0.04\ m}{|0.04\ m|} = 250000\ m$</p>
+<p>$a_1 = -\frac{1}{2}(-0.08\ m) = -0.04\ m$</p>
+<p>$A_1 = (100\ m)^2\frac{1}{-0.04\ m}\frac{-0.04\ m}{|-0.04\ m|} = 250000\ m$</p>
 <p>The parent curve is</p>
 <pre><code>#96=IFCCARTESIANPOINT((0.,0.));
 #97=IFCDIRECTION((1.,0.));
 #98=IFCAXIS2PLACEMENT2D(#96,#97);
 #99=IFCCOSINESPIRAL(#98,250000.,250000.);
 </code></pre>
-<p>The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08\ m$</p>
-<p>The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.</p>
-<p>$\theta = tan^{-1}(-0.0008) = -0.0007999998$</p>
-<p>$dx_x = cos(-0.0007999998) = 0.9999996800$</p>
-<p>$dy_x = sin(-0.0007999998) = -0.0007999997$</p>
+<p>$$D(0\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$$</p>
+<p>$$ D'(0\ m) = (100\ m)^{2}\left( -\frac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$$</p>
+<p>$\theta_0 = 0,\ dx_x = 1,\ dy_x = 0$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$</p>
 <p>The cross slope orientation is</p>
@@ -2598,14 +2626,14 @@ $y = d = 0.08\ m$</p>
 <p>Compute the cant placement matrix for a point 50 m from the start of the curve segment.</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>From the parent curve</p>
-<p>$s_0 = 0,\ x(s_0) = 0$</p>
-<p>$y(s_0) = D(0\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$</p>
-<p>$y'(0) = D'(0) = (100\ m)^{2}\left( -\frac{\pi}{100\ m}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$</p>
+<p>$s_0 = 0$</p>
+<p>$D(0\ m) = 0.08\ m$</p>
+<p>$D'(0\ m) = 0$</p>
 <p>$\theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -2624,19 +2652,20 @@ $y = d = 0.08\ m$</p>
 0 & -0.10606498 & 0.9943592 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.</p>
-<p>$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$</p>
-<p>$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$</p>
-<p>With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
-<p>$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$</p>
+<p>$$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$$</p>
+<p>$$D'(50\ m) = (100\ m)^{2}\left( -\frac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\frac{50\ m}{100\ m} \right) \right) = -0.00125664$$</p>
+<p>$\theta = tan^{-1}(-0.00125664) = -0.001256636$</p>
+<p>$dx_x = cos(\theta) = 0.99999921$</p>
+<p>$dx_y = sin(\theta) = -0.001256636$</p>
 <p>$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999921 & 0.001256636 & 0 & 50 \\
+-0.001256636 & 0.99999921 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
+<p>Apply the normalization and placement in sequence:</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
 <p>$$M_c = 
 \begin{bmatrix}
@@ -2652,10 +2681,10 @@ $y = d = 0.08\ m$</p>
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999921 & 0.001256636 & 0 & 50 \\
+-0.001256636 & 0.99999921 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+0 & 0 & 0 & 1 
 \end{bmatrix}
 $$</p>
 <p>$$M_c = \begin{bmatrix}
@@ -2664,40 +2693,51 @@ $$</p>
 0 & -0.05310743572 & 0.998588804 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>[todo - check the matrix multiplication the Y and Z columns can]</strong></p>
+<span style="background-color: yellow;color: black">
+[todo - check the matrix multiplication]
+</span>
+
 <h2>4.8 Sine Curve</h2>
 <p>A Sine transition in cant is represented with an <code>IfcSineSpiral</code></p>
 <h3>4.8.1 Parent Curve Parametric Equations</h3>
 <p>The deviation elevation and its rate of change are given by the following equations.</p>
 <p>$$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2}s + \frac{1}{A_{2}}\sin\left( 2\pi\frac{s}{L} \right)$$</p>
 <p>$$\frac{d}{ds}D(s) = L^{2}\left( \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2} + \frac{2\pi}{LA_{2}}\cos\left( 2\pi\frac{s}{L} \right) \right)$$</p>
-<p>Constant term: $A_{0} = \frac{L^{2}}{D_{s}}\ $</p>
-<p>Linear term: $A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\mathrm{\Delta}D}}$</p>
-<p>Sine term: $A_{2} = \frac{L^{2}}{- \frac{1}{2\pi}\mathrm{\Delta}D}$</p>
+<p>Constant term:
+$$a_0 = D_s$$
+$$A_0 = L^2\frac{1}{a_0}\frac{a_0}{|a_0|} $$</p>
+<p>Linear term:</p>
+<p>$$a_1 = f$$
+$$A_1 = L^{\frac{3}{2}}\frac{1}{\sqrt{|a_1|}}\frac{a_1}{|a_1|} $$</p>
+<p>Sine term:
+$$a_2 = -\frac{1}{2\pi} f$$
+$$A_2 = L^2\frac{1}{a_2}\frac{a_2}{|a_2|} $$</p>
 <h3>4.8.2 Semantic Definition to Geometry Mapping</h3>
-<p>Consider an alignment segment that has a Sine transition curve towards the left. The start cant is $0.08\ m$ and transitions to zero over $100\ m$.</p>
+<p>Consider an alignment segment that has a Sine transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.</p>
 <pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.SINECURVE.);
 </code></pre>
 <p>Compute the paraent curve parameters</p>
 <p>$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$</p>
 <p>Constant term:
-$A_{0} = \frac{L^{2}}{D_s} = \frac{(100\ m)^{2}}{0.08\ m} = 125000\ m$</p>
+$a_0 = 0.08\ m$</p>
+<p>$A_0 = (100\ m)^2\frac{1}{0.08\ m}\frac{0.08\ m}{|0.08\ m|} = 125000\ m$</p>
 <p>Linear term:
-$A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\mathrm{\Delta}D}} = \frac{(100\ m)^{\frac{3}{2}}}{\sqrt{| -0.08\ m|}}\frac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$</p>
+$a_1 = -0.08\ m$</p>
+<p>$A_1 = (100\ m)^{\frac{3}{2}} \frac{1}{\sqrt{| -0.08\ m|}}\frac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$</p>
 <p>Sine term:
-$A_{2} = \frac{L^{2}}{-\frac{1}{2\pi}\mathrm{\Delta}D} = \frac{(100\ m)^{2}}{-\frac{1}{2\pi}( -0.08\ m)} = 78539.81634\ m$</p>
+$a_2 = -\frac{1}{2\pi} (0.08\ m) = -0.0127324\ m$</p>
+<p>$A_2 = (100\ m)^2\frac{1}{-0.0127324\ m}\frac{-0.0127324\ m}{|-0.0127324\ m|} = 785398.1634\ m$</p>
 <p>The parent curve is</p>
 <pre><code>#96=IFCCARTESIANPOINT((0.,0.));
 #97=IFCDIRECTION((1.,0.));
 #98=IFCAXIS2PLACEMENT2D(#96,#97);
 #99=IFCSINESPIRAL(#98,785398.16339744814,-3535.533905932738,125000.);
 </code></pre>
-<p>The cant segment begins with a deviating elevation of $D_s = 0.08\ m$.
-$y = d = 0.08\ m$</p>
-<p>The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.08}{100} = -0.0008$.</p>
-<p>$\theta = tan^{-1}(-0.0008) = -0.0007999998$</p>
-<p>$dx_x = cos(-0.0007999998) = 0.9999996800$</p>
-<p>$dy_x = sin(-0.0007999998) = -0.0007999997$</p>
+<p>$$D(0\ m) = (100\ m)^{2}\left(\frac{1}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \frac{1}{785398.1634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$$</p>
+<p>$$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0.$$</p>
+<p>$\theta_0 = 0$</p>
+<p>$dx_x = cos(\theta_0) = 1$</p>
+<p>$dx_y = sin(\theta_0) = 0$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$</p>
 <p>The cross slope orientation is</p>
@@ -2713,14 +2753,13 @@ $y = d = 0.08\ m$</p>
 <p>Compute the cant placement matrix for a point 50 m from the start of the curve segment.</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>From the parent curve</p>
-<p>$s_0 = 0,\ x(s_0) = 0$</p>
-<p>$y(s_0) = D(0\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) = 0.08\ m$</p>
-<p>$y'(0) = D'(0) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$</p>
+<p>$$D(0\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) = 0.08\ m$$</p>
+<p>$$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$$</p>
 <p>$\theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -2739,19 +2778,17 @@ $y = d = 0.08\ m$</p>
 0 & -0.10606498 & 0.9943592 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p>The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.</p>
-<p>$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$</p>
-<p>$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$</p>
-<p>With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
-<p>$D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$</p>
+<p>$D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{785398.1634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$</p>
+<p>$$D'(50\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\frac{50\ m}{100\ m} \right) \right) = -0.0016$$</p>
 <p>$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999872 & 0.001599998 & 0 & 50 \\
+-0.001599998 & 0.99999872 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
+<p>Apply the normalization and placement in sequence:</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
 <p>$$M_c = 
 \begin{bmatrix}
@@ -2767,10 +2804,10 @@ $y = d = 0.08\ m$</p>
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
+0.99999872 & 0.001599998 & 0 & 50 \\
+-0.001599998 & 0.99999872 & 0 & 0.04 \\
 0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
+0 & 0 & 0 & 1 
 \end{bmatrix}
 $$</p>
 <p>$$M_c = \begin{bmatrix}
@@ -2779,7 +2816,10 @@ $$</p>
 0 & -0.05310743572 & 0.998588804 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>[todo - check the matrix multiplication the Y and Z columns can]</strong></p>
+<span style="background-color: yellow;color: black">
+[todo - check the matrix multiplication]
+</span>
+
 <h2>4.9 Viennese Bend</h2>
 <p>A Viennese Bend transition in cant is represented with an <code>IfcSeventhOrderPolynomialSpiral</code>.</p>
 <h3>4.9.1 Parent Curve Parametric Equations</h3>
@@ -2806,8 +2846,10 @@ $$</p>
 <p>$$a_{7} = -20f, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \frac{a_{7}}{\left| a_{7} \right|}$$</p>
 <h3>4.9.2 Semantic Definition to Geometry Mapping</h3>
 <p>Consider an alignment segment that has a Viennese Bend transition curve <strong>???</strong>.
-<strong>[todo - finish the description]</strong></p>
-<pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.10000000000000001,0.029999999999999999,.VIENNESEBEND.);
+<span style="background-color: yellow;color: black">
+[todo - finish the description]
+</span></p>
+<pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.10,0.03,.VIENNESEBEND.);
 </code></pre>
 <p>Compute the parent curve parameters.</p>
 <p>$$D_{sl} = 0.0\ m$$
@@ -2817,7 +2859,7 @@ $$D_{er} = 0.03\ m$$</p>
 <p>$$D_s = \frac{0\ m + 0.1\ m}{2} = 0.05\ m, D_e = \frac{0\ m + 0.03\ m}{2} = 0.015\ m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035\ m$$</p>
 <p>$$f = \mathrm{\Delta}D = -0.035m$$</p>
 <p>Constant Term
-$$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 20000\ m$$</p>
+$$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 200000\ m$$</p>
 <p>Linear Term
 $$a_{1} = 0, A_{1} = 0\ m$$</p>
 <p>Quadratic Term</p>
@@ -2837,12 +2879,10 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 #98=IFCAXIS2PLACEMENT2D(#96,#97);
 #99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.93568367635649,-169.87095595653892,180.00121846086768,-241.19748900851218,$,$,$,200000.);
 </code></pre>
-<p>The cant segment begins with a deviating elevation of $D_s = 0.05\ m$.</p>
-<p><strong>[todo - fix this everywhere.... the slope is the slope equation evaluated at 0.0. for this particular example the RefDir is (1,0,0), not what is calculated here - the DeltaD/L only applies to the ifcline case]</strong></p>
-<p>The slope of the cant curve is $\frac{\Delta D}{L} = \frac{-0.035}{100} = -0.00035$</p>
-<p>$\theta = tan^{-1}(-0.00035) = -0.00035$</p>
-<p>$dx_x = cos(\theta) = 0.999999939$</p>
-<p>$dx_y = sin(\theta) = -0.00035$</p>
+<p>$$D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{200000\ m}\right) = 0.05\ m$$</p>
+<p>$D'(0) = 0,\ \theta_0 = 0$</p>
+<p>$dx_x = cos(\theta) = 1</p>
+<p>$dx_y = sin(\theta) = 0</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr}-D{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.1-0.0} \right) = 1.504228163$</p>
 <p>The cross slope orientation is</p>
@@ -2858,19 +2898,19 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 <p>Compute the cant placement matrix for a point 50 m from the start of the curve segment.</p>
 <p><strong>Step 1 — Evaluate the parent curve at the trim start</strong></p>
 <p>From the parent curve</p>
-<p>$s_0 = 0,\ x(s_0) = 0$</p>
-<p>$y(s_0) = D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{20000\ m}\right) = 0.5\ m$</p>
-<p>$y'(0) = D'(0) = 0,\ \theta_0 = 0$</p>
+<p>$s_0 = 0$</p>
+<p>$D(0\ m) = 0.05\ m$</p>
+<p>$D'(0) = 0,\ \theta_0 = 0$</p>
 <p><strong>Step 2 — Form the normalization matrix $M_N$</strong></p>
 <p>$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p>$$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.5 \\
+0 & 1 & 0 & -0.05 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -2885,13 +2925,18 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 \end{bmatrix}$$</p>
 <p><strong>Step 4 — Evaluate and map each point</strong></p>
 <p>Evaluate the parent curve at $s = 50\ m$</p>
-<p>$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{20000\ m}\right) = 0.4825\ m$</p>
+<p>$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{200000\ m}\right) = 0.0325\ m$</p>
+<p>$D'(50\ m) = (100\ m)^2 \left(7\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^6 + \frac{6}{(-169.87095595653895\ m)^7}(50m)^5 + 5\frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^4 + 4\frac{1}{(-241.1974890085123\ m)^5}(50\ m)^3\right) = -0.00076525$</p>
+<p>$\theta = -0.00076562$</p>
+<p>$dx_x = cos(\theta) = 0.999999707$</p>
+<p>$dy_x = sin(\theta) = -0.00076562$</p>
 <p>$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.4825 \\
+0.999999707 & 0.00076562 & 0 & 50 \\
+-0.00076562 & 0.999999707 & 0 & 0.0325 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
+<p>Apply the normalization and placement in sequence:</p>
 <p>$M_c = M_{CSP}M_N M_{PC}$</p>
 <p>$$M_c = 
 \begin{bmatrix}
@@ -2902,13 +2947,13 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 \end{bmatrix}
 \begin{bmatrix}
 1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.5 \\
+0 & 1 & 0 & -0.05 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.4825 \\
+0.999999707 & 0.00076562 & 0 & 50 \\
+-0.00076562 & 0.999999707 & 0 & 0.0325 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}
@@ -2919,15 +2964,26 @@ $$</p>
 0 & -0.0332779270 & 0.999446136 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
+<span style="background-color: yellow;color: black">
+[todo - check the matrix multiplication]
+</span>
+
 <h2>4.10 Combined 3D</h2>
-<p><strong>[do a full cant example]</strong></p>
+<span style="background-color: yellow;color: black">
+[todo: do a full cant example]
+</span>
+
 <h2>4.11 Deviation from EnrichIfc4x3 Reference Implementation</h2>
 <p>The cant calculations in this section deviate from the ones performed by the EnrichIfc4x3
 reference implementation. The calculations in the reference implementation, published at
 <a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry">IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
-(github.com)</a>, yield coefficients for sine, cosine, and polynomial spirals that are not in units of length. The IFC specification is clear that the coefficients have
+(github.com)</a>, yield coefficients for sine, cosine, clothoid, and polynomial spirals that are not in units of length. The IFC specification is clear that the coefficients have
 units of length and are represented by <code>IfcLengthMeasure</code>.</p>
+<p>The basic form of the coefficient of the $i^{th}$ term is</p>
+<p>$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$</p>
+<p>Performing a dimensional analysis with $l$ representing term with length units, we see that the resulting coefficient $A_{i}$ has units of length.</p>
+<p>$$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$</p>
 <p>The error in the EnrichIfc4x3 reference implementation is illustrated by way of an example. Consider the Bloss Curve example <a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc">GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc</a>.</p>
 <p>The semantic definition of the cant transition segment is</p>
 <pre><code>#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.,0.16,.BLOSSCURVE.);
@@ -3034,7 +3090,7 @@ units of length and are represented by <code>IfcLengthMeasure</code>.</p>
 <ul>
 <li>describe the concept of object placement in ifc.</li>
 <li>introduce the idea of linear placement for horizontal construction projects. describe locating a bridge pier on an alignment using 2D like fron traditional plans and then a drain inlet in 3d with station, offset and elevation. add a figure to illustrate.</li>
-<li>discuss how linear placement is accomplished with ifc. this will include distance along diretrix with explaination of stationing which is covered in a different section, lateral and vertical offset, longitudinal offset for otherwise unreachable point (include a figure to illustrate), and the placement coordinate system with discussion of uncertaintly frim the spec on default axis and refdirection.</li>
+<li>discuss how linear placement is accomplished with ifc. this will include distance along diretrix with explaination of stationing which is covered in a different section, lateral and vertical offset, longitudinal offset for otherwise unreachable point - angle point at intersection of two tangents, outside large angle is unreachable (include a figure to illustrate), and the placement coordinate system with discussion of uncertaintly frim the spec on default axis and refdirection.</li>
 <li>discuss linear placement along ifcoffsetcurvebydistances</li>
 <li>review the iso 19148 on linear placement to see if there is other important concepts to discuss. one could be milepost system compared to stationing. see <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/Pset_LinearReferencingMethod.htm">https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/Pset_LinearReferencingMethod.htm</a>.</li>
 </ul>
@@ -3139,11 +3195,11 @@ alignment curve. Stationing (also known as chainage) is a good example.</p>
 <li>Roadway surface</li>
 <li>Visualization of superelevation transitions and widenings</li>
 </ul>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images%5CFigure_9.1_Superelevation_Transition.png" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_9.1_Superelevation_Transition.png" alt="" /></p>
 <p><em>Figure 8.1-1 Superelevation transition</em></p>
 <h3>8.1.1 Breaklines</h3>
 <p>Describe the concept of breaklines for widening sections.</p>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images%5CFigure_9.2_Sectioned_Surface_with_Breaklines.png" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_9.2_Sectioned_Surface_with_Breaklines.png" alt="" /></p>
 <p><em>Figure 8.1.1-1 Sectioned surface with breaklines</em></p>
 <h3>8.1.2 Stringlines</h3>
 <p>Describe string lines and how they work (don't have a good implementation yet)</p>
@@ -3154,7 +3210,7 @@ alignment curve. Stationing (also known as chainage) is a good example.</p>
 <li>Discuss error in image from the documentation with projecting geometry along the line</li>
 <li>Describe string lines (guide curves) and how they work.</li>
 <li>Clarify direction (CCW) for defining polygon points for the profile</li>
-<li>Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue</li>
+<li>Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue. <a href="https://github.com/buildingSMART/IFC4.x-IF/issues/147">https://github.com/buildingSMART/IFC4.x-IF/issues/147</a>, and <a href="https://github.com/buildingSMART/IFC4.x-development/issues/1010">https://github.com/buildingSMART/IFC4.x-development/issues/1010</a>.</li>
 </ul>
 
 <div class="chapter-sep"></div>

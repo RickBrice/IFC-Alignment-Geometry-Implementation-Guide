@@ -1,8 +1,3 @@
-outline:
-* need figure the show cross slope and coordinate system 3D and 2-2D elevation and section.
-* need figure that shows centerline and railhead deviation
-
-
 # Section 4.0 - Cant Alignment
 
 Cant (also called superelevation) is the transverse inclination of a railway track cross-section: the elevation difference between the two railheads when one rail is raised above the other. By tilting the track into a curve, cant directs a component of gravitational force inward, partially offsetting the centrifugal acceleration experienced by vehicles negotiating the curve. The result is improved ride quality, reduced wheel–rail lateral forces, and the ability to operate at higher speeds through curves without exceeding comfort or safety limits.
@@ -14,11 +9,6 @@ Cant is measured as a length — the height difference between railheads — rat
 An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope. 
 
 An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of `IfcCompositeCurve`, an `IfcSegmentedReferenceCurve` consists of an end to start collection of `IfcCurveSegment`. An `IfcSegmentedReferenceCurve` also has a `BasisCurve` which is typically an `IfcGradientCurve`.
-
-The `IfcCurveSegment.ParentCurve` defines the deviating elevation over the length of the segment. When the segment start elevation differs from the
-segment start elevation of the next segment. If the
-segment start elevation is the same as for the start of the next segment, the deviating elevation along the length of the segment is
-constant.
 
 Table 4.1-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its corresponding parent curve type.
 
@@ -34,7 +24,36 @@ Table 4.1-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its correspond
 
   *Table 4.1-1 — Mapping of business logic to geometric representation for cant alignment*
 
+### 4.1.1 Cant Transition
 
+Cant transitions occur when the segment start elevation differs from the
+segment start elevation of the next segment. The left section in Figure 4.1-1 shows the cross section of a rail line. At the start of the segment, right rail is elevated above the left rail. The y-ordinate of `IfcCurveSegment.Placement.Location` indicates the deviating elevation at the centerline between rails, which is one-half the cant value at the right rail. The y-ordinate of `IfcCurveSegment.Placement.Location` for the next segment indicates a value of 0.0 meaning that the cant transitioned from the starting value to zero over the length of the segment. This transition is the rotation of the right rail about the left rail, and the corresponding change in deviating elevation at the centerline over the length of the segment. The cant transition is shown in the right section of Figure 4.1.1-1 as a linear transition. `IfcCurveSegment.ParentCurve` defines how the transition occurs. Figure 4.1.1-2 shows a non-linear transition of the centerline and right rail deviating elevations. Notice that the deviating elevation of the left rail is constant at zero because it is the point of rotation.
+
+When the segment start elevation is the same as the start of the next segment, the deviating elevation along the length of the segment is constant. This occurs when centrifugal forces are constant or zero, in constant radius curvature and straight sections of the railway, respectively.
+
+![](images/IfcSegmentedReferenceCurve.jpg)
+
+*Figure 4.1.1-1 - cross section and elevation of a cant segment (source: bSI)*
+
+![](images/Cant.svg)
+
+*Figure 4.1.1-2 - Deviating elevation of rails*
+
+The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction generally upwards. The `Axis` direction is therefore perpendicular to a line connecting the rails. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, `Axis` is (0,0,1) and the angle measured from the y-axis is $\frac{\pi}{2}$.
+
+![](images/CrossSlopeAngle.svg)
+
+*Figure 4.1.1-3 - Rail head cross slope*
+
+### 4.1.2 Coordinate System
+
+The coordinate system is show in Figure 4.1.1-1, but it is difficult to understrand.
+
+`IfcCurveSegment.Placement.RefDirection` is tangent to the "distance along" the base curve in the horizontal plane, (e.g. `IfcSegmentedReferenceCurve.BaseCurve` => `IfcGradientCurve.BaseCurve` => `IfcCompositeCurve`).
+
+The railway cross section is in the plane defined by `Y` and `Z`. Looking in the positive sense down the alignment, `Y` is towards the left and `Z` is upwards. The `Axis` direction is measured clockwise from `Y`.
+
+### 4.1.3 Transition Functions
 The transition functions used to shape cant variation have the same functional form as functions used for horizontal transition curves: line, clothoid (linear cant), Helmert, Bloss, cosine, sine, and Viennese bend. In practice, the cant transition type always matches the horizontal transition type and segment length, though IFC does not enforce this constraint.
 
 As an example, the horizontal tangent direction, $\theta(t)$, and the radius of curvature, $\kappa(t)$, for a Helmert curve is a second order polynomial of the form
@@ -51,16 +70,6 @@ $$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} 
 The deviating elevation has the same functional form as the radius of curvature of the horizontal alignment segment. 
 
 In IFC, the semantic cant profile is encoded in `IfcAlignmentCant` and its child `IfcAlignmentCantSegment` entities. The geometric representation is an `IfcSegmentedReferenceCurve`, which evaluates the cant at every point along the alignment and, in conjunction with the horizontal alignment `IfcCompositeCurve` and the vertical alignment `IfcGradientCurve`, produces the full 3D track centerline geometry.
-
-[todo: add a figure to illustrate the cross slope and centerline elevation deviation] 
-
-![](images/Cant.svg)
-
-*Figure 4.1-1 - Deviating elevation of rails*
-
-![](images/CrossSlopeAngle.svg)
-
-*Figure 4.1-2 - Rail head cross slope*
 
 Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-dimensional coordinate system whose axes are *distance along the horizontal alignment* $s$ and *deviating elevation* $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.
 
