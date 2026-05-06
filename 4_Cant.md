@@ -121,8 +121,8 @@ The placement in matrix form is
 
 $$M_{CSP} = \begin{bmatrix} 
 X_p.x & Y_p.x & Z_p.x & s_p \\
-X_p.y & Y_p.y & Z_p.y & 0 \\
-X_p.z & Y_p.z & Z_p.z & D_p \\
+X_p.y & Y_p.y & Z_p.y & D_p \\
+X_p.z & Y_p.z & Z_p.z & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -139,8 +139,8 @@ $$\mathbf{Y} = \mathbf{Z} \times \mathbf{X}$$
 
 $$M_{PC} = \begin{bmatrix}
 X.x & Y.x & Z.x & s \\
-X.y & Y.y & Z.y & 0 \\
-X.z & Y.z & Z.z & D(s) \\
+X.y & Y.y & Z.y & D(s) \\
+X.z & Y.z & Z.z & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
@@ -156,7 +156,7 @@ The cant result must be combined with the horizontal matrix $M_h$ (evaluated at 
 
 Construct $M'_v$ as described in Section 3.2.
 
-Construct $M'_c$ by zeroing the distance-along component in column 4 of $M_c$:
+Construct $M'_c$ by zeroing the distance-along $s$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
 
 $${M'}_c = \begin{bmatrix} 
 X.x & Y.x & Z.x & 0 \\ 
@@ -170,8 +170,6 @@ Extract position vectors from each modified matrix, $M'_v,\ M'_c$, (setting row 
 $$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ z \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ D \\ 0 \end{bmatrix}$$
 
 $$M''_v = M'_v \text{ with column 4 set to } (0,0,0,1)^T, \qquad M''_c = M'_c \text{ with column 4 set to } (0,0,0,1)^T$$
-
-<span style="background-color: yellow;color: black">[todo: show the full $M''_v$ and $M''_c$ matrices]</span>
 
 Multiply the three orientation matrices, then add back both position offsets:
 
@@ -253,10 +251,6 @@ $dz_z = sin\phi = 0.99435920$
 ~~~
 
 ### 4.3.2 Compute Point on Curve
-
-<span style="background-color: yellow;color: black">
-[todo - look at this example carefully, the cant terms are in the Z position - should they be in the Y position?]
-</span>
 
 Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.
 
@@ -533,9 +527,6 @@ $$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} 
 $$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
 
 The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
-<span style="background-color: yellow;color: black">
-[todo: add this description to 2_Horizonta.md]
-</span>
 
 In the first half of the cant transition
 
@@ -1576,8 +1567,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and placement in sequence:
 
-$M_c = M_{CSP}M_N M_{PC}$
-
+$$M_c = M_{CSP} \cdot M_N \cdot M_{PC}$$
 
 $$M_c = 
 \begin{bmatrix}
@@ -1601,22 +1591,147 @@ $$M_c =
 $$
 
 $$M_c = \begin{bmatrix}
-1 & 0 & 0 & 50.0 \\
-0 & 0.999445843 & 0.0332779172 & 0.0325 \\
-0 & -0.0332779270 & 0.999446136 & 0 \\
+0.999999707 & 0 & 0 & 50\\
+-0.000765624776 & 0.999445843 & 0.0332779172 &  0.0325000000\\
+0 & -0.0332779270 & 0.999446136 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-
-<span style="background-color: yellow;color: black">
-[todo - check the matrix multiplication]
-</span>
-
 ## 4.10 Combined 3D
 
-<span style="background-color: yellow;color: black">
-[todo: do a full cant example]
-</span>
+The cant segment result is computed with the 2D vertical and 2D horizontal to complete the evaluation of a point on the alignment. The result is a 3D point and reference frame.
+
+Using the example horizontal Bloss curve from Section 2.8 $M_h$ at $s = 50\ m$ is
+
+$$M_{h} = 
+\begin{bmatrix}
+0.999512 & -0.031245 & 0 & 49.9962109\\
+0.031245 & 0.999512 & 0 & 0.416638875\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+Assume a vertical alignment that is flat. At $s = 50\ m$
+
+$$M_v = \begin{bmatrix}
+1 & 0 & 0 & 50\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+From the Bloss cant example in Section 4.6
+
+$$M_c = \begin{bmatrix}
+0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
+-0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
+0 & 0 & 0.9985888041 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
+
+Construct $M'_v$ as described in Section 3.2
+
+$$M'_v =
+ \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+Construct $M'_c$ by zeroing the distance-along $s$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
+
+$$M'_c = \begin{bmatrix}
+0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
+-0.00119999914 & 0.998588085 & 0.0531073592 & 0 \\
+0 & 0 & 0.9985888041 & 0.04 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+Extract position vectors from each modified matrix, $M'_v,\ M'_c$, (setting row 4 to zero), then zero column 4:
+
+$$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0.04 \\ 0 \end{bmatrix}$$
+
+$$M''_v = M'_v \text{ with column 4 set to } (0,0,0,1)^T, \qquad M''_c = M'_c \text{ with column 4 set to } (0,0,0,1)^T$$
+
+$$M''_{v} = \begin{bmatrix}
+1 & 0 & 0 & 0\\  
+0 & 0 & 1 & 0\\  
+0 & 1 & 0 & 0\\  
+0 & 0 & 0 & 1   
+\end{bmatrix}$$
+
+$$M''_c = \begin{bmatrix}
+0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
+-0.00119999914 & 0.998588085 & 0.0531073592 & 0.0 \\
+0 & 0 & 0.9985888041 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+Multiply the three orientation matrices, then add back both position offsets:
+
+$$M' = M_h \cdot M''_v \cdot M''_c$$
+$$M' = 
+\begin{bmatrix}
+0.999512 & -0.031245 & 0 & 49.9962109\\
+0.031245 & 0.999512 & 0 & 0.416638875\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1 
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & 0\\  
+0 & 0 & 1 & 0\\  
+0 & 1 & 0 & 0\\  
+0 & 0 & 0 & 1   
+\end{bmatrix}
+\begin{bmatrix}
+0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
+-0.00119999914 & 0.998588085 & 0.0531073592 & 0.0 \\
+0 & 0 & 0.9985888041 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+
+$$M' = \begin{bmatrix}
+0.999473545 & -0.0324443047 & 0 &  49.9962109\\
+0.0324443047 &  0.999473545 & 0  0.416638875\\
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1
+ \end{bmatrix}$$
+
+$$M_{3Dcant} = 
+\begin{bmatrix}
+0.999473545 & -0.0324443047 & 0 &  49.9962109\\
+0.0324443047 &  0.999473545 & 0  0.416638875\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
++
+\begin{bmatrix}
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0
+\end{bmatrix}
++
+\begin{bmatrix}
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0.04\\
+0 & 0 & 0 & 0
+\end{bmatrix}
+$$
+
+$$M_{3Dcant} = 
+\begin{bmatrix}
+0.999473545 & -0.0324443047 & 0 &  49.9962109\\
+0.0324443047 &  0.999473545 & 0  0.416638875\\
+0 & 0 & 1 & 0.04\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
 
 ## 4.11 Deviation from EnrichIfc4x3 Reference Implementation
 

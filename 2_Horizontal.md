@@ -1,5 +1,4 @@
 todo:
-* replace circle image with svg file
 * review and clean up second half helmert curve discussion
 * Review all subsections in this section for consistency
 * think about reversing steps 3 and 4
@@ -822,6 +821,24 @@ $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}
 
 $$\kappa(t) = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
+The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
+
+First Half
+
+$$a_{01} = \frac{L}{R_{s}},\ A_{01} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+
+$$a_{11} = 0,\ A_{11} = 0$$
+
+$$a_{21} = 2f,\ A_{21} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+
+Second Half
+
+$$a_{02} = -f + \frac{L}{R_{s}},\ A_{02} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+
+$$a_{12} = 4f,\ A_{12} = \frac{L}{\sqrt{\left| a_{1} \right|}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
+
+$$a_{22} = -2f,\ A_{22} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+
 ### 2.7.2 Semantic Definition to Geometry Mapping
 
 Consider a horizontal Helmert transition curve segment that starts at
@@ -846,31 +863,19 @@ $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} =
 
 First Half
 
-$$a_{0} = \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+$$a_{01} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
-$$a_{1} = 0,\ A_{1} = 0$$
+$$A_{11} = 0$$
 
-$$a_{2} = 2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
-
-$$a_{0} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
-
-$$A_{1} = 0$$
-
-$$a_{2} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{|0.66667|}}\frac{0.66667}{|0.66667|} = 114.4714255\ m$$
+$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{|0.66667|}}\frac{0.66667}{|0.66667|} = 114.4714255\ m$$
 
 Second Half
 
-$$a_{0} = -f + \frac{L}{R_{s}},\ A_{0} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
+$$a_{02} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{| -0.33333|}\frac{-0.33333}{|-0.33333|} = - 300\ m$$
 
-$$a_{1} = 4f,\ A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
+$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1.33333}{|1.33333|} = 86.602540378\ m$$
 
-$$a_{2} = -2f,\ A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
-
-$$a_{0} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{| -0.33333|}\frac{-0.33333}{|-0.33333|} = - 300\ m$$
-
-$$a_{1} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1.33333}{|1.33333|} = 86.602540378\ m$$
-
-$$a_{2} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$
+$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$
 
 End point and end slope of first half is the placement of the second
 half.
@@ -935,6 +940,10 @@ The geometric representation of the first half is
 
 
 #### Two-level placement for the second half
+
+<span style="background-color: yellow;color: black">
+[todo - review this discussion and combine content above so this isn't redundant]
+</span>
 
 `IfcCurveSegment` evaluation normalizes the parent curve at `SegmentStart`, then applies the curve segment `Placement`. For the second half, `SegmentStart = L/2`, so the IFC machinery uses the parent curve's value at $t = L/2$ as the normalization origin. The second half parent curve's own `Position` attribute is therefore set so that
 
@@ -1158,7 +1167,7 @@ $$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \rig
 
 ### 2.8.3 Compute Point on Curve
 
-Compute the curve coordinates at a distance along the curve, $u = 100$
+Compute the curve coordinates at a distance along the curve, $u = 50$
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
@@ -1180,23 +1189,21 @@ $$M_{CSP} = I$$
 
 Compute point and curve tangent at 100 m from the start.
 
-$$\theta(s) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}s^{4} + \frac{1}{3(100)^{3}}s^{3}$$
+$$x = \int_{0}^{50}{\cos{\theta(s)}}\ ds = 49.9962109$$
 
-$$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = 99.7486$$
+$$y = \int_{0}^{50}{\sin{\theta(s)}}\ ds = 0.416638875$$
 
-$$y = \int_{0}^{100}{\sin{\theta(s)}}\ ds = 4.98981$$
+$$\theta(50) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}(50)^{4} + \frac{1}{3(100)^{3}}(50)^{3} = 0.03125$$
 
-$$\theta(100) = \frac{-110.668192}{4\left|-{110.668192}^{5} \right|}(100)^{4} + \frac{1}{3(100)^{3}}(100)^{3} = \frac{1}{6} = 0.1666667$$
+$$dx = \cos\left( 0.03125 \right) = 0.999512$$
 
-$$dx = \cos\left( \frac{1}{6} \right) = 0.98614$$
-
-$$dy = \sin\left( \frac{1}{6} \right) = 0.16589$$
+$$dy = \sin\left( 0.03125 \right) = 0.031245$$
 
 In matrix form
 
 $$M_{PC} = \begin{bmatrix}
-0.98614 & -0.16589 & 0 & 99.7486\\
-0.16589 & 0.98614 & 0 & 4.98981\\
+0.999512 & -0.031245 & 0 & 49.9962109\\
+0.031245 & 0.999512 & 0 & 0.416638875\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -1205,15 +1212,15 @@ Apply the normalization and curve segment placement to the parent curve point
 
 $$M_{h} = M_{CSP} M_N M_{PC}= I \, I
 \begin{bmatrix}
-0.98614 & -0.16589 & 0 & 99.7486\\
-0.16589 & 0.98614 & 0 & 4.98981\\
+0.999512 & -0.031245 & 0 & 49.9962109\\
+0.031245 & 0.999512 & 0 & 0.416638875\\
 0 & 0 & 1 & 0\\
 0&0&0&1
 \end{bmatrix}$$
 $$M_{h} = 
 \begin{bmatrix}
-0.98614 & -0.16589 & 0 & 99.7486\\
-0.16589 & 0.98614 & 0 & 4.98981\\
+0.999512 & -0.031245 & 0 & 49.9962109\\
+0.031245 & 0.999512 & 0 & 0.416638875\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$

@@ -163,8 +163,8 @@ Place the curve segment at (0,10) with a tangent direction
 ~~~
 
 `IfcCurveSegment.SegmentLength` is the length measured along the trimmed
-curve. For a horizontal length of 100, the length along the curve is
-100/0.894427190999916 = 111.803398874989
+curve. For a horizontal length of $100\ m$, the length along the curve is
+$100/0.894427190999916 = 111.803398874989\ m$
 
 The curve segment is defined as
 
@@ -270,22 +270,22 @@ The following procedure maps the semantic parameters of a vertical circular arc 
 Given the following semantic definition of a vertical circular arc, create the geometric definition.
 
 ~~~
-#320 = IFCALIGNMENTVERTICALSEGMENT($, $, 144.917656958471, 239.704902937655, 25.3780433292418, -8.17722122076371E-4, -1.28040164299203E-2, -20000., .CIRCULARARC.);
+#44 = IFCALIGNMENTVERTICALSEGMENT($, $, 0., 100., 10., -5.E-1, -1., 384.773458895502, .CIRCULARARC.);
 ~~~
 
 Determine the tangent slope angle at the start and end of the segment.
 
-$g_{start} = -8.17722122076371 \cdot 10^{-4}$
+$g_{start} = -0.5$
 
 $\theta_{start} = tan^{-1}(g_{start})$
 
-$\theta_{start} = tan^{-1}(-8.17722122076371 \cdot 10^{-4}) = -8.177219398 \cdot 10^{-4}$
+$\theta_{start} = tan^{-1}(-0.5) = -0.463648$
 
-$g_{end} = -1.28040164299203 \cdot 10^{-2}$
+$g_{end} = -1$
 
 $\theta_{end} = tan^{-1}(g_{end})$
 
-$\theta_{end} = tan^{-1}(-1.28040164299203 \cdot 10^{-2}) = -1.2803316789 \cdot 10^{-2}$
+$\theta_{end} = tan^{-1}(-1) = -0.785398$
 
 Compute the radius of the circle.
 
@@ -293,69 +293,189 @@ Compute the radius of the circle.
 
 $R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$
 
-$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} = 239.704902937655$
+$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$
 
-$R = \left| \frac{239.704902937655}{sin(-1.2803316789\cdot10^{-4}) - sin(-8.177219398\cdot10^{-4})} \right | = 20000.0$
+$R = \left| \frac{328.083989501312}{sin(-1) - sin(-0.5)} \right | = 384.773458895502$
 
- Comptue the direction of vectors that are perpendicular to the circle, directed away from the center point
+Compute the arc-length trimming parameters `SegmentStart` and `SegmentLength`.
 
-if $\theta_{start} < \theta_{end}$
+For an `IfcCircle` with CCW parametrization and `RefDirection` = (1, 0), the arc-length parameter at a point where the grade angle is $\theta$ depends on which half of the circle the vertical curve occupies.
 
-Curve is sagging (curve is on the bottom half of the circle)
+If $\theta_{start} < \theta_{end}$ — sagging curve (lower half of circle):
 
-$\Delta_{start} = \theta_{start} + \frac{3}{2}\pi$
+$$\text{SegmentStart} = R\left(\theta_{start} + \tfrac{3}{2}\pi\right)$$
 
-$\Delta_{end} = \theta_{end} + \frac{3}{2}\pi$
+If $\theta_{start} > \theta_{end}$ — cresting curve (upper half of circle):
 
-else
+$$\text{SegmentStart} = R\left(\theta_{start} + \tfrac{1}{2}\pi\right)$$
 
-Curve is cresting (curve is on top half of the circle)
+In both cases:
 
-$\Delta_{start} = \theta_{start} + \frac{1}{2}\pi = 1.56997860486$
+$$\text{SegmentLength} = R(\theta_{end} - \theta_{start})$$
 
-$\Delta_{end} = \theta_{end} + \frac{1}{2}\pi = 1.55799301001$
+For a cresting curve $\theta_{end} < \theta_{start}$, so `SegmentLength` is negative — the segment is traversed clockwise.
 
-Compute the curve trimming parameters `SegmentStart` and `SegmentLength`
+For this example (cresting):
 
-$\text{Segment Start} = R\Delta_{start} = (20000.0)(1.56997860486) = 31399.5720971$
+$\text{SegmentStart} = R\!\left(\theta_{start} + \tfrac{\pi}{2}\right) = (384.773458895502)(1.107148718) = 426.001441657352$
 
-$\text{Segment Length} = R(\Delta_{end} - \Delta_{start}) = (20000.0)(1.55799301001 - 1.56997860486) = -239.711897$
-
-For a cresting curve, the segment length is negative which means the trim occurs in clock-wise direction. 
+$\text{SegmentLength} = R(\theta_{end} - \theta_{start}) = (384.773458895502)(-0.785398 - (-0.463647609)) = -123.801073716741$
 
 Determine the placement of the trimmed curve
 
-X = `IfcAlignmentVerticalSegment.StartDistAlong` = 144.917656958471
+X = `IfcAlignmentVerticalSegment.StartDistAlong` = 0.0
 
-Y = `IfcAlignmentVerticalSegment.StartHeight` = 25.3780433292418
+Y = `IfcAlignmentVerticalSegment.StartHeight` = 10.0
 
-$dx = cos(\theta_{start}) = cos(-8.177219398x10^{-4} = 0.9999966566$
+$$C_x = R d_y = 384.773458895502(-0.447213595) = -172.075922$$
 
-$dy = sin(\theta_{start}) = sin(-8.177219398x10^{-4}) = -8.1772184868x10^{-4}$
+$$C_y = -R d_x = -384.773458895502(0.894427191) = -344.151844$$
 
+$dx = cos(\theta_{start}) = cos(-0.463647609) = 0.894427191$
+
+$dy = sin(\theta_{start}) = sin(-0.463647609) = -0.447213595$
 
 The geometric representation is
 
 ~~~
-#1974 = IFCCURVESEGMENT(.CONTSAMEGRADIENT., #1980, IFCLENGTHMEASURE(31399.5720971016), IFCLENGTHMEASURE(-239.711897000001), #1983);
-#1980 = IFCAXIS2PLACEMENT2D(#1981, #1982);
-#1981 = IFCCARTESIANPOINT((144.917656958471, 25.3780433292418));
-#1982 = IFCDIRECTION((9.99999665665433E-1, -8.177218486836E-4));
-#1983 = IFCCIRCLE(#1984, 20000.);
-#1984 = IFCAXIS2PLACEMENT2D(#1985, #1986);
-#1985 = IFCCARTESIANPOINT((0., 0.));
-#1986 = IFCDIRECTION((1., 0.));
+#71 = IFCCURVESEGMENT(.CONTINUOUS., #77, IFCLENGTHMEASURE(426.001441657352), IFCLENGTHMEASURE(-123.801073716741), #80);
+#77 = IFCAXIS2PLACEMENT2D(#78, #79);
+#78 = IFCCARTESIANPOINT((0., 10.));
+#79 = IFCDIRECTION((8.94427190999916E-1, -4.47213595499958E-1));
+#80 = IFCCIRCLE(#81, 384.773458895502);
+#81 = IFCAXIS2PLACEMENT2D(#82, #83);
+#82 = IFCCARTESIANPOINT((-172.075922005613, -344.151844011225));
+#83 = IFCDIRECTION((1., 0.));
+
 ~~~
 
 
 ### 3.4.3 Compute Point on Curve
 
-[todo: provide example calcs for steps 1 - 5. compute at u = 150, be clear u is horizontal]
+Compute the vertical placement matrix for the point at horizontal distance $u = 150$ m from the start of the curve segment.
+
+**Step 1 — Evaluate the parent curve at the trim start**
+
+$$\Delta_0 = tan^{-1}\left(\tfrac{-344.151844011225}{-172.075922005613}\right) = 1.1071487177940900$$
+
+$$x_0 = C_x + R \cos(\Delta_0) = -172.075922 + 384.773458895502\cos(1.1071487177940900) = 0$$
+$$y_0 = C_y + R \sin(\Delta_0) = -344.151844 + 384.773458895502\sin(1.1071487177940900) = 0$$
+
+$$\theta_0 = \Delta_0 - \tfrac{\pi}{2} = -0.463647609$$
+
+$dx_0 =\cos(\theta_0) = 0.89442719099991$
+
+$dy_0 =\sin(\theta_0) = -0.447213595499958$
+
+**Step 2 — Form the normalization matrix $M_N$**
+
+$$M_N = \begin{bmatrix}
+0.89442719099991 & -0.447213595499958 & 0 & 0 \\
+0.447213595499958 & 0.89442719099991 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+
+From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$
+
+$$M_{CSP} = \begin{bmatrix}
+0.894427190999916 & 0.447213595499958 & 0 & 0 \\
+-0.447213595499958 & 0.894427190999916 & 0 & 10. \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 4 — Evaluate and map the point**
+
+Compute the vertical placement matrix for the point at horizontal distance $u = 150\ m$ from the start of the curve segment.
+
+The center point of the trimmed circular arc is
+
+$$C_x = -172.075922005613$$
+$$C_y = -344.151844011225$$
+
+From Step 1
+$$d_p = x_0 = 0$$
+$$z_p = y_0 = 0$$
+
+$$\theta_0 = \Delta_0 - \tfrac{\pi}{2} = -0.463647609$$
+
+Chord length between the start and end of the trimmed segment
+
+$$c = \sqrt{(x - C_x)^2 + (y - C_y)^2} = \sqrt{(150-(0))^2 + (-123.63411284673890 - 10)^2} = 200.89319579402121$$
+
+Angle subtented by the trimmed segment
+
+$$\Delta = 2\sin^{-1}(\tfrac{c}{2R}) = 2\sin^{-1}(\tfrac{258.4912284}{2 \cdot 384.773458895502}) = 0.52822752281644458$$
+
+Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.52822752281644458) = 203.24793103788610$
+
+Tangent angle at $u = 150\ m$
+
+$$\theta = \theta_0 - \Delta = 1.1071487177940900 - 0.52822752281644458 = 0.57892119497764538$$
+
+$dx = \cos(\theta) = 0.83705337402984237 $
+
+$dy = \sin(\theta) = 0.54712123795851386 $
+
+Compute point on trimmed segment at $u$.
+
+$$x_{pc} = R cos(\theta) + Cx = 384.77345889550202(0.83705337402984237) + (-172.075922005613) = 150$$
+$$y_{pc} = R sin(\theta) + Cy = 384.77345889550202(0.54712123795851386) + (-344.15184401122502) =  -133.63411284673862$$
+
+<span style="background-color: yellow;color: black">
+[WORKING HERE - write this up better - this is from ifcos implementation]
+getting slope tangents from dx and dy above, but flipping sin and cos and negating because of direction of trim
+</span>
+
+$$pcDX = 0.54712123795851386 = -(sign)(sin theta)$$
+$$pcDY = -0.83705337402984237 = (sign)(cos theta)$$
+$$sign = \text{sign of length, which is negative for this example}$$
+
+$$M_{PC} = \begin{bmatrix}
+0.54712123795851386 & 0.83705337402984237 & 0 & 150\\
+-0.83705337402984237 & 0.54712123795851386 & 0 & -133.63411284673862 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+The vertical placement matrix is:
+
+$$M_v = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}
+0.894427190999916 & 0.447213595499958 & 0 & 0 \\
+-0.447213595499958 & 0.894427190999916 & 0 & 10. \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.89442719099991 & -0.447213595499958 & 0 & 0 \\
+0.447213595499958 & 0.89442719099991 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.54712123795851386 & 0.83705337402984237 & 0 & 150\\
+-0.83705337402984237 & 0.54712123795851386 & 0 & -133.63411284673862 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_v = \begin{bmatrix}
+0.54712124 & 0.83705337 & 0. & 150. \\
+-0.83705337 & 0.54712124 & 0. & -123.63411285 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+ \end{bmatrix}$$
 
 ## 3.5 Clothoid
 
-:warning: **[Finish this]** :warning:
+<span style="background-color: yellow;color: black">
+[todo - finish this]
+</span>
 
+<!--
 Start angle = atan(startGradient)
 
 End angle = atan(endGradient)
@@ -370,6 +490,7 @@ is equal to the specified horizontal length. Numerically solve
 ![](images/image11.png)
 
 *Figure 3.5-1 Vertical clothoid*
+-->
 
 ## 3.6 Parabolic Arc
 The most common transition curve in a vertical profile is a parabola. The geometric representation is `IfcPolynomialCurve`. Mapping of the semantic definition to the geometric definition can be a bit tricky.
@@ -405,11 +526,11 @@ The semantic definition is
 Compute the polynomai curve coefficients
 
 
-$A_0 = 121.$
+$A_0 = 121.\ m$
 
 $A_1 = 0.0175$
 
-$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}$
+$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}\ m^{-1}$
 
 It is easiest to place the parent curve at the origin and orient it with the global coordinate system. The parent curve is defined as
 
@@ -458,7 +579,7 @@ $L_c = 1600.0616641340894$
 
 The placement of the trimmed curve segment is noteworthy. From the `IfcAlignmentVerticalSegment` attributes, the parabolic segment of the vertical alignment starts at 1200 from the beginning of the horizontal alignment and is at an elevation of 121. The RefDirection vector at the start of the curve is needed as well.
 
-The gradient is $y'(x=0)=0.0175$
+The gradient is $y'(x=0) = 0.0175$
 
 $\theta_p =  tan^{-1}(0.0175) = 0.017498213869856595$
 
@@ -481,17 +602,15 @@ The geometric representation is
 
 ### 3.6.3 Compute Point on Curve
 
-[todo: provide example calcs for steps 1 - 5. compute at d = 1500, u = 1500-1200 = 300, be clear u is horizontal from the start of the parabola]
-
 Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $u=1500-1200=300$ from the start of the segment.
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
-Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.
 
 **Step 2 — Form the normalization matrix $M_N$**
 
-Since $x_0 = 0, y_0 = 0, \theta_0 = 0, $M_N = I$
+Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = I$
 
 **Step 3 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -510,7 +629,7 @@ Evaluate the parent curve at $x = 300$
 
 $y(300) = -8.59375 \cdot 10^{-6} 300^2 + 0.0175(300) + 121 = 125.4765625$
 
-$y'(300_ = 2(-8.59375 \cdot 10^{-6}) 300 + 0.0175 = 0.01234375$
+$y'(300) = 2(-8.59375 \cdot 10^{-6}) 300 + 0.0175 = 0.01234375$
 
 $dx = \frac{1}{\sqrt{(0.01234375)^2+1}} = 0.999923825$
 
