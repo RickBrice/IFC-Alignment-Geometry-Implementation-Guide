@@ -1,4 +1,6 @@
 todo:
+* replace circle image with svg file
+* review and clean up second half helmert curve discussion
 * Review all subsections in this section for consistency
 * think about reversing steps 3 and 4
 
