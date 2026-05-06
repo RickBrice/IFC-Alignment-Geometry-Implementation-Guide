@@ -1,7 +1,7 @@
 outline:
 * drawing on the definition of stationing in chapter 5, describe how stationing is defined in ifc.
 * discuss stationing breaks, both gap and overlap, including why there may be breaks because of realignment of a road. discuss how this relates to and influences distance along to diretrix. can't simply convert station to distance alogn by subtraction start station
-* discuss what it means to inform on the position of something as semantic information
+* discuss what it means to inform on the position of something as semantic information. an example is that a referent can inform about the location of a pier, this is informational, not geometrical
 * introduce ifcreferent and give examples
 * discuss uncertainty in how to nest referents. (ifc is not clear if the referent goes in its own nest or same nest with alignment layouts)
 
