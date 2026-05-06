@@ -330,7 +330,7 @@ The parent curve can be defined as follows:
 This is a circle centered at point (0,300) with the local X-axis aligned
 with the negative global Y-axis as shown in Figure 2.4.2-1.
 
-![](images/IfcCircle_Parent_Curve_Trimming.png)
+![](images/IfcCircle_Parent_Curve_Trimming.svg)
 
 *Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve*
 

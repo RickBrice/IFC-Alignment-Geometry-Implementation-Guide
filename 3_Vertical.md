@@ -552,7 +552,7 @@ $$M_v = \begin{bmatrix}
 
 To complete evaluation of a point on the alignment, the 2D vertical is combined with the 2D horizontal resulting in a point in 3D space.
 
-From Section 2.3.3, the horizontal alignment point at 1600 along a line is
+From line example in Section 2.3, the horizontal alignment point at $1500\ m$ is
 
 $$M_{h} = \begin{bmatrix}
 0.83925279 & 0.54374114 & 0 & 1758.879185 \\
@@ -561,7 +561,7 @@ $$M_{h} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-From the parabolic arc example
+From the parabolic arc example in Section 3.6, the corresponding vertical alignment point is
 
 $$M_v = \begin{bmatrix}
 0.9999998299568322 & -0.0005831691921746294 & 0.0 & 1500.0 \\
@@ -571,6 +571,8 @@ $$M_v = \begin{bmatrix}
 \end{bmatrix}$$
 
  **Step 6 — Combine with the horizontal alignment to produce the 3D placement matrix**
+
+Modify the $M_v$ matrix into $M'_v$ to put the vertical point into the same reference frame as the horizontal. Swap rows and columns 2 and 3. Set the distance along to 0.0.
 
 $${M'}_v = \begin{bmatrix} 
 dx_v & 0 & -dy_v & 0 \\
