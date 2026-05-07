@@ -93,24 +93,9 @@ All examples use a railhead distance $D_{rh} = 1.5\ m$.
 
 Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" $(s,D(s))$ coordinate system in which $d$ is the distance measured along the horizontal `IfcCompositeCurve` and $D(s)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.
 
-**Steps 1—4** follow the identical procedure describe in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and deviating elevation for the horizontal y-coordinate. Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
+**Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and deviating elevation for the horizontal y-coordinate. Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
 
-**Step 1 — Evaluate the parent curve at the trim start**
-
-Compute the deviating elevation $D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$.
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation), the `RefDirection` gives slope angle $\theta_p$, and the `Axis` gives cross slope angle $\phi_p$.
 
@@ -126,7 +111,20 @@ X_p.z & Y_p.z & Z_p.z & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 4 — Evaluate and map each point**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+Compute the deviating elevation $D_0 = D(s_0)$ and the slope angle $\theta_0 = \tan^{-1}(D'(s_0))$.
+
+$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
+
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Evaluate and map each point**
 
 For the point at a distance along the horizontal alignment $s$, compute $D(s)$ and $\theta(s) = \tan^{-1}(D'(s))$. Interpolate the cross slope angle between the segment start and end values:
 
@@ -148,9 +146,9 @@ Apply the normalization and placement in sequence:
 
 $$M_c = M_{CSP}\ M_N\ M_{PC}$$
 
-Step 5 is performed immediately for this point before moving to the next arc-length $s$.
+Step 4 is performed immediately for this point before moving to the next arc-length $s$.
 
-**Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
+**Step 4 — Combine with horizontal and vertical to produce the 3D placement matrix**
 
 The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $s$ along the `IfcCompositeCurve`) and the vertical matrix $M_v$ (evaluated at the same $s$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.
 
@@ -254,20 +252,7 @@ $dz_z = sin\phi = 0.99435920$
 
 Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.
 
-**Step 1 - Evaluate the parent curve at the trim start**
-
-$s_0 = 0, D(0) = D_0 = 0.08\ m, D'(0) = \theta_0 = 0.$
-
-**Step 2 - Form the normalization matrix $M_N$**
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
- 0 & 1 & 0 & -0.08 \\ 
- 0 & 0 & 1 & 0 \\
- 0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 3 - Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 - Form the curve segment placement matrix $M_{CSP}$**
 
 $$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.10606498,\ 0.99435920)$$
 $$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ -0.10606498,\ 0.99435920),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$
@@ -279,7 +264,18 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 4 - Evaluate and map each point**
+**Step 2 - Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+$s_0 = 0, D(0) = D_0 = 0.08\ m, D'(0) = \theta_0 = 0.$
+
+$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+ 0 & 1 & 0 & -0.08 \\ 
+ 0 & 0 & 1 & 0 \\
+ 0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+**Step 3 - Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$.
 
@@ -413,34 +409,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
-
-From the parent curve 
-
-$s_0 = 0$
-
-$D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
-
-$D'(0) = -0.0008,\ \theta_0 = -0.00079999$
-
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-0.999999680 & -0.000799999744 & 0 & 0 \\
-0.000799999744 & 0.999999680 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 $\mathbf{RefDir}_p = (0.9999996800,-0.000799999744,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
 
@@ -461,7 +430,31 @@ $\phi_p = tan^{-1}\left(\frac{0.994359201}{0.106064981}\right) = 1.464531464$
 
 With the cross section $y$-axis to the left and $z$-axis upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right rail being superelevated.
 
-**Step 4 — Evaluate and map each point**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+From the parent curve 
+
+$s_0 = 0$
+
+$D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
+
+$D'(0) = -0.0008,\ \theta_0 = -0.00079999$
+
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_N = \begin{bmatrix}
+0.999999680 & -0.000799999744 & 0 & 0 \\
+0.000799999744 & 0.999999680 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
@@ -510,7 +503,7 @@ $\mathbf{Axis} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
 
 $\phi(50\ m) = tan^{-1}\left(\frac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$
 
-The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an excersie for the reader - repeat Step 5 with $s=100\ m$ to verify ).
+The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an excersie for the reader - repeat Step 4 with $s=100\ m$ to verify ).
 
 As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$
 
@@ -695,6 +688,21 @@ The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the se
 
 Compute the cant placement matrix for a point 75 m from the start of the curve segment. 
 
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
+
+$\mathbf{RefDir_p} = (0.9999987200024576,-0.0015999979520039342,0.),\ \mathbf{Axis_p} = (0.,0.053257642916150753,0.99858080467782662)$
+
+$\mathbf{Y_p} = \mathbf{Axis_p} \times \mathbf{RefDir_p} = (0.001597727253, 0.998579530, -0.0532575749)$
+
+$$M_{CSP} = \begin{bmatrix}
+0.999998720 & 0.001597727253 & 0 & 50.0 \\
+-0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
+ 0 & -0.0532575749 & 0.998580805 & 0 \\
+ 0 & 0 & 0 & 1
+ \end{bmatrix}$$
+
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
 From the parent curve 
 
 $s_0 = 50\ m$
@@ -708,8 +716,6 @@ $\theta_0 = tan^{-1}(-0.0064) = -0.006399913$
 $cos \theta_0 = cos(\theta_0) = 0.999979521$
 
 $sin \theta_0 = sin(\theta_0) = -0.006399869$
-
-**Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
@@ -731,20 +737,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir_p} = (0.9999987200024576,-0.0015999979520039342,0.),\ \mathbf{Axis_p} = (0.,0.053257642916150753,0.99858080467782662)$
-
-$\mathbf{Y_p} = \mathbf{Axis_p} \times \mathbf{RefDir_p} = (0.001597727253, 0.998579530, -0.0532575749)$
-
-$$M_{CSP} = \begin{bmatrix}
-0.999998720 & 0.001597727253 & 0 & 50.0 \\
--0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
- 0 & -0.0532575749 & 0.998580805 & 0 \\
- 0 & 0 & 0 & 1
- \end{bmatrix}$$
-
-**Step 4 — Evaluate and map each point**
+**Step 3 — Evaluate and map each point**
  
 A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m$
 
@@ -900,29 +893,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
-
-From the parent curve 
-
-$s_0 = 0,\ D(0\ m) = 0.08\ m, \ D'(0) = 0,\ \theta_0 = 0$
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 $\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
 
@@ -943,7 +914,27 @@ $\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$
 
 With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
 
-**Step 4 — Evaluate and map each point**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+From the parent curve 
+
+$s_0 = 0,\ D(0\ m) = 0.08\ m, \ D'(0) = 0,\ \theta_0 = 0$
+
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+$$M_N = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & -0.08 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
@@ -1081,7 +1072,20 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
+
+$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
+
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
+
+$$M_{CSP} = \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
 From the parent curve 
 
@@ -1092,8 +1096,6 @@ $D(0\ m) = 0.08\ m$
 $D'(0\ m) = 0$
 
 $\theta_0 = 0$
-
-**Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
@@ -1109,20 +1111,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 4 — Evaluate and map each point**
+**Step 3 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
@@ -1273,7 +1262,20 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
+
+$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
+
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
+
+$$M_{CSP} = \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 0.9943592 & 0.106064981 & 0.08 \\
+0 & -0.10606498 & 0.9943592 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
 From the parent curve 
 
@@ -1282,8 +1284,6 @@ $$D(0\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -35
 $$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$$
 
 $\theta_0 = 0$
-
-**Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
@@ -1299,20 +1299,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 4 — Evaluate and map each point**
+**Step 3 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
@@ -1504,7 +1491,20 @@ $dz_z = sin(\theta_s) = 0.997785158$
 
 Compute the cant placement matrix for a point 50 m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
+
+$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.06651901,0.99778516)$
+
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.99778516, -0.06651901)$
+
+$$M_{CSP} = \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 0.99778516 & 0.06651901 & 0.05 \\
+0 & -0.06651901 & 0.99778516 & 0 \\
+0 & 0 & 0 & 1 
+\end{bmatrix}$$
+
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
 From the parent curve 
 
@@ -1513,8 +1513,6 @@ $s_0 = 0$
 $D(0\ m) = 0.05\ m$
 
 $D'(0) = 0,\ \theta_0 = 0$
-
-**Step 2 — Form the normalization matrix $M_N$**
 
 $$M_N = \begin{bmatrix}
 \cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
@@ -1530,20 +1528,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.06651901,0.99778516)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.99778516, -0.06651901)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.99778516 & 0.06651901 & 0.05 \\
-0 & -0.06651901 & 0.99778516 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 4 — Evaluate and map each point**
+**Step 3 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$
 
@@ -1629,7 +1614,7 @@ $$M_c = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
+**Step 4 — Combine with horizontal and vertical to produce the 3D placement matrix**
 
 Construct $M'_v$ as described in Section 3.2
 

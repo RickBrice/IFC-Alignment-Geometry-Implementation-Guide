@@ -29,24 +29,9 @@ $g_{e} =$ End Gradient
 
 Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
 
-**Steps 1–4** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
+**Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
 
-**Step 1 — Evaluate the parent curve at the trim start**
-
-Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & d_0\sin\theta_0 - z_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, z_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
 
@@ -57,7 +42,20 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 4 — Evaluate and map each point in the vertical plane**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
+
+$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
+
+$$M_N = \begin{bmatrix}
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & d_0\sin\theta_0 - z_0\cos\theta_0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Evaluate and map each point in the vertical plane**
 
 For the point at distance along $s$, compute $x(s)$, $y(s)$, and $\theta(s)$:
 
@@ -70,9 +68,9 @@ $$M_{PC} = \begin{bmatrix}
 
 $$M_v = M_{CSP} M_N M_{PC}$$
 
-Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 6 is performed immediately for this point before moving to the next point.
+Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 4 is performed immediately for this point before moving to the next point.
 
-**Step 6 — Combine with the horizontal alignment point to produce the 3D placement matrix**
+**Step 4 — Combine with the horizontal alignment point to produce the 3D placement matrix**
 
 The vertical result lives in the (distance along, elevation) plane and must be merged with the horizontal alignment to form a 3D position and orientation. The "distance along" axis corresponds to the curve tangent of the horizontal alignment and the vertical $y$ is elevation (Z in 3D).
 
@@ -174,22 +172,7 @@ The curve segment is defined as
 
 Compute the vertical placement matrix for the point at horizontal distance $u = 50$ m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
-
-The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (0.894427191,\ 0.447213595)$:
-
-$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.894427191}{0.447213595}\right) = 0.463647609\ \text{rad}$$
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-$$M_N = \begin{bmatrix}
-0.894427191 & 0.447213595 & 0 & 0 \\
--0.447213595 & 0.894427191 & 0 & 0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0,\ 10)$, $\theta_p = 0.463647609\ \text{rad}$:
 
@@ -203,7 +186,20 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 4 — Evaluate and map the point**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (0.894427191,\ 0.447213595)$:
+
+$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.894427191}{0.447213595}\right) = 0.463647609\ \text{rad}$$
+
+$$M_N = \begin{bmatrix}
+0.894427191 & 0.447213595 & 0 & 0 \\
+-0.447213595 & 0.894427191 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 3 — Evaluate and map the point**
 
 The horizontal distance $u = 50$ m is not the arc-length parameter. Convert to arc-length $s$ along the `IfcLine`:
 
@@ -352,7 +348,18 @@ The geometric representation is
 
 Compute the vertical placement matrix for the point at horizontal distance $u = 50$ m from the start of the curve segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
+
+From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$
+
+$$M_{CSP} = \begin{bmatrix}
+0.894427190999916 & 0.447213595499958 & 0 & 0 \\
+-0.447213595499958 & 0.894427190999916 & 0 & 10. \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
 $$\Delta_0 = tan^{-1}\left(\tfrac{-344.151844011225}{-172.075922005613}\right) = 1.1071487177940900$$
 
@@ -365,8 +372,6 @@ $dx_0 =\cos(\theta_0) = 0.89442719099991$
 
 $dy_0 =\sin(\theta_0) = -0.447213595499958$
 
-**Step 2 — Form the normalization matrix $M_N$**
-
 $$M_N = \begin{bmatrix}
 0.89442719099991 & -0.447213595499958 & 0 & 0 \\
 0.447213595499958 & 0.89442719099991 & 0 & 0 \\
@@ -374,18 +379,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
-
-From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$
-
-$$M_{CSP} = \begin{bmatrix}
-0.894427190999916 & 0.447213595499958 & 0 & 0 \\
--0.447213595499958 & 0.894427190999916 & 0 & 10. \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 4 — Evaluate and map the point**
+**Step 3 — Evaluate and map the point**
 
 Compute the vertical placement matrix for the point at horizontal distance $u = 50\ m$ from the start of the curve segment.
 
@@ -393,7 +387,7 @@ The center point of the trimmed circular arc is
 
 $C_x = -172.075922005613,\ C_y = -344.151844011225$
 
-From Step 1
+From Step 2
 
 $x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
 
@@ -623,15 +617,7 @@ The geometric representation is
 
 Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $u=1500-1200=300$ from the start of the segment.
 
-**Step 1 — Evaluate the parent curve at the trim start**
-
-Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.
-
-**Step 2 — Form the normalization matrix $M_N$**
-
-Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = I$
-
-**Step 3 — Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (1200,\ 121)$, $dx_p = 0.99984691016192495$, $dy_p = 0.017497320927833689$
 
@@ -642,7 +628,13 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 4 — Evaluate and map the point**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+
+Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.
+
+Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = I$
+
+**Step 3 — Evaluate and map the point**
 
 Evaluate the parent curve at $x = 300$
 
@@ -708,7 +700,7 @@ $$M_v = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
- **Step 6 — Combine with the horizontal alignment to produce the 3D placement matrix**
+ **Step 4 — Combine with the horizontal alignment to produce the 3D placement matrix**
 
 Modify the $M_v$ matrix into $M'_v$ to put the vertical point into the same reference frame as the horizontal. Swap rows and columns 2 and 3. Set the distance along to 0.0.
 
