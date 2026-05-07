@@ -19,7 +19,7 @@ MathJax = {
 @page { size: letter; margin: 0.9in 0.85in; }
 body {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 11pt;
+  font-size: 12pt;
   line-height: 1.65;
   color: #111;
   max-width: none;
@@ -1326,6 +1326,9 @@ The semantic definition is</p>
 <p>$$a_{02} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{| -0.33333|}\frac{-0.33333}{|-0.33333|} = - 300\ m$$</p>
 <p>$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1.33333}{|1.33333|} = 86.602540378\ m$$</p>
 <p>$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$</p>
+<p>Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Parent_Curves.svg" alt="" /></p>
+<p><em>Figure 2.7.2-1 First and second half of parent curves, without placement adjustments</em></p>
 <h4>Two-level placement for the second half</h4>
 <p><code>IfcCurveSegment</code> evaluation normalizes the parent curve at <code>SegmentStart</code>, then applies the curve segment <code>Placement</code>. For the second half, <code>SegmentStart = L/2</code>, so the second half parent curve's value at $t = L/2$ is the normalization origin. The second half parent curve's own <code>Position</code> attribute is therefore set so that the point at $L/2$ exactly matches the endpoint of the first half.</p>
 <p>With this alignment the normalization cancels the offset, and the curve segment <code>Placement</code> supplies only the world-space join position.</p>
@@ -1358,6 +1361,9 @@ The semantic definition is</p>
 <p>$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p} = 0.347204 - 49.9664\sin(0.055555) + 1.73556\cos(0.0555555) = -0.6943693\ m$$</p>
 <p>$$dx_p = \cos(\theta_p) = \cos(0.055555555) = 0.998457$$</p>
 <p>$$dy_p = \sin(\theta_p) = \sin(0.055555555) = 0.055527$$</p>
+<p>Figure 2.7.2-2 shows the same first and second half parent curves, with the origin of the second half curve translated $(x_p,y_p)$ and rotated so that the curve tangent is $(dx_p,dy_p)$</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Parent_Curves_Placed.svg" alt="" /></p>
+<p><em>Figure 2.7.2-2 - First and second half parent curves with second half curve positioned</em></p>
 <p><strong>Finding the curve segment Placement</strong></p>
 <p>The <code>Placement</code> is the world-space position and direction at the join point, obtained by rotating $(x_1, y_1)$ by the overall segment start direction $\theta_s$ and translating by the start point $(x_s, y_s)$:</p>
 <p>$$x_{join} = x_s + x_1\cos\theta_s - y_1\sin\theta_s$$</p>
@@ -1380,6 +1386,9 @@ The semantic definition is</p>
 #54 = IFCCARTESIANPOINT((0.0115725277555399, -0.694297741112199));
 #55 = IFCDIRECTION((0.998457186998745, 0.0555269820047339));
 </code></pre>
+<p>Figure 2.7.2-3 shows the trimmed and positioned first and second half parent curves resulting in the full Helmert transition curve.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Curve_Segments.svg" alt="" /></p>
+<p><em>Figure 2.7.2-3 - Final Helmert transition curve</em></p>
 <h3>2.7.3 Compute Point on Curve</h3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$ (the end of the full Helmert segment).</p>
 <p>The point falls in the second half ($50 < u \leq 100$). The parent curve parameter is $t = \text{SegmentStart} + (u - 50) = 50 + 50 = 100$.</p>
@@ -1402,7 +1411,7 @@ The semantic definition is</p>
 \end{bmatrix}$$</p>
 <p>$$M_N = \begin{bmatrix}
 0.999614 & 0.027774 & 0 & -50.0\\
--0.027774 & 0.999614 & 0 & 1.734 \times 10^{-4}\\
+-0.027774 & 0.999614 & 0 & 0\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
@@ -1410,11 +1419,11 @@ The semantic definition is</p>
 <p>Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying <code>Position</code>) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:</p>
 <p>$$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$</p>
 <p>$$\theta_{raw}(100) = -0.22222 + 0.66666 - 0.33333 = 0.11111\ \text{rad}$$</p>
-<p>$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 97.9866\ \text{m}$$</p>
-<p>$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = 6.0948\ \text{m}$$</p>
+<p>$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 99.8942272\ \text{m}$$</p>
+<p>$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = -0.00146765266\ \text{m}$$</p>
 <p>Apply the parent curve <code>Position</code> $(x_p, y_p, \theta_p)$:</p>
-<p>$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011503 + 97.9866(0.998457) - 6.0948(0.055527) = 97.9201\ \text{m}$$</p>
-<p>$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 97.9866(0.055527) + 6.0948(0.998457) = 10.7408\ \text{m}$$</p>
+<p>$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011503 + 99.8942272(0.998457) - (-0.00146765266)(0.055527) = 99.7517\ \text{m}$$</p>
+<p>$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 99.8942272(0.055527) + (-0.00146765266)(0.998457) = 4.8510\ \text{m}$$</p>
 <p>$$\theta_{pos}(100) = \theta_p + \theta_{raw}(100) = 0.055556 + 0.11111 = 0.16\overline{6}\ \text{rad}$$</p>
 <p>Note: $\theta_{pos}(100) = \frac{1}{6} = \frac{L}{2R_e} = \frac{100}{2 \times 300}$, confirming the total tangent angle change matches a Clothoid with the same endpoints.</p>
 <p>Form $M_{PC}$ from the parent curve point at $t = 100$:</p>
@@ -1423,29 +1432,39 @@ The semantic definition is</p>
 \sin\theta_{pos} & \cos\theta_{pos} & 0 & y_{pos}\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
-\end{bmatrix} = \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 97.9201\\
-0.16590 & 0.98615 & 0 & 10.7408\\
+\end{bmatrix} = 
+\begin{bmatrix}
+0.98615 & -0.16590 & 0 & 99.8942272\\
+0.16590 & 0.98615 & 0 & 4.8510\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
 <p>Apply normalization and curve segment placement:</p>
 <p>$$M_h = M_{CSP}\,M_N\,M_{PC}$$</p>
-<p>$$M_N M_{PC} = \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 47.6227\\
-0.16590 & 0.98615 & 0 & 10.3938\\
+<p>$$M_h = \begin{bmatrix}
+0.999614 & -0.027774 & 0 & 49.9972\\
+0.027774 & 0.999614 & 0 & 0.347204\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.999614 & 0.027774 & 0 & -50.0\\
+-0.027774 & 0.999614 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.98615 & -0.16590 & 0 & 99.8942272\\
+0.16590 & 0.98615 & 0 & 4.8510\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p>$$M_h = M_{CSP}\ M_N\ M_{PC}$$
-$$M_{h} = \begin{bmatrix}
-0.97260 & -0.23256 & 0 & 99.2496\\
-0.23256 & 0.97260 & 0 & 9.7486\\
+<p>$$M_{h} = \begin{bmatrix}
+0.98614323 & -0.16589613 & 0. & 99.75176295 \\
+0.16589613 & 0.98614323  & 0. & 4.85106157 \\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p>The end point of the Helmert segment at $u = 100$:</p>
-<p>$$x = 99.2496\ \text{m},\quad y = 9.7486\ \text{m},\quad \theta = \frac{1}{6}\ \text{rad}$$</p>
 <h2>2.8 Bloss Transition Curve</h2>
 <p><code>IfcThirdOrderPolynomialSpiral</code> is the geometric type for Bloss transition spirals.</p>
 <!--

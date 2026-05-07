@@ -873,6 +873,12 @@ $$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1
 
 $$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$
 
+Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.
+
+![](images/Helmert_Parent_Curves.svg)
+
+*Figure 2.7.2-1 First and second half of parent curves, without placement adjustments*
+
 #### Two-level placement for the second half
 
 `IfcCurveSegment` evaluation normalizes the parent curve at `SegmentStart`, then applies the curve segment `Placement`. For the second half, `SegmentStart = L/2`, so the second half parent curve's value at $t = L/2$ is the normalization origin. The second half parent curve's own `Position` attribute is therefore set so that the point at $L/2$ exactly matches the endpoint of the first half.
@@ -899,6 +905,12 @@ $$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p} = 0.347204 - 49.9664
 $$dx_p = \cos(\theta_p) = \cos(0.055555555) = 0.998457$$
 
 $$dy_p = \sin(\theta_p) = \sin(0.055555555) = 0.055527$$
+
+Figure 2.7.2-2 shows the same first and second half parent curves, with the origin of the second half curve translated $(x_p,y_p)$ and rotated so that the curve tangent is $(dx_p,dy_p)$
+
+![](images/Helmert_Parent_Curves_Placed.svg)
+
+*Figure 2.7.2-2 - First and second half parent curves with second half curve positioned*
 
 **Finding the curve segment Placement**
 
@@ -937,6 +949,12 @@ The geometric representation of the second half
 #55 = IFCDIRECTION((0.998457186998745, 0.0555269820047339));
 ~~~
 
+Figure 2.7.2-3 shows the trimmed and positioned first and second half parent curves resulting in the full Helmert transition curve.
+
+![](images/Helmert_Curve_Segments.svg)
+
+*Figure 2.7.2-3 - Final Helmert transition curve*
+
 ### 2.7.3 Compute Point on Curve
 
 Compute the curve coordinates at a distance along the curve, $u = 100$ (the end of the full Helmert segment).
@@ -969,7 +987,7 @@ $$M_N = \begin{bmatrix}
 
 $$M_N = \begin{bmatrix}
 0.999614 & 0.027774 & 0 & -50.0\\
--0.027774 & 0.999614 & 0 & 1.734 \times 10^{-4}\\
+-0.027774 & 0.999614 & 0 & 0\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -982,15 +1000,15 @@ $$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3
 
 $$\theta_{raw}(100) = -0.22222 + 0.66666 - 0.33333 = 0.11111\ \text{rad}$$
 
-$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 97.9866\ \text{m}$$
+$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 99.8942272\ \text{m}$$
 
-$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = 6.0948\ \text{m}$$
+$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = -0.00146765266\ \text{m}$$
 
 Apply the parent curve `Position` $(x_p, y_p, \theta_p)$:
 
-$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011503 + 97.9866(0.998457) - 6.0948(0.055527) = 97.9201\ \text{m}$$
+$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011503 + 99.8942272(0.998457) - (-0.00146765266)(0.055527) = 99.7517\ \text{m}$$
 
-$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 97.9866(0.055527) + 6.0948(0.998457) = 10.7408\ \text{m}$$
+$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 99.8942272(0.055527) + (-0.00146765266)(0.998457) = 4.8510\ \text{m}$$
 
 $$\theta_{pos}(100) = \theta_p + \theta_{raw}(100) = 0.055556 + 0.11111 = 0.16\overline{6}\ \text{rad}$$
 
@@ -1003,9 +1021,10 @@ $$M_{PC} = \begin{bmatrix}
 \sin\theta_{pos} & \cos\theta_{pos} & 0 & y_{pos}\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
-\end{bmatrix} = \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 97.9201\\
-0.16590 & 0.98615 & 0 & 10.7408\\
+\end{bmatrix} = 
+\begin{bmatrix}
+0.98615 & -0.16590 & 0 & 99.8942272\\
+0.16590 & 0.98615 & 0 & 4.8510\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1014,24 +1033,31 @@ Apply normalization and curve segment placement:
 
 $$M_h = M_{CSP}\,M_N\,M_{PC}$$
 
-$$M_N M_{PC} = \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 47.6227\\
-0.16590 & 0.98615 & 0 & 10.3938\\
+$$M_h = \begin{bmatrix}
+0.999614 & -0.027774 & 0 & 49.9972\\
+0.027774 & 0.999614 & 0 & 0.347204\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.999614 & 0.027774 & 0 & -50.0\\
+-0.027774 & 0.999614 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+0.98615 & -0.16590 & 0 & 99.8942272\\
+0.16590 & 0.98615 & 0 & 4.8510\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-$$M_h = M_{CSP}\ M_N\ M_{PC}$$
 $$M_{h} = \begin{bmatrix}
-0.97260 & -0.23256 & 0 & 99.2496\\
-0.23256 & 0.97260 & 0 & 9.7486\\
+0.98614323 & -0.16589613 & 0. & 99.75176295 \\
+0.16589613 & 0.98614323  & 0. & 4.85106157 \\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
-
-The end point of the Helmert segment at $u = 100$:
-
-$$x = 99.2496\ \text{m},\quad y = 9.7486\ \text{m},\quad \theta = \frac{1}{6}\ \text{rad}$$
 
 ## 2.8 Bloss Transition Curve
 

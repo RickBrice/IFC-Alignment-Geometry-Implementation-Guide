@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Combine IFC Alignment Guide chapters into a single PDF via Edge headless."""
+"""Combine IFC Alignment Guide chapters into a single PDF via Playwright."""
 
 import re
-import subprocess
 from pathlib import Path
 
 import mistune
@@ -10,7 +9,6 @@ import mistune
 ROOT = Path(__file__).parent
 OUTPUT_HTML = ROOT / "IFC_Alignment_Guide.html"
 OUTPUT_PDF = ROOT / "IFC_Alignment_Guide.pdf"
-EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
 CHAPTERS = [
     "Cover.md",
@@ -125,7 +123,7 @@ MathJax = {
 @page { size: letter; margin: 0.9in 0.85in; }
 body {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 11pt;
+  font-size: 12pt;
   line-height: 1.65;
   color: #111;
   max-width: none;
@@ -204,26 +202,41 @@ def main() -> None:
     OUTPUT_HTML.write_text(full, encoding="utf-8")
     print(f"HTML -> {OUTPUT_HTML}")
 
-    print("Printing to PDF via Edge headless (this may take ~30 s)...")
-    cmd = [
-        EDGE,
-        "--headless=new",
-        "--disable-gpu",
-        "--no-sandbox",
-        f"--print-to-pdf={OUTPUT_PDF}",
-        "--print-to-pdf-no-header",
-        "--virtual-time-budget=30000",
-        "--run-all-compositor-stages-before-draw",
-        f"file:///{OUTPUT_HTML.as_posix()}",
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
+    print("Rendering PDF via Playwright (this may take ~60 s for MathJax)...")
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("Install playwright first:")
+        print("  pip install playwright && playwright install chromium")
+        return
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        page = browser.new_page()
+        page.goto(f"file:///{OUTPUT_HTML.as_posix()}", wait_until="networkidle")
+        # Wait for MathJax to finish typesetting before capturing the PDF.
+        try:
+            page.wait_for_function(
+                "window.MathJax && window.MathJax.startup && window.MathJax.startup.promise",
+                timeout=45_000,
+            )
+            page.evaluate("() => window.MathJax.startup.promise")
+        except Exception:
+            pass  # proceed even if MathJax times out
+        page.wait_for_timeout(2_000)
+        page.pdf(
+            path=str(OUTPUT_PDF),
+            format="Letter",
+            display_header_footer=False,
+            print_background=True,
+        )
+        browser.close()
+
     if OUTPUT_PDF.exists() and OUTPUT_PDF.stat().st_size > 1000:
         size_mb = OUTPUT_PDF.stat().st_size / 1_048_576
         print(f"PDF -> {OUTPUT_PDF}  ({size_mb:.1f} MB)")
     else:
-        print(f"PDF generation may have failed (exit code {result.returncode})")
-        if result.stderr:
-            print(result.stderr[:800])
+        print("PDF generation may have failed.")
 
 
 if __name__ == "__main__":
