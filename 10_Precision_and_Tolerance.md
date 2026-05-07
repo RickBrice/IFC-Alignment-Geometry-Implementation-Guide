@@ -9,10 +9,11 @@ of one segment to the start of the next. The options are:
 |`CONTSAMEGRADIENT`             |The segments join and their tangent vectors or tangent planes are parallel and have the same direction at the joint; equality of derivative is not required.                                                                                                                                                                   |
 |`CONTSAMEGRADIENTSAMECURVATURE`|For a curve, the segments join, their tangent vectors are parallel and in the same direction and their curvatures are equal at the joint: equality of derivatives is not required. For a surface this implies that the principle curvatures are the same and the principle directions are coincident along the common boundary.|
 |`DISCONTINUOUS`                |The segments do not join. This is permitted only at the boundary of the curve or surface to indicate that it is not closed.                                                                                                                                                                                                    |
+Figure 10.1 illustrates the various transition types. 
 
 ![IfcTransitionCode](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/figures/ifctransitioncode.gif)
 
-*Figure 10.0-1 - Illustration of segment trasition types*
+*Figure 10.0-1 - Illustration of segment transition types*
 
 For a variety of reasons, adjacent segment end and start points might
 not exactly line up in position, gradient, or curvature.
