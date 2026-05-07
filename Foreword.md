@@ -1,4 +1,4 @@
-# 0.0 Forward
+# Foreword
 
 `IfcAlignment`, and the related geometric concepts, are new to the IFC4x3 specification. By virtue of expanding the IFC specification into the infrastructure domain, an entirely new audience is summoned into the [buildingSmart](buildingsmart.org) community. I am one of those new arrivals.
 

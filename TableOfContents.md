@@ -1,6 +1,5 @@
 # Table of Contents
 
-0.0 [Forward](0_Forward.md)  
 1.0 [Introduction](1_Introduction.md)  
 2.0 [Horizontal](2_Horizontal.md)  
 3.0 [Vertical](3_Vertical.md)  

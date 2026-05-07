@@ -17,17 +17,9 @@ Table 3.1-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corres
 
   *Table 3.1-1 — Mapping of business logic to geometric representation for vertical alignment*
 
-The following parameters are used throughout this section:
-
-$h_l =$ Horizontal Length
-
-$g_{s} =$ Start Gradient
-
-$g_{e} =$ End Gradient
-
 ## 3.2 Curve Segment Evaluation Algorithm
 
-Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle is $\theta(s) = \tan^{-1}(g(s))$ where $g(s)$ is the gradient.
+Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle is $\theta(\ell) = \tan^{-1}(g(\ell))$ where $g(\ell)$ is the gradient.
 
 **Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
 
@@ -57,11 +49,11 @@ $$M_N = \begin{bmatrix}
 
 **Step 3 — Evaluate and map each point in the vertical plane**
 
-For the point at distance along $s$, compute $x(s)$, $y(s)$, and $\theta(s)$:
+For the point at distance along $s$, compute $x(s)$, $y(s)$, and $\theta(\ell)$:
 
 $$M_{PC} = \begin{bmatrix} 
-\cos\theta(s) & -\sin\theta(s) & 0 & x(s) \\ 
-\sin\theta(s) & \cos\theta(s) & 0 & y(s) \\ 
+\cos\theta(\ell) & -\sin\theta(\ell) & 0 & x(s) \\ 
+\sin\theta(\ell) & \cos\theta(\ell) & 0 & y(s) \\ 
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -170,7 +162,7 @@ The curve segment is defined as
 
 ### 3.3.3 Compute Point on Curve
 
-Compute the vertical placement matrix for the point at horizontal distance $u = 50$ m from the start of the curve segment.
+Compute the vertical placement matrix for the point at horizontal distance $\ell = 50$ m from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -199,11 +191,11 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate and map the point**
+**Step 3 — Evaluate and map each point in the vertical plane**
 
-The horizontal distance $u = 50$ m is not the arc-length parameter. Convert to arc-length $s$ along the `IfcLine`:
+The horizontal distance $\ell = 50$ m is not the arc-length parameter. Convert to arc-length $s$ along the `IfcLine`:
 
-$$s = s_0 + \frac{u}{dx} = 0 + \frac{50}{0.894427191} = 55.9016994\ \text{m}$$
+$$s = s_0 + \frac{\ell}{dx} = 0 + \frac{50}{0.894427191} = 55.9016994\ \text{m}$$
 
 Evaluate the parent curve at $s = 55.9016994$:
 
@@ -283,7 +275,7 @@ $\theta_{end} = tan^{-1}(-1) = -0.785398$
 
 Compute the radius of the circle.
 
-`IfcAlignmentVerticalSegment.RadiusOfCurvature` is optional. If provided, it should be consistent with the `HorizontalLength`, `StartGradient` and `EndGradient`, but is not guarenteed. For this reason, the radius is computed from the required  `HorizontalLength`, `StartGradient` and `EndGradient` attributes. Note that in computing the radius, it is taken to be an absolute value because `IfcCircle.Radius` is a `IfcPositiveLengthMeasure`.
+`IfcAlignmentVerticalSegment.RadiusOfCurvature` is optional. If provided, it should be consistent with the `HorizontalLength`, `StartGradient` and `EndGradient`, but is not guaranteed. For this reason, the radius is computed from the required  `HorizontalLength`, `StartGradient` and `EndGradient` attributes. Note that in computing the radius, it is taken to be an absolute value because `IfcCircle.Radius` is a `IfcPositiveLengthMeasure`.
 
 $R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$
 
@@ -346,7 +338,7 @@ The geometric representation is
 
 ### 3.4.3 Compute Point on Curve
 
-Compute the vertical placement matrix for the point at horizontal distance $u = 50$ m from the start of the curve segment.
+Compute the vertical placement matrix for the point at horizontal distance $\ell = 50$ m from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -379,9 +371,9 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate and map the point**
+**Step 3 — Evaluate and map each point in the vertical plane**
 
-Compute the vertical placement matrix for the point at horizontal distance $u = 50\ m$ from the start of the curve segment.
+Compute the vertical placement matrix for the point at horizontal distance $\ell = 50\ m$ from the start of the curve segment.
 
 The center point of the trimmed circular arc is
 
@@ -391,13 +383,13 @@ From Step 2
 
 $x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
 
-Compute the chord length between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $u = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the green triangle. Once the point on the parent curve is known, a chord distance between the start of the trim and the point can be computed. From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
+Compute the chord length between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the green triangle. Once the point on the parent curve is known, a chord distance between the start of the trim and the point can be computed. From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
 
 ![](images/Circular_Vertical_Curve.png)
 
-Location point on parent curve corresponding to $u = 50$
+Location point on parent curve corresponding to $\ell = 50$
 
-$$x = x_0 + u = 50\ m$$
+$$x = x_0 + \ell = 50\ m$$
 $$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 + (50 - (-172.075922005613))^2}=-19.933926737614911$$
 
 Compute the chord length from the trim start to the point
@@ -410,11 +402,11 @@ $$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{58.2755
 
 Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.15159931828379261) = 58.331394062255001$
 
-Tangent angle at $u = 50\ m$
+Tangent angle at $\ell = 50\ m$
 
 $\Delta_{pc} = \theta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$
 
-Compute point on trimmed segment at $u$.
+Compute point on trimmed segment at $\ell$.
 
 $$x_{pc} = C_x + R cos(\Delta_{pc}) = (-172.075922005613) + 384.77345889550202\cos(0.95554939951029738) = 50$$
 $$y_{pc} = C_y + R sin(\Delta_{pc}) = (-344.15184401122502) + 384.77345889550202\sin(0.95554939951029738) = -29.933926737614570$$
@@ -615,7 +607,7 @@ The geometric representation is
 
 ### 3.6.3 Compute Point on Curve
 
-Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $u=1500-1200=300$ from the start of the segment.
+Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $\ell=1500-1200=300$ from the start of the segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -632,9 +624,9 @@ $$M_{CSP} = \begin{bmatrix}
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.
 
-Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = I$
+Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = \begin{bmatrix}I\end{bmatrix}$
 
-**Step 3 — Evaluate and map the point**
+**Step 3 — Evaluate and map each point in the vertical plane**
 
 Evaluate the parent curve at $x = 300$
 
@@ -700,7 +692,7 @@ $$M_v = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
- **Step 4 — Combine with the horizontal alignment to produce the 3D placement matrix**
+ **Step 4 — Combine with the horizontal alignment point to produce the 3D placement matrix**
 
 Modify the $M_v$ matrix into $M'_v$ to put the vertical point into the same reference frame as the horizontal. Swap rows and columns 2 and 3. Set the distance along to 0.0.
 

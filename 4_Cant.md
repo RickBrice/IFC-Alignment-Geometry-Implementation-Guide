@@ -47,7 +47,7 @@ The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis
 
 ### 4.1.2 Coordinate System
 
-The coordinate system is show in Figure 4.1.1-1, but it is difficult to understrand.
+The coordinate system is show in Figure 4.1.1-1, but it is difficult to understand.
 
 `IfcCurveSegment.Placement.RefDirection` is tangent to the "distance along" the base curve in the horizontal plane, (e.g. `IfcSegmentedReferenceCurve.BaseCurve` => `IfcGradientCurve.BaseCurve` => `IfcCompositeCurve`).
 
@@ -71,7 +71,7 @@ The deviating elevation has the same functional form as the radius of curvature 
 
 In IFC, the semantic cant profile is encoded in `IfcAlignmentCant` and its child `IfcAlignmentCantSegment` entities. The geometric representation is an `IfcSegmentedReferenceCurve`, which evaluates the cant at every point along the alignment and, in conjunction with the horizontal alignment `IfcCompositeCurve` and the vertical alignment `IfcGradientCurve`, produces the full 3D track centerline geometry.
 
-Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-dimensional coordinate system whose axes are *distance along the horizontal alignment* $s$ and *deviating elevation* $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.
+Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-dimensional coordinate system whose axes are *distance along the horizontal alignment* $\ell$ and *deviating elevation* $D$. The deviating elevation is the vertical offset applied to the track centerline, away from the gradient curve, to produce the correct cross-slope angle at every point along the segment.
 
 The `StartCantLeft` $D_{sl}$, `EndCantLeft` $D_{el}$, `StartCantRight` $D_{sr}$, and `EndCantRight` $D_{el}$ attributes of `IfcAlignmentCantSegment` determine $D_s$ and $D_e$ as the averages of their respective left and right values:
 
@@ -79,21 +79,21 @@ $$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2} \quad \
 
 The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the `Axis` vector of the `IfcCurveSegment.Placement`, using the deviating elevation as the interpolation parameter:
 
-$$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(s) - D_s\bigr)$$
+$$\phi(\ell) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(\ell) - D_s\bigr)$$
 
 $$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
 
-where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(s)$ is the deviation elevation at $s$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \frac{\pi}{2}$.
+where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \frac{\pi}{2}$.
 
-Together, the distance along, the deviating elevation $D(s)$, and the cross-slope angle $\phi(s)$ fully specify a 3D placement frame for the track centerline at each arc-length $s$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.
+Together, the distance along, the deviating elevation $D(\ell)$, and the cross-slope angle $\phi(\ell)$ fully specify a 3D placement frame for the track centerline at each $\ell$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.
 
 All examples use a railhead distance $D_{rh} = 1.5\ m$.
 
 ## 4.2 Curve Segment Evaluation Algorithm
 
-Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" $(s,D(s))$ coordinate system in which $d$ is the distance measured along the horizontal `IfcCompositeCurve` and $D(s)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.
+Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" $(\ell,D(\ell))$ coordinate system in which $d$ is the distance measured along the horizontal `IfcCompositeCurve` and $D(\ell)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.
 
-**Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and deviating elevation for the horizontal y-coordinate. Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
+**Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and deviating elevation for the horizontal $y$-coordinate. Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -126,18 +126,18 @@ $$M_N = \begin{bmatrix}
 
 **Step 3 — Evaluate and map each point**
 
-For the point at a distance along the horizontal alignment $s$, compute $D(s)$ and $\theta(s) = \tan^{-1}(D'(s))$. Interpolate the cross slope angle between the segment start and end values:
+For the point at horizontal distance $\ell$, compute $D(\ell)$ and $\theta(\ell) = \tan^{-1}(D'(\ell))$. Interpolate the cross slope angle between the segment start and end values:
 
-$$\phi(s) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)(D(s) - D_s)$$
+$$\phi(\ell) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)(D(\ell) - D_s)$$
 
 Form the local frame:
 
-$$\mathbf{X} = (\cos\theta(s),\ \sin\theta(s),\ 0),\quad \mathbf{Z} = (0,\ \cos\phi,\ \sin\phi)$$
+$$\mathbf{X} = (\cos\theta(\ell),\ \sin\theta(\ell),\ 0),\quad \mathbf{Z} = (0,\ \cos\phi,\ \sin\phi)$$
 $$\mathbf{Y} = \mathbf{Z} \times \mathbf{X}$$
 
 $$M_{PC} = \begin{bmatrix}
-X.x & Y.x & Z.x & s \\
-X.y & Y.y & Z.y & D(s) \\
+X.x & Y.x & Z.x & \ell \\
+X.y & Y.y & Z.y & D(\ell) \\
 X.z & Y.z & Z.z & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
@@ -146,15 +146,15 @@ Apply the normalization and placement in sequence:
 
 $$M_c = M_{CSP}\ M_N\ M_{PC}$$
 
-Step 4 is performed immediately for this point before moving to the next arc-length $s$.
+Step 4 is performed immediately for this point before moving to the next $\ell$.
 
 **Step 4 — Combine with horizontal and vertical to produce the 3D placement matrix**
 
-The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $s$ along the `IfcCompositeCurve`) and the vertical matrix $M_v$ (evaluated at the same $s$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.
+The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $\ell$ along the `IfcCompositeCurve`) and the vertical matrix $M_v$ (evaluated at the same $\ell$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.
 
 Construct $M'_v$ as described in Section 3.2.
 
-Construct $M'_c$ by zeroing the distance-along $s$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
+Construct $M'_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
 
 $${M'}_c = \begin{bmatrix} 
 X.x & Y.x & Z.x & 0 \\ 
@@ -207,9 +207,9 @@ $$D(s) = D_s = D_e$$
 
 $$\frac{d}{ds}D(s) = 0.0$$
 
-### 4.3.2 Semanic Definition to Geometry Mapping
+### 4.3.2 Semantic Definition to Geometry Mapping
 
-Consider 100 m long segment of a railway that is turning towards the left. The right rail is raised 0.16 m through the circular portion of the curve. The sementic definition is
+Consider 100 m long segment of a railway that is turning towards the left. The right rail is raised 0.16 m through the circular portion of the curve. The semantic definition is
 
 ~~~
 #64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0.16, 0.16, .CONSTANTCANT.);
@@ -248,11 +248,11 @@ $dz_z = sin\phi = 0.99435920$
 #104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
-### 4.3.2 Compute Point on Curve
+### 4.3.3 Compute Point on Curve
 
-Compute the placement matrix for a point $s = 50\ m$ from the start of the curve segment.
+Compute the placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
 
-**Step 1 - Form the curve segment placement matrix $M_{CSP}$**
+**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 $$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.10606498,\ 0.99435920)$$
 $$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ -0.10606498,\ 0.99435920),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$
@@ -264,7 +264,7 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 2 - Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
+**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
 $s_0 = 0, D(0) = D_0 = 0.08\ m, D'(0) = \theta_0 = 0.$
 
@@ -275,7 +275,7 @@ $$M_N = \begin{bmatrix}
  0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 3 - Evaluate and map each point**
+**Step 3 — Evaluate and map each point**
 
 Evaluate the parent curve at $s = 50\ m$.
 
@@ -407,7 +407,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 ### 4.4.3 Compute Point on Curve
 
-Compute the cant placement matrix for a point 50 m from the start of the curve segment.
+Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -503,13 +503,13 @@ $\mathbf{Axis} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
 
 $\phi(50\ m) = tan^{-1}\left(\frac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$
 
-The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an excersie for the reader - repeat Step 4 with $s=100\ m$ to verify ).
+The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an exercise for the reader - repeat Step 4 with $\ell=100\ m$ to verify ).
 
 As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$
 
 ## 4.5 Helmert Curve
 
-Like the Helmert transition spiral, the Helmert cant sementic definition maps to two `IfcCurveSegment` instances for the geometric representation. The parent curve is `IfcSecondOrderPolynomialSpiral`.
+Like the Helmert transition spiral, the Helmert cant semantic definition maps to two `IfcCurveSegment` instances for the geometric representation. The parent curve is `IfcSecondOrderPolynomialSpiral`.
 
 ### 4.5.1 Parent Curve Parametric Equations
 
@@ -519,7 +519,7 @@ $$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} 
 
 $$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
 
-The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
+The polynomial coefficients carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
 
 In the first half of the cant transition
 
@@ -535,24 +535,24 @@ $A_{11} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\frac{a_{11}}{\lef
 
 Quadratic Term:
 
-$a_{21} = 8f$,
+$a_{21} = 8\Delta D$,
 $A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|}$
 
 In the second half
 
 Constant Term: 
 
-$a_{02} = -4f + 4D_{s}$,
+$a_{02} = -4\Delta D + 4D_{s}$,
 $A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|}$
 
 Linear Term: 
 
-$a_{12} = 16f$,
+$a_{12} = 16\Delta D$,
 $A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|}$
 
 Quadratic Term: 
 
-$a_{22} = -8f$,
+$a_{22} = -8\Delta D$,
 $A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$
 
 
@@ -578,8 +578,6 @@ $$D_{e} = \frac{0 + 0}{2} = 0.\ m$$
 
 $$\Delta D = 0.0 - 0.08 = -0.08\ m$$
 
-$$f = \Delta D = -0.08\ m$$
-
 First half:
 
 $$a_{01} = 4D_{s} = 4(0.08\ m) = 0.32\ m$$
@@ -588,7 +586,7 @@ $$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 8f = 8(-0.08\ m) = -0.64\ m$$
+$$a_{21} = 8\Delta D = 8(-0.08\ m) = -0.64\ m$$
 
 $$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100\ m)^\frac{4}{3}}{\sqrt[3]{| - 0.64\ m|}}\frac{-0.64\ m}{|-0.64\ m|} = -538.6086725\ m$$
 
@@ -634,14 +632,14 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 Second half:
 
-$$a_{02} = -4f + 4D_{s} = -4(-0.08\ m) + 4(0.08)\ m = 0.64\ m$$
+$$a_{02} = -4\Delta D + 4D_{s} = -4(-0.08\ m) + 4(0.08)\ m = 0.64\ m$$
 
 $$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100\ m)^{2}}{|0.64\ m|}\frac{0.64\ m}{|0.64\ m|} = 15625\ m$$
 
-$$a_{12} = 16f = 16(-0.08\ m) = -1.28\ m$$
+$$a_{12} = 16\Delta D = 16(-0.08\ m) = -1.28\ m$$
 $$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100\ m)^{\frac{3}{2}}}{\sqrt{|-1.28\ m|}}\frac{-1.28\ m}{|-1.28\ m|} = -883.8834765\ m$$
 
-$$a_{22} = -8f = -8(-0.08\ m) = 0.64\ m$$
+$$a_{22} = -8\Delta D = -8(-0.08\ m) = 0.64\ m$$
 
 $$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\frac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$
 
@@ -686,7 +684,7 @@ The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the se
 
 ### 4.5.3 Compute Point on Curve
 
-Compute the cant placement matrix for a point 75 m from the start of the curve segment. 
+Compute the cant placement matrix for a point $\ell = 75\ m$ from the start of the curve segment. 
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -739,7 +737,7 @@ $$M_N = \begin{bmatrix}
 
 **Step 3 — Evaluate and map each point**
  
-A point $75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = 75\ m$
+A point $\ell = 75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = \ell = 75\ m$
 
 $$D(75\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(75\ m)^2 + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^3 \right|}(75\ m) + \frac{1}{15625\ m} \right) = 0.04\ m$$
 
@@ -817,11 +815,11 @@ $a_1 = 0,\ A_{1}$
 
 Quadratic Term
 
-$a_{2} = 3f,\ A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{|a_2|}}\frac{a_2}{|a_2|}$
+$a_{2} = 3\Delta D,\ A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{|a_2|}}\frac{a_2}{|a_2|}$
 
 Cubic Term
 
-$a_{3} = -2f\ A_{3} = \frac{{L}^{\frac{5}{4}}}{\sqrt[4]{|a_3|}}\frac{a_3}{|a_3|}$
+$a_{3} = -2\Delta D,\ A_{3} = \frac{{L}^{\frac{5}{4}}}{\sqrt[4]{|a_3|}}\frac{a_3}{|a_3|}$
 
 ### 4.6.2 Semantic Definition to Geometry Mapping
 
@@ -834,8 +832,6 @@ Consider an alignment segment that has a Bloss transition curve towards the left
 Compute the parent curve parameters
 
 $D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0 - 0.16 = -0.08\ m$
-
-$f = \Delta D = -0.08m$
 
 Constant Term
 
@@ -851,7 +847,7 @@ $a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]
 
 Cubic Term
 
-$a_{3} = -2f = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{\sqrt[4]{|0.16\ m|}}\left( \frac{0.16\ m}{| 0.16\ m|} \right) = 500\ m$
+$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{\sqrt[4]{|0.16\ m|}}\left( \frac{0.16\ m}{| 0.16\ m|} \right) = 500\ m$
 
 The parent curve is
 
@@ -891,7 +887,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 ### 4.6.3 Compute Point on Curve
 
-Compute the cant placement matrix for a point 50 m from the start of the curve segment.
+Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1001,17 +997,15 @@ $\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L}
 
 $\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{A_1 L}\sin\left( \pi\frac{s}{L} \right) \right)$
 
-$f = \Delta D$
-
 Constant term,
 
-$a_0 = D_s + \frac{f}{2}$
+$a_0 = D_s + \frac{\Delta D}{2}$
 
 $A_0 = L^{2}\frac{1}{a_0}\frac{a_0}{|a_0|}$
 
 Cosine term, 
 
-$a_1 = -\frac{1}{2} f$
+$a_1 = -\frac{1}{2} \Delta D$
 
 $A_1 = L^{2}\frac{1}{a_1}\frac{a_1}{|a_1|}$
 
@@ -1070,7 +1064,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 ### 4.7.3 Compute Point on Curve
 
-Compute the cant placement matrix for a point 50 m from the start of the curve segment.
+Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1187,11 +1181,11 @@ $$A_0 = L^2\frac{1}{a_0}\frac{a_0}{|a_0|} $$
 
 Linear term: 
 
-$$a_1 = f$$
+$$a_1 = \Delta D$$
 $$A_1 = L^{\frac{3}{2}}\frac{1}{\sqrt{|a_1|}}\frac{a_1}{|a_1|} $$
 
 Sine term: 
-$$a_2 = -\frac{1}{2\pi} f$$
+$$a_2 = -\frac{1}{2\pi} \Delta D$$
 $$A_2 = L^2\frac{1}{a_2}\frac{a_2}{|a_2|} $$
 
 ### 4.8.2 Semantic Definition to Geometry Mapping
@@ -1260,7 +1254,7 @@ $dz_z = sin(\phi_s) = sin(1.464531464) = 0.994359201$
 
 ### 4.8.3 Compute Point on Curve
 
-Compute the cant placement matrix for a point 50 m from the start of the curve segment.
+Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1366,8 +1360,6 @@ $$\frac{d}{ds}D(s) = L^{2}\left( \frac{7A_7}{|A_7^9|}s^6 + \frac{6}{A_6^7}s^5 + 
 
 $$D_s = \frac{D_{sl} + D_{sr}}{2},\ D_e = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_e - D_s$$
 
-$$f = \mathrm{\Delta}D$$
-
 Constant Term
 
 $$a_{0} = D_{1}, A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
@@ -1386,19 +1378,19 @@ $$a_{3} = 0, A_{3} = \frac{L^{\frac{5}{4}}}{\sqrt[4]{\left| a_{3} \right|}}\ \fr
 
 Quartic Term
 
-$$a_{4} = 35f, A_{4} = \frac{L^{\frac{6}{5}}}{\sqrt[5]{\left| a_{4} \right|}}\ \frac{a_{4}}{\left| a_{4} \right|}$$
+$$a_{4} = 35\Delta D, A_{4} = \frac{L^{\frac{6}{5}}}{\sqrt[5]{\left| a_{4} \right|}}\ \frac{a_{4}}{\left| a_{4} \right|}$$
 
 Quintic Term
 
-$$a_{5} = -84f, A_{5} = \frac{L^{\frac{7}{6}}}{\sqrt[6]{\left| a_{5} \right|}}\ \frac{a_{5}}{\left| a_{5} \right|}$$
+$$a_{5} = -84\Delta D, A_{5} = \frac{L^{\frac{7}{6}}}{\sqrt[6]{\left| a_{5} \right|}}\ \frac{a_{5}}{\left| a_{5} \right|}$$
 
 Sextic Term
 
-$$a_{6} = 70f, A_{6} = \frac{L^{\frac{8}{7}}}{\sqrt[7]{\left| a_{6} \right|}}\ \frac{a_{6}}{\left| a_{6} \right|}$$
+$$a_{6} = 70\Delta D, A_{6} = \frac{L^{\frac{8}{7}}}{\sqrt[7]{\left| a_{6} \right|}}\ \frac{a_{6}}{\left| a_{6} \right|}$$
 
 Septic Term
 
-$$a_{7} = -20f, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \frac{a_{7}}{\left| a_{7} \right|}$$
+$$a_{7} = -20\Delta D, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \frac{a_{7}}{\left| a_{7} \right|}$$
 
 ### 4.9.2 Semantic Definition to Geometry Mapping
 
@@ -1419,8 +1411,6 @@ $$D_{sr} = 0.1\ m$$
 $$D_{er} = 0.03\ m$$
 
 $$D_s = \frac{0\ m + 0.1\ m}{2} = 0.05\ m, D_e = \frac{0\ m + 0.03\ m}{2} = 0.015\ m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035\ m$$
-
-$$f = \mathrm{\Delta}D = -0.035m$$
 
 Constant Term
 $$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 200000\ m$$
@@ -1489,7 +1479,7 @@ $dz_z = sin(\theta_s) = 0.997785158$
 
 ### 4.9.3 Compute Point on Curve
 
-Compute the cant placement matrix for a point 50 m from the start of the curve segment.
+Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
@@ -1626,7 +1616,7 @@ $$M'_v =
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-Construct $M'_c$ by zeroing the distance-along $s$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
+Construct $M'_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
 
 $$M'_c = \begin{bmatrix}
 0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
@@ -1744,18 +1734,18 @@ The semantic definition of the cant transition segment is
 
 The EnrichIfc4x3 reference implementation maps the semantic definition to the geometric representation as follows:
 
-$D_s = \frac{0 + 0}{2} = 0\ m,\ D_e = \frac{0 + 0.16}{2} = 0.08\ m,\ \Delta D = 0.08-0 = 0.08\ m,\ f = \Delta D = 0.08\ m$
+$D_s = \frac{0 + 0}{2} = 0\ m,\ D_e = \frac{0 + 0.16}{2} = 0.08\ m,\ \Delta D = 0.08-0 = 0.08\ m$
 
 Quadratic Term:
 
-$a_{2} = 3f = 3(0.08\ m) = 0.24\ m$
+$a_{2} = 3\Delta D = 3(0.08\ m) = 0.24\ m$
 
 $A_{2} = \frac{(100\ m)}{\sqrt[3]{|0.24\ m|}}\left( \frac{0.24\ m}{|0.24\ m|} \right) = 160.917897\ m^{2/3}$
 
 
 Cubic Term:
 
- $a_{3} = -2f = -0.016\ m$
+ $a_{3} = -2\Delta D = -0.016\ m$
  
  $A_{3} = \frac{100\ m}{\sqrt[4]{|-0.16\ m|}}\frac{-0.16\ m}{|-0.16\ m|} = -158.113883\ m^{3/4}$
 

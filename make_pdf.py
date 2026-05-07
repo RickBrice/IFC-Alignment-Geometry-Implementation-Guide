@@ -14,8 +14,9 @@ EDGE = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
 
 CHAPTERS = [
     "Cover.md",
-    "0_Forward.md",
+    "Foreword.md",
     "TableOfContents.md",
+    "Notation.md",
     "1_Introduction.md",
     "2_Horizontal.md",
     "3_Vertical.md",
