@@ -295,7 +295,7 @@ $R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$
 
 $h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$
 
-$R = \left| \frac{328.083989501312}{sin(-1) - sin(-0.5)} \right | = 384.773458895502$
+$R = \left| \frac{328.083989501312}{sin(-0.785398) - sin(-0.463648)} \right | = 384.773458895502$
 
 Compute the arc-length trimming parameters `SegmentStart` and `SegmentLength`.
 
@@ -317,7 +317,7 @@ For a cresting curve $\theta_{end} < \theta_{start}$, so `SegmentLength` is nega
 
 For this example (cresting):
 
-$\text{SegmentStart} = R\!\left(\theta_{start} + \tfrac{\pi}{2}\right) = (384.773458895502)(1.107148718) = 426.001441657352$
+$\text{SegmentStart} = R\left(\theta_{start} + \tfrac{\pi}{2}\right) = (384.773458895502)(-0.463647609+ \tfrac{\pi}{2}) = 426.001441657352$
 
 $\text{SegmentLength} = R(\theta_{end} - \theta_{start}) = (384.773458895502)(-0.785398 - (-0.463647609)) = -123.801073716741$
 
@@ -397,18 +397,21 @@ $$C_x = -172.075922005613$$
 $$C_y = -344.151844011225$$
 
 From Step 1
-$$d_p = x_0 = 0$$
-$$z_p = y_0 = 0$$
-
-$$\theta_0 = \Delta_0 - \tfrac{\pi}{2} = -0.463647609$$
+$$x_0 = 0$$
+$$y_0 = 0$$
+$$\theta_0 = -0.463647609$$
 
 Chord length between the start and end of the trimmed segment
 
-$$c = \sqrt{(x - C_x)^2 + (y - C_y)^2} = \sqrt{(150-(0))^2 + (-123.63411284673890 - 10)^2} = 200.89319579402121$$
+<span style="background-color: yellow;color: black">
+todo: fix this equation and calc. the y value looks wrong. result may be 258.49 - go through debugger again
+</span>
+
+$$c = \sqrt{(x - d_p)^2 + (y - z_p)^2} = \sqrt{(150-(0))^2 + (-123.63411284673890 - 10)^2} = 200.89319579402121$$
 
 Angle subtented by the trimmed segment
 
-$$\Delta = 2\sin^{-1}(\tfrac{c}{2R}) = 2\sin^{-1}(\tfrac{258.4912284}{2 \cdot 384.773458895502}) = 0.52822752281644458$$
+$$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{258.4912284}{2 \cdot 384.773458895502}\right) = 0.52822752281644458$$
 
 Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.52822752281644458) = 203.24793103788610$
 
@@ -428,6 +431,7 @@ $$y_{pc} = R sin(\theta) + Cy = 384.77345889550202(0.54712123795851386) + (-344.
 <span style="background-color: yellow;color: black">
 [WORKING HERE - write this up better - this is from ifcos implementation]
 getting slope tangents from dx and dy above, but flipping sin and cos and negating because of direction of trim
+  for sign, use L/|L|
 </span>
 
 $$pcDX = 0.54712123795851386 = -(sign)(sin theta)$$
