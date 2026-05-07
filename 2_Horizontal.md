@@ -1,8 +1,3 @@
-todo:
-* review and clean up second half helmert curve discussion
-* Review all subsections in this section for consistency
-* think about reversing steps 3 and 4
-
 # Section 2.0 - Horizontal Alignment
 
 The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
@@ -821,7 +816,7 @@ $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}
 
 $$\kappa(t) = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
-The polynomial coefficietions carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
+The polynomial coefficietions carry a second subscript to indicate first half, $1$, and second half, $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
 
 First Half
 
@@ -842,7 +837,7 @@ $$a_{22} = -2f,\ A_{22} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}
 ### 2.7.2 Semantic Definition to Geometry Mapping
 
 Consider a horizontal Helmert transition curve segment that starts at
-(0,0) with a start direction of 0.0. The radius at the start is infinite
+(0,0) with a start direction of (1,0). The radius at the start is infinite
 and the radius at the end is 300. The arc length of the segment is 100.
 The semantic definition is
 
@@ -865,9 +860,27 @@ First Half
 
 $$a_{01} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
-$$A_{11} = 0$$
+$$a_{00} = 0,\ A_{11} = 0$$
 
 $$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{|0.66667|}}\frac{0.66667}{|0.66667|} = 114.4714255\ m$$
+
+
+The geometric representation of the first half is
+
+~~~
+#36 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(50.), #45);
+#37 = IFCLOCALPLACEMENT($, #38);
+#38 = IFCAXIS2PLACEMENT3D(#39, $, $);
+#39 = IFCCARTESIANPOINT((0., 0., 0.));
+#42 = IFCAXIS2PLACEMENT2D(#43, #44);
+#43 = IFCCARTESIANPOINT((0., 0.));
+#44 = IFCDIRECTION((1., 0.));
+#45 = IFCSECONDORDERPOLYNOMIALSPIRAL(#46, 114.471424255333, $, $);
+#46 = IFCAXIS2PLACEMENT2D(#47, $);
+#47 = IFCCARTESIANPOINT((0., 0.));
+~~~
+ 
+ > Note: when a polynomial coefficient is zero, the correspond term is unused and coded as `$` in the IFC entity
 
 Second Half
 
@@ -877,79 +890,11 @@ $$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1
 
 $$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$
 
-End point and end slope of first half is the placement of the second
-half.
-
-$$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}} = \frac{t^{3}}{3(114.4714255)^{3}}$$
-
-$$x_{1} = \int_{0}^{L/2}{\cos{\theta(t)}}\ dt = 49.99724\ m$$
-
-$$y_{1} = \int_{0}^{L/2}{\sin{\theta(t)}}\ dt = 0.347204\ m$$
-
-$$\theta_{1}\left( \frac{L}{2} \right) = \frac{{(50\ m)}^{3}}{3(114.4714255\ m)^{3}} = 0.0277777777$$
-
-$$dx = \cos(0.027777777) = 0.999614$$
-
-$$dy = \sin(0.027777777) = 0.0277742$$
-
-Start point of second parent curve
-
-$$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}} = \frac{t^{3}}{3( - 114.4714255\ m)^{3}} + \frac{86.602540378\ m}{2\left| (86.602540378\ m)^{3} \right|}t^{2} + \frac{t}{- 300\ m}$$
-
-$$x_{2} = \int_{0}^{L/2}{\cos{\theta(t)}}\ dt = 49.9664\ m\ $$
-
-$$y_{2} = \int_{0}^{L/2}{\sin{\theta(t)}}\ dt = - 1.73556\ m$$
-
-$$\theta_{2}\left( \frac{L}{2} = 50\ m \right) = \frac{{(50\ m)}^{3}}{3( - 114.4714255\ m)^{3}} + \frac{86.602540378\ m}{2\left| (86.602540378\ m)^{3} \right|}({50\ m)}^{2} + \frac{50\ m}{- 300\ m} = -0.0277777$$
-
-The end point of the first parent curve and the start point of the
-second parent curve are offset so a rotation and translation for the
-placement of the second parent curve is needed.
-
-$$\theta_{p} = \theta_{1} - \theta_{2} = 0.0277777777 - (-0.0277777777) = 0.05555555$$
-
-The `RefDirection` of the parent curve `Position` (`#55`) is $(\cos\theta_p,\, \sin\theta_p)$:
-
-$$\cos\theta_{p} = \cos(0.05555555) = 0.998457$$
-
-$$\sin\theta_{p} = \sin(0.05555555) = 0.055526$$
-
-$$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p}$$
-
-$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p}$$
-
-The `Location` of the parent curve `Position` (`#54`) is $(x_p,\, y_p)$:
-
-$$x_{p} = 49.9972 - 49.9664\cos(0.0555555) - 1.73556\sin(0.0555555) = 0.011503\ m$$
-
-$$y_{p} = 0.347204 - 49.9664\sin(0.055555) + 1.73556\cos(0.0555555) = -0.6943693\ m$$
-
-The geometric representation of the first half is
-
-~~~
-#36 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(50.), #45);
-#37 = IFCLOCALPLACEMENT($, #38);
-#38 = IFCAXIS2PLACEMENT3D(#39, $, $);
-#39 = IFCCARTESIANPOINT((0., 0., 0.));
-#45 = IFCSECONDORDERPOLYNOMIALSPIRAL(#46, 114.471424255333, $, $);
-#46 = IFCAXIS2PLACEMENT2D(#47, $);
-#47 = IFCCARTESIANPOINT((0., 0.));
-~~~
- 
- > Note: when a polynomial coefficient is zero, the correspond term is unused and coded as `$` in the IFC entity
-
-
 #### Two-level placement for the second half
 
-<span style="background-color: yellow;color: black">
-[todo - review this discussion and combine content above so this isn't redundant]
-</span>
+`IfcCurveSegment` evaluation normalizes the parent curve at `SegmentStart`, then applies the curve segment `Placement`. For the second half, `SegmentStart = L/2`, so the second half parent curve's value at $t = L/2$ is the normalization origin. The second half parent curve's own `Position` attribute is therefore set so that the point at $L/2$ exactly matches the endpoint of the first half.
 
-`IfcCurveSegment` evaluation normalizes the parent curve at `SegmentStart`, then applies the curve segment `Placement`. For the second half, `SegmentStart = L/2`, so the IFC machinery uses the parent curve's value at $t = L/2$ as the normalization origin. The second half parent curve's own `Position` attribute is therefore set so that
-
-$$\text{ParentCurve}_2\!\left(\frac{L}{2}\right) = (x_1,\ y_1,\ \theta_1)$$
-
-— exactly the endpoint of the first half. With this alignment the normalization cancels the offset, and the curve segment `Placement` supplies only the world-space join position.
+With this alignment the normalization cancels the offset, and the curve segment `Placement` supplies only the world-space join position.
 
 | Level | Attribute | Purpose |
 |---|---|---|
@@ -962,11 +907,15 @@ $$\text{ParentCurve}_2\!\left(\frac{L}{2}\right) = (x_1,\ y_1,\ \theta_1)$$
 
 Evaluate the raw second half spiral (with `Position` at origin) at $t = L/2$ to obtain $(x_2, y_2, \theta_2)$. The rigid-body transform that maps this to $(x_1, y_1, \theta_1)$ is
 
-$$\theta_{p} = \theta_{1} - \theta_{2}$$
+$$\theta_{p} = \theta_{1} - \theta_{2} = 0.0277777777 - (-0.0277777777) = 0.05555555$$
 
-$$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p}$$
+$$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p} = 49.9972 - 49.9664\cos(0.0555555) - 1.73556\sin(0.0555555) = 0.011503\ m$$
 
-$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p}$$
+$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p} = 0.347204 - 49.9664\sin(0.055555) + 1.73556\cos(0.0555555) = -0.6943693\ m$$
+
+$$dx_p = \cos(\theta_p) = \cos(0.055555555) = 0.998457$$
+
+$$dy_p = \sin(\theta_p) = \sin(0.055555555) = 0.055527$$
 
 **Finding the curve segment Placement**
 
@@ -986,7 +935,7 @@ $$y_{join} = 0.0 + 49.99724\sin(0.0) + 0.347204\cos(0.0) = 0.347204\ \text{m}$$
 
 $$\theta_{join} = 0.0 + 0.02777777 = 0.02777777\ \text{rad}$$
 
-The `RefDirection` of the curve segment `Placement` (`#51`) is $(\cos\theta_{join},\, \sin\theta_{join})$:
+The `RefDirection` of the curve segment `Placement` is $(\cos\theta_{join},\, \sin\theta_{join})$:
 
 $$\cos\theta_{join} = \cos(0.02777777) = 0.999614$$
 

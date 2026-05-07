@@ -124,8 +124,6 @@ $$y(s) = p_{y} + s(dy/dx)$$
 Note that these equations are different from the equations for
 horizontal.
 
-[todo: can this be reformulated to be the same as horizontal?]
-
 ### 3.3.2 Semantic Definition to Geometry Mapping
 
 Mapping of the semantic definition of the linear segment to the
@@ -352,7 +350,7 @@ The geometric representation is
 
 ### 3.4.3 Compute Point on Curve
 
-Compute the vertical placement matrix for the point at horizontal distance $u = 150$ m from the start of the curve segment.
+Compute the vertical placement matrix for the point at horizontal distance $u = 50$ m from the start of the curve segment.
 
 **Step 1 — Evaluate the parent curve at the trim start**
 
@@ -389,58 +387,50 @@ $$M_{CSP} = \begin{bmatrix}
 
 **Step 4 — Evaluate and map the point**
 
-Compute the vertical placement matrix for the point at horizontal distance $u = 150\ m$ from the start of the curve segment.
+Compute the vertical placement matrix for the point at horizontal distance $u = 50\ m$ from the start of the curve segment.
 
 The center point of the trimmed circular arc is
 
-$$C_x = -172.075922005613$$
-$$C_y = -344.151844011225$$
+$C_x = -172.075922005613,\ C_y = -344.151844011225$
 
 From Step 1
-$$x_0 = 0$$
-$$y_0 = 0$$
-$$\theta_0 = -0.463647609$$
 
-Chord length between the start and end of the trimmed segment
+$x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
 
-<span style="background-color: yellow;color: black">
-todo: fix this equation and calc. the y value looks wrong. result may be 258.49 - go through debugger again
-</span>
+Compute the chord length between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $u = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the green triangle. Once the point on the parent curve is known, a chord distance between the start of the trim and the point can be computed. From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
 
-$$c = \sqrt{(x - d_p)^2 + (y - z_p)^2} = \sqrt{(150-(0))^2 + (-123.63411284673890 - 10)^2} = 200.89319579402121$$
+![](images/Circular_Vertical_Curve.png)
+
+Location point on parent curve corresponding to $u = 50$
+
+$$x = x_0 + u = 50\ m$$
+$$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 + (50 - (-172.075922005613))^2}=-19.933926737614911$$
+
+Compute the chord length from the trim start to the point
+
+$$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-19.933926737614911 - 10)^2} = 58.275552077461235$$
 
 Angle subtented by the trimmed segment
 
-$$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{258.4912284}{2 \cdot 384.773458895502}\right) = 0.52822752281644458$$
+$$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{58.275552077461235}{2 \cdot 384.773458895502}\right) = 0.15159931828379261$$
 
-Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.52822752281644458) = 203.24793103788610$
+Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.15159931828379261) = 58.331394062255001$
 
-Tangent angle at $u = 150\ m$
+Tangent angle at $u = 50\ m$
 
-$$\theta = \theta_0 - \Delta = 1.1071487177940900 - 0.52822752281644458 = 0.57892119497764538$$
-
-$dx = \cos(\theta) = 0.83705337402984237 $
-
-$dy = \sin(\theta) = 0.54712123795851386 $
+$\Delta_{pc} = \theta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$
 
 Compute point on trimmed segment at $u$.
 
-$$x_{pc} = R cos(\theta) + Cx = 384.77345889550202(0.83705337402984237) + (-172.075922005613) = 150$$
-$$y_{pc} = R sin(\theta) + Cy = 384.77345889550202(0.54712123795851386) + (-344.15184401122502) =  -133.63411284673862$$
+$$x_{pc} = C_x + R cos(\Delta_{pc}) = (-172.075922005613) + 384.77345889550202\cos(0.95554939951029738) = 50$$
+$$y_{pc} = C_y + R sin(\Delta_{pc}) = (-344.15184401122502) + 384.77345889550202\sin(0.95554939951029738) = -29.933926737614570$$
 
-<span style="background-color: yellow;color: black">
-[WORKING HERE - write this up better - this is from ifcos implementation]
-getting slope tangents from dx and dy above, but flipping sin and cos and negating because of direction of trim
-  for sign, use L/|L|
-</span>
-
-$$pcDX = 0.54712123795851386 = -(sign)(sin theta)$$
-$$pcDY = -0.83705337402984237 = (sign)(cos theta)$$
-$$sign = \text{sign of length, which is negative for this example}$$
+$$dx_{pc} = -\tfrac{L}{|L|}\sin(\Delta_{pc}) = -\tfrac{-123.801073716741}{|-123.801073716741|}\sin(0.95554939951029738) = 0.81663095520043849$$
+$$dy_{pc} = \tfrac{L}{|L|}\cos(\Delta_{pc}) = \tfrac{-123.801073716741}{|-123.801073716741|}\cos(0.95554939951029738) = -0.57716018834325311$$
 
 $$M_{PC} = \begin{bmatrix}
-0.54712123795851386 & 0.83705337402984237 & 0 & 150\\
--0.83705337402984237 & 0.54712123795851386 & 0 & -133.63411284673862 \\
+0.81663095520043849 & 0.57716018834325311 & 0 & 50\\
+-0.57716018834325311 & 0.81663095520043849 & 0 & -29.933926737614570 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -460,15 +450,15 @@ $$M_v = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-0.54712123795851386 & 0.83705337402984237 & 0 & 150\\
--0.83705337402984237 & 0.54712123795851386 & 0 & -133.63411284673862 \\
+0.81663095520043849 & 0.57716018834325311 & 0 & 50\\
+-0.57716018834325311 & 0.81663095520043849 & 0 & -29.933926737614570 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 $$M_v = \begin{bmatrix}
-0.54712124 & 0.83705337 & 0. & 150. \\
--0.83705337 & 0.54712124 & 0. & -123.63411285 \\
+0.81663096 & 0.57716019 & 0. & 50. \\
+-0.57716019 & 0.81663096 & 0. & -19.93392674 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
  \end{bmatrix}$$
@@ -478,6 +468,31 @@ $$M_v = \begin{bmatrix}
 <span style="background-color: yellow;color: black">
 [todo - finish this]
 </span>
+
+The reference implementation at 
+[IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
+at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
+(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry), does not seem to correctly handle vertical alignments with clothoids. The examples provided are incomplete. The vertical alignments have a total length of zero and the resulting clothoid constants are zero.
+
+An example of an example file generated from the reference implementation is [https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__INDEXEDPOLYCURVE__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__INDEXEDPOLYCURVE__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc).
+
+~~~
+#41 = IFCALIGNMENTVERTICAL('1FNFyDAJeHwv87wDZHIYI1', $, $, $, $, #89, $);
+#42 = IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI2', #3, $, $, $, #72, #75, #44);
+#43 = IFCRELNESTS('4CGecNrjCHwxOSbERtTLTf', $, $, $, #41, (#42));
+#44 = IFCALIGNMENTVERTICALSEGMENT($, $, 0., 100., 10., 5.E-1, 0., $, .CLOTHOID.);
+
+#70 = IFCGRADIENTCURVE((#71), .F., #45, #86);
+#71 = IFCCURVESEGMENT(.CONTINUOUS., #77, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(0.), #80);
+#77 = IFCAXIS2PLACEMENT2D(#78, #79);
+#78 = IFCCARTESIANPOINT((0., 10.));
+#79 = IFCDIRECTION((8.94427190999916E-1, 4.47213595499958E-1));
+#80 = IFCCLOTHOID(#81, 0.);
+#81 = IFCAXIS2PLACEMENT2D(#82, $);
+#82 = IFCCARTESIANPOINT((0., 0.));
+~~~
+
+Due to a lack of information, vertical clothoid transition curves have not yet been addressed.
 
 <!--
 Start angle = atan(startGradient)
