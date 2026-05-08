@@ -1,62 +1,5 @@
 # Section 5.0 - Linear Placement
 
-outline: 
-* describe the concept of object placement in ifc.
-* introduce the idea of linear placement for horizontal construction projects. describe locating a bridge pier on an alignment using 2D like fron traditional plans and then a drain inlet in 3d with station, offset and elevation. add a figure to illustrate.
-* discuss how linear placement is accomplished with ifc. this will include distance along diretrix with explaination of stationing which is covered in a different section, lateral and vertical offset, longitudinal offset for otherwise unreachable point - angle point at intersection of two tangents, outside large angle is unreachable (include a figure to illustrate), and the placement coordinate system with discussion of uncertaintly frim the spec on default axis and refdirection.
-* discuss linear placement along ifcoffsetcurvebydistances
-* review the iso 19148 on linear placement to see if there is other important concepts to discuss. one could be milepost system compared to stationing. see https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/Pset_LinearReferencingMethod.htm.
-
-Many elements in the built environment for infrastructure works are
-located relative to an alignment. The IFC class `IfcLinearPlacement`
-accomplishes this type of object placement.
-
-Generally alignments are defined in the project coordinate system. To indicate that a linear placement is relative to the alignment, the `PlacementRelTo` attribute is omitted indicating that the placement is relative to the start of the basis curve of the alignment.
-
-The `IfcLinearPlacement.RelativePlacement` attribute places an object.
-RelativePlacement is an `IfcAxis2PlacementLinear`.
-
-`IfcAxis2PlacementLinear.Location` is an `IfcPoint`, but is constrained to
-be an `IfcPointByDistanceExpression` by a where rule. This means that the
-placement location is measured along the basis curve. For a 3D alignment
-curve such as `IfcGradientCurve` or `IfcSegmentedReferenceCurve`, the basis
-curve is `IfcCompositeCurve` representing the projection of the 3D curve
-onto a 2D horizontal plane.
-
-## 5.1 General
-
-`IfcAxis2PlacementLinear` has optional `Axis` and `RefDirection` attributes.
-When omitted, `RefDirection` is the tangent to the 3D curve at Location.
-
-Unfortunately, `Axis` is not clearly defined in the IFC schema
-documentation (See [Default value for `IfcAxis2PlacementLinear.Axis` is
-not defined · Issue #125 ·
-buildingSMART/IFC4.x-IF](https://github.com/buildingSMART/IFC4.x-IF/issues/125)).
-
-The most logical default `Axis` is "perpendicular" to the `RefDirection` in the general direction of global Z-axis. However, the most common interpetation is that `Axis` is up (0,0,1). 
-
-When `Axis` and `RefDirection` are not provided, the local coordinate system can be computed as follows:
-
-1. Set Axis = Z = (0,0,1)
-2. Compute the tangent vector to the 3D curve. This is the RefDirection.
-3. Y = cross product of Z and RefDirection.
-4. X = cross product of Y and Z.
-
-X, Y, Z are orthoginal axes.
-
-## 5.2 Linear Placement along IfcOffsetCurveByDistances
-
-Linear placement along an `IfcOffsetCurveByDistances` is not precise. `IfcOffsetCurveByDistances` is an interpoloated curve defined by offsets from a basis curve. The offset values are linearly interpolated forming a segmented curve. The length of the offset curve is approximate and depends on the frequency of the interpoloated points along the curve. For this reason, `IfcAxis2PlacementLinear.Location.DistanceAlong` cannot be precisely determined.
-
----------
-
-from ai
-
---------
-# Section 5 - Linear Placement
-
-## 5.0 Introduction
-
 Most elements in the built environment for infrastructure works are located **relative to an alignment** rather than by absolute coordinates. A bridge pier, a drainage inlet, a light pole, a traffic sign — all are described in traditional engineering plans by where they fall along a road or railway centerline, how far they sit to the left or right of that centerline, and how high above (or below) a reference elevation they stand. This intuitive “station, offset, elevation” system has been the language of civil engineers for over a century.
 
 `IfcLinearPlacement` is the IFC mechanism that formalizes this concept. It places an object relative to a *directrix* — typically an alignment curve — using a distance along the curve combined with optional lateral and vertical offsets.
@@ -68,8 +11,6 @@ This section covers:
 - How the local coordinate system is constructed at a placement point.
 - Special cases: longitudinal offset for unreachable points, and placement along `IfcOffsetCurveByDistances`.
 - ISO 19148 Linear Referencing and how its concepts relate to IFC linear placement.
-
------
 
 ## 5.1 Linear Placement in Practice
 
@@ -115,7 +56,7 @@ The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference
 
 |Attribute           |Type                       |Description                                                                                                                                                |
 |--------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-|`DistanceAlong`     |`IfcCurveMeasureSelect`    |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`. May be an `IfcExpressionBasedValue` for equation-based stations.|
+|`DistanceAlong`     |`IfcCurveMeasureSelect`    |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`.               |
 |`BasisCurve`        |`IfcCurve`                 |The curve along which the distance is measured.                                                                                                            |
 |`OffsetLateral`     |`OPTIONAL IfcLengthMeasure`|Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148).                             |
 |`OffsetVertical`    |`OPTIONAL IfcLengthMeasure`|Signed vertical offset. Positive upward.                                                                                                                   |
@@ -131,8 +72,6 @@ Stationing is addressed comprehensively in Section 8. For the purposes of linear
 - **Station value** may begin at an arbitrary value (e.g., 10+00.00 = 1000 ft from some project reference), may include equation gaps or overlaps where stationing is reset, and may use different units (feet vs. metres).
 
 When using `IfcPointByDistanceExpression`, supply the **geometric distance**, not the raw station label. If the alignment has an `IfcReferent` that defines the starting station, the geometric distance equals the station value minus the starting station value (adjusted for any station equations encountered along the way).
-
------
 
 ## 5.3 The Placement Coordinate System
 
@@ -183,15 +122,13 @@ This is the classic highway “station-offset” reference frame.
 
 > **NOTE — Figure placeholder.** Insert a perspective view of a graded alignment curve in 3D. At a selected point, draw three labelled orthogonal arrows for X, Y, Z. Show a dashed line for OffsetLateral (transverse in plan) and a vertical dashed arrow for OffsetVertical.
 
------
-
 ## 5.4 Longitudinal Offset and Unreachable Points
 
 ### 5.4.1 What Is an Unreachable Point?
 
-In plane geometry, every point off a curve can be reached by some combination of distance along the curve plus a perpendicular offset. In 3D, the situation is the same for smooth curves. However, certain geometric configurations in horizontal alignment create locations that **cannot be expressed** as a station plus a purely transverse offset.
+In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that **cannot be expressed** as a station plus a purely transverse offset.
 
-The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex, in the region not swept by the curve — lies in a zone where the perpendicular from the curve never reaches.
+The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches.
 
 *Figure 5.3 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 
@@ -208,9 +145,7 @@ The classic example is an **angle point** — the intersection of two tangents i
 
 The resulting point is no longer “on” a perpendicular to the curve at `DistanceAlong`, but it is precisely located in 3D space.
 
-**Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted (or set to zero). Implementations that encounter a non-zero `OffsetLongitudinal` must apply it as described above.
-
------
+**Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
 
 ## 5.5 IFC Entity Reference
 
@@ -222,11 +157,9 @@ The following table summarises the IFC entities used in linear placement and the
 |`IfcAxis2PlacementLinear`     |`Location`, `Axis`, `RefDirection`                                                    |`Location` must be `IfcPointByDistanceExpression` (WHERE rule).                           |
 |`IfcPointByDistanceExpression`|`DistanceAlong`, `BasisCurve`, `OffsetLateral`, `OffsetVertical`, `OffsetLongitudinal`|Core placement geometry. Offsets are optional.                                            |
 
------
-
 ## 5.6 Linear Placement along IfcOffsetCurveByDistances
 
-`IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centreline varies gradually.
+`IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centreline varies gradually. Offset curves are comprehensively discussed in [Section 6.0](6_OffsetCurves.md).
 
 ### 5.6.1 The Approximate Length Problem
 
@@ -241,8 +174,6 @@ For applications requiring precise linear placement:
 1. **Prefer using the parent alignment** (e.g., the `IfcCompositeCurve` representing the horizontal alignment) as the `BasisCurve`, and use `OffsetLateral` to account for any transverse offset from the centreline. This avoids the approximation problem entirely.
 1. **If placement along an offset curve is unavoidable**, document the sampling density of the `IfcOffsetCurveByDistances` so that receivers can evaluate the precision of derived positions.
 1. **Do not rely on** `DistanceAlong` values along an `IfcOffsetCurveByDistances` being reproducible across different software implementations.
-
------
 
 ## 5.7 ISO 19148 Linear Referencing
 
@@ -290,13 +221,11 @@ Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpressi
 
 See Section 8 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
 
------
-
 ## 5.8 Complete Example
 
-The following example illustrates a bridge pier located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centreline.
+The following example illustrates a point located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centreline.
 
-```
+~~~
 #100 = IFCALIGNMENT(...);
 #101 = IFCALIGNMENTHORIZONTAL(...);
 #102 = IFCCOMPOSITECURVE(...);     /* horizontal geometry */
@@ -309,20 +238,14 @@ The following example illustrates a bridge pier located at distance 1435.75 m al
 
 /* LinearPlacement — PlacementRelTo omitted → relative to curve start */
 #202 = IFCLINEARPLACEMENT($, #201);
-
-/* The bridge pier product */
-#300 = IFCCOLUMN('1a2b3c...', ..., 'Bridge Pier 2', ...);
-#301 = IFCELEMENTQUANTITY(...);   /* not shown */
-```
+~~~
 
 In this example:
 
 - `DistanceAlong = 1435.75` is the geometric distance from the start of `#102`.
-- `OffsetLateral = -5.25` places the pier 5.25 m to the right of the horizontal alignment (negative = right of travel).
-- `OffsetVertical` is omitted; the pier geometry defines its own elevation relative to the local CS origin.
+- `OffsetLateral = -5.25` places the point 5.25 m to the right of the horizontal alignment (negative = right of travel).
+- `OffsetVertical` is omitted; the is placed in the same plane as the horizontal alignment.
 - `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §5.3.3.
-
------
 
 ## 5.9 Summary and Implementation Checklist
 

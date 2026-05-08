@@ -460,7 +460,7 @@ The reference implementation at
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 (github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry), does not seem to correctly handle vertical alignments with clothoids. The examples provided are incomplete. The vertical alignments have a total length of zero and the resulting clothoid constants are zero.
 
-An example of an example file generated from the reference implementation is [https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__INDEXEDPOLYCURVE__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__INDEXEDPOLYCURVE__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc).
+An example of an example file generated from the reference implementation is [https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc).
 
 ~~~
 #41 = IFCALIGNMENTVERTICAL('1FNFyDAJeHwv87wDZHIYI1', $, $, $, $, #89, $);

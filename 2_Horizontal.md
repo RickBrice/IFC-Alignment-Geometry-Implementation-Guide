@@ -1376,7 +1376,7 @@ Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{2}\left( \frac{t}{173.2050808} \right)^{2} + \frac{100}{2\pi(1884.955592)}\left( \cos\left( \frac{2\pi}{100}t \right) - 1 \right)$$
 
-$$x = \int_{0}^{100}{\cos{\theta(t)}}\ dt = 99.757\ m$$
+$$x = \int_{0}^{100}{\cos{\theta(t)}}\ dt = 99.75698\ m$$
 
 $$y = \int_{0}^{100}{\sin{\theta(t)}}\ dt = 4.70132\ m$$
 
@@ -1390,7 +1390,7 @@ $$dy = \sin\left( \frac{1}{6} \right) = 0.16589$$
 In matrix form
 
 $$M_{PC} = \begin{bmatrix}
-0.98614 & -0.16589 & 0 & 99.757\\
+0.98614 & -0.16589 & 0 & 99.75698\\
 0.16589 & 0.98614 & 0 & 4.70132\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 
@@ -1400,14 +1400,14 @@ Apply the normalization and curve segment placement to the parent curve point
 
 $$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}I\end{bmatrix} \, \begin{bmatrix}I\end{bmatrix}
 \begin{bmatrix}
-0.98614 & -0.16589 & 0 & 99.757\\
+0.98614 & -0.16589 & 0 & 99.75698\\
 0.16589 & 0.98614 & 0 & 4.70132\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 $$M_{h} = 
 \begin{bmatrix}
-0.98614 & -0.16589 & 0 & 99.757\\
+0.98614 & -0.16589 & 0 & 99.75698\\
 0.16589 & 0.98614 & 0 & 4.70132\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1 

@@ -39,7 +39,7 @@ When the segment start elevation is the same as the start of the next segment, t
 
 *Figure 4.1.1-2 - Deviating elevation of rails*
 
-The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction generally upwards. The `Axis` direction is therefore perpendicular to a line connecting the rails. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, `Axis` is (0,0,1) and the angle measured from the y-axis is $\frac{\pi}{2}$.
+The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction generally upwards. The `Axis` direction is therefore perpendicular to a line connecting the rails. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, `Axis` is (0,0,1) and the angle measured from the y-axis is $\tfrac{\pi}{2}$.
 
 ![](images/CrossSlopeAngle.svg)
 
@@ -59,13 +59,13 @@ The transition functions used to shape cant variation have the same functional f
 As an example, the horizontal tangent direction, $\theta(t)$, and the radius of curvature, $\kappa(t)$, for a Helmert curve is a second order polynomial of the form
 
 
-$$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \frac{t}{A_{0}}$$
+$$\theta(t) = \tfrac{t^{3}}{3A_{2}^{3}} + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \tfrac{t}{A_{0}}$$
 
-$$\kappa(t) = \frac{\theta(t)}{dt} = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
+$$\kappa(t) = \tfrac{\theta(t)}{dt} = \tfrac{1}{A_{2}^{3}}t^{2} + \tfrac{A_{1}}{\left| A_{1}^{3} \right|}t + \tfrac{1}{A_{0}}$$
 
 The cant deviating elevation for a Helmert transition is of the same form as the curvature
 
-$$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{2}^{3}}s^{2} + \tfrac{A_{1}}{\left| A_{1}^{3} \right|}s + \tfrac{1}{A_{0}}$$
 
 The deviating elevation has the same functional form as the radius of curvature of the horizontal alignment segment. 
 
@@ -75,15 +75,15 @@ Each `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is evaluated in a two-
 
 The `StartCantLeft` $D_{sl}$, `EndCantLeft` $D_{el}$, `StartCantRight` $D_{sr}$, and `EndCantRight` $D_{el}$ attributes of `IfcAlignmentCantSegment` determine $D_s$ and $D_e$ as the averages of their respective left and right values:
 
-$$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2} \quad \Delta D = D_e - D_s$$
+$$D_s = \tfrac{D_{sl} + D_{sr}}{2}, \quad D_e = \tfrac{D_{el} + D_{er}}{2} \quad \Delta D = D_e - D_s$$
 
 The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the `Axis` vector of the `IfcCurveSegment.Placement`, using the deviating elevation as the interpolation parameter:
 
-$$\phi(\ell) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(\ell) - D_s\bigr)$$
+$$\phi(\ell) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(\ell) - D_s\bigr)$$
 
-$$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
+$$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
 
-where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \frac{\pi}{2}$.
+where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \tfrac{\pi}{2}$.
 
 Together, the distance along, the deviating elevation $D(\ell)$, and the cross-slope angle $\phi(\ell)$ fully specify a 3D placement frame for the track centerline at each $\ell$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.
 
@@ -128,7 +128,7 @@ $$M_N = \begin{bmatrix}
 
 For the point at horizontal distance $\ell$, compute $D(\ell)$ and $\theta(\ell) = \tan^{-1}(D'(\ell))$. Interpolate the cross slope angle between the segment start and end values:
 
-$$\phi(\ell) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)(D(\ell) - D_s)$$
+$$\phi(\ell) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)(D(\ell) - D_s)$$
 
 Form the local frame:
 
@@ -205,7 +205,7 @@ The deviating elevation and its rate of change are given by the following equati
 
 $$D(s) = D_s = D_e$$
 
-$$\frac{d}{ds}D(s) = 0.0$$
+$$\tfrac{d}{ds}D(s) = 0.0$$
 
 ### 4.3.2 Semantic Definition to Geometry Mapping
 
@@ -215,7 +215,7 @@ Consider 100 m long segment of a railway that is turning towards the left. The r
 #64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0.16, 0.16, .CONSTANTCANT.);
 ~~~
 
-$D_s = \frac{0.0\ m + 0.16\ m}{2} = 0.08\ m \quad D_e = \frac{0.0\ m + 0.16\ m}{2} = 0.08\ m$
+$D_s = \tfrac{0.0\ m + 0.16\ m}{2} = 0.08\ m \quad D_e = \tfrac{0.0\ m + 0.16\ m}{2} = 0.08\ m$
 
 $\Delta D = D_e - D_s = 0.08\ m - 0.08\ m = 0.0\ m$
 
@@ -232,9 +232,9 @@ Define the parent curve as an `IfcLine` passing through (0,0.08) in the directio
 
 The `IfcCurveSegment` trims a segment from the parent curve. The curve segment placement must capture the cross-slope rotation between the rail heads. For this reason the placement is an `IfcAxis2Placement3D` (instead of `IfcAxis2Placement2D` used for horizontal and vertical representations).
 
-The cross-slope angle is $\phi = tan{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}} \right)$.
+The cross-slope angle is $\phi = tan{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \right)$.
 
-$\phi = tan^{-1}\left(\frac{1.5}{0.16-0.0}\right) = 1.4645314$
+$\phi = tan^{-1}\left(\tfrac{1.5}{0.16-0.0}\right) = 1.4645314$
 
 $dz_y = cos\phi = 0.10606498$
 
@@ -326,17 +326,25 @@ $$M_c = \begin{bmatrix}
 
 A linear transition in cant is represented with an `IfcClothoid`.
 
+<span style="background-color:yellow;color:black">
+Need to complete re-evaluate linear transition for cant.
+The math isn't working out
+GENERATED__CantAlignment_LinearTransition_100.0_300_inf_1_Meter.ifc is the example
+Evaluate at 0, 50 and 100 - slopes are all different in column 0
+Go back to the reference implementation
+</span>
+
 ### 4.4.1 Parent Curve Parametric Equations
 
 The deviating elevation and its rate of change are given by the following equations.
 
-$$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s\ $$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{0}} + \tfrac{A_{1}}{\left| A_{1}^{3} \right|}s\ $$
 
-$$\frac{d}{ds}D(s) = L^{2}\frac{A_{1}}{\left| A_{1}^{3} \right|}$$
+$$\tfrac{d}{ds}D(s) = L^{2}\tfrac{A_{1}}{\left| A_{1}^{3} \right|}$$
 
-$$a_{0} = D_{s},\ A_{0} = \frac{L^{2/1}}{\sqrt[1]a_{0}}\frac{a_0}{\left|a_0\right|},\ A_{0} = \frac{L^{2}}{a_{0}}$$
+$$a_{0} = D_{s},\ A_{0} = \tfrac{L^{2/1}}{\sqrt[1]a_{0}}\tfrac{a_0}{\left|a_0\right|},\ A_{0} = \tfrac{L^{2}}{a_{0}}$$
 
-$$a_1 = \Delta D,\ A_1 = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$$
+$$a_1 = \Delta D,\ A_1 = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\tfrac{a_{1}}{\left| a_{1} \right|}$$
 
 $A_1$ is the clothoid constant.
 
@@ -356,32 +364,32 @@ $D_{sl} = 0\ m\quad D_{el} = 0\ m$
 
 $D_{sr} = 0.16\ m\quad D_{er} = 0\ m$
 
-$D_s = \frac{(0.16 + 0)}{2} = 0.08\ m$
+$D_s = \tfrac{(0.16 + 0)}{2} = 0.08\ m$
 
-$D_e = \frac{(0 + 0)}{2} = 0\ m$
+$D_e = \tfrac{(0 + 0)}{2} = 0\ m$
 
 $\Delta D = D_e - D_s = 0.0 - 0.08 = -0.08\ m$
 
-$a_0 = D_s = 0.08\ m,\ A_0 = \frac{(100\ m)^2}{0.08\ m} = 125000\ m$
+$a_0 = D_s = 0.08\ m,\ A_0 = \tfrac{(100\ m)^2}{0.08\ m} = 125000\ m$
 
-$a_{1} = \Delta D = -0.08\ m \quad A_{1} = \frac{{(100\ m)}^{\frac{3}{2}}}{\sqrt{|-0.08\ m|}}\frac{-0.08\ m}{|-0.08\ m|} = -3535.533906\ m$
+$a_{1} = \Delta D = -0.08\ m \quad A_{1} = \tfrac{{(100\ m)}^{\tfrac{3}{2}}}{\sqrt{|-0.08\ m|}}\tfrac{-0.08\ m}{|-0.08\ m|} = -3535.533906\ m$
 
 The clothoid parent curve is
 
 ~~~
-#95=IFCCARTESIANPOINT((0.,0.));
-#96=IFCDIRECTION((1.,0.));
-#97=IFCAXIS2PLACEMENT2D(#95,#96);
-#98=IFCCLOTHOID(#97,-3535.53390593274);
+#96=IFCCARTESIANPOINT((0.,0.));
+#97=IFCDIRECTION((1.,0.));
+#98=IFCAXIS2PLACEMENT2D(#96,#97);
+#99=IFCCLOTHOID(#98,-3535.533905932738);
 ~~~
 
 The cant segment begins with a deviating elevation of
 
-$$D(0\ m) = (100\ m)^2\left(\frac{1}{125000} + \frac{-3535.533906}{|-3535.533906|^3}(0\ m)\right) = 0.08\ m$$
+$$D(0\ m) = (100\ m)^2\left(\tfrac{1}{125000} + \tfrac{-3535.533906}{|-3535.533906|^3}(0\ m)\right) = 0.08\ m$$
 
 The slope at the start of the segment is
 
-$$D'(0\ m) = (100\ m)^{2}\frac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$$
+$$D'(0\ m) = (100\ m)^{2}\tfrac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$$
 
 $$\theta_0 = tan^{-1}(-0.0008) = -0.00079999$$
 
@@ -391,7 +399,7 @@ $dy_x = sin(\theta_0) = -0.000799999744$
 
 The cross-slope at the start of the segment is
 
-$\phi(0) = \phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+$\phi(0) = \phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 $dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
 
@@ -426,7 +434,7 @@ The $\mathbf{Axis}$ vector is perpendicular to the railhead cross slope line.
 
 $\mathbf{Axis} = (0.0,\ 0.106064981,\ 0.994359201)$
 
-$\phi_p = tan^{-1}\left(\frac{0.994359201}{0.106064981}\right) = 1.464531464$
+$\phi_p = tan^{-1}\left(\tfrac{0.994359201}{0.106064981}\right) = 1.464531464$
 
 With the cross section $y$-axis to the left and $z$-axis upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right rail being superelevated.
 
@@ -436,7 +444,7 @@ From the parent curve
 
 $s_0 = 0$
 
-$D(0\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
+$D(0\ m) = (100\ m)^{2}\left( \tfrac{1}{125000\ m} + \tfrac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
 
 $D'(0) = -0.0008,\ \theta_0 = -0.00079999$
 
@@ -458,7 +466,9 @@ $$M_N = \begin{bmatrix}
 
 Evaluate the parent curve at $s = 50\ m$
 
-$D(50\ m) = (100\ m)^{2}\left( \frac{1}{125000\ m} + \frac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(50\ m) \right) = 0.04\ m$
+$D(50\ m) = (100\ m)^{2}\left( \tfrac{1}{125000\ m} + \tfrac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(50\ m) \right) = 0.04\ m$
+
+$D'(50\ m) = (100\ m)^{2}\tfrac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$
 
 $$M_{PC} = \begin{bmatrix} 
 1 & 0 & 0 & 50 \\
@@ -501,11 +511,11 @@ $$M_c = \begin{bmatrix}
 
 $\mathbf{Axis} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
 
-$\phi(50\ m) = tan^{-1}\left(\frac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$
+$\phi(50\ m) = tan^{-1}\left(\tfrac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$
 
-The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\frac{\pi}{2}$ (This is left for an exercise for the reader - repeat Step 4 with $\ell=100\ m$ to verify ).
+The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\tfrac{\pi}{2}$ (This is left for an exercise for the reader - repeat Step 4 with $\ell=100\ m$ to verify ).
 
-As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\frac{1.464531464+\frac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$
+As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\tfrac{1.464531464+\tfrac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$
 
 ## 4.5 Helmert Curve
 
@@ -515,9 +525,9 @@ Like the Helmert transition spiral, the Helmert cant semantic definition maps to
 
 The deviating elevation and its rate of change are given by the following equations.
 
-$$\frac{D(s)}{L^{2}} = \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{2}^{3}}s^{2} + \tfrac{A_{1}}{\left| A_{1}^{3} \right|}s + \tfrac{1}{A_{0}}$$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( \frac{2s}{A_{2}^{3}} + \frac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
+$$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{2s}{A_{2}^{3}} + \tfrac{A_{1}}{\left| A_{1}^{3} \right|} \right)$$
 
 The polynomial coefficients carry a second subscript to indicate first half $1$, and second half $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
 
@@ -526,34 +536,34 @@ In the first half of the cant transition
 Constant Term:
 
  $a_{01} = 4D_{s}$,
-$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|}$
+$A_{01} = \tfrac{L^{2}}{\left| a_{o1} \right|}\tfrac{a_{01}}{\left| a_{o1} \right|}$
 
 Linear Term: 
 
 $a_{11} = 0$,
-$A_{11} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\frac{a_{11}}{\left| a_{11} \right|} = 0$
+$A_{11} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\tfrac{a_{11}}{\left| a_{11} \right|} = 0$
 
 Quadratic Term:
 
 $a_{21} = 8\Delta D$,
-$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|}$
+$A_{21} = \tfrac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\tfrac{a_{21}}{\left| a_{21} \right|}$
 
 In the second half
 
 Constant Term: 
 
 $a_{02} = -4\Delta D + 4D_{s}$,
-$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|}$
+$A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{01}}{\left| a_{02} \right|}$
 
 Linear Term: 
 
 $a_{12} = 16\Delta D$,
-$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|}$
+$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{\left| a_{12} \right|}$
 
 Quadratic Term: 
 
 $a_{22} = -8\Delta D$,
-$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|}$
+$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22}}{\left| a_{22} \right|}$
 
 
 ### 4.5.2 Semantic Definition to Geometry Mapping
@@ -572,9 +582,9 @@ $$D_{sl} = 0\ m,\ D_{el} = 0\ m$$
 
 $$D_{sr} = 0.16\ m,\ D_{er} = 0\ m$$
 
-$$D_{s} = \frac{0 + 0.16\ m}{2} = 0.08\ m$$
+$$D_{s} = \tfrac{0 + 0.16\ m}{2} = 0.08\ m$$
 
-$$D_{e} = \frac{0 + 0}{2} = 0.\ m$$
+$$D_{e} = \tfrac{0 + 0}{2} = 0.\ m$$
 
 $$\Delta D = 0.0 - 0.08 = -0.08\ m$$
 
@@ -582,13 +592,13 @@ First half:
 
 $$a_{01} = 4D_{s} = 4(0.08\ m) = 0.32\ m$$
 
-$$A_{01} = \frac{L^{2}}{\left| a_{o1} \right|}\frac{a_{01}}{\left| a_{o1} \right|} = \frac{(100\ m)^{2}}{|0.32\ m|}\frac{0.32\ m}{|0.32\ m|} = 31250\ m$$
+$$A_{01} = \tfrac{L^{2}}{\left| a_{o1} \right|}\tfrac{a_{01}}{\left| a_{o1} \right|} = \tfrac{(100\ m)^{2}}{|0.32\ m|}\tfrac{0.32\ m}{|0.32\ m|} = 31250\ m$$
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
 $$a_{21} = 8\Delta D = 8(-0.08\ m) = -0.64\ m$$
 
-$$A_{21} = \frac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100\ m)^\frac{4}{3}}{\sqrt[3]{| - 0.64\ m|}}\frac{-0.64\ m}{|-0.64\ m|} = -538.6086725\ m$$
+$$A_{21} = \tfrac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\tfrac{a_{21}}{\left| a_{21} \right|} = \tfrac{(100\ m)^\tfrac{4}{3}}{\sqrt[3]{| - 0.64\ m|}}\tfrac{-0.64\ m}{|-0.64\ m|} = -538.6086725\ m$$
 
 The first half parent curve `IfcSecondOrderPolynomialSpiral` is
 ~~~
@@ -608,15 +618,15 @@ Note that the length of the first half curve is $L_1 =50\ m$, half the length of
 
 The deviation elevation at the start of the first half transition is
 
-$$D(0\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$$
+$$D(0\ m) = (50\ m)^{2}\left( \tfrac{1}{31250\ m} + \tfrac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$$
 
-$$D'(0\ m) = (50\ m)^{2}\left( \frac{2(0\ m)}{(-538.6086725\ m)^{3}}\right) = 0$$
+$$D'(0\ m) = (50\ m)^{2}\left( \tfrac{2(0\ m)}{(-538.6086725\ m)^{3}}\right) = 0$$
 
 $\theta = 0,\ dx_x = 1, dy_x = 0$
 
 The cross slope is 
 
-$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 $dy_z = cos(\phi_s) = cos(1.464531464) = 0.106064981$
 
@@ -634,14 +644,14 @@ Second half:
 
 $$a_{02} = -4\Delta D + 4D_{s} = -4(-0.08\ m) + 4(0.08)\ m = 0.64\ m$$
 
-$$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100\ m)^{2}}{|0.64\ m|}\frac{0.64\ m}{|0.64\ m|} = 15625\ m$$
+$$A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{01}}{\left| a_{02} \right|} = \tfrac{(100\ m)^{2}}{|0.64\ m|}\tfrac{0.64\ m}{|0.64\ m|} = 15625\ m$$
 
 $$a_{12} = 16\Delta D = 16(-0.08\ m) = -1.28\ m$$
-$$A_{12} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\frac{a_{12}}{\left| a_{12} \right|} = \frac{(100\ m)^{\frac{3}{2}}}{\sqrt{|-1.28\ m|}}\frac{-1.28\ m}{|-1.28\ m|} = -883.8834765\ m$$
+$$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{\left| a_{12} \right|} = \tfrac{(100\ m)^{\tfrac{3}{2}}}{\sqrt{|-1.28\ m|}}\tfrac{-1.28\ m}{|-1.28\ m|} = -883.8834765\ m$$
 
 $$a_{22} = -8\Delta D = -8(-0.08\ m) = 0.64\ m$$
 
-$$A_{22} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\frac{a_{22}}{\left| a_{22} \right|} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\frac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$
+$$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22}}{\left| a_{22} \right|} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\tfrac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$
 
 The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 ~~~
@@ -655,15 +665,15 @@ Determine the second half placement and trimming.
 
 The starting elevation of the second half is the end elevation of the first half. Use the first half parent curve to determine the start of the second half curve.
 
-$$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$$
+$$D(50\ m) = (50\ m)^{2}\left( \tfrac{1}{31250\ m} + \tfrac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$$
 
-$$D'(50\ m) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = -0.0016$$
+$$D'(50\ m) = (50\ m)^2\left(\tfrac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = -0.0016$$
 
-$dx_x = \frac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724,\ dy_x = \frac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$
+$dx_x = \tfrac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724,\ dy_x = \tfrac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$
 
 The cross slope at the end of the first half is 
 
-$\phi(50\ m) = 1.464531464 + \left(\frac{\frac{\pi}{2} - 1.464531464}{0.08\ m}\right)(0.04\ m - 0.08\ m) = 1.517663895$
+$\phi(50\ m) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{0.08\ m}\right)(0.04\ m - 0.08\ m) = 1.517663895$
 
 $dy_z = cos(\phi_s) = cos(1.517663895) = 0.053107436$
 
@@ -701,9 +711,9 @@ From the parent curve
 
 $s_0 = 50\ m$
 
-$D(50\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(50\ m)^2 + \frac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \frac{1}{15625\ m} \right) = 0.16\ m$
+$D(50\ m) = (100\ m)^2\left(\tfrac{1}{(538.6086725\ m)^3}(50\ m)^2 + \tfrac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \tfrac{1}{15625\ m} \right) = 0.16\ m$
 
-$D'(50\ m) = (100\ m)^{2}\left( \frac{2(50\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$
+$D'(50\ m) = (100\ m)^{2}\left( \tfrac{2(50\ m)}{(538.6086725\ m)^{3}} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$
 
 $\theta_0 = tan^{-1}(-0.0064) = -0.006399913$
 
@@ -735,9 +745,9 @@ $$M_N = \begin{bmatrix}
  
 A point $\ell = 75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = \ell = 75\ m$
 
-$$D(75\ m) = (100\ m)^2\left(\frac{1}{(538.6086725\ m)^3}(75\ m)^2 + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^3 \right|}(75\ m) + \frac{1}{15625\ m} \right) = 0.04\ m$$
+$$D(75\ m) = (100\ m)^2\left(\tfrac{1}{(538.6086725\ m)^3}(75\ m)^2 + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^3 \right|}(75\ m) + \tfrac{1}{15625\ m} \right) = 0.04\ m$$
 
-$$D'(75\ m) = (100\ m)^{2}\left( \frac{2(75\ m)}{(538.6086725\ m)^{3}} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.032$$
+$$D'(75\ m) = (100\ m)^{2}\left( \tfrac{2(75\ m)}{(538.6086725\ m)^{3}} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.032$$
 
 $\theta = tan^{-1}(-0.0032) = -0.00319998908$
 
@@ -783,9 +793,9 @@ $$
 </span>
 
 $$M_c = \begin{bmatrix}
-0.999999684 & 0.000799928774 & 0 & 75.0 \\
+0.999999684 & 0.000799928774 & -0000745557622 & 75.0 \\
 -0.000795461553 & 0.999910964 & 0.0133204468 & 0.01 \\
-0 & -0.0133203149 & 0.999911281 & 0 \\
+0.0000850911873 & -0.0133203149 & 0.999911281 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -797,13 +807,13 @@ A Bloss transition in cant is represented with an `IfcThirdOrderPolynomialSpiral
 
 The deviating elevation and its rate of change are given by the following equations.
 
-$$\frac{D(s)}{L^{2}} = \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \tfrac{1}{A_{2}^{3}}s^{2} + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|}s + \tfrac{1}{A_{0}}$$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( \frac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \frac{2}{A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
+$$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \tfrac{2}{A_{2}^{3}}s + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
 
 Constant Term
 
-$a_{0} = D_s,\ A_{0} = \frac{L^{\frac{2}{1}}}{\sqrt[0]{|a_0|}}\frac{a_0}{|a_0|} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$
+$a_{0} = D_s,\ A_{0} = \tfrac{L^{\tfrac{2}{1}}}{\sqrt[0]{|a_0|}}\tfrac{a_0}{|a_0|} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left| a_{0} \right|}$
 
 Linear Term
 
@@ -811,11 +821,11 @@ $a_1 = 0,\ A_{1}$
 
 Quadratic Term
 
-$a_{2} = 3\Delta D,\ A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{|a_2|}}\frac{a_2}{|a_2|}$
+$a_{2} = 3\Delta D,\ A_{2} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{|a_2|}}\tfrac{a_2}{|a_2|}$
 
 Cubic Term
 
-$a_{3} = -2\Delta D,\ A_{3} = \frac{{L}^{\frac{5}{4}}}{\sqrt[4]{|a_3|}}\frac{a_3}{|a_3|}$
+$a_{3} = -2\Delta D,\ A_{3} = \tfrac{{L}^{\tfrac{5}{4}}}{\sqrt[4]{|a_3|}}\tfrac{a_3}{|a_3|}$
 
 ### 4.6.2 Semantic Definition to Geometry Mapping
 
@@ -827,11 +837,11 @@ Consider an alignment segment that has a Bloss transition curve towards the left
 
 Compute the parent curve parameters
 
-$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0 - 0.16 = -0.08\ m$
+$D_{s} = \tfrac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \tfrac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0 - 0.16 = -0.08\ m$
 
 Constant Term
 
-$a_{0} = -0.08\ m,\ A_{0} = \frac{(100\ m)^{2}}{\left|-0.08\ m \right|}\frac{-0.08\ m}{\left| -0.08\ m \right|} = 125000\ m$
+$a_{0} = -0.08\ m,\ A_{0} = \tfrac{(100\ m)^{2}}{\left|-0.08\ m \right|}\tfrac{-0.08\ m}{\left| -0.08\ m \right|} = 125000\ m$
 
 Linear Term
 
@@ -839,11 +849,11 @@ $A_{1} = 0\ m$
 
 Quadratic Term
 
-$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \frac{(100\ m)^{\frac{4}{3}}}{\sqrt[3]{|-0.24\ m|}}\left( \frac{-0.24\ m}{|-0.24\ m|} \right) = -746.9007911\ m$
+$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{|-0.24\ m|}}\left( \tfrac{-0.24\ m}{|-0.24\ m|} \right) = -746.9007911\ m$
 
 Cubic Term
 
-$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{\sqrt[4]{|0.16\ m|}}\left( \frac{0.16\ m}{| 0.16\ m|} \right) = 500\ m$
+$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{|0.16\ m|}}\left( \tfrac{0.16\ m}{| 0.16\ m|} \right) = 500\ m$
 
 The parent curve is
 
@@ -855,7 +865,7 @@ The parent curve is
 ~~~
 
 
-$$D_0 = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$$
+$$D_0 = D(0\ m) = (100\ m)^2\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \tfrac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \tfrac{1}{125000\ m} \right) = 0.08\ m$$
 
 $$D'(0) = 0,\ \theta_0 = 0$$
 
@@ -865,7 +875,7 @@ $dy_x = sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 The cross slope orientation is
 
@@ -902,7 +912,7 @@ The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope l
 
 $\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$
 
-$\phi_p = tan^{-1}\left(\frac{0.9943592}{0.106064981}\right) = 1.464531464$
+$\phi_p = tan^{-1}\left(\tfrac{0.9943592}{0.106064981}\right) = 1.464531464$
 
 With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
 
@@ -930,9 +940,9 @@ $$M_N = \begin{bmatrix}
 
 Evaluate the parent curve at $s = 50\ m$
 
-$$D(50\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \frac{1}{125000\ m} \right) = 0.04\ m$$
+$$D(50\ m) = (100\ m)^2\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \tfrac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \tfrac{1}{125000\ m} \right) = 0.04\ m$$
 
-$$D'(50\ m) = (100\ m)^{2}\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \frac{2}{(-746.9007911\ m)^{3}}(50\ m) + \frac{125000\ m}{2\left| (125000\ m)^{3} \right|} \right) = -0.002$$
+$$D'(50\ m) = (100\ m)^{2}\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m) + \tfrac{125000\ m}{2\left| (125000\ m)^{3} \right|} \right) = -0.002$$
 
 $\theta = tan^{-1}(-0.002) = -0.0019997$
 
@@ -976,7 +986,7 @@ $$
 $$M_c = \begin{bmatrix}
 0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
 -0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
-0 & 0 & 0.9985888041 & 0 \\
+0 & -0.0531073592 & 0.9985888041 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
@@ -989,21 +999,21 @@ A Cosine transition in cant is represented with an `IfcCosineSpiral`.
 
 The deviating elevation and its rate of change are given by the following equations.
 
-$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{1}{A_{1}}\cos\left( \pi\frac{s}{L} \right)$
+$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{0}} + \tfrac{1}{A_{1}}\cos\left( \pi\tfrac{s}{L} \right)$
 
-$\frac{d}{ds}D(s) = L^{2}\left( -\frac{\pi}{A_1 L}\sin\left( \pi\frac{s}{L} \right) \right)$
+$\tfrac{d}{ds}D(s) = L^{2}\left( -\tfrac{\pi}{A_1 L}\sin\left( \pi\tfrac{s}{L} \right) \right)$
 
 Constant term,
 
-$a_0 = D_s + \frac{\Delta D}{2}$
+$a_0 = D_s + \tfrac{\Delta D}{2}$
 
-$A_0 = L^{2}\frac{1}{a_0}\frac{a_0}{|a_0|}$
+$A_0 = L^{2}\tfrac{1}{a_0}\tfrac{a_0}{|a_0|}$
 
 Cosine term, 
 
-$a_1 = -\frac{1}{2} \Delta D$
+$a_1 = -\tfrac{1}{2} \Delta D$
 
-$A_1 = L^{2}\frac{1}{a_1}\frac{a_1}{|a_1|}$
+$A_1 = L^{2}\tfrac{1}{a_1}\tfrac{a_1}{|a_1|}$
 
 ### 4.7.2 Semantic Definition to Geometry Mapping
 
@@ -1015,15 +1025,15 @@ Consider and alignment segment that has a Cosine transition curve towards the le
 
 Compute the parent curve parameters
 
-$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
+$D_{s} = \tfrac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \tfrac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
 
-$a_0 = 0.08\ m + \frac{-0.08\ m}{2} = 0.04$
+$a_0 = 0.08\ m + \tfrac{-0.08\ m}{2} = 0.04$
 
-$A_0 = (100\ m)^{2} \frac{1}{0.04\ m}\frac{0.04\ m}{|0.04\ m|} = 250000\ m$
+$A_0 = (100\ m)^{2} \tfrac{1}{0.04\ m}\tfrac{0.04\ m}{|0.04\ m|} = 250000\ m$
 
-$a_1 = -\frac{1}{2}(-0.08\ m) = -0.04\ m$
+$a_1 = -\tfrac{1}{2}(-0.08\ m) = -0.04\ m$
 
-$A_1 = (100\ m)^2\frac{1}{-0.04\ m}\frac{-0.04\ m}{|-0.04\ m|} = 250000\ m$
+$A_1 = (100\ m)^2\tfrac{1}{-0.04\ m}\tfrac{-0.04\ m}{|-0.04\ m|} = 250000\ m$
 
 The parent curve is
 
@@ -1034,15 +1044,15 @@ The parent curve is
 #99=IFCCOSINESPIRAL(#98,250000.,250000.);
 ~~~
 
-$$D(0\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
+$$D(0\ m) = (100\ m)^{2}\left( \tfrac{1}{250000\ m} + \tfrac{1}{250000\ m}\cos\left( \pi\tfrac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
 
-$$ D'(0\ m) = (100\ m)^{2}\left( -\frac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\frac{0\ m}{100\ m} \right) \right) = 0$$
+$$ D'(0\ m) = (100\ m)^{2}\left( -\tfrac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\tfrac{0\ m}{100\ m} \right) \right) = 0$$
 
 $\theta_0 = 0,\ dx_x = 1,\ dy_x = 0$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 The cross slope orientation is
 
@@ -1105,9 +1115,9 @@ $$M_N = \begin{bmatrix}
 
 Evaluate the parent curve at $s = 50\ m$
 
-$$D(50\ m) = (100\ m)^{2}\left( \frac{1}{250000\ m} + \frac{1}{250000\ m}\cos\left( \pi\frac{50\ m}{100\ m} \right) \right) = 0.04\ m$$
+$$D(50\ m) = (100\ m)^{2}\left( \tfrac{1}{250000\ m} + \tfrac{1}{250000\ m}\cos\left( \pi\tfrac{50\ m}{100\ m} \right) \right) = 0.04\ m$$
 
-$$D'(50\ m) = (100\ m)^{2}\left( -\frac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\frac{50\ m}{100\ m} \right) \right) = -0.00125664$$
+$$D'(50\ m) = (100\ m)^{2}\left( -\tfrac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\tfrac{50\ m}{100\ m} \right) \right) = -0.00125664$$
 
 $\theta = tan^{-1}(-0.00125664) = -0.001256636$
 
@@ -1167,22 +1177,22 @@ A Sine transition in cant is represented with an `IfcSineSpiral`
 
 The deviation elevation and its rate of change are given by the following equations.
 
-$$\frac{D(s)}{L^{2}} = \frac{1}{A_{0}} + \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2}s + \frac{1}{A_{2}}\sin\left( 2\pi\frac{s}{L} \right)$$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{0}} + \tfrac{A_{1}}{\left| A_{1} \right|}\left( \tfrac{1}{A_{1}} \right)^{2}s + \tfrac{1}{A_{2}}\sin\left( 2\pi\tfrac{s}{L} \right)$$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( \frac{A_{1}}{\left| A_{1} \right|}\left( \frac{1}{A_{1}} \right)^{2} + \frac{2\pi}{LA_{2}}\cos\left( 2\pi\frac{s}{L} \right) \right)$$
+$$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{A_{1}}{\left| A_{1} \right|}\left( \tfrac{1}{A_{1}} \right)^{2} + \tfrac{2\pi}{LA_{2}}\cos\left( 2\pi\tfrac{s}{L} \right) \right)$$
 
 Constant term: 
 $$a_0 = D_s$$
-$$A_0 = L^2\frac{1}{a_0}\frac{a_0}{|a_0|} $$
+$$A_0 = L^2\tfrac{1}{a_0}\tfrac{a_0}{|a_0|} $$
 
 Linear term: 
 
 $$a_1 = \Delta D$$
-$$A_1 = L^{\frac{3}{2}}\frac{1}{\sqrt{|a_1|}}\frac{a_1}{|a_1|} $$
+$$A_1 = L^{\tfrac{3}{2}}\tfrac{1}{\sqrt{|a_1|}}\tfrac{a_1}{|a_1|} $$
 
 Sine term: 
-$$a_2 = -\frac{1}{2\pi} \Delta D$$
-$$A_2 = L^2\frac{1}{a_2}\frac{a_2}{|a_2|} $$
+$$a_2 = -\tfrac{1}{2\pi} \Delta D$$
+$$A_2 = L^2\tfrac{1}{a_2}\tfrac{a_2}{|a_2|} $$
 
 ### 4.8.2 Semantic Definition to Geometry Mapping
 
@@ -1194,22 +1204,22 @@ Consider an alignment segment that has a Sine transition curve towards the left.
 
 Compute the paraent curve parameters
 
-$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
+$D_{s} = \tfrac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \tfrac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
 
 Constant term:
 $a_0 = 0.08\ m$
 
-$A_0 = (100\ m)^2\frac{1}{0.08\ m}\frac{0.08\ m}{|0.08\ m|} = 125000\ m$
+$A_0 = (100\ m)^2\tfrac{1}{0.08\ m}\tfrac{0.08\ m}{|0.08\ m|} = 125000\ m$
 
 Linear term:
 $a_1 = -0.08\ m$
 
-$A_1 = (100\ m)^{\frac{3}{2}} \frac{1}{\sqrt{| -0.08\ m|}}\frac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$
+$A_1 = (100\ m)^{\tfrac{3}{2}} \tfrac{1}{\sqrt{| -0.08\ m|}}\tfrac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$
 
 Sine term:
-$a_2 = -\frac{1}{2\pi} (0.08\ m) = -0.0127324\ m$
+$a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$
 
-$A_2 = (100\ m)^2\frac{1}{-0.0127324\ m}\frac{-0.0127324\ m}{|-0.0127324\ m|} = 785398.1634\ m$
+$A_2 = (100\ m)^2\tfrac{1}{-0.0127324\ m}\tfrac{-0.0127324\ m}{|-0.0127324\ m|} = 785398.1634\ m$
 
 The parent curve is
 
@@ -1220,9 +1230,9 @@ The parent curve is
 #99=IFCSINESPIRAL(#98,785398.16339744814,-3535.533905932738,125000.);
 ~~~
 
-$$D(0\ m) = (100\ m)^{2}\left(\frac{1}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \frac{1}{785398.1634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
+$$D(0\ m) = (100\ m)^{2}\left(\tfrac{1}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \tfrac{1}{785398.1634\ m}\sin\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
 
-$$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0.$$
+$$D'(0\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.$$
 
 $\theta_0 = 0$
 
@@ -1232,7 +1242,7 @@ $dx_y = sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.16 - 0.0}\right) = 1.464531464$
+$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 
 The cross slope orientation is
 
@@ -1269,9 +1279,9 @@ $$M_{CSP} = \begin{bmatrix}
 
 From the parent curve 
 
-$$D(0\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\frac{0\ m}{100\ m} \right) = 0.08\ m$$
+$$D(0\ m) = \tfrac{(100\ m)^{2}}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \tfrac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\tfrac{0\ m}{100\ m} \right) = 0.08\ m$$
 
-$$D'(0\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\frac{0\ m}{100\ m} \right) \right) = 0$$
+$$D'(0\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0$$
 
 $\theta_0 = 0$
 
@@ -1293,9 +1303,9 @@ $$M_N = \begin{bmatrix}
 
 Evaluate the parent curve at $s = 50\ m$
 
-$D(50\ m) = \frac{(100\ m)^{2}}{125000\ m} + \left( \frac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \frac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \frac{(100\ m)^{2}}{785398.1634\ m}\sin\left( 2\pi\frac{50\ m}{100\ m} \right) = 0.04\ m$
+$D(50\ m) = \tfrac{(100\ m)^{2}}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \tfrac{(100\ m)^{2}}{785398.1634\ m}\sin\left( 2\pi\tfrac{50\ m}{100\ m} \right) = 0.04\ m$
 
-$$D'(50\ m) = (100\ m)^{2}\left( \frac{-3535.533906}{\left| -3535.533906 \right|}\left( \frac{1}{-3535.533906} \right)^{2} + \frac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\frac{50\ m}{100\ m} \right) \right) = -0.0016$$
+$$D'(50\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\tfrac{50\ m}{100\ m} \right) \right) = -0.0016$$
 
 $$M_{PC} = \begin{bmatrix} 
 0.99999872 & 0.001599998 & 0 & 50 \\
@@ -1350,43 +1360,43 @@ A Viennese Bend transition in cant is represented with an `IfcSeventhOrderPolyno
 
 The deviating elevation and its rate of change are given by the following equations.
 
-$$\frac{D(s)}{L^{2}} = \frac{A_7}{|A_7^9|}s^7 + \frac{1}{A_6^7}s^6 + \frac{A_5}{|A_5^7|}s^5 + \frac{1}{A_4^5}s^4 + \frac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \frac{1}{A_{2}^{3}}s^{2} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}s + \frac{1}{A_{0}}$$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{A_7}{|A_7^9|}s^7 + \tfrac{1}{A_6^7}s^6 + \tfrac{A_5}{|A_5^7|}s^5 + \tfrac{1}{A_4^5}s^4 + \tfrac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \tfrac{1}{A_{2}^{3}}s^{2} + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|}s + \tfrac{1}{A_{0}}$$
 
-$$\frac{d}{ds}D(s) = L^{2}\left( \frac{7A_7}{|A_7^9|}s^6 + \frac{6}{A_6^7}s^5 + \frac{5A_5}{|A_5^7|}s^4 + \frac{4}{A_4^5}s^3 + \frac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \frac{2}{A_{2}^{3}}s + \frac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
+$$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{7A_7}{|A_7^9|}s^6 + \tfrac{6}{A_6^7}s^5 + \tfrac{5A_5}{|A_5^7|}s^4 + \tfrac{4}{A_4^5}s^3 + \tfrac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \tfrac{2}{A_{2}^{3}}s + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
 
-$$D_s = \frac{D_{sl} + D_{sr}}{2},\ D_e = \frac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_e - D_s$$
+$$D_s = \tfrac{D_{sl} + D_{sr}}{2},\ D_e = \tfrac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_e - D_s$$
 
 Constant Term
 
-$$a_{0} = D_{1}, A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
+$$a_{0} = D_{1}, A_{0} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left| a_{0} \right|}$$
 
 Linear Term
 
-$$a_{1} = 0, A_{1} = \frac{L^{\frac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|}$$
+$$a_{1} = 0, A_{1} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\tfrac{a_{1}}{\left| a_{1} \right|}$$
 
 Quadratic Term
 
-$$a_{2} = 0, A_{2} = \frac{L^{\frac{4}{3}}}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{2} = 0, A_{2} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{2} \right|}}\tfrac{a_{2}}{\left| a_{2} \right|}$$
 
 Cubic Term
 
-$$a_{3} = 0, A_{3} = \frac{L^{\frac{5}{4}}}{\sqrt[4]{\left| a_{3} \right|}}\ \frac{a_{3}}{\left| a_{3} \right|}$$
+$$a_{3} = 0, A_{3} = \tfrac{L^{\tfrac{5}{4}}}{\sqrt[4]{\left| a_{3} \right|}}\ \tfrac{a_{3}}{\left| a_{3} \right|}$$
 
 Quartic Term
 
-$$a_{4} = 35\Delta D, A_{4} = \frac{L^{\frac{6}{5}}}{\sqrt[5]{\left| a_{4} \right|}}\ \frac{a_{4}}{\left| a_{4} \right|}$$
+$$a_{4} = 35\Delta D, A_{4} = \tfrac{L^{\tfrac{6}{5}}}{\sqrt[5]{\left| a_{4} \right|}}\ \tfrac{a_{4}}{\left| a_{4} \right|}$$
 
 Quintic Term
 
-$$a_{5} = -84\Delta D, A_{5} = \frac{L^{\frac{7}{6}}}{\sqrt[6]{\left| a_{5} \right|}}\ \frac{a_{5}}{\left| a_{5} \right|}$$
+$$a_{5} = -84\Delta D, A_{5} = \tfrac{L^{\tfrac{7}{6}}}{\sqrt[6]{\left| a_{5} \right|}}\ \tfrac{a_{5}}{\left| a_{5} \right|}$$
 
 Sextic Term
 
-$$a_{6} = 70\Delta D, A_{6} = \frac{L^{\frac{8}{7}}}{\sqrt[7]{\left| a_{6} \right|}}\ \frac{a_{6}}{\left| a_{6} \right|}$$
+$$a_{6} = 70\Delta D, A_{6} = \tfrac{L^{\tfrac{8}{7}}}{\sqrt[7]{\left| a_{6} \right|}}\ \tfrac{a_{6}}{\left| a_{6} \right|}$$
 
 Septic Term
 
-$$a_{7} = -20\Delta D, A_{7} = \frac{L^{\frac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \frac{a_{7}}{\left| a_{7} \right|}$$
+$$a_{7} = -20\Delta D, A_{7} = \tfrac{L^{\tfrac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \tfrac{a_{7}}{\left| a_{7} \right|}$$
 
 ### 4.9.2 Semantic Definition to Geometry Mapping
 
@@ -1406,10 +1416,10 @@ $$D_{el} = 0.0\ m$$
 $$D_{sr} = 0.1\ m$$
 $$D_{er} = 0.03\ m$$
 
-$$D_s = \frac{0\ m + 0.1\ m}{2} = 0.05\ m, D_e = \frac{0\ m + 0.03\ m}{2} = 0.015\ m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035\ m$$
+$$D_s = \tfrac{0\ m + 0.1\ m}{2} = 0.05\ m, D_e = \tfrac{0\ m + 0.03\ m}{2} = 0.015\ m,\ \mathrm{\Delta}D = 0.015 - 0.05 = -0.035\ m$$
 
 Constant Term
-$$a_{0} = 0.05\ m, A_{0} = \frac{(100\ m)^{2}}{\left| 0.05\ m \right|}\frac{0.05\ m}{\left| 0.05\ m \right|} = 200000\ m$$
+$$a_{0} = 0.05\ m, A_{0} = \tfrac{(100\ m)^{2}}{\left| 0.05\ m \right|}\tfrac{0.05\ m}{\left| 0.05\ m \right|} = 200000\ m$$
 
 Linear Term
 $$a_{1} = 0, A_{1} = 0\ m$$
@@ -1424,19 +1434,19 @@ $$a_{3} = 0, A_{3} = 0\ m$$
 
 Quartic Term
 
-$$a_{4} = 35(-0.035\ m) = -1.225\ m, A_{4} = \frac{(100\ m)^{\frac{6}{5}}}{\sqrt[5]{\left| -1.225\ m \right|}}\ \frac{-1.225\ m}{\left| -1.225\ m \right|} = -241.1974890085123\ m$$
+$$a_{4} = 35(-0.035\ m) = -1.225\ m, A_{4} = \tfrac{(100\ m)^{\tfrac{6}{5}}}{\sqrt[5]{\left| -1.225\ m \right|}}\ \tfrac{-1.225\ m}{\left| -1.225\ m \right|} = -241.1974890085123\ m$$
 
 Quintic Term
 
-$$a_{5} = -84(-0.035\ m) = 2.94\ m, A_{5} = \frac{(100\ m)^{\frac{7}{6}}}{\sqrt[6]{\left| 2.94\ m \right|}}\ \frac{2.94\ m}{\left| 2.94\ m \right|} = 180.0012184608678\ m$$
+$$a_{5} = -84(-0.035\ m) = 2.94\ m, A_{5} = \tfrac{(100\ m)^{\tfrac{7}{6}}}{\sqrt[6]{\left| 2.94\ m \right|}}\ \tfrac{2.94\ m}{\left| 2.94\ m \right|} = 180.0012184608678\ m$$
 
 Sextic Term
 
-$$a_{6} = 70(-0.035\ m)=-2.45\ m, A_{6} = \frac{(100\ m)^{\frac{8}{7}}}{\sqrt[7]{\left| -2.45\ m \right|}}\ \frac{-2.45\ m}{\left|-2.45\ m\right|} = -169.87095595653895\ m$$
+$$a_{6} = 70(-0.035\ m)=-2.45\ m, A_{6} = \tfrac{(100\ m)^{\tfrac{8}{7}}}{\sqrt[7]{\left| -2.45\ m \right|}}\ \tfrac{-2.45\ m}{\left|-2.45\ m\right|} = -169.87095595653895\ m$$
 
 Septic Term
 
-$$a_{7} = -20(-0.035\ m) = 0.7\ m, A_{7} = \frac{(100\ m)^{\frac{9}{8}}}{\sqrt[8]{\left| 0.7\ m \right|}}\ \frac{0.7\ m}{\left| 0.7\ m \right|} = 185.93568367635672\ m$$
+$$a_{7} = -20(-0.035\ m) = 0.7\ m, A_{7} = \tfrac{(100\ m)^{\tfrac{9}{8}}}{\sqrt[8]{\left| 0.7\ m \right|}}\ \tfrac{0.7\ m}{\left| 0.7\ m \right|} = 185.93568367635672\ m$$
 
 The parent curve is
 
@@ -1446,7 +1456,7 @@ The parent curve is
 #99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.93568367635649,-169.87095595653892,180.00121846086768,-241.19748900851218,$,$,$,200000.);
 ~~~
 
-$$D(0\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \frac{1}{200000\ m}\right) = 0.05\ m$$
+$$D(0\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \tfrac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \tfrac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \tfrac{1}{200000\ m}\right) = 0.05\ m$$
 
 $D'(0) = 0,\ \theta_0 = 0$
 
@@ -1456,7 +1466,7 @@ $dx_y = sin(\theta) = 0
 
 The cross-slope at the start of the segment is
 
-$\phi_s = tan^{-1}\left(\frac{D_{rh}}{D_{sr}-D{sl}}\right) = tan^{-1}\left(\frac{1.5}{0.1-0.0} \right) = 1.504228163$
+$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr}-D{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.1-0.0} \right) = 1.504228163$
 
 The cross slope orientation is
 
@@ -1519,9 +1529,9 @@ $$M_N = \begin{bmatrix}
 Evaluate the parent curve at $s = 50\ m$
 
 
-$D(50\ m) = (100\ m)^2 \left(\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \frac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \frac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \frac{1}{200000\ m}\right) = 0.0325\ m$
+$D(50\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \tfrac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \tfrac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \tfrac{1}{200000\ m}\right) = 0.0325\ m$
 
-$D'(50\ m) = (100\ m)^2 \left(7\frac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^6 + \frac{6}{(-169.87095595653895\ m)^7}(50m)^5 + 5\frac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^4 + 4\frac{1}{(-241.1974890085123\ m)^5}(50\ m)^3\right) = -0.00076525$
+$D'(50\ m) = (100\ m)^2 \left(7\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^6 + \tfrac{6}{(-169.87095595653895\ m)^7}(50m)^5 + 5\tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^4 + 4\tfrac{1}{(-241.1974890085123\ m)^5}(50\ m)^3\right) = -0.00076525$
 
 $\theta = -0.00076562$
 
@@ -1715,11 +1725,11 @@ units of length and are represented by `IfcLengthMeasure`.
 
 The basic form of the coefficient of the $i^{th}$ term is 
 
-$$A_{i} = \frac{L^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\frac{a_{i}}{\left| a_{i} \right|}$$
+$$A_{i} = \tfrac{L^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\tfrac{a_{i}}{\left| a_{i} \right|}$$
 
 Performing a dimensional analysis with $l$ representing term with length units, we see that the resulting coefficient $A_{i}$ has units of length. 
 
-$$\frac{l^{\frac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\frac{l}{|l|} = \frac{l^{\frac{i + 2}{i + 1}}}{l^{\frac{1}{i + 1}}} = l^{\frac{i + 2}{i + 1}}l^{\frac{- 1}{(i + 1)}} = l^{\frac{i + 1}{i + 1}} = l$$
+$$\tfrac{l^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\tfrac{l}{|l|} = \tfrac{l^{\tfrac{i + 2}{i + 1}}}{l^{\tfrac{1}{i + 1}}} = l^{\tfrac{i + 2}{i + 1}}l^{\tfrac{- 1}{(i + 1)}} = l^{\tfrac{i + 1}{i + 1}} = l$$
 
 The error in the EnrichIfc4x3 reference implementation is illustrated by way of an example. Consider the Bloss Curve example [GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc). 
 
@@ -1730,20 +1740,20 @@ The semantic definition of the cant transition segment is
 
 The EnrichIfc4x3 reference implementation maps the semantic definition to the geometric representation as follows:
 
-$D_s = \frac{0 + 0}{2} = 0\ m,\ D_e = \frac{0 + 0.16}{2} = 0.08\ m,\ \Delta D = 0.08-0 = 0.08\ m$
+$D_s = \tfrac{0 + 0}{2} = 0\ m,\ D_e = \tfrac{0 + 0.16}{2} = 0.08\ m,\ \Delta D = 0.08-0 = 0.08\ m$
 
 Quadratic Term:
 
 $a_{2} = 3\Delta D = 3(0.08\ m) = 0.24\ m$
 
-$A_{2} = \frac{(100\ m)}{\sqrt[3]{|0.24\ m|}}\left( \frac{0.24\ m}{|0.24\ m|} \right) = 160.917897\ m^{2/3}$
+$A_{2} = \tfrac{(100\ m)}{\sqrt[3]{|0.24\ m|}}\left( \tfrac{0.24\ m}{|0.24\ m|} \right) = 160.917897\ m^{2/3}$
 
 
 Cubic Term:
 
  $a_{3} = -2\Delta D = -0.016\ m$
  
- $A_{3} = \frac{100\ m}{\sqrt[4]{|-0.16\ m|}}\frac{-0.16\ m}{|-0.16\ m|} = -158.113883\ m^{3/4}$
+ $A_{3} = \tfrac{100\ m}{\sqrt[4]{|-0.16\ m|}}\tfrac{-0.16\ m}{|-0.16\ m|} = -158.113883\ m^{3/4}$
 
 Notice that the polynomial coefficents do not have whole length units (e.g. the units aren't $m$).
 
@@ -1756,11 +1766,11 @@ Recalling from Bloss Curve example above,
 
 Quadratic Term
 
-$A_{2} = \frac{(100m)^{\frac{4}{3}}}{\sqrt[3]{|0.24m|}}\left( \frac{0.24m}{|0.24m|} \right) = 746.9007911\ m$
+$A_{2} = \tfrac{(100m)^{\tfrac{4}{3}}}{\sqrt[3]{|0.24m|}}\left( \tfrac{0.24m}{|0.24m|} \right) = 746.9007911\ m$
 
 Cubic Term
 
-$A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{\sqrt[4]{|-0.16\ m|}}\left( \frac{-0.16\ m}{| -0.16\ m|} \right) = -500\ m$
+$A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{|-0.16\ m|}}\left( \tfrac{-0.16\ m}{| -0.16\ m|} \right) = -500\ m$
 
 The polynomial coefficients have units of length as required by IFC.
 
@@ -1782,19 +1792,19 @@ Table 4.10-1 compares the third order polynomal terms.
 
 The EnrichIfc4x3 reference implementation computes the correct value for the deviating elevation. This is because there is a compensating error in the implementation. The deviating elevation is computed as
 
-$D(s) = L\left( \frac{A_3}{|A_3^5|}s^3 + \frac{1}{A_2^3}s^2\right)$
+$D(s) = L\left( \tfrac{A_3}{|A_3^5|}s^3 + \tfrac{1}{A_2^3}s^2\right)$
 
 Evaluated at $s = 50\ m$
 
-$D(50\ m) = (100\ m)\left( \frac{-158.113883\ m^{3/4}}{|(-158.113883\ m^{3/4})^5|}(100\ m)^3 + \frac{1}{(160.914897434272\ m^{2/3})^3}(100\ m)^2\right) = (100\ m)(-0.0002+0.0006) = 0.04\ m$
+$D(50\ m) = (100\ m)\left( \tfrac{-158.113883\ m^{3/4}}{|(-158.113883\ m^{3/4})^5|}(100\ m)^3 + \tfrac{1}{(160.914897434272\ m^{2/3})^3}(100\ m)^2\right) = (100\ m)(-0.0002+0.0006) = 0.04\ m$
 
 The deviating elevation as computed in this guide is
 
-$D(s)= L^2\left( \frac{A_3}{|A_3^5|}s^3 + \frac{1}{A_2^3}s^2\right)$
+$D(s)= L^2\left( \tfrac{A_3}{|A_3^5|}s^3 + \tfrac{1}{A_2^3}s^2\right)$
 
 Notice that the first term is $L^2$, not $L$ as in the reference implementation.
 
-$D(50\ m) = (100\ m)^2\left( \frac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \frac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$
+$D(50\ m) = (100\ m)^2\left( \tfrac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \tfrac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$
 
 Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and visa-versa. Table 4.10-2 compares the results for all the combinations of the sematic to geometry mapping and deviation elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect proportional (or inversely proportional) to the length of the segment (100 or 1/100 in this example). 
 
