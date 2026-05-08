@@ -653,10 +653,6 @@ The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 
 Determine the second half placement and trimming.
 
-<span style="background-color: yellow;color: black">
-[todo: consider adding a figure that plots both parent curves. discuss that they both start at 0,0 and don't align at the mid-point. could either adjust origin of second half, or just trim and place - it's far easier to trim and place so we get the placement information from the end of the first half curve - this may be more appropreate in the horizontal section, or maybe graph in both]
-</span>
-
 The starting elevation of the second half is the end elevation of the first half. Use the first half parent curve to determine the start of the second half curve.
 
 $$D(50\ m) = (50\ m)^{2}\left( \frac{1}{31250\ m} + \frac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$$
