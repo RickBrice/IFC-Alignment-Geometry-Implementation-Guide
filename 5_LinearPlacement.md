@@ -42,11 +42,11 @@ IfcProduct
 
 The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference context. When it is **omitted**, the placement is measured from the start of the basis curve defined in `IfcPointByDistanceExpression`. This is the standard case when the basis curve is an alignment defined in the project coordinate system.
 
-*Figure 5.1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
+Figure 5.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.
 
-> **NOTE — Figure placeholder.** Insert a figure showing: (a) a curved alignment in plan; (b) a bridge pier symbol positioned at a station with a lateral offset arrow labelled “Lt.” and an elevation note; (c) a drain inlet symbol positioned at a station with a lateral offset arrow labelled “Rt.” and an elevation value. Annotate the station along the alignment arc.
+![](images/alignment_linear_placement_features.svg)
 
------
+*Figure 5.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
 ## 5.2 IfcLinearPlacement and IfcAxis2PlacementLinear
 
@@ -116,11 +116,11 @@ The result is a coordinate system whose:
 - Y-axis points to the left (lateral direction in the horizontal plane),
 - Z-axis points upward (global vertical).
 
-This is the classic highway “station-offset” reference frame.
+This is the classic highway “station-offset” reference frame and is illusrated in Figure 5.3.3-1.
 
-*Figure 5.2 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.*
+![](images/linear_placement_offsets.svg)
 
-> **NOTE — Figure placeholder.** Insert a perspective view of a graded alignment curve in 3D. At a selected point, draw three labelled orthogonal arrows for X, Y, Z. Show a dashed line for OffsetLateral (transverse in plan) and a vertical dashed arrow for OffsetVertical.
+*Figure 5.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.*
 
 ## 5.4 Longitudinal Offset and Unreachable Points
 
@@ -128,11 +128,11 @@ This is the classic highway “station-offset” reference frame.
 
 In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that **cannot be expressed** as a station plus a purely transverse offset.
 
-The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches.
+The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 5.4.1-1.
 
-*Figure 5.3 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
+![](images/pi_unreachable_zone.svg)
 
-> **NOTE — Figure placeholder.** Insert a plan view showing two straight tangent lines meeting at a PI with a large deflection angle. Shade the “unreachable zone” beyond the PI. Show a point in this zone and annotate it with DistanceAlong (to the PI), OffsetLateral, and OffsetLongitudinal.
+*Figure 5.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 
 ### 5.4.2 Using OffsetLongitudinal
 

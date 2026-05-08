@@ -70,6 +70,7 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 - IFC attribute names are written in `code style` (e.g., `StartRadius`, `EndRadius`, `SegmentLength`).
 - Positive curvature convention: curves to the left (from the perspective of a traveler moving in the direction of increasing chainage).
 - The guide distinguishes **semantic** alignment (business/design intent, `IfcAlignmentSegment` subtypes) from **geometric** alignment (mathematical curve representation, `IfcCurveSegment`).
+- Tables and Figures are numbered using the section number and a sequence number. An example is Figure 3.2.1-3 is the third figure in section 3.2.1.
 
 ### Image naming
 
