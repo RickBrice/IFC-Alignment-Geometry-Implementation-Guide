@@ -24,7 +24,7 @@ Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the
 
 The $x$ and $y$ coordinates of all horizontal parent curves are defined by the integrals:
 
-$$x(s) = \int \cos\theta(s)\, ds \qquad y(s) = \int \sin\theta(s)\, ds$$
+$$x(s) = \int \cos\theta(s)\ ds \qquad y(s) = \int \sin\theta(s)\ ds$$
 
 ## 2.2 Curve Segment Evaluation Algorithm
 
