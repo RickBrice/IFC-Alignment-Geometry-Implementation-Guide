@@ -80,9 +80,12 @@ The cross-slope angle $\phi$ at a given point is not obtained directly from the 
 
 $$\phi(\ell) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(\ell) - D_s\bigr)$$
 
-**todo: verify, Drh is the hypotenous so maybe this shoud be sin**
+**todo: verify, Drh is the hypotenous so maybe this shoud be cos**
 
-$$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
+$$\phi_s = \tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
+
+$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
+
 
 where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the projection of the `Axis` vector onto the Y-Z plane. In sections without cant, $\phi = \tfrac{\pi}{2}$.
 
@@ -268,6 +271,10 @@ The `IfcCurveSegment` trims a segment from the parent curve. The curve segment p
 The cross-slope angle is $\phi = tan{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \right)$.
 
 $\phi = tan^{-1}\left(\tfrac{1.5}{0.16-0.0}\right) = 1.4645314$
+
+** need to update numbers**
+
+$$\phi_s = \cos^{-1}\left(\tfrac{0.16-0}{1.5} \right) = 1.46392634582$$
 
 $dz_y = cos\phi = 0.10606498$
 
