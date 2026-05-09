@@ -881,7 +881,7 @@ $dy_x = sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right)\right) = 1.463926346$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$
 
 The cross slope orientation is
 
