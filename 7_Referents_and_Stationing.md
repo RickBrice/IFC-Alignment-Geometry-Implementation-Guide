@@ -180,9 +180,9 @@ DistanceAlong = referent_distance + (S - segment_start_station)
 
 For simple alignments with no equations, this reduces to the familiar `DistanceAlong = S - starting_station`.
 
-*Figure 7.3-3 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation. Annotate the start station, equation points, and the non-linear relationship between station and distance.*
+![](images/stationing_diagram.svg)
 
-> **NOTE — Figure placeholder.** Insert a two-panel diagram. Top panel: a straight line representing the geometric distance axis (0 to total length), with referent positions marked. Bottom panel: the station label axis, showing a jump (gap) and a fold-back (overlap). Connect corresponding referent positions between the two panels with vertical dashed lines.
+*Figure 7.3-3 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation. Annotate the start station, equation points, and the non-linear relationship between station and distance.*
 
 -----
 
