@@ -1042,7 +1042,7 @@ $\theta_0 = 0,\ dx_x = 1,\ dy_x = 0$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right)\right) = 1.463926346$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$
 
 The cross slope orientation is
 
@@ -1250,6 +1250,8 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
+**todo - check this value, it is different than above for the same inputs**
+
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.464531464$$
 
 $\mathbf{X}_s = (1,\ 0,\ 0)$
@@ -1421,6 +1423,8 @@ $dx_x = cos(\theta) = 1$
 
 $dx_y = sin(\theta) = 0$
 
+**todo - fix this, mixing cos and tan**
+
 The cross-slope at the start of the segment is
 
 $\phi_s = \cos^{-1}\left(\tfrac{D_{sr}-D{sl}}{D_{rh}}\right) = tan^{-1}\left(\tfrac{0.1-0.0}{1.5} \right) = 1.504080178$
@@ -1487,6 +1491,8 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 **Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
 
 $D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_\ell = -0.00076562$
+
+**todo - fix this calculation**
 
 $\phi_e = tan^{-1}\left(\tfrac{D_{rh}}{D_{er} - D_{el}}\right) = tan^{-1}\left(\tfrac{1.5}{0.03 - 0.0}\right) = 1.550799$
 
