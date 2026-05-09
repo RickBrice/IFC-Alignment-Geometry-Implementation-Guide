@@ -269,7 +269,7 @@ The `IfcCurveSegment` trims a segment from the parent curve. The curve segment p
 
 The cross-slope at the start of the segment is
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right)\right) = 1.463926346$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$
 
 The cross slope orientation is
 
@@ -336,6 +336,8 @@ Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
 $\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
+
+**Y and Z dont match the matrix**
 
 $$M_{PC\ell} = \begin{bmatrix}
         1 &        0 &         0 &        50 \\
@@ -426,7 +428,7 @@ $dy_x = sin(\theta_0) = -0.000799999744$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right)\right) = 1.463926346$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$
 
 The cross slope orientation is
 
@@ -465,7 +467,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0\ m,\ D'(0) = -0.0008,\ \theta_s = -0.00079999$
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right)\right) = 1.463926346$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$
 
 The cross slope orientation is
 
@@ -637,7 +639,7 @@ $\theta = 0,\ dx_x = 1, dy_x = 0$
 
 The cross-slope at the start of the segment is
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right)\right) = 1.463926346$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$
 
 The cross slope orientation is
 
@@ -690,7 +692,7 @@ $\tfrac{(D_{sr} - D_{sl}) + (D_{er} - D_{el})}{2} = \tfrac{(0.16 - 0.0) + (0.0 +
 
 The cross slope at the end of the first half is 
 
-$\phi(50\ m) = \cos^{-1}\left(\tfrac{0.08}{D_{rh}} = \cos^{-1}\left(\tfrac{0.08}{1.5}\right)\right) = 1.517437677$
+$\phi(50\ m) = \cos^{-1}\left(\tfrac{0.08}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.08}{1.5}\right) = 1.517437677$
 
 $dy_z = cos(\phi_s) = cos(1.517437677) = 0.053333333$
 
@@ -918,9 +920,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
-**fix this**
-$\phi_s = tan^{-1}\left(\tfrac{1.5}{0.16 - 0}\right) = 1.464531464$
-$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
+$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{{0.16 - 0}}{1.5} \right) = 1.464531464$$
 
 $\mathbf{X}_s = (1,\ 0,\ 0)$
 
