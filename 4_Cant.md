@@ -100,7 +100,11 @@ Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation).
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \mathbf{Y}_p \times \mathbf{Axis}_p, \quad \mathbf{Z}_p = \mathbf{Axis}_p$$
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p$
+
+$\mathbf{X}_p = \mathbf{Y}_p \times \mathbf{Axis}_p$
+
+$\mathbf{Z}_p = \mathbf{Axis}_p$
 
 The placement in matrix form is
 
@@ -246,7 +250,9 @@ Consider 100 m long segment of a railway that is turning towards the left. The r
 #64 = IFCALIGNMENTCANTSEGMENT($, $, 0., 100., 0., 0., 0.16, 0.16, .CONSTANTCANT.);
 ~~~
 
-$D_s = \tfrac{0.0\ m + 0.16\ m}{2} = 0.08\ m \quad D_e = \tfrac{0.0\ m + 0.16\ m}{2} = 0.08\ m$
+$D_s = \tfrac{0.0\ m + 0.16\ m}{2} = 0.08\ m$
+
+$D_e = \tfrac{0.0\ m + 0.16\ m}{2} = 0.08\ m$
 
 $\Delta D = D_e - D_s = 0.08\ m - 0.08\ m = 0.0\ m$
 
@@ -283,19 +289,19 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 ### 4.3.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{RefDir}_p = (1,\ 0,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.106667)$
 
 $$M_{CSP} = \begin{bmatrix} 
         1 &         0 &         0 &         0 \\
-       -0 &  0.994295 &  0.106667 &      0.08 \\
+       0 &  0.994295 &  0.106667 &      0.08 \\
         0 & -0.106667 &  0.994295 &         0 \\
         0 &         0 &         0 &         1
 \end{bmatrix}$$
@@ -306,14 +312,18 @@ $s_0 = 0,\ D(0) = 0\ m,\ D'(0) = 0,\ \theta_s = 0$
 
 For constant cant $\Delta D = 0$, so $\phi(s_0) = \phi_s = \phi_e = 1.463926346$.
 
-$\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{X}_s = (1,\ 0,\ 0)$
+
+$\mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.994295,\ -0.106667)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-        1 &        -0 &         0 &         0 \\
+        1 &        0 &         0 &         0 \\
         0 &  0.994295 & -0.106667 &         0 \\
         0 &  0.106667 &  0.994295 &         0 \\
         0 &         0 &         0 &         1
@@ -325,10 +335,12 @@ $D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_\ell = 0$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
 
-$\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295),\quad \mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
+$\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295)$
+
+$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
 
 $$M_{PC\ell} = \begin{bmatrix}
-        1 &        -0 &         0 &        50 \\
+        1 &        0 &         0 &        50 \\
         0 &  0.994295 & -0.106667 &         0 \\
         0 &  0.106667 &  0.994295 &         0 \\
         0 &         0 &         0 &         1
@@ -347,95 +359,9 @@ $$M_c = \begin{bmatrix}
         0 &         0 &         0 &         1
 \end{bmatrix}$$
 
----
-
-#### Normalization matrix approach
-
-Compute the placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.10606498,\ 0.99435920)$$
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ -0.10606498,\ 0.99435920),\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p = (1,\ 0,\ 0)$$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.99435920 & 0.10606498 & 0.08 \\
-0 & -0.10606498 & 0.99435920 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-$s_0 = 0, D(0) = D_0 = 0.08\ m, D'(0) = \theta_0 = 0.$
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
- 0 & 1 & 0 & -0.08 \\ 
- 0 & 0 & 1 & 0 \\
- 0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
-
-Evaluate the parent curve at $s = 50\ m$.
-
-$D(50\ m) = 50\ m$
-
-$D'(50\ m) = 0$
-
-$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-Apply the normalization and placement in sequence:
-
-$$M_c = M_{CSP}\ M_N\ M_{PC}$$
-
-$$M_c =
-\begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.99435920 & 0.10606498 & 0.08 \\
-0 & -0.10606498 & 0.99435920 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
- 0 & 1 & 0 & -0.08 \\ 
- 0 & 0 & 1 & 0 \\
- 0 & 0 & 0 & 1 
-\end{bmatrix}
-\begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-$$
-
-$$M_c = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 0.99435920 & 0.10606498 & 0.08 \\
-0 & -0.10606498 & 0.99435920 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
----
-
 ## 4.4 Linear Transition
 
 A linear transition in cant is represented with an `IfcClothoid`.
-
-<span style="background-color:yellow;color:black">
-Need to complete re-evaluate linear transition for cant.
-The math isn't working out
-GENERATED__CantAlignment_LinearTransition_100.0_300_inf_1_Meter.ifc is the example
-Evaluate at 0, 50 and 100 - slopes are all different in column 0
-Go back to the reference implementation
-</span>
 
 ### 4.4.1 Parent Curve Parametric Equations
 
@@ -520,13 +446,13 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 ### 4.4.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (0.9999996800,\ -0.000799999744,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
+$\mathbf{RefDir}_p = (0.9999996800,\ -0.000799999744,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871,\ 0.9943588828,\ -0.1060649471)$
 
@@ -563,7 +489,7 @@ $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.999999680,\ -0.000
 
 $$M_{PCS} = \begin{bmatrix}
           1 & 7.95436e-06 & 8.53333e-07 &           0 \\
-     -8e-06 &    0.994295 &    0.106667 &          -0 \\
+     -8e-06 &    0.994295 &    0.106667 &          0 \\
           0 &   -0.106667 &    0.994295 &           0 \\
           0 &           0 &           0 &           1
 \end{bmatrix}$$
@@ -582,7 +508,7 @@ $\mathbf{X}_\ell = (0.999999680,\ -0.000799999744,\ 0)$
 
 $\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000798871,\ 0.998588485,\ -0.053107419)$
+$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000798871,\ 0.998588485,\ -0.053107419)$ 
 
 $$M_{PC\ell} = \begin{bmatrix}
           1 & 7.98858e-06 & 4.27277e-07 &          50 \\
@@ -603,112 +529,6 @@ $$M_c = \begin{bmatrix}
  4.29111e-05 &   -0.0534095 &     0.998573 &            0 \\
            0 &            0 &            0 &            1
 \end{bmatrix}$$
-
----
-
-#### Normalization matrix approach
-
-Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (0.9999996800,-0.000799999744,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871, 0.9943588828, -0.1060649471)$
-
-$$M_{CSP} = \begin{bmatrix} 
-0.9999996800 & 0.0007954871 & 0 & 0 \\
--0.000799999744 & 0.9943588828 & 0.106064981 & 0.08 \\
-0 & -0.1060649471 & 0.994359201 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-The $\mathbf{Axis}$ vector is perpendicular to the railhead cross slope line.
-
-$\mathbf{Axis} = (0.0,\ 0.106064981,\ 0.994359201)$
-
-$\phi_p = tan^{-1}\left(\tfrac{0.994359201}{0.106064981}\right) = 1.464531464$
-
-With the cross section $y$-axis to the left and $z$-axis upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right rail being superelevated.
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-From the parent curve 
-
-$s_0 = 0$
-
-$D(0\ m) = (100\ m)^{2}\left( \tfrac{1}{125000\ m} + \tfrac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(0\ m) \right) = 0.08\ m$
-
-$D'(0) = -0.0008,\ \theta_0 = -0.00079999$
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-0.999999680 & -0.000799999744 & 0 & 0 \\
-0.000799999744 & 0.999999680 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
-
-Evaluate the parent curve at $s = 50\ m$
-
-$D(50\ m) = (100\ m)^{2}\left( \tfrac{1}{125000\ m} + \tfrac{(-3535.533906\ m)}{\left| (-3535.533906\ m)^{3} \right|}(50\ m) \right) = 0.04\ m$
-
-$D'(50\ m) = (100\ m)^{2}\tfrac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$
-
-$$M_{PC} = \begin{bmatrix} 
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-Apply the normalization and placement in sequence:
-
-$M_c = M_{CSP}\ M_N\ M_{PC}$
-
-$$M_c = 
-\begin{bmatrix}
-0.999999680000 & 0.0007988711 & 0.0000424859 & 0 \\
--0.000800000085 & 0.9985884845 & 0.053107402 & 0.08 \\
-0 & -0.053107419 & 0.9985882289 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 1 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-$$
-
-$$M_c = \begin{bmatrix}
-0.9999996836000798 & 0.0007955209455802008 & 0.0 & 50.0 \\
--0.0007909999255054242 & 0.9985884897861665 & 0.05310743567896648 & 0.04 \\
-0.0 & -0.05310740211832019 & 0.9985888044014736 & 0.0 \\
-0.0 & 0.0 & 0.0 & 1.0
-\end{bmatrix}$$
-
-$\mathbf{Axis} = (0.0,\ 0.05310743567896648,\ 0.9985888044014736)$
-
-$\phi(50\ m) = tan^{-1}\left(\tfrac{0.9985888044014736}{0.05310743567896648}\right) = 1.517663895$
-
-The $\mathbf{Axis}$ vector is closer to vertical half way through the cant segment. At the end of the cant segment, $\phi$ will be $\tfrac{\pi}{2}$ (This is left for an exercise for the reader - repeat Step 4 with $\ell=100\ m$ to verify ).
-
-As a quick check, the $\mathbf{\text{Axis}}$ direction vector half way through the cant segment should be the average value. $\tfrac{1.464531464+\tfrac{\pi}{2}}{2} = 1.517663895 = \phi(50\ m)$
 
 ## 4.5 Helmert Curve
 
@@ -866,15 +686,17 @@ $$D'(50\ m) = (50\ m)^2\left(\tfrac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = 
 
 $dx_x = \tfrac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724,\ dy_x = \tfrac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$
 
+The cant at the end of the first half is one-half of the total cant change over the length of the transition segment.
+
+$\tfrac{(D_{sr} - D_{sl}) + (D_{er} - D_{el})}{2} = \tfrac{(0.16 - 0.0) + (0.0 + 0.0)}{2} = 0.08$
+
 The cross slope at the end of the first half is 
 
-**todo - check this calculation. dy_z and dz_z don't match #118**
+$\phi(50\ m) = \cos^{-1}\left(\tfrac{0.08}{D_{rh}} = \cos^{-1}\left(\tfrac{0.08}{1.5}\right)\right) = 1.517437677$
 
-$\phi(50\ m) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{0.08\ m}\right)(0.04\ m - 0.08\ m) = 1.517663895$
+$dy_z = cos(\phi_s) = cos(1.517437677) = 0.053333333$
 
-$dy_z = cos(\phi_s) = cos(1.517663895) = 0.053107436$
-
-$dz_z = sin(\phi_s) = sin(1.517663895) = 0.998588804$
+$dz_z = sin(\phi_s) = sin(1.517437677) = 0.998576765$
 
 The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the second half segment.
 ~~~
@@ -887,130 +709,59 @@ The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the se
 
 ### 4.5.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
 **todo update - this is from bloss and is a placeholder here**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{RefDir}_p = (0.9999987200024576,\ -0.0015999979520039342,\ 0.)$
 
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.1066667)$
+$\mathbf{Axis}_p = (0.,\ 0.053333333333333337,\ 0.99857676497881498)$
+
+$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.00159772,\ 0.998575,\  -0.0533333)$
 
 $$M_{CSP} = \begin{bmatrix}
-\end{bmatrix}$$
+   0.999999 &  0.00159772 &           0 &          50 \\
+-0.00159545 &    0.998575 &   0.0533333 &        0.04 \\
+8.52118e-05 &  -0.0533333 &    0.998577 &           0 \\
+          0 &           0 &           0 &           1\end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
 
 **todo update - this is from bloss and is a placeholder here**
+$$s_0 = 50\ m$$
 
-$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
+$$D(50\ m) = (50\ m)^{2}\left( \tfrac{1}{31250\ m} + \tfrac{1}{(-538.6086725\ m)^{3}}(50\ m)^{2} \right) = 0.04\ m$$
 
-**fix this**
-$\phi_s = tan^{-1}\left(\tfrac{1.5}{0.16 - 0}\right) = 1.464531464$
-$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
+$$D'(50\ m) = (50\ m)^2\left(\tfrac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = -0.0016$$
 
-$\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$
+$dx_x = \tfrac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724$
+
+$dy_x = \tfrac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$
+
+$$\phi_s = \tan^{-1}\left(\tfrac{dz_z}{dz_y} \right) = \tan^{-1}\left(\tfrac{ 0.998577}{0.0533333} \right) = 1.517437677$$
+
+$\mathbf{X}_s = (0.999998724,\ -0.00159999795,\ 0)$
+
+$\mathbf{Z}_s = (0,\ 0.0533333,\ 0.998577)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.994295,\ -0.106667)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.0533333,\ 0.998577)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.999998724,\ -0.00159999795,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
+   0.999999 &  0.00159772 &           0 &           0 \\
+    -0.0016 &    0.998575 &   0.0533333 &        0.04 \\
+          0 &  -0.0533333 &    0.998577 &           0 \\
+          0 &           0 &           0 &           1
 \end{bmatrix}$$
-
-$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
 **Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
 
-**todo update - this is from bloss and is a placeholder here**
-
-$D(50\ m) = 0.04\ m$
-
-$D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m)} \right) = -0.0012$
-
-$\theta_\ell =\tan^{-1}(-0.0012) = -0.0011999994240005001$
-
-$\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
-
-$\mathbf{X}_\ell = (0.9999980,\ -0.0019997,\ 0),\quad \mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
-
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001997,\ 0.998587,\ -0.053107)$
-
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.000106,\ 0.053107,\ 0.998589),\quad \mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.9999980,\ -0.0019997,\ 0)$
-
-$$M_{PC\ell} = \begin{bmatrix}
-\end{bmatrix}$$
-
-**Step 4 — Compute resulting cant**
-
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
-
-**to do - need to show this calculation as the rotation and translation parts**
-
-$$M_c = \begin{bmatrix}
-\end{bmatrix}$$
-
----
-
-#### Normalization matrix approach
-
-Compute the cant placement matrix for a point $\ell = 75\ m$ from the start of the curve segment. 
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir_p} = (0.9999987200024576,-0.0015999979520039342,0.),\ \mathbf{Axis_p} = (0.,0.053257642916150753,0.99858080467782662)$
-
-$\mathbf{Y_p} = \mathbf{Axis_p} \times \mathbf{RefDir_p} = (0.001597727253, 0.998579530, -0.0532575749)$
-
-$$M_{CSP} = \begin{bmatrix}
-0.999998720 & 0.001597727253 & 0 & 50.0 \\
--0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
- 0 & -0.0532575749 & 0.998580805 & 0 \\
- 0 & 0 & 0 & 1
- \end{bmatrix}$$
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-From the parent curve 
-
-$s_0 = 50\ m$
-
-$D(50\ m) = (100\ m)^2\left(\tfrac{1}{(538.6086725\ m)^3}(50\ m)^2 + \tfrac{-883.8834765}{\left| (-883.8834765\ m)^3 \right|}(50\ m) + \tfrac{1}{15625\ m} \right) = 0.16\ m$
-
-$D'(50\ m) = (100\ m)^{2}\left( \tfrac{2(50\ m)}{(538.6086725\ m)^{3}} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0064$
-
-$\theta_0 = tan^{-1}(-0.0064) = -0.006399913$
-
-$cos \theta_0 = cos(\theta_0) = 0.999979521$
-
-$sin \theta_0 = sin(\theta_0) = -0.006399869$
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$-(50\ m)(0.999979521) - (0.16\ m)(-0.006399869) = -49.99795207$
-
-**[todo: check the math]**
-
-$(50\ m)(-0.006399869) - (0.16\ m)(0.999979521) = -0.47999017$
-
-$$M_N = \begin{bmatrix}
-0.999979521 & -0.006399869 & 0 & -49.99795207 \\
-0.006399869 & 0.999979521 & 0 & -0.47999017 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
- 
-A point $\ell = 75\ m$ from the start of the segment is in the second half of the helmert curve. Evaluate the second half parent curve at $s = \ell = 75\ m$
+**todo update - check all the math**
 
 $$D(75\ m) = (100\ m)^2\left(\tfrac{1}{(538.6086725\ m)^3}(75\ m)^2 + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^3 \right|}(75\ m) + \tfrac{1}{15625\ m} \right) = 0.04\ m$$
 
@@ -1022,48 +773,36 @@ $dx_x = cos(\theta) = 0.99999488004$
 
 $dx_y = sin(\theta) = -0.00319998362$
 
+$\phi(\ell) = 1.517437677 + \left(\tfrac{\tfrac{\pi}{2} - 1.517437677}{-0.08}\right)(0.04 - 0.08) = 1.544117002$
 
-$$M_{PC} = \begin{bmatrix} 
-0.99999488004 & 0.00319998362 & 0 & 75 \\
--0.00319998362 & 0.99999488004 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
+$\mathbf{X}_\ell = (0.99999999,\ -0.0008,\ 0)$
+
+$\mathbf{Z}_\ell = (0,\ 0.0133393,\ 0.999911)$
+
+$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000799929,\ 0.999911,\ -0.0133393)$
+
+$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.,\ 0.0133393,\ 0.999911)$
+
+$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999,\ -0.0008,\ 0)$
+
+$$M_{PC\ell} = \begin{bmatrix}
+          1 & 0.000799929 & 1.06714e-05 &          25 \\
+    -0.0008 &    0.999911 &   0.0133393 &        0.01 \\
+          0 &  -0.0133393 &    0.999911 &           0 \\
+          0 &           0 &           0 &           1
 \end{bmatrix}$$
 
-Apply the normalization and placement in sequence:
+**Step 4 — Compute resulting cant**
 
-$M_c = M_{CSP}M_N M_{PC}$
+$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
 
-$$M_c = 
-\begin{bmatrix}
-0.999998720 & 0.001597727253 & 0 & 50.0 \\
--0.001599997953 & 0.998579530 & 0.0532576429 & 0.04 \\
- 0 & -0.0532575749 & 0.998580805 & 0 \\
- 0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-0.999979521 & -0.006399869 & 0 & -49.99795207 \\
-0.006399869 & 0.999979521 & 0 & -0.47999017 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-0.99999488004 & 0.00319998362 & 0 & 75 \\
--0.00319998362 & 0.99999488004 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-$$
-
-<span style="background-color: pink;color: black">
-[todo - verify matrix multiplication - final result is correct from IfcOpenShell - transformation matrix looks wacky]
-</span>
+**to do - need to show this calculation as the rotation and translation parts**
 
 $$M_c = \begin{bmatrix}
-0.999999684 & 0.000799928774 & -0000745557622 & 75.0 \\
--0.000795461553 & 0.999910964 & 0.0133204468 & 0.01 \\
-0.0000850911873 & -0.0133203149 & 0.999911281 & 0 \\
-0 & 0 & 0 & 1
+           1 &  0.000799929 & -7.46618e-05 &           75 \\
+-0.000798861 &     0.999911 &    0.0133393 &         0.01 \\
+ 8.53256e-05 &   -0.0133393 &     0.999911 &            0 \\
+           0 &            0 &            0 &            1
 \end{bmatrix}$$
 
 ## 4.6 Bloss Curve
@@ -1160,13 +899,13 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 ### 4.6.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{RefDir}_p = (1,\ 0,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.1066667)$
 
@@ -1185,11 +924,15 @@ $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 $\phi_s = tan^{-1}\left(\tfrac{1.5}{0.16 - 0}\right) = 1.464531464$
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
 
-$\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{X}_s = (1,\ 0,\ 0)$
+
+$\mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.994295,\ -0.106667)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
         1 &         0 &         0 &         0 \\
@@ -1204,17 +947,21 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 
 $D(50\ m) = 0.04\ m$
 
-$D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m)} \right) = -0.0012$
+$D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m) \right) = -0.0012$
 
 $\theta_\ell =\tan^{-1}(-0.0012) = -0.0011999994240005001$
 
 $\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
 
-$\mathbf{X}_\ell = (0.9999980,\ -0.0019997,\ 0),\quad \mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{X}_\ell = (0.9999980,\ -0.0019997,\ 0)$
+
+$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
 
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001997,\ 0.998587,\ -0.053107)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.000106,\ 0.053107,\ 0.998589),\quad \mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.9999980,\ -0.0019997,\ 0)$
+$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.000106,\ 0.053107,\ 0.998589)$
+
+$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.9999980,\ -0.0019997,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
    0.999999 &  0.00119829 & 6.40914e-05 &          50 \\
@@ -1235,108 +982,6 @@ $$M_c = \begin{bmatrix}
           0 &  -0.0534095 &    0.998573 &           0 \\
           0 &           0 &           0 &           1
 \end{bmatrix}$$
-
----
-
-#### Normalization matrix approach
-
-Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-The $\mathbf{\text{Axis}}$ vector is perpendicular to the railhead cross slope line.
-
-$\mathbf{\text{Axis}} = (0.0,\ 0.106064981,\ 0.9943592)$
-
-$\phi_p = tan^{-1}\left(\tfrac{0.9943592}{0.106064981}\right) = 1.464531464$
-
-With $y$ to the left and $z$ upwards, the vector is nearly vertical, pointing slightly to the left. This is consistent with a curve to the left and the right railhead being superelevated.
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-From the parent curve 
-
-$s_0 = 0,\ D(0\ m) = 0.08\ m, \ D'(0) = 0,\ \theta_0 = 0$
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
-
-Evaluate the parent curve at $s = 50\ m$
-
-$$D(50\ m) = (100\ m)^2\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{3} + \tfrac{1}{(-746.9007911\ m)^{3}}(50\ m)^{2} + \tfrac{1}{125000\ m} \right) = 0.04\ m$$
-
-$$D'(50\ m) = (100\ m)^{2}\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m) + \tfrac{125000\ m}{2\left| (125000\ m)^{3} \right|} \right) = -0.002$$
-
-$\theta = tan^{-1}(-0.002) = -0.0019997$
-
-$dx_x = cos(\theta) = 0.9999980$
-
-$dy_x = sin(\theta) = -0.0019997$
-
-
-$$M_{PC} = \begin{bmatrix} 
-0.9999980 & 0.0019997 & 0 & 50 \\
--0.0019997 & 0.9999980 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-Apply the normalization and placement in sequence:
-
-$M_c = M_{CSP}M_N M_{PC}$
-
-$$M_c = 
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-0.9999980 & 0.0019997 & 0 & 50 \\
--0.0019997 & 0.9999980 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-$$
-
-$$M_c = \begin{bmatrix}
-0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
--0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
-0 & -0.0531073592 & 0.9985888041 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
 
 ## 4.7 Cosine Curve
 
@@ -1417,13 +1062,13 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 ### 4.7.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
+$\mathbf{RefDir}_p = (1,\ 0,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$
 
@@ -1442,11 +1087,15 @@ $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 $\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
 
-$\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.106064981,\ 0.994359201)$
+$\mathbf{X}_s = (1,\ 0,\ 0)$
+
+$\mathbf{Z}_s = (0,\ 0.106064981,\ 0.994359201)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.9943592,\ -0.10606498)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.994359201),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.994359201)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
         1 &         0 &         0 &         0 \\
@@ -1463,11 +1112,15 @@ $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_\ell = -0.001256636$
 
 $\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
 
-$\mathbf{X}_\ell = (0.99999921,\ -0.001256636,\ 0),\quad \mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{X}_\ell = (0.99999921,\ -0.001256636,\ 0)$
+
+$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
 
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001255,\ 0.998588,\ -0.053107)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000667,\ 0.053107,\ 0.998589),\quad \mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999921,\ -0.001256636,\ 0)$
+$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000667,\ 0.053107,\ 0.998589)$
+
+$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999921,\ -0.001256636,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
            1 &  1.25484e-05 &  6.71164e-07 &           50 \\
@@ -1488,109 +1141,6 @@ $$M_c = \begin{bmatrix}
            0 &   -0.0534096 &     0.998573 &            0 \\
            0 &            0 &            0 &            1
 \end{bmatrix}$$
-
----
-
-#### Normalization matrix approach
-
-Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-From the parent curve 
-
-$s_0 = 0$
-
-$D(0\ m) = 0.08\ m$
-
-$D'(0\ m) = 0$
-
-$\theta_0 = 0$
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
-
-Evaluate the parent curve at $s = 50\ m$
-
-$$D(50\ m) = (100\ m)^{2}\left( \tfrac{1}{250000\ m} + \tfrac{1}{250000\ m}\cos\left( \pi\tfrac{50\ m}{100\ m} \right) \right) = 0.04\ m$$
-
-$$D'(50\ m) = (100\ m)^{2}\left( -\tfrac{\pi}{(250000\ m)(100\ m)}\sin\left( \pi\tfrac{50\ m}{100\ m} \right) \right) = -0.00125664$$
-
-$\theta = tan^{-1}(-0.00125664) = -0.001256636$
-
-$dx_x = cos(\theta) = 0.99999921$
-
-$dx_y = sin(\theta) = -0.001256636$
-
-$$M_{PC} = \begin{bmatrix} 
-0.99999921 & 0.001256636 & 0 & 50 \\
--0.001256636 & 0.99999921 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-Apply the normalization and placement in sequence:
-
-$M_c = M_{CSP}M_N M_{PC}$
-
-$$M_c = 
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-0.99999921 & 0.001256636 & 0 & 50 \\
--0.001256636 & 0.99999921 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-$$
-
-$$M_c = \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 0.9985888041 & 0.0531074357 & 0.04 \\
-0 & -0.05310743572 & 0.998588804 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-
-<span style="background-color: yellow;color: black">
-[todo - check the matrix multiplication]
-</span>
 
 ## 4.8 Sine Curve
 
@@ -1683,13 +1233,13 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 ### 4.8.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
+$\mathbf{RefDir}_p = (1,\ 0,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$
 
@@ -1708,11 +1258,15 @@ $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 $\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.16 - 0.0}\right) = 1.464531464$
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
 
-$\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.106064981,\ 0.994359201)$
+$\mathbf{X}_s = (1,\ 0,\ 0)$
+
+$\mathbf{Z}_s = (0,\ 0.106064981,\ 0.994359201)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.9943592,\ -0.10606498)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.994359201),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.994359201)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
            1 &  -3.3688e-21 & -3.61401e-22 &            0 \\
@@ -1729,11 +1283,15 @@ $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_\ell = -0.0016$
 
 $\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
 
-$\mathbf{X}_\ell = (0.99999872,\ -0.0016,\ 0),\quad \mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{X}_\ell = (0.99999872,\ -0.0016,\ 0)$
+
+$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
 
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001598,\ 0.998588,\ -0.053107)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000850,\ 0.053107,\ 0.998589),\quad \mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999872,\ -0.0016,\ 0)$
+$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000850,\ 0.053107,\ 0.998589)$
+
+$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999872,\ -0.0016,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
           1 & 1.59772e-05 & 8.54553e-07 &          50 \\
@@ -1756,102 +1314,6 @@ $$M_c = \begin{bmatrix}
 \end{bmatrix}$$
 
 $\mathbf{Axis} = (0.0000850,\ 0.053107,\ 0.998589),\quad \phi(50\ m) = 1.517663895$
-
----
-
-#### Normalization matrix approach
-
-Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.106064981,0.994359201)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.9943592, -0.10606498)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-From the parent curve 
-
-$$D(0\ m) = \tfrac{(100\ m)^{2}}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(0\ m)(100\ m)^{2} + \tfrac{(100\ m)^{2}}{78539.81634\ m}\sin\left( 2\pi\tfrac{0\ m}{100\ m} \right) = 0.08\ m$$
-
-$$D'(0\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(78539.81634\ m)}\cos\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0$$
-
-$\theta_0 = 0$
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & -s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
-
-Evaluate the parent curve at $s = 50\ m$
-
-$D(50\ m) = \tfrac{(100\ m)^{2}}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(50\ m)(100\ m)^{2} + \tfrac{(100\ m)^{2}}{785398.1634\ m}\sin\left( 2\pi\tfrac{50\ m}{100\ m} \right) = 0.04\ m$
-
-$$D'(50\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\tfrac{50\ m}{100\ m} \right) \right) = -0.0016$$
-
-$$M_{PC} = \begin{bmatrix} 
-0.99999872 & 0.001599998 & 0 & 50 \\
--0.001599998 & 0.99999872 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-Apply the normalization and placement in sequence:
-
-$M_c = M_{CSP}M_N M_{PC}$
-
-$$M_c = 
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 0.9943592 & 0.106064981 & 0.08 \\
-0 & -0.10606498 & 0.9943592 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.08 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-0.99999872 & 0.001599998 & 0 & 50 \\
--0.001599998 & 0.99999872 & 0 & 0.04 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-$$
-
-$$M_c = \begin{bmatrix}
-1 & 0 & 0 & 50 \\
-0 & 0.9985888041 & 0.0531074357 & 0.04 \\
-0 & -0.05310743572 & 0.998588804 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-
-<span style="background-color: yellow;color: black">
-[todo - check the matrix multiplication]
-</span>
-
 
 ## 4.9 Viennese Bend
 
@@ -1967,7 +1429,6 @@ $dx_y = sin(\theta) = 0$
 
 The cross-slope at the start of the segment is
 
-**fix this**
 $\phi_s = \cos^{-1}\left(\tfrac{D_{sr}-D{sl}}{D_{rh}}\right) = tan^{-1}\left(\tfrac{0.1-0.0}{1.5} \right) = 1.504080178$
 
 The cross slope orientation is
@@ -1987,19 +1448,19 @@ $dz_z = sin(\phi_s) = 0.997775303$
 
 ### 4.9.3 Compute Point on Curve
 
-#### Additive algorithm
-
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.066519011,\ 0.99778516)$
+$\mathbf{RefDir}_p = (1,\ 0,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.066519011,\ 0.99778516)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.99778516,\ -0.066519011)$
 
 $$M_{CSP} = \begin{bmatrix}
          1 &          0 &          0 &          0 \\
-        -0 &   0.997775 &  0.0666667 &       0.05 \\
+        0 &   0.997775 &  0.0666667 &       0.05 \\
          0 & -0.0666667 &   0.997775 &          0 \\
          0 &          0 &          0 &          1
 \end{bmatrix}$$
@@ -2012,14 +1473,18 @@ $s_0 = 0,\ D(0) = 0.05\ m,\ D'(0) = 0,\ \theta_s = 0$
 $\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}}\right) = tan^{-1}\left(\tfrac{1.5}{0.10 - 0.0}\right) = 1.504228163$
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
 
-$\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.066519011,\ 0.99778516)$
+$\mathbf{X}_s = (1,\ 0,\ 0)$
+
+$\mathbf{Z}_s = (0,\ 0.066519011,\ 0.99778516)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.99778516,\ -0.066519011)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.066519011,\ 0.99778516),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.066519011,\ 0.99778516)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-         1 &          0 &         -0 &          0 \\
+         1 &          0 &         0 &          0 \\
          0 &   0.997775 &  0.0666667 &       0.05 \\
          0 & -0.0666667 &   0.997775 &          0 \\
          0 &          0 &          0 &          1
@@ -2035,11 +1500,15 @@ $\phi_e = tan^{-1}\left(\tfrac{D_{rh}}{D_{er} - D_{el}}\right) = tan^{-1}\left(\
 
 $\phi(\ell) = 1.504228163 + \left(\tfrac{1.550799 - 1.504228163}{-0.035}\right)(0.0325 - 0.05) = 1.527513$
 
-$\mathbf{X}_\ell = (0.999999707,\ -0.00076562,\ 0),\quad \mathbf{Z}_\ell = (0,\ 0.04327,\ 0.999063)$
+$\mathbf{X}_\ell = (0.999999707,\ -0.00076562,\ 0)$
+
+$\mathbf{Z}_\ell = (0,\ 0.04327,\ 0.999063)$
 
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000765,\ 0.999063,\ -0.04327)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (3.31e-05,\ 0.04327,\ 0.999063),\quad \mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.999999707,\ -0.00076562,\ 0)$
+$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (3.31e-05,\ 0.04327,\ 0.999063)$
+
+$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.999999707,\ -0.00076562,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
            1 &  0.000765199 &   2.5535e-05 &           50 \\
@@ -2059,103 +1528,6 @@ $$M_c = \begin{bmatrix}
 -0.000765625 &     0.999443 &    0.0333519 &       0.0325 \\
            0 &   -0.0333519 &     0.999444 &            0 \\
            0 &            0 &            0 &            1
-\end{bmatrix}$$
-
----
-
-#### Normalization matrix approach
-
-Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment.
-
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
-$\mathbf{RefDir}_p = (1,0,0.),\ \mathbf{Axis}_p = (0.,0.06651901,0.99778516)$
-
-$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0, 0.99778516, -0.06651901)$
-
-$$M_{CSP} = \begin{bmatrix} 
-1 & 0 & 0 & 0 \\
-0 & 0.99778516 & 0.06651901 & 0.05 \\
-0 & -0.06651901 & 0.99778516 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
-From the parent curve 
-
-$s_0 = 0$
-
-$D(0\ m) = 0.05\ m$
-
-$D'(0) = 0,\ \theta_0 = 0$
-
-$$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -s_0\cos\theta_0 - D_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & s_0\sin\theta_0 - D_0\cos\theta_0 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-$$M_N = \begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.05 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}$$
-
-**Step 3 — Evaluate and map each point**
-
-Evaluate the parent curve at $s = 50\ m$
-
-
-$D(50\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^7 + \tfrac{1}{(-169.87095595653895\ m)^7}(50m)^6 + \tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^5 + \tfrac{1}{(-241.1974890085123\ m)^5}(50\ m)^4  + \tfrac{1}{200000\ m}\right) = 0.0325\ m$
-
-$D'(50\ m) = (100\ m)^2 \left(7\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(50\ m)^6 + \tfrac{6}{(-169.87095595653895\ m)^7}(50m)^5 + 5\tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(50\ m)^4 + 4\tfrac{1}{(-241.1974890085123\ m)^5}(50\ m)^3\right) = -0.00076525$
-
-$\theta = -0.00076562$
-
-$dx_x = cos(\theta) = 0.999999707$
-
-$dy_x = sin(\theta) = -0.00076562$
-
-$$M_{PC} = \begin{bmatrix} 
-0.999999707 & 0.00076562 & 0 & 50 \\
--0.00076562 & 0.999999707 & 0 & 0.0325 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}$$
-
-Apply the normalization and placement in sequence:
-
-$$M_c = M_{CSP} \cdot M_N \cdot M_{PC}$$
-
-$$M_c = 
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 0.99778516 & 0.06651901 & 0.05 \\
-0 & -0.06651901 & 0.99778516 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-\begin{bmatrix}
-1 & 0 & 0 & 0 \\
-0 & 1 & 0 & -0.05 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}
-0.999999707 & 0.00076562 & 0 & 50 \\
--0.00076562 & 0.999999707 & 0 & 0.0325 \\
-0 & 0 & 1 & 0 \\
-0 & 0 & 0 & 1 
-\end{bmatrix}
-$$
-
-$$M_c = \begin{bmatrix}
-0.999999707 & 0 & 0 & 50\\
--0.000765624776 & 0.999445843 & 0.0332779172 &  0.0325000000\\
-0 & -0.0332779270 & 0.999446136 & 0\\
-0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 ## 4.10 Combined 3D
@@ -2320,7 +1692,7 @@ The semantic definition of the cant transition segment is
 
 The EnrichIfc4x3 reference implementation maps the semantic definition to the geometric representation as follows:
 
-$D_s = \tfrac{0 + 0}{2} = 0\ m,\ D_e = \tfrac{0 + 0.16}{2} = 0.08\ m,\ \Delta D = 0.08-0 = 0.08\ m$
+$D_s = \tfrac{0.0 + 0.0}{2} = 0\ m,\ D_e = \tfrac{0.0 + 0.16}{2} = 0.08\ m,\ \Delta D = 0.08 - 0.0 = 0.08\ m$
 
 Quadratic Term:
 
