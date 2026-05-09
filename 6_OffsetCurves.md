@@ -37,3 +37,8 @@ Offset curve 2 has several offsets. Again, linear interpolotation is used to det
 
 Example model:
 [IfcOffsetCurveByDistances.ifc](examples/IfcOffsetCurveByDistances.ifc)
+
+todo
+* must represent something, like ifcalignment, or error in validation service
+* mention again the approximate length and linear placement, reference back to linear pkacement section
+* associated alignment gets warning in validation service if it doesnt have a stationing reference.  stationing might not make sence for an offst gutterline.  
