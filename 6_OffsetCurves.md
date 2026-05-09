@@ -39,6 +39,6 @@ Example model:
 [IfcOffsetCurveByDistances.ifc](examples/IfcOffsetCurveByDistances.ifc)
 
 todo
-* must represent something, like ifcalignment, or error in validation service
+* must represent something, like ifcalignment, or error in validation service. see https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html
 * mention again the approximate length and linear placement, reference back to linear pkacement section
 * associated alignment gets warning in validation service if it doesnt have a stationing reference.  stationing might not make sence for an offst gutterline.  
