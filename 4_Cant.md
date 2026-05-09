@@ -272,9 +272,9 @@ The cross-slope angle is $\phi = tan{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \r
 
 $\phi = tan^{-1}\left(\tfrac{1.5}{0.16-0.0}\right) = 1.4645314$
 
-** need to update numbers**
+**need to update numbers, fix ifcos implementation, regenerate files**
 
-$$\phi_s = \cos^{-1}\left(\tfrac{0.16-0}{1.5} \right) = 1.46392634582$$
+$\phi = \cos^{-1}\left(\tfrac{0.16-0}{1.5} \right) = 1.46392634582$
 
 $dz_y = cos\phi = 0.10606498$
 
