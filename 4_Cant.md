@@ -120,9 +120,7 @@ $$\phi(s_0) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)(D(s_0) - D
 
 Because $D(s_0) = D_s,\ \phi(s_0) = \phi_s$.
 
-**to do fix subscripts, should be {pcs}**
-
-Construct the orthongial vectors
+Construct the orthoginal vectors
 
 $$\mathbf{X}_{pcs} = (\cos\theta_s,\ \sin\theta_s,\ 0)$$
 $$\mathbf{Z}_{pcs} = (0,\ \cos\phi_s,\ \sin\phi_s)$$
