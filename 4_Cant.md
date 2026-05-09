@@ -287,7 +287,9 @@ Compute the placement matrix for a point $\ell = 50\ m$ from the start of the cu
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$\mathbf{RefDir}_p = (1,\ 0,\ 0),\quad \mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{RefDir}_p = (1,\ 0,\ 0)$
+
+$\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.106667)$
 
@@ -308,7 +310,9 @@ $\mathbf{X}_s = (1,\ 0,\ 0),\quad \mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.994295,\ -0.106667)$
 
-$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295),\quad \mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
+$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295)$
+
+$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
         1 &        -0 &         0 &         0 \\
@@ -323,7 +327,9 @@ $D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_\ell = 0$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
 
-$\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295),\quad \mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
+$\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295)$
+
+$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
 
 $$M_{PC\ell} = \begin{bmatrix}
         1 &        -0 &         0 &        50 \\
