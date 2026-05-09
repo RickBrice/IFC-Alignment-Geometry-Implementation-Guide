@@ -39,7 +39,7 @@ When the segment start elevation is the same as the start of the next segment, t
 
 *Figure 4.1.1-2 - Deviating elevation of rails*
 
-The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction generally upwards. The `Axis` direction is therefore perpendicular to a line connecting the rails. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, `Axis` is (0,0,1) and the angle measured from the y-axis is $\tfrac{\pi}{2}$.
+The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction is generally upwards. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, The cross slope angle is measured from the y-axis is $\tfrac{\pi}{2}$.
 
 ![](images/CrossSlopeAngle.svg)
 
@@ -47,17 +47,16 @@ The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis
 
 ### 4.1.2 Coordinate System
 
-The coordinate system is show in Figure 4.1.1-1, but it is difficult to understand.
+The coordinate system is shown in Figure 4.1.1-1, but it is difficult to understand.
 
 `IfcCurveSegment.Placement.RefDirection` is tangent to the "distance along" the base curve in the horizontal plane, (e.g. `IfcSegmentedReferenceCurve.BaseCurve` => `IfcGradientCurve.BaseCurve` => `IfcCompositeCurve`).
 
-The railway cross section is in the plane defined by `Y` and `Z`. Looking in the positive sense down the alignment, `Y` is towards the left and `Z` is upwards. The `Axis` direction is measured clockwise from `Y`.
+The railway cross section is in the plane defined by `Y` and `Z`. Looking in the positive sense down the alignment, `Y` is towards the left and `Z` is upwards. The cross slope angle is measured clockwise from `Y`.
 
 ### 4.1.3 Transition Functions
 The transition functions used to shape cant variation have the same functional form as functions used for horizontal transition curves: line, clothoid (linear cant), Helmert, Bloss, cosine, sine, and Viennese bend. In practice, the cant transition type always matches the horizontal transition type and segment length, though IFC does not enforce this constraint.
 
 As an example, the horizontal tangent direction, $\theta(t)$, and the radius of curvature, $\kappa(t)$, for a Helmert curve is a second order polynomial of the form
-
 
 $$\theta(t) = \tfrac{t^{3}}{3A_{2}^{3}} + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|}t^{2} + \tfrac{t}{A_{0}}$$
 
@@ -81,9 +80,13 @@ The cross-slope angle $\phi$ at a given point is not obtained directly from the 
 
 $$\phi(\ell) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(\ell) - D_s\bigr)$$
 
+**todo: verify, Drh is the hypotenous so maybe this shoud be sin**
+
 $$\phi_s = tan^{-1}\left(\tfrac{D_{rh}}{D_{sr} - D_{sl}} \right)$$
 
-where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The `Axis` vector at any point is $(0,\ \cos\phi(s),\ \sin\phi(s))$. The `Axis` vector is perpendicular to a line connecting the railheads in an upwards direction. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the `Axis` vector. In sections without cant, `Axis` is (0,0,1) and $\phi = \tfrac{\pi}{2}$.
+where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the projection of the `Axis` vector onto the Y-Z plane. In sections without cant, $\phi = \tfrac{\pi}{2}$.
+
+The cross-slope angle can be determined from the `Axis` vector as $\phi = tan^{-1}\left(\tfrac{Axis.dz}{Axis.dy}\right)$
 
 Together, the distance along, the deviating elevation $D(\ell)$, and the cross-slope angle $\phi(\ell)$ fully specify a 3D placement frame for the track centerline at each $\ell$. Section 4.2 describes an algorithm for constructing that frame and composing it with the horizontal and vertical matrices to produce a 3D position.
 
@@ -97,10 +100,9 @@ Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
 
 **Step 1 — Form the curve segment placement matrix $M_{CSP}$**
 
-$M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation), the `RefDirection` gives slope angle $\theta_p$, and the `Axis` gives cross slope angle $\phi_p$.
+$M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation).
 
-$$\mathbf{RefDir}_p = (\cos\theta_p,\ \sin\theta_p,\ 0),\quad \mathbf{Axis}_p = \mathbf{Z}_p = (0,\ \cos\phi_p,\ \sin\phi_p)$$
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \mathbf{Axis}_p \times \mathbf{Y}_p$$
+$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p,\quad \mathbf{X}_p = \mathbf{Y}_p \times \mathbf{Axis}_p, \quad \mathbf{Z}_p = \mathbf{Axis}_p$$
 
 The placement in matrix form is
 
@@ -120,13 +122,15 @@ $$\phi(s_0) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)(D(s_0) - D
 
 Because $D(s_0) = D_s,\ \phi(s_0) = \phi_s$.
 
+**to do fix subscripts, should be {pc}**
+
 Construct the orthongial vectors
 
 $$\mathbf{X}_p = (\cos\theta_s,\ \sin\theta_s,\ 0)$$
 $$\mathbf{Z}_p = (0,\ \cos\phi_s,\ \sin\phi_s)$$
-$$\mathbf{Y}_p = \mathbf{Z}_p \times \mathbf{Z}_p$$
+$$\mathbf{Y}_p = \mathbf{Z}_p \times \mathbf{X}_p$$
 $$\mathbf{Axis}_p = \mathbf{X}_p \times \mathbf{Y}_p$$
-$$\mathbf{RefDIr}_p = \mathbf{Y}_p \times \mathbf{Axis}_p$$
+$$\mathbf{RefDir}_p = \mathbf{Y}_p \times \mathbf{Axis}_p$$
 
 
 In matrix form
@@ -171,7 +175,7 @@ $T_c = T_{CSP} + R_{PC\ell} - R_{PCS}$
 
 Treat $R$ and $T$ as 4x4 matrices and combine.
 
-[todo - need to represent this with property mathematics. this is effectively the same sort of separated rotation and translation calculation in step 5. they should be presented similarly]
+**[todo - need to represent this with property mathematics. this is effectively the same sort of separated rotation and translation calculation in step 5. they should be presented similarly]**
 
 $M_c = R_c + T_c$
 
