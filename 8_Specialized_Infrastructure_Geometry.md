@@ -31,4 +31,8 @@ Describe string lines and how they work (don't have a good implementation yet)
 * Discuss error in image from the documentation with projecting geometry along the line
 * Describe string lines (guide curves) and how they work.
 * Clarify direction (CCW) for defining polygon points for the profile
-* Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue. https://github.com/buildingSMART/IFC4.x-IF/issues/147, and https://github.com/buildingSMART/IFC4.x-development/issues/1010. 
+* Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue. https://github.com/buildingSMART/IFC4.x-IF/issues/147, and https://github.com/buildingSMART/IFC4.x-development/issues/1010.
+
+## 8.3 Gotcha
+
+Need to discuss that for surface and horizontal section solid, the offset curves must be associated with an IfcAlignment or the IFC model gets flagged by the validation service. Even though an IfcOffsetCurveByDistance is related to a surface or solid, which relates to a rooted entity, the validation service doesn't recognize this. This leads to having dummy alignments and each of those alignments needs to ahve stationing defined otherwise more validation service warnings
