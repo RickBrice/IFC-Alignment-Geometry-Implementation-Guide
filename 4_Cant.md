@@ -333,11 +333,13 @@ $D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_\ell = 0$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
 
+$\mathbf{X}_s = (1,\ 0,\ 0)$
+
 $\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295)$
 
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
 
-**Y and Z dont match the matrix**
+**Y and Z dont match the matrix, re-run the app**
 
 $$M_{PC\ell} = \begin{bmatrix}
         1 &        0 &         0 &        50 \\
