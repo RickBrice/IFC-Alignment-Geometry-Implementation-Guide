@@ -155,29 +155,33 @@ RefDir_{\ell}.z & Y_{\ell}.z & Axis_{\ell}.z & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-The resulting cant is the cant at the start of the segment plus the change from $s_0$ to $\ell$.
+The cant frame at $\ell$ is obtained by applying the incremental change in the parent curve — from the trim start to $\ell$ — to the curve segment placement. Because the 4×4 matrices encode both orientation and parameter-space coordinates (distance along, deviating elevation) in column 4, the rotation and translation must be computed separately to prevent the rotation from acting on the position coordinates.
 
-**Apply rotations**
+**Rotation**
 
-Let $R$ be the 3x3 rotation matrix for each matrix $M$.
+Let $R_{CSP}$, $R_{PCS}$, and $R_{PC\ell}$ denote the upper-left 3×3 rotation submatrix of $M_{CSP}$, $M_{PCS}$, and $M_{PC\ell}$ respectively. The incremental rotation from trim start to $\ell$ is:
 
-$R_c = R_{CSP} \times R_{PC\ell} \times R_{PCS}^T$
+$$\Delta R = R_{PC\ell} \cdot R_{PCS}^T$$
 
-**Apply translation**
+Apply the increment to the curve segment placement:
 
-Let $T$ ge the 1x3 positional vector in column 4 for each matrix $M$.
+$$R_c = \Delta R \cdot R_{CSP}$$
 
-$T_c = T_{CSP} + R_{PC\ell} - R_{PCS}$
+**Translation**
 
-**Combine into final matrix**
+Let $\mathbf{T}_{CSP}$, $\mathbf{T}_{PCS}$, and $\mathbf{T}_{PC\ell}$ denote column 4, rows 1–3, of $M_{CSP}$, $M_{PCS}$, and $M_{PC\ell}$ respectively. The incremental translation from trim start to $\ell$ is:
 
-Treat $R$ and $T$ as 4x4 matrices and combine.
+$$\Delta\mathbf{T} = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
 
-**[todo - need to represent this with property mathematics. this is effectively the same sort of separated rotation and translation calculation in step 5. they should be presented similarly]**
+Apply the increment to the curve segment placement:
 
-$M_c = R_c + T_c$
+$$\mathbf{T}_c = \Delta\mathbf{T} + \mathbf{T}_{CSP}$$
+
+**Assemble**
+
+$$M_c = \begin{bmatrix} R_c & \mathbf{T}_c \\ \mathbf{0}^T & 1 \end{bmatrix}$$
 
 Step 5 is performed immediately for this point before moving to the next $\ell$.
 
