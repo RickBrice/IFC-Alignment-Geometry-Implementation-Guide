@@ -167,7 +167,7 @@ $$\Delta R = R_{PC\ell} \cdot R_{PCS}^T$$
 
 Apply the increment to the curve segment placement:
 
-$$R_c = \Delta R \cdot R_{CSP}$$
+$$R_c = \Delta R \cdot R_{CSP} = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
@@ -177,11 +177,15 @@ $$\Delta\mathbf{T} = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
 
 Apply the increment to the curve segment placement:
 
-$$\mathbf{T}_c = \Delta\mathbf{T} + \mathbf{T}_{CSP}$$
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \Delta\mathbf{T}  = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
 
 **Assemble**
 
-$$M_c = \begin{bmatrix} R_c & \mathbf{T}_c \\ \mathbf{0}^T & 1 \end{bmatrix}$$
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 Step 5 is performed immediately for this point before moving to the next $\ell$.
 
@@ -350,11 +354,77 @@ $$M_{PC\ell} = \begin{bmatrix}
         0 &         0 &         0 &         1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
+$$R_{CSP} = \begin{bmatrix} 
+        1 &         0 &         0 \\
+       0 &  0.994295 &  0.106667 \\
+        0 & -0.106667 &  0.994295\\
+        0 &         0 &         0
+\end{bmatrix}$$
+$$R_{PCS} = \begin{bmatrix}
+        1 &        0 &         0 \\
+        0 &  0.994295 &  0.106667 \\
+        0 & -0.106667 &  0.994295 \\
+        0 &         0 &         0 
+\end{bmatrix}$$
+$$R_{PC\ell} = \begin{bmatrix}
+        1 &        0 &         0 \\
+        0 &  0.994295 &  0.106667 \\
+        0 & -0.106667 &  0.994295 \\
+        0 &         0 &         0 
+\end{bmatrix}$$
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$\R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}=
+\begin{bmatrix}
+        1 &        0 &         0 \\
+        0 &  0.994295 &  0.106667 \\
+        0 & -0.106667 &  0.994295 \\
+        0 &         0 &         0 
+\end{bmatrix}
+ \begin{bmatrix}
+        1 &        0 &         0 \\
+        0 &  0.994295 & -0.106667 \\
+        0 &  0.106667 &  0.994295 \\
+        0 &         0 &         0 
+\end{bmatrix}
+\begin{bmatrix} 
+        1 &         0 &         0 \\
+       0 &  0.994295 &  0.106667 \\
+        0 & -0.106667 &  0.994295\\
+        0 &         0 &         0
+\end{bmatrix}
+$$
+
+$$R_c = 
+\begin{bmatrix} 
+        1 &         0 &         0 \\
+       0 &  0.994295 &  0.106667 \\
+        0 & -0.106667 &  0.994295\\
+        0 &         0 &         0
+\end{bmatrix}
+$$
+
+**Translation**
+
+$$\mathbf{T_c} = \mathbf{T_{CSP}} + \mathbf{T_{PC\ell}} - \mathbf{T_{PCS}}$$
+
+$$\mathbf{T_{CSP}} = (0,\ 0.08,\ 0)^T$$
+$$\mathbf{T_{PC\ell}} = (50,\ 0,\ 0)^T$$
+$$\mathbf{T_{PCS}} = (0,\ 0,\ 0)^T$$
+
+$$\mathbf{T_c} = (0,\ 0.08,\ 0)^T + (50,\ 0,\ 0)^T - (0,\ 0,\ 0)^T$$
+
+$$\mathbf{T_c} = (50,\ 0.08,\ 0\ ,\ 0)^T$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix} 
         1 &         0 &         0 &        50 \\
@@ -461,10 +531,10 @@ $\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871,\ 0.9943588828,\ -0.1060649471)$
 
 $$M_{CSP} = \begin{bmatrix}
-           1 &  0.000795436 &            0 &            0 \\
--0.000790898 &     0.994295 &     0.106667 &         0.08 \\
- 8.48465e-05 &    -0.106667 &     0.994295 &            0 \\
-           0 &            0 &            0 &            1
+    0.999999683641039 &   0.00079543561769016 &                     0 &                     0 \\
+-0.000790897527570178 &       0.9942945221127 &     0.106666666666667 &                  0.08 \\
+ 8.48464658869504e-05 &    -0.106666632921711 &     0.994294836666782 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
@@ -494,10 +564,10 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0.0000849,\ 0.106666667,\
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.999999680,\ -0.000799999744,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-          0.999999680 & 7.95436e-06 & 8.53333e-07 &           0 \\
-     -0.000799999744 &    0.994295 &    0.106667 &          0 \\
-          0 &   -0.106667 &    0.994295 &           0 \\
-          0 &           0 &           0 &           1
+      0.999999999968 & 7.95435869307971e-06 &  8.5333333327872e-07 &                    0 \\
+ -7.999999999744e-06 &    0.994294836634964 &     0.10666666665984 &                   -0 \\
+                   0 &   -0.106666666663253 &    0.994294836666782 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
 **Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
@@ -515,23 +585,35 @@ $\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
 $\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000798871,\ 0.998588485,\ -0.053107419)$ 
 
 $$M_{PC\ell} = \begin{bmatrix}
-          0.999999680 & 7.98858e-06 & 4.27277e-07 &          50 \\
-     -0.000799999744 &    0.998573 &   0.0534096 &       -0.04 \\
-          0 &  -0.0534096 &    0.998573 &           0 \\
-          0 &           0 &           0 &           1
+      0.999999999968 & 7.98858152422898e-06 & 4.27276522453101e-07 &                   50 \\
+ -7.999999999744e-06 &    0.998572690528623 &   0.0534095653066376 &                -0.04 \\
+                   0 &  -0.0534095653083467 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
+
+**Translation**
+
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-           1 &   0.00079547 & -4.26057e-07 &           50 \\
--0.000794312 &     0.998572 &    0.0534096 &         0.04 \\
- 4.29111e-05 &   -0.0534095 &     0.998573 &            0 \\
-           0 &            0 &            0 &            1
+    0.999999683613726 &  0.000795469840510406 &  -4.2605681082593e-07 &                    50 \\
+-0.000794311703395977 &      0.99857237464344 &    0.0534095653134254 &                  0.04 \\
+ 4.29111469629201e-05 &   -0.0534095480769501 &      0.99857269055985 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 ## 4.5 Helmert Curve
@@ -731,10 +813,10 @@ $\mathbf{Axis}_p = (0.,\ 0.053333333333333337,\ 0.99857676497881498)$
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.00159772,\ 0.998575,\  -0.0533333)$
 
 $$M_{CSP} = \begin{bmatrix}
-   0.999999 &  0.00159773 &           0 &          50 \\
--0.00159546 &     0.99858 &   0.0532576 &        0.04 \\
-8.50912e-05 &  -0.0532576 &    0.998581 &           0 \\
-          0 &           0 &           0 &           1
+   0.999998723643333 &  0.00159772078470193 &                    0 &                   50 \\
+-0.00159544685252706 &    0.998575490438703 &   0.0533333333333333 &                 0.04 \\
+8.52117751841028e-05 &  -0.0533332652609777 &    0.998576764978815 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
@@ -760,10 +842,10 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (8.5212010523094261e-05,\ 
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.99999872,\ -0.001599998,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-  0.999999 & 0.00159773 & 8.5212e-05 &          0 \\
-   -0.0016 &    0.99858 &  0.0532575 &       0.04 \\
-         0 & -0.0532576 &   0.998581 &          0 \\
-         0 &          0 &          0 &          1
+   0.999998720002458 &  0.00159772077888481 &  8.5333114880559e-05 &                    0 \\
+-0.00159999795200393 &     0.99857548680301 &   0.0533331968003495 &   0.0400000000000001 \\
+                   0 &  -0.0533332650667977 &    0.998576764978815 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
 **Step 3 — Evaluate the parent curve at $\ell = 25\ m$ — $M_{PC\ell}$**
@@ -795,23 +877,35 @@ $\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (1.06562483419574
 $\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
-          1 & 0.000799929 & 1.06562e-05 &          25 \\
-    -0.0008 &    0.999911 &   0.0133203 &        0.01 \\
-          0 &  -0.0133203 &    0.999911 &           0 \\
-          0 &           0 &           0 &           1
+    0.999999680000154 &  0.000799928566440938 &  1.06714066139122e-05 &                    25 \\
+-0.000799999744000119 &     0.999910708051177 &    0.0133392582673903 &    0.0100000000000002 \\
+                    0 &   -0.0133392625359523 &     0.999911028022552 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
+
+**Translation**
+
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-           1 &  0.000799929 & -7.45558e-05 &           75 \\
--0.000798865 &     0.999911 &    0.0133204 &         0.01 \\
- 8.52046e-05 &   -0.0133203 &     0.999911 &            0 \\
-           0 &            0 &            0 &            1
+    0.999999677269901 &  0.000799928563528498 &  -7.4661790264052e-05 &                    75 \\
+-0.000798861459176414 &     0.999910704410622 &    0.0133393264368146 &    0.0100000000000001 \\
+ 8.53256315305252e-05 &   -0.0133392624873857 &     0.999911020741441 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 ## 4.6 Bloss Curve
@@ -919,10 +1013,10 @@ $\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.1066667)$
 
 $$M_{CSP} = \begin{bmatrix}
-        1 &         0 &         0 &         0 \\
-        0 &  0.994295 &  0.106667 &      0.08 \\
-        0 & -0.106667 &  0.994295 &         0 \\
-        0 &         0 &         0 &         1
+                 1 &                  0 &                  0 &                  0 \\
+                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
+                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
+                 0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
@@ -942,10 +1036,10 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295)$
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-        1 &         0 &         0 &         0 \\
-        0 &  0.994295 &  0.106667 &      0.08 \\
-        0 & -0.106667 &  0.994295 &         0 \\
-        0 &         0 &         0 &         1
+                 1 &                  0 &                 -0 &                  0 \\
+                 0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
+                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
+                 0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
@@ -971,23 +1065,35 @@ $\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.000106,\ 0.053
 $\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.9999980,\ -0.0019997,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
-   0.999999 &  0.00119829 & 6.40914e-05 &          50 \\
-    -0.0012 &    0.998572 &   0.0534095 &        0.04 \\
-          0 &  -0.0534095 &    0.998573 &           0 \\
-          0 &           0 &           0 &           1
+   0.999999280000778 &  0.00119828636590682 & 6.40913860804715e-05 &                   50 \\
+-0.00119999913600094 &    0.998571971589017 &   0.0534094884003928 &   0.0399999999999999 \\
+                   0 &  -0.0534095268552106 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
+
+**Translation**
+
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-   0.999999 &  0.00119829 & 6.40914e-05 &          50 \\
-    -0.0012 &    0.998572 &   0.0534095 &        0.04 \\
-          0 &  -0.0534095 &    0.998573 &           0 \\
-          0 &           0 &           0 &           1
+   0.999999280000778 &  0.00119828636590682 & 6.40913860804715e-05 &                   50 \\
+-0.00119999913600094 &    0.998571971589017 &   0.0534094884003928 &   0.0399999999999999 \\
+                   0 &  -0.0534095268552106 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
 ## 4.7 Cosine Curve
@@ -1080,10 +1186,10 @@ $\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$
 
 $$M_{CSP} = \begin{bmatrix}
-        1 &         0 &         0 &         0 \\
-        0 &  0.994295 &  0.106667 &      0.08 \\
-        0 & -0.106667 &  0.994295 &         0 \\
-        0 &         0 &         0 &         1
+                 1 &                  0 &                  0 &                  0 \\
+                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
+                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
+                 0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
@@ -1102,11 +1208,10 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.99435
 
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
-$$M_{PCS} = \begin{bmatrix}
-        1 &         0 &         0 &         0 \\
-        0 &  0.994295 &  0.106667 &      0.08 \\
-        0 & -0.106667 &  0.994295 &         0 \\
-        0 &         0 &         0 &         1
+                 1 &                  0 &                  0 &                  0 \\
+                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
+                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
+                 0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
@@ -1128,23 +1233,35 @@ $\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000667,\ 0.05
 $\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999921,\ -0.001256636,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
-           1 &  1.25484e-05 &  6.71164e-07 &           50 \\
--1.25664e-05 &     0.998573 &    0.0534096 &         0.04 \\
-           0 &   -0.0534096 &     0.998573 &            0 \\
-           0 &            0 &            0 &            1
+   0.999999999921043 & 1.25484345139712e-05 & 6.71164391931997e-07 &                   50 \\
+-1.2566370613367e-05 &    0.998572690481733 &   0.0534095653016217 &                 0.04 \\
+                   0 &  -0.0534095653058388 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
+
+**Translation**
+
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-           1 &  1.25484e-05 &  6.71164e-07 &           50 \\
--1.25664e-05 &     0.998573 &    0.0534096 &         0.04 \\
-           0 &   -0.0534096 &     0.998573 &            0 \\
-           0 &            0 &            0 &            1
+   0.999999999921043 & 1.25484345139712e-05 & 6.71164391931997e-07 &                   50 \\
+-1.2566370613367e-05 &    0.998572690481733 &   0.0534095653016218 &                 0.04 \\
+                   0 &  -0.0534095653058388 &    0.998572690560577 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
 ## 4.8 Sine Curve
@@ -1249,10 +1366,10 @@ $\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$
 
 $$M_{CSP} = \begin{bmatrix}
-        1 &         0 &         0 &         0 \\
-        0 &  0.994295 &  0.106667 &      0.08 \\
-        0 & -0.106667 &  0.994295 &         0 \\
-        0 &         0 &         0 &         1
+                 1 &                  0 &                  0 &                  0 \\
+                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
+                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
+                 0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
@@ -1274,10 +1391,10 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.99435
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-           1 &  -3.3688e-21 & -3.61401e-22 &            0 \\
- 3.38813e-21 &     0.994295 &     0.106667 &         0.08 \\
-           0 &    -0.106667 &     0.994295 &            0 \\
-           0 &            0 &            0 &            1
+                    1 & -3.36880194376639e-21 & -3.61400724161835e-22 &                     0 \\
+  3.3881317890172e-21 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
+                    0 &    -0.106666666666667 &     0.994294836666782 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
@@ -1299,23 +1416,35 @@ $\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000850,\ 0.05
 $\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999872,\ -0.0016,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
-          1 & 1.59772e-05 & 8.54553e-07 &          50 \\
-   -1.6e-05 &    0.998573 &   0.0534096 &        0.04 \\
-          0 &  -0.0534096 &    0.998573 &           0 \\
-          0 &           0 &           0 &           1
+      0.999999999872 & 1.59771630469242e-05 & 8.54553044742128e-07 &                   50 \\
+-1.5999999997952e-05 &     0.99857269043276 &    0.053409565296383 &                 0.04 \\
+                   0 &  -0.0534095653032194 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
+
+**Translation**
+
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-           1 &  1.59772e-05 &  8.54553e-07 &           50 \\
-    -1.6e-05 &     0.998573 &    0.0534096 &         0.04 \\
--1.80959e-22 &   -0.0534096 &     0.998573 &            0 \\
-           0 &            0 &            0 &            1
+       0.999999999872 &  1.59771630469242e-05 &  8.54553044742129e-07 &                    50 \\
+ -1.5999999997952e-05 &      0.99857269043276 &     0.053409565296383 &                  0.04 \\
+-1.80958646087621e-22 &   -0.0534095653032194 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 $\mathbf{Axis} = (0.0000850,\ 0.053107,\ 0.998589),\quad \phi(50\ m) = 1.517663895$
@@ -1466,10 +1595,10 @@ $\mathbf{Axis}_p = (0,\ 0.066519011,\ 0.99778516)$
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.99778516,\ -0.066519011)$
 
 $$M_{CSP} = \begin{bmatrix}
-         1 &          0 &          0 &          0 \\
-        0 &   0.997775 &  0.0666667 &       0.05 \\
-         0 & -0.0666667 &   0.997775 &          0 \\
-         0 &          0 &          0 &          1
+                  1 &                   0 &                   0 &                   0 \\
+                 -0 &   0.997775303139718 &  0.0666666666666667 &                0.05 \\
+                  0 & -0.0666666666666667 &   0.997775303139718 &                   0 \\
+                  0 &                   0 &                   0 &                   1
 \end{bmatrix}$$
 
 **Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
@@ -1489,10 +1618,10 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.066519011,\ 0.99778
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
 $$M_{PCS} = \begin{bmatrix}
-         1 &          0 &         0 &          0 \\
-         0 &   0.997775 &  0.0666667 &       0.05 \\
-         0 & -0.0666667 &   0.997775 &          0 \\
-         0 &          0 &          0 &          1
+                  1 &                   0 &                  -0 &                   0 \\
+                  0 &   0.997775303139718 &  0.0666666666666667 &                0.05 \\
+                  0 & -0.0666666666666667 &   0.997775303139718 &                   0 \\
+                  0 &                   0 &                   0 &                   1
 \end{bmatrix}$$
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
@@ -1501,11 +1630,9 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 
 $D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_\ell = -0.00076562$
 
-**todo - fix this calculation**
+$\phi_e = cos^{-1}\left(\tfrac{D_{er} - D_{el}}{D_{rh}}\right) = cos^{-1}\left(\tfrac{0.03 - 0.0}{1.5}\right) = 1.550794993$
 
-$\phi_e = tan^{-1}\left(\tfrac{D_{rh}}{D_{er} - D_{el}}\right) = tan^{-1}\left(\tfrac{1.5}{0.03 - 0.0}\right) = 1.550799$
-
-$\phi(\ell) = 1.504228163 + \left(\tfrac{1.550799 - 1.504228163}{-0.035}\right)(0.0325 - 0.05) = 1.527513$
+$\phi(\ell) = 1.504228163 + \left(\tfrac{1.550799 - 1.504228163}{-0.035}\right)(0.0325 - 0.05) = 1.527511578$
 
 $\mathbf{X}_\ell = (0.999999707,\ -0.00076562,\ 0)$
 
@@ -1518,23 +1645,35 @@ $\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (3.31e-05,\ 0.043
 $\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.999999707,\ -0.00076562,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
-           1 &  0.000765199 &   2.5535e-05 &           50 \\
--0.000765625 &     0.999443 &    0.0333519 &       0.0325 \\
-           0 &   -0.0333519 &     0.999444 &            0 \\
-           0 &            0 &            0 &            1
+    0.999999706909309 &  0.000764905208550319 &    3.318611612348e-05 &                    50 \\
+-0.000765624775602475 &     0.999059864228941 &    0.0433451312633188 &    0.0324999999999996 \\
+                    0 &    -0.043345143967377 &     0.999060157044173 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-**Step 4 — Compute resulting cant**
+**Step 4 — Compute the cant placement matrix $M_c$**
 
-$$M_c = M_{CSP} + M_{PC\ell} - M_{PCS}$$
+**Rotation**
 
-**to do - need to show this calculation as the rotation and translation parts**
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
+
+**Translation**
+
+$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+
+**Assemble**
+
+$$M_c = 
+\begin{bmatrix} 
+R_c & \mathbf{T}_c \\
+\mathbf{0}^T & 1 
+\end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-           1 &  0.000765199 &   2.5535e-05 &           50 \\
--0.000765625 &     0.999443 &    0.0333519 &       0.0325 \\
-           0 &   -0.0333519 &     0.999444 &            0 \\
-           0 &            0 &            0 &            1
+    0.999999706909309 &  0.000764905208550319 &    3.318611612348e-05 &                    50 \\
+-0.000765624775602475 &     0.999059864228941 &    0.0433451312633188 &    0.0324999999999996 \\
+                    0 &    -0.043345143967377 &     0.999060157044173 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 ## 4.10 Combined 3D
