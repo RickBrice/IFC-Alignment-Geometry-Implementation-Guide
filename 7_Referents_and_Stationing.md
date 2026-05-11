@@ -13,7 +13,6 @@ This section covers:
 - Station equations: gap and overlap breaks, their physical causes, and how they affect `DistanceAlong` conversions.
 - How referents are nested to alignments using `IfcRelNests`, including the recommended approach for mixed nesting with alignment layouts.
 - How `IfcReferent` informs the semantic position of other objects via `IfcRelPositions`, without affecting their geometry.
-- Key alignment geometry points (PC, PT, PVC, PVI, PVT) and how they are represented.
 
 -----
 
@@ -21,34 +20,14 @@ This section covers:
 
 `IfcReferent` is a subtype of `IfcPositioningElement`, which is itself a subtype of `IfcProduct`. Like any product, it has an `ObjectPlacement` (typically `IfcLinearPlacement`) that locates it geometrically on an alignment, and it can carry property sets that provide additional semantic information at that location.
 
-The IFC specification identifies several distinct uses for `IfcReferent`:
+The single attribute `IfcReferent` adds beyond its supertypes is `PredefinedType` (`IfcReferentTypeEnum`), which guides receivers on how to interpret the referent and which property sets are relevant:
 
-- **Stationing / chainage.** The most common use. Marks a position on an alignment with a human-readable station label and defines the starting station for the alignment or a station equation.
-- **Key alignment geometry points.** Point of Curvature (PC), Point of Tangency (PT), Point of Vertical Curvature (PVC), Point of Vertical Intersection (PVI), and similar design-significant locations.
-- **Linear referencing events.** Locations where a design parameter changes — superelevation transitions (`SUPERELEVATIONEVENT`), width changes (`WIDTHEVENT`), cross-section transitions.
-- **Reference markers and mileposts.** Physical objects in the right-of-way (`REFERENCEMARKER`, `KILOPOINT`, `MILEPOINT`) that are part of a real-world linear referencing system.
-- **Administrative boundaries.** Locations where a jurisdiction, maintenance zone, or asset ownership boundary crosses the alignment (`BOUNDARY`).
-- **Intersection locations.** Points where another road or route crosses the alignment (`INTERSECTION`).
-- **Station equations (chainage breaks).** Locations where stationing resets, jumps forward (gap), or jumps backward (overlap).
-
-The single attribute that `IfcReferent` adds beyond its supertypes is `PredefinedType`, of type `IfcReferentTypeEnum`. This enumeration guides receivers on how to interpret the referent and which property sets are relevant.
-
-### 7.1.1 IfcReferentTypeEnum Reference
-
-|Value                |Meaning                                                                                    |
-|---------------------|-------------------------------------------------------------------------------------------|
-|`STATION`            |A station or chainage marker. Use `Pset_Stationing` for the station value.                 |
-|`POSITION`           |A fully described linearly referenced location combining alignment, LRM, and measure value.|
-|`REFERENCEMARKER`    |A physical reference marker (bolt, post) installed in the right-of-way.                    |
-|`KILOPOINT`          |A kilometre-point marker.                                                                  |
-|`MILEPOINT`          |A mile-point marker.                                                                       |
-|`BOUNDARY`           |An administrative or maintenance boundary crossing.                                        |
-|`INTERSECTION`       |An at-grade intersection location.                                                         |
-|`LANDMARK`           |A visible physical landmark.                                                               |
-|`SUPERELEVATIONEVENT`|A superelevation (cross-slope) change event. Use `Pset_Superelevation`.                    |
-|`WIDTHEVENT`         |A roadway width change event. Use `Pset_Width`.                                            |
-|`USERDEFINED`        |User-defined type; qualify with `ObjectType`.                                              |
-|`NOTDEFINED`         |Type not specified.                                                                        |
+- **Stationing / chainage** (`STATION`). The most common use. Marks a position with a human-readable station label, defines the alignment's starting station, records a station equation, or identifies a key geometry point such as PC, PT, or PVI.
+- **Linear referencing events** (`SUPERELEVATIONEVENT`, `WIDTHEVENT`). Locations where a design parameter changes — superelevation transitions, width changes, and similar cross-section events.
+- **Reference markers and mileposts** (`REFERENCEMARKER`, `KILOPOINT`, `MILEPOINT`). Physical objects in the right-of-way that are part of a real-world linear referencing system.
+- **Administrative boundaries** (`BOUNDARY`). Locations where a jurisdiction, maintenance zone, or asset ownership boundary crosses the alignment.
+- **Intersection locations** (`INTERSECTION`). Points where another road or route crosses the alignment.
+- **General positioned location** (`POSITION`). A fully described linearly referenced location combining alignment, LRM, and measure value.
 
 -----
 
@@ -109,9 +88,9 @@ An **overlap equation** (also called a *station back* or *backward equation*) oc
 *Example:* Incoming station 78+42.10, outgoing station 76+00.00. There is an overlap of 242.10 ft. Two different geometric points — one upstream and one downstream of the equation — carry station labels between 76+00 and 78+42.
 
 ```
-Incoming side:  … Sta. 78+42.10  ─────┐
-                                        │  OVERLAP (242.10 ft of station range used twice)
-Outgoing side:          Sta. 76+00.00  ┘ ──────────────────────────────────→
+Incoming side:  Sta. 78+42.10  ─────┐
+                                    │  OVERLAP (242.10 ft of station range used twice)
+Outgoing side:  Sta. 76+00.00  ─────┘───────────────────────────────────→
 ```
 
 *Figure 7.3.3-1 — Station overlap equation. Geometry is continuous; station numbers jump backward.*
@@ -130,17 +109,67 @@ The conversion algorithm is:
 - If the referent has both `IncomingStation` and `Station`: this is an equation. Verify that `current_station + elapsed_distance ≈ IncomingStation`. Then reset `current_station = Station` (the outgoing value).
 1. For a target station label `S`, find the segment where `S` falls between consecutive referents (using the appropriate incoming/outgoing station values at equations), then compute:
 
-```
-DistanceAlong = referent_distance + (S - segment_start_station)
-                                    ─────────────────────────── × segment_geometry_length
-                                       segment_station_span
-```
+$$\text{DistanceAlong} = \text{referent\_distance} + \frac{S - \text{segment\_start\_station}}{\text{segment\_station\_span}} \times \text{segment\_geometry\_length}$$
 
-For simple alignments with no equations, this reduces to the familiar `DistanceAlong = S - starting_station`.
+For simple alignments with no equations, this reduces to the familiar $\text{DistanceAlong} = S - \text{starting\_station}$.
 
 ![](images/stationing_diagram.svg)
 
 *Figure 7.3.4-1 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation. Annotate the start station, equation points, and the non-linear relationship between station and distance.*
+
+### 7.3.5 Example: Starting Station and One Equation
+
+The following pseudo-STEP example shows an alignment with:
+
+- Starting station = 10+00.00 (1000.00 ft)
+- A gap equation at geometric distance 5432.10: incoming Sta. 154+32.10, outgoing Sta. 160+00.00 (gap = 567.90 ft)
+
+```
+/* Alignment */
+#10 = IFCALIGNMENT(guid, $, 'Route 15 Mainline', ...);
+
+/* === LAYOUT NEST === */
+#11 = IFCALIGNMENTHORIZONTAL(guid, ...);
+#12 = IFCRELNESTS(guid, $, $, $, #10, (#11));
+
+/* Horizontal geometry composite curve */
+#20 = IFCCOMPOSITECURVE(...);
+
+/* === REFERENT NEST === */
+
+/* Ref 1: Starting station = Sta. 10+00.00 = 1000.00 ft from project datum */
+#30 = IFCPOINTBYDISTANCEEXPRESSION(0.0, $, $, $, #20);
+#31 = IFCAXIS2PLACEMENTLINEAR(#30, $, $);
+#32 = IFCLINEARPLACEMENT($, #31);
+#33 = IFCREFERENT(guid, $, 'Start Station', $, $, #32, $, .STATION.);
+#34 = IFCPROPERTYSINGLEVALUE('Station', $, IFCLENGTHMEASURE(1000.00), $);
+#35 = IFCPROPERTYSET(guid, $, 'Pset_Stationing', $, (#34));
+#36 = IFCRELDEFINESBYPROPERTIES(guid, $, $, $, (#33), #35);
+
+/* Ref 2: Gap equation at geometric distance 5432.10 */
+/*        IncomingStation = Sta. 154+32.10 = 15432.10 ft */
+/*        Station (outgoing) = Sta. 160+00.00 = 16000.00 ft */
+#50 = IFCPOINTBYDISTANCEEXPRESSION(5432.10, $, $, $, #20);
+#51 = IFCAXIS2PLACEMENTLINEAR(#50, $, $);
+#52 = IFCLINEARPLACEMENT($, #51);
+#53 = IFCREFERENT(guid, $, 'Sta. Eq.', $, $, #52, $, .STATION.);
+#54 = IFCPROPERTYSINGLEVALUE('IncomingStation', $, IFCLENGTHMEASURE(15432.10), $);
+#55 = IFCPROPERTYSINGLEVALUE('Station', $, IFCLENGTHMEASURE(16000.00), $);
+#56 = IFCPROPERTYSET(guid, $, 'Pset_Stationing', $, (#54, #55));
+#57 = IFCRELDEFINESBYPROPERTIES(guid, $, $, $, (#53), #56);
+
+/* IfcRelNests for referents */
+#60 = IFCRELNESTS(guid, $, $, $, #10, (#33, #53));
+```
+
+**Conversion check:** To find the `DistanceAlong` for a feature at Sta. 162+45.00 (16245.00 ft):
+
+1. Start: geometric distance 0 = Sta. 1000.00.
+1. Equation referent at geometric distance 5432.10: incoming 15432.10, outgoing 16000.00 (gap of 567.90).
+1. Target Sta. 16245.00 > 16000.00 (outgoing), so it falls after the equation.
+1. `DistanceAlong = 5432.10 + (16245.00 - 16000.00) = 5432.10 + 245.00 = 5677.10`
+
+Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.00 = 15245.00` — an error of 432.10 ft.
 
 -----
 
@@ -167,13 +196,13 @@ The IFC specification does not resolve this clearly. Two patterns are seen in pr
 
 **Recommendation:** Use Pattern B — separate nests. This is the pattern illustrated in the existing Figure 7.4.2-1 and is more robust for software implementations. The layout nest and the referent nest are independent, and each can be processed without concern for the content of the other.
 
-![](images/image8.1.png)
+![](images/ifc_alignment_relnests_erd.svg)
 
 *Figure 7.4.2-1 — Two `IfcRelNests` relationships: one for alignment layout sub-objects (horizontal, vertical, cant) and one for `IfcReferent` instances.*
 
 ### 7.4.3 Referent Ordering Requirement
 
-Referents in `IfcRelNests.RelatedObjects` must be ordered by their geometric position (increasing `DistanceAlong`). This ordering is not enforced by a WHERE rule in the schema but is required **[todo - review this, I think the ordering requirements is in the IfcRelNest definition]** by the IFC concept template for [Object Nesting](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html) as applied to referents. Implementations that read referent data should not assume the list is sorted and should sort by `DistanceAlong` before processing; implementations that write referent data must produce a sorted list.
+Referents in `IfcRelNests.RelatedObjects` must be ordered by their geometric position (increasing `DistanceAlong`). This ordering is not enforced by a WHERE rule in the schema but is stated as a requirement in the IFC concept template for [4.1.4.4](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/content.html) and [4.1.4.4.3 Object Nesting](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html) as applied to referents. Implementations that read referent data should not assume the list is sorted and should sort by `DistanceAlong` before processing; implementations that write referent data must produce a sorted list.
 
 -----
 
@@ -196,121 +225,15 @@ The relationship between an `IfcReferent` and the object whose position it annot
 - `RelatingPositioningElement` — the `IfcReferent` (the name-giver).
 - `RelatedProducts` — the set of `IfcProduct` instances (the positioned objects) whose station label is defined by this referent.
 
-*Example:* A bridge pier (`IfcBridgePart.PIER`) is geometrically placed at `DistanceAlong = 14235.75`. An `IfcReferent` with `PredefinedType = STATION` and `Pset_Stationing.Station = 14235.75` (relative to the starting station) is connected to the pier via `IfcRelPositions`. The pier’s station label is now Sta. 142+35.75. The pier’s geometry is unchanged.
+*Example:* A bridge pier (`IfcBridgePart.PIER`) is geometrically placed at `DistanceAlong = 14235.75`. An `IfcReferent` with `PredefinedType = STATION` and `Pset_Stationing.Station = 14235.75` (relative to the starting station) is connected to the pier via `IfcRelPositions`. The pier’s station label is now Sta. 142+35.75. The pier’s geometry is unchanged. This is shown in Figure 7.5.2-1.
 
-This pattern is also used for alignment geometry key points (see §7.6): the referent declares the station of the PC or PVC, and `IfcRelPositions` links it to the `IfcAlignmentSegment` whose geometry starts at that point.
+![](images/ifc_referent_entity_relationship.svg)
 
 *Figure 7.5.2-1 — Object graph showing an `IfcBridgePart.PIER` with its own `IfcLinearPlacement`, an `IfcReferent` (STATION type) with `Pset_Stationing`, and the `IfcRelPositions` link between them. Annotate that the referent provides the station label; it does not set the geometry.*
 
-> **NOTE — Figure placeholder.** Insert an entity relationship diagram showing: `IfcBridgePart.PIER` → `IfcLinearPlacement` (geometry); `IfcReferent` → `IfcLinearPlacement` (same DistanceAlong); `IfcRelPositions` linking `IfcReferent` to `IfcBridgePart.Pier`. Show `Pset_Stationing` attached to the referent.
-
 -----
 
-## 7.6 Key Alignment Geometry Points
-
-### 7.6.1 Horizontal Key Points
-
-Horizontal alignment design is defined by a sequence of tangents (straight lines) connected by curves. Several named points are significant in describing where elements of the alignment begin and end:
-
-|Abbreviation|Full Name                  |Description                                                                   |
-|------------|---------------------------|------------------------------------------------------------------------------|
-|PI          |Point of Intersection      |Where two tangents meet (may or may not have a curve).                        |
-|PC          |Point of Curvature         |Start of a horizontal curve (tangent-to-curve transition).                    |
-|PT          |Point of Tangency          |End of a horizontal curve (curve-to-tangent transition).                      |
-|PRC         |Point of Reverse Curvature |Where one curve ends and a curve of opposite hand begins.                     |
-|PCC         |Point of Compound Curvature|Where one curve ends and a curve of the same hand but different radius begins.|
-|TS          |Tangent-to-Spiral          |Start of a spiral transition curve from a tangent.                            |
-|SC          |Spiral-to-Curve            |Transition from spiral to circular curve.                                     |
-|CS          |Curve-to-Spiral            |Transition from circular curve back to a spiral.                              |
-|ST          |Spiral-to-Tangent          |End of a spiral; return to tangent.                                           |
-
-### 7.6.2 Vertical Key Points
-
-|Abbreviation|Full Name                        |Description                                                 |
-|------------|---------------------------------|------------------------------------------------------------|
-|BVC / PVC   |Beginning/Point of Vertical Curve|Start of a parabolic vertical curve.                        |
-|PVI         |Point of Vertical Intersection   |Where the two adjacent grades (if extended) would intersect.|
-|EVC / PVT   |End/Point of Vertical Tangent    |End of the vertical curve; return to grade.                 |
-
-### 7.6.3 Representing Key Points with IfcReferent
-
-Each key point is represented by an `IfcReferent` with:
-
-- `ObjectPlacement` = `IfcLinearPlacement` locating it at the `DistanceAlong` of the key point.
-- `PredefinedType` = `STATION` (or `POSITION` for a fully-described reference).
-- `Name` = the abbreviation (e.g., `"PC"`, `"PVI"`).
-- `Pset_Stationing.Station` = the station label at that point.
-- `IfcRelPositions` linking to the `IfcAlignmentSegment` whose geometry begins (or ends) at that point.
-
-The `IfcRelPositions` connection is important: it informs the receiving software which alignment segment corresponds to each key point label, enabling station-based queries such as “what is the radius at Sta. 142+35.75?” without having to re-derive the answer from geometry alone.
-
-![](images/image8.2.png)
-
-*Figure 7.6.3-1 — Example showing `IfcReferent` instances (PC, PT) informing on the start/end of an `IfcAlignmentSegment`.*
-
------
-
-## 7.7 Complete Example: Starting Station and One Equation
-
-The following pseudo-STEP example shows an alignment with:
-
-- Starting station = 10+00.00 (1000.00 ft)
-- A gap equation at geometric distance 5432.10: incoming Sta. 154+32.10, outgoing Sta. 160+00.00 (gap = 567.90 ft)
-- A PC key point at geometric distance 2315.75 (Sta. 133+15.75)
-
-```
-/* Alignment */
-#10 = IFCALIGNMENT('abc123', $, 'Route 15 Mainline', ...);
-
-/* Horizontal geometry composite curve */
-#20 = IFCCOMPOSITECURVE(...);
-
-/* === REFERENT NEST === */
-
-/* Ref 1: Starting station = Sta. 10+00.00 = 1000.00 ft from project datum */
-#30 = IFCPOINTBYDISTANCEEXPRESSION(0.0, $, $, $, #20);
-#31 = IFCAXIS2PLACEMENTLINEAR(#30, $, $);
-#32 = IFCLINEARPLACEMENT($, #31);
-#33 = IFCREFERENT('ref-start', $, 'Start Station', $, $, #32, $, .STATION.);
-/* Pset_Stationing on #33: Station = 1000.00, HasIncreasingStation = TRUE */
-
-/* Ref 2: PC at Sta. 133+15.75 = geometric distance 2315.75 */
-#40 = IFCPOINTBYDISTANCEEXPRESSION(2315.75, $, $, $, #20);
-#41 = IFCAXIS2PLACEMENTLINEAR(#40, $, $);
-#42 = IFCLINEARPLACEMENT($, #41);
-#43 = IFCREFERENT('ref-pc', $, 'PC', $, $, #42, $, .STATION.);
-/* Pset_Stationing on #43: Station = 13315.75 */
-
-/* Ref 3: Gap equation at geometric distance 5432.10 */
-/*        IncomingStation = Sta. 154+32.10 = 15432.10 ft */
-/*        Station (outgoing) = Sta. 160+00.00 = 16000.00 ft */
-#50 = IFCPOINTBYDISTANCEEXPRESSION(5432.10, $, $, $, #20);
-#51 = IFCAXIS2PLACEMENTLINEAR(#50, $, $);
-#52 = IFCLINEARPLACEMENT($, #51);
-#53 = IFCREFERENT('ref-eq1', $, 'Sta. Eq.', $, $, #52, $, .STATION.);
-/* Pset_Stationing on #53: IncomingStation = 15432.10, Station = 16000.00 */
-
-/* IfcRelNests for referents */
-#60 = IFCRELNESTS('nest-ref', $, $, $, #10, (#33, #43, #53));
-
-/* IfcRelNests for layout (separate) */
-#70 = IFCRELNESTSALIGNH('nest-layout', $, $, $, #10, (#80));
-#80 = IFCALIGNMENTHORIZONTAL(...);
-```
-
-**Conversion check:** To find the `DistanceAlong` for a feature at Sta. 162+45.00 (16245.00 ft):
-
-1. Start: geometric distance 0 = Sta. 1000.00.
-1. PC referent at geometric distance 2315.75 = Sta. 13315.75. No equation. Continue.
-1. Equation referent at geometric distance 5432.10: incoming 15432.10, outgoing 16000.00 (gap of 567.90).
-1. Target Sta. 16245.00 > 16000.00 (outgoing), so it falls after the equation.
-1. `DistanceAlong = 5432.10 + (16245.00 - 16000.00) = 5432.10 + 245.00 = 5677.10`
-
-Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.00 = 15245.00` — an error of 432.10 ft.
-
------
-
-## 7.8 Summary and Implementation Checklist
+## 7.6 Summary and Implementation Checklist
 
 |# |Item                                                                                                                                                      |Notes                                                                                   |
 |--|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
