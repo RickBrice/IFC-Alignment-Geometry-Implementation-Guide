@@ -1,4 +1,6 @@
-# Section 8.0 - Specialized Alignment-based Infrastructure Geometry
+# Section 8 - Specialized Alignment-based Infrastructure Geometry
+
+## 8.0 Introduction
 
 Placeholder - in this section it is intended that there is a discussion of IfcSectionedSurface and IfcSectionedSolidHorizontal. These are two new surface and solid geometries developed specifcially for infrastructure and alignments.
 

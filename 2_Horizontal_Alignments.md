@@ -1,4 +1,6 @@
-# Section 2.0 - Horizontal Alignment
+# Section 2 - Horizontal Alignments
+
+## 2.0 Introduction
 
 The geometric representation of a horizontal alignment is accomplished with an `IfcCompositeCurve`. The composite curve consists of a sequence of `IfcCurveSegment` entities whose geometry is defined by a parent curve. This section defines the mathematical relationships and equations for each parent curve type and the algorithm for evaluating points on those curves.
 

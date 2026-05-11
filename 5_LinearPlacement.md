@@ -1,4 +1,6 @@
-# Section 5.0 - Linear Placement
+# Section 5 - Linear Placement
+
+## 5.0 Introduction
 
 Most elements in the built environment for infrastructure works are located **relative to an alignment** rather than by absolute coordinates. A bridge pier, a drainage inlet, a light pole, a traffic sign — all are described in traditional engineering plans by where they fall along a road or railway centerline, how far they sit to the left or right of that centerline, and how high above (or below) a reference elevation they stand. This intuitive “station, offset, elevation” system has been the language of civil engineers for over a century.
 

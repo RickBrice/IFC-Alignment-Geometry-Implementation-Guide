@@ -15,10 +15,10 @@ CHAPTERS = [
     "Foreword.md",
     "TableOfContents.md",
     "Notation.md",
-    "1_Introduction.md",
-    "2_Horizontal.md",
-    "3_Vertical.md",
-    "4_Cant.md",
+    "1_IFC_Alignment_Concepts.md",
+    "2_Horizontal_Alignments.md",
+    "3_Vertical_Alignments.md",
+    "4_Cant_Alignments.md",
     "5_LinearPlacement.md",
     "6_OffsetCurves.md",
     "7_Referents_and_Stationing.md",
@@ -78,12 +78,69 @@ def _restore_math(html: str) -> str:
 _md = mistune.create_markdown(plugins=["table", "footnotes", "url"], escape=False)
 
 
-def _chapter_html(path: Path) -> str:
-    text = path.read_text(encoding="utf-8")
+def _md_to_html(text: str) -> str:
     protected = _protect_math(text)
     html = _md(protected)
     html = _restore_math(html)
     return html
+
+
+def _chapter_html(path: Path) -> str:
+    return _md_to_html(path.read_text(encoding="utf-8"))
+
+
+# ── Bookmark extraction ───────────────────────────────────────────────────────
+
+_INLINE_MD = re.compile(r'`([^`]+)`|\*\*([^*]+)\*\*|\*([^*]+)\*|\[([^\]]+)\]\([^)]+\)')
+
+
+def _strip_inline(text: str) -> str:
+    """Remove inline markdown formatting so heading text matches rendered PDF."""
+    return _INLINE_MD.sub(lambda m: next(g for g in m.groups() if g is not None), text).strip()
+
+
+def _extract_headings(text: str) -> list[tuple[int, str]]:
+    """Return (level, cleaned_text) for every h1/h2/h3 in a markdown string."""
+    headings = []
+    for line in text.splitlines():
+        m = re.match(r'^(#{1,3})\s+(.+)', line)
+        if m:
+            headings.append((len(m.group(1)), _strip_inline(m.group(2))))
+    return headings
+
+
+def _add_pdf_bookmarks(pdf_path: Path, headings: list[tuple[int, str]]) -> None:
+    """Post-process the PDF to insert an outline/bookmark tree."""
+    try:
+        import pypdf
+    except ImportError:
+        print("pypdf not installed; skipping bookmarks.  Run: pip install pypdf")
+        return
+
+    reader = pypdf.PdfReader(str(pdf_path))
+    writer = pypdf.PdfWriter()
+    writer.append(reader)
+
+    page_texts = [page.extract_text() or "" for page in reader.pages]
+
+    def find_page(text: str) -> int:
+        for i, pt in enumerate(page_texts):
+            if text in pt:
+                return i
+        return 0
+
+    stack: list[tuple[int, object]] = []  # (level, outline_item)
+    for level, text in headings:
+        while stack and stack[-1][0] >= level:
+            stack.pop()
+        parent = stack[-1][1] if stack else None
+        item = writer.add_outline_item(text, find_page(text), parent=parent)
+        stack.append((level, item))
+
+    with open(str(pdf_path), "wb") as f:
+        writer.write(f)
+
+    print(f"Bookmarks: {len(headings)} entries added.")
 
 
 def _fix_img_paths(html: str) -> str:
@@ -185,6 +242,7 @@ HTML_TAIL = "\n</body>\n</html>\n"
 def main() -> None:
     print("Building combined HTML...")
     parts: list[str] = []
+    all_headings: list[tuple[int, str]] = []
 
     for i, name in enumerate(CHAPTERS):
         path = ROOT / name
@@ -192,7 +250,9 @@ def main() -> None:
             print(f"  SKIP (not found): {name}")
             continue
         print(f"  {name}")
-        html = _chapter_html(path)
+        text = path.read_text(encoding="utf-8")
+        all_headings.extend(_extract_headings(text))
+        html = _md_to_html(text)
         html = _fix_img_paths(html)
         sep = "" if i == 0 else '<div class="chapter-sep"></div>\n'
         parts.append(sep + html)
@@ -235,6 +295,7 @@ def main() -> None:
     if OUTPUT_PDF.exists() and OUTPUT_PDF.stat().st_size > 1000:
         size_mb = OUTPUT_PDF.stat().st_size / 1_048_576
         print(f"PDF -> {OUTPUT_PDF}  ({size_mb:.1f} MB)")
+        _add_pdf_bookmarks(OUTPUT_PDF, all_headings)
     else:
         print("PDF generation may have failed.")
 

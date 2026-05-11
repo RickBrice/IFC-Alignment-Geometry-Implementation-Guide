@@ -1,4 +1,6 @@
-# Section 4.0 - Cant Alignment
+# Section 4 - Cant Alignments
+
+## 4.0 Introduction
 
 Cant (also called superelevation) is the transverse inclination of a railway track cross-section: the elevation difference between the two railheads when one rail is raised above the other. By tilting the track into a curve, cant directs a component of gravitational force inward, partially offsetting the centrifugal acceleration experienced by vehicles negotiating the curve. The result is improved ride quality, reduced wheel–rail lateral forces, and the ability to operate at higher speeds through curves without exceeding comfort or safety limits.
 

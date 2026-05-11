@@ -1,4 +1,6 @@
-# Section 3.0 - Vertical Alignment
+# Section 3 - Vertical Alignments
+
+## 3.0 Introduction
 
 A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the three-dimensional geometry of a road, railway, or other linear infrastructure element. 
 
@@ -556,7 +558,7 @@ It is easiest to place the parent curve at the origin and orient it with the glo
 >
 > $A_2 = Length^{-1}$
 >
-> The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2.0 - Horizontal Alignment](./2_Horizontal.md). Implicit units of measure are required for the polynomial coefficients.
+> The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2.0 - Horizontal Alignments](./2_Horizontal_Alignments.md). Implicit units of measure are required for the polynomial coefficients.
 
 The polynomial curve is trimmed using `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength`. These parameters are measured along the length of the curve. The horizontal projection of the segment length, from `IfcAlignmentVerticalSegment.HorizontalLength` is $h_l = 1600$. `SegmentLength` will be slightly longer because it is the distance along the curve.
 

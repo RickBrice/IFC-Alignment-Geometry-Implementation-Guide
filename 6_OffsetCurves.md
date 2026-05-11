@@ -1,4 +1,6 @@
-# Section 6.0 - Offset Curves
+# Section 6 - Offset Curves
+
+## 6.0 Introduction
 
 Offset curves are very common in infrastructure geometry. Some examples
 are:
