@@ -1208,6 +1208,7 @@ $\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.99435
 
 $\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$
 
+$$M_{PCS} = \begin{bmatrix}
                  1 &                  0 &                  0 &                  0 \\
                 -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
                  0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
