@@ -147,27 +147,17 @@ The resulting point is no longer “on” a perpendicular to the curve at `Dista
 
 **Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
 
-## 5.5 IFC Entity Reference
-
-The following table summarises the IFC entities used in linear placement and their key attributes.
-
-|Entity                        |Key Attributes                                                                        |Notes                                                                                     |
-|------------------------------|--------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-|`IfcLinearPlacement`          |`PlacementRelTo`, `RelativePlacement`                                                 |Subtype of `IfcObjectPlacement`. `PlacementRelTo` omitted → relative to basis curve start.|
-|`IfcAxis2PlacementLinear`     |`Location`, `Axis`, `RefDirection`                                                    |`Location` must be `IfcPointByDistanceExpression` (WHERE rule).                           |
-|`IfcPointByDistanceExpression`|`DistanceAlong`, `BasisCurve`, `OffsetLateral`, `OffsetVertical`, `OffsetLongitudinal`|Core placement geometry. Offsets are optional.                                            |
-
-## 5.6 Linear Placement along IfcOffsetCurveByDistances
+## 5.5 Linear Placement along IfcOffsetCurveByDistances
 
 `IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centreline varies gradually. Offset curves are comprehensively discussed in [Section 6.0](6_OffsetCurves.md).
 
-### 5.6.1 The Approximate Length Problem
+### 5.5.1 The Approximate Length Problem
 
 Because `IfcOffsetCurveByDistances` is a sampled, interpolated curve rather than an analytically defined curve, its **arc length is only approximate**. The arc length depends on the density of the sample points along the curve: more sample points produce a more accurate length estimate, but the length is never exact for a truly curved basis.
 
 This approximation has a critical consequence for linear placement: when `IfcPointByDistanceExpression.BasisCurve` is an `IfcOffsetCurveByDistances`, the `DistanceAlong` value cannot be mapped to a unique, precisely determined point on the curve. Two implementations with different sampling densities may compute slightly different positions for the same `DistanceAlong` value.
 
-### 5.6.2 Recommendations
+### 5.5.2 Recommendations
 
 For applications requiring precise linear placement:
 
@@ -175,15 +165,15 @@ For applications requiring precise linear placement:
 1. **If placement along an offset curve is unavoidable**, document the sampling density of the `IfcOffsetCurveByDistances` so that receivers can evaluate the precision of derived positions.
 1. **Do not rely on** `DistanceAlong` values along an `IfcOffsetCurveByDistances` being reproducible across different software implementations.
 
-## 5.7 ISO 19148 Linear Referencing
+## 5.6 ISO 19148 Linear Referencing
 
-### 5.7.1 Background
+### 5.6.1 Background
 
 ISO 19148 *Geographic information — Linear referencing* is the international standard that formalises the concept of locating features along a linear element. IFC4x3’s infrastructure extensions draw on ISO 19148 concepts, and `Pset_LinearReferencingMethod` (applicable to `IfcAlignment` and `IfcReferent`) is defined in terms of ISO 19148.
 
 Understanding the ISO 19148 model helps implementers correctly interpret `DistanceAlong` values, especially when data is exchanged between systems that use different linear referencing conventions.
 
-### 5.7.2 Key ISO 19148 Concepts
+### 5.6.2 Key ISO 19148 Concepts
 
 **Linear Referencing Method (LRM).** An LRM defines the rules for measuring distance along a linear element. The most common types are:
 
@@ -202,7 +192,7 @@ The key difference:
 - **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`).
 - **KP / Reference Post (Relative LRM):** `DistanceAlong` in IFC is always the absolute geometric distance from the curve start. A KP value must be converted to a geometric distance before use in `IfcPointByDistanceExpression`.
 
-### 5.7.3 LRM Name Examples from ISO 19148 Annex C
+### 5.6.3 LRM Name Examples from ISO 19148 Annex C
 
 ISO 19148 Annex C lists recognised LRM name aliases. Common examples include:
 
@@ -215,13 +205,13 @@ ISO 19148 Annex C lists recognised LRM name aliases. Common examples include:
 
 `Pset_LinearReferencingMethod.LRMName` should use one of these recognised names where possible for maximum interoperability.
 
-### 5.7.4 Impact on DistanceAlong
+### 5.6.4 Impact on DistanceAlong
 
 Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpression.DistanceAlong` is always the **geometric distance from the start of `BasisCurve`**. LRM labels (station values, KP values, etc.) are a display convention managed through `IfcReferent` and `Pset_LinearReferencingMethod`, not through `DistanceAlong` directly.
 
 See Section 8 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
 
-## 5.8 Complete Example
+## 5.7 Complete Example
 
 The following example illustrates a point located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centreline.
 
@@ -247,7 +237,7 @@ In this example:
 - `OffsetVertical` is omitted; the is placed in the same plane as the horizontal alignment.
 - `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §5.3.3.
 
-## 5.9 Summary and Implementation Checklist
+## 5.8 Summary and Implementation Checklist
 
 |#|Item                                                                                              |Notes                                                                                                   |
 |-|--------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
