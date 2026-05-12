@@ -618,7 +618,7 @@ $$d = \int_{}^{}{\sqrt{9A_{3}^{2}x^{4} + 1}\ dx}$$
 This equation is solved for $x$ and then $y$ can be computed. This can
 be accomplished with numerical methods.
 
-1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Section 11](11_Precision_and_Tolerance.md) for a discussion on tolerances.
+1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Section 12](12_Precision_and_Tolerance.md) for a discussion on tolerances.
 
 2.  Compute $y(x) = A_{3}x^{3}$
 

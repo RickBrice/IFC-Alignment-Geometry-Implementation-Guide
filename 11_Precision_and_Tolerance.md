@@ -1,6 +1,6 @@
-# Section 10 - Precision and Tolerance
+# Section 11 - Precision and Tolerance
 
-## 10.0 Introduction
+## 11.0 Introduction
 
 `IfcCurveSegment.Transition` defines the intended transition from the end
 of one segment to the start of the next. The options are:
@@ -12,11 +12,11 @@ of one segment to the start of the next. The options are:
 |`CONTSAMEGRADIENTSAMECURVATURE`|For a curve, the segments join, their tangent vectors are parallel and in the same direction and their curvatures are equal at the joint: equality of derivatives is not required. For a surface this implies that the principle curvatures are the same and the principle directions are coincident along the common boundary.|
 |`DISCONTINUOUS`                |The segments do not join. This is permitted only at the boundary of the curve or surface to indicate that it is not closed.                                                                                                                                                                                                |
 
-Figure 10.0-1 illustrates the various transition types. 
+Figure 11.0-1 illustrates the various transition types. 
 
 ![IfcTransitionCode](images/ifctransitioncode.gif)
 
-*Figure 10.0-1 - Illustration of segment transition types*
+*Figure 11.0-1 - Illustration of segment transition types*
 
 Adjacent segment end and start points may not exactly line up in position, gradient, or curvature for several reasons:
 

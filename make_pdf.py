@@ -19,13 +19,14 @@ CHAPTERS = [
     "2_Horizontal_Alignments.md",
     "3_Vertical_Alignments.md",
     "4_Cant_Alignments.md",
-    "5_LinearPlacement.md",
-    "6_OffsetCurves.md",
-    "7_Referents_and_Stationing.md",
-    "8_Specialized_Infrastructure_Geometry.md",
-    "9_LandXML.md",
-    "10_Precision_and_Tolerance.md",
-    "11_Examples_and_Validation_Data.md",
+    "5_Approximate_Alignment_Geometry.md",
+    "6_LinearPlacement.md",
+    "7_OffsetCurves.md",
+    "8_Referents_and_Stationing.md",
+    "9_Specialized_Infrastructure_Geometry.md",
+    "10_LandXML.md",
+    "11_Precision_and_Tolerance.md",
+    "12_Examples_and_Validation_Data.md",
 ]
 
 # ── Math protection ──────────────────────────────────────────────────────────

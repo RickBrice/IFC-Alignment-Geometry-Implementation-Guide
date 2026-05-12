@@ -149,8 +149,10 @@ by the IFC concept templates for each alignment geometry variant are listed in T
 defined by `IfcCurveSegment`. The mathematical computations for
 `IfcCurveSegment` geometry are the primary focus of this document.
 
-`IfcPolyline` and `IfcIndexedPolyCurve` are trivial mathematically and are
-not discussed in this document.
+`IfcPolyline` and `IfcIndexedPolyCurve` produce approximate, discrete geometry
+rather than exact parametric curves. They arise in survey-derived alignments and early
+planning contexts. Their use, limitations, and incompatibility with the full semantic
+alignment definition are discussed in [Section 5](5_Approximate_Alignment_Geometry.md).
 
 `IfcOffsetCurveByDistances` is treated in a dedication section.
 
