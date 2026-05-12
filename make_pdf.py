@@ -185,6 +185,56 @@ def _fix_img_paths(html: str) -> str:
     return re.sub(r'src="([^"]*)"', repl, html)
 
 
+# ── Internal link translation ─────────────────────────────────────────────────
+
+def _slugify(text: str) -> str:
+    """GitHub-compatible heading slug: lowercase, spaces→hyphens, strip punctuation."""
+    text = text.lower()
+    text = re.sub(r'[^\w\s-]', '', text)   # remove punctuation (keep word chars, spaces, hyphens)
+    text = re.sub(r'\s+', '-', text)        # spaces → hyphens
+    return re.sub(r'-{2,}', '-', text).strip('-')
+
+
+def _add_heading_ids(html: str, seen: dict[str, int]) -> str:
+    """Add id= attributes to every h1-h6 element using GitHub-style slugs.
+
+    seen is a cross-chapter duplicate counter so the same heading text in
+    different chapters gets a unique id (e.g. 'introduction', 'introduction-1').
+    """
+    def repl(m: re.Match) -> str:
+        lvl, inner = m.group(1), m.group(2)
+        plain = re.sub(r'<[^>]+>', '', inner)   # strip any nested HTML tags
+        base = _slugify(plain)
+        if base in seen:
+            seen[base] += 1
+            slug = f'{base}-{seen[base]}'
+        else:
+            seen[base] = 0
+            slug = base
+        return f'<h{lvl} id="{slug}">{inner}</h{lvl}>'
+
+    return re.sub(r'<(h[1-6])>(.*?)</\1>', repl, html, flags=re.DOTALL)
+
+
+def _fix_md_links(html: str) -> str:
+    """Rewrite href="foo.md" and href="foo.md#anchor" to in-document anchors.
+
+    foo.md          → #foo   (chapter anchor inserted by main())
+    foo.md#section  → #section  (heading id inserted by _add_heading_ids())
+    """
+    def repl(m: re.Match) -> str:
+        href = m.group(1)
+        md_match = re.match(r'([^#"]+\.md)(#[^"]*)?', href, re.IGNORECASE)
+        if not md_match:
+            return m.group(0)
+        stem = Path(md_match.group(1)).stem
+        fragment = md_match.group(2)
+        target = fragment if fragment else f'#{stem}'
+        return f'href="{target}"'
+
+    return re.sub(r'href="([^"]+\.md[^"]*)"', repl, html, flags=re.IGNORECASE)
+
+
 # ── HTML shell ───────────────────────────────────────────────────────────────
 
 HTML_HEAD = """\
@@ -272,6 +322,7 @@ def main() -> None:
     print("Building combined HTML...")
     parts: list[str] = []
     all_headings: list[tuple[int, str]] = []
+    seen_slugs: dict[str, int] = {}   # cross-chapter duplicate tracker for heading ids
 
     for i, name in enumerate(CHAPTERS):
         path = ROOT / name
@@ -287,10 +338,13 @@ def main() -> None:
         all_headings.extend(_extract_headings(text, max_level))
         html = _md_to_html(text)
         html = _fix_img_paths(html)
+        html = _add_heading_ids(html, seen_slugs)
+        # Chapter-level anchor so href="foo.md" links resolve to the chapter top.
+        chapter_anchor = f'<a id="{Path(name).stem}"></a>\n'
         sep = "" if i == 0 else '<div class="chapter-sep"></div>\n'
-        parts.append(sep + html)
+        parts.append(sep + chapter_anchor + html)
 
-    body = "\n".join(parts)
+    body = _fix_md_links("\n".join(parts))
     full = HTML_HEAD + body + HTML_TAIL
     OUTPUT_HTML.write_text(full, encoding="utf-8")
     print(f"HTML -> {OUTPUT_HTML}")
