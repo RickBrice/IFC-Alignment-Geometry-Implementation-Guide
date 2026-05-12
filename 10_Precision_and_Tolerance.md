@@ -14,12 +14,17 @@ of one segment to the start of the next. The options are:
 
 Figure 10.0-1 illustrates the various transition types. 
 
-![IfcTransitionCode](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/figures/ifctransitioncode.gif)
+![IfcTransitionCode](images/ifctransitioncode.gif)
 
 *Figure 10.0-1 - Illustration of segment transition types*
 
-For a variety of reasons, adjacent segment end and start points might
-not exactly line up in position, gradient, or curvature.
+Adjacent segment end and start points may not exactly line up in position, gradient, or curvature for several reasons:
+
+* **Rounded design parameters.** Designers routinely round curve parameters — radius, arc length, tangent bearing — to convenient values. Geometry computed from those rounded values does not land exactly on the next segment's stored start point.
+* **Independent segment computation.** Each segment's coordinates are often computed independently from its own parameters rather than chained forward from the previous segment's computed end. Floating-point rounding differences between two independent computations of the same nominal point produce small gaps or overlaps at joints.
+* **Numerical integration of transition curves.** The x/y ordinates at the end of a spiral are transcendental integrals — Fresnel integrals for Clothoids, analogous forms for Bloss, Cosine, and the other spiral types — that different software approximates with different precision. The same nominal parameters can yield slightly different endpoint coordinates depending on the tool that produced them.
+* **Unit conversion.** Converting between feet and meters, or between degrees/minutes/seconds and decimal degrees, introduces rounding that propagates to all downstream coordinates.
+* **Legacy source fidelity.** Alignments derived from historical plan sheets, right-of-way plats, or field surveys carry the measurement uncertainty inherent in the original source material.
 
 `Pset_Tolerance` is used to indicate
 the acceptable tolerance under which the calculated end point of a

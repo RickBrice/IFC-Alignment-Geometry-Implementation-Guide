@@ -99,14 +99,41 @@ def _strip_inline(text: str) -> str:
     return _INLINE_MD.sub(lambda m: next(g for g in m.groups() if g is not None), text).strip()
 
 
-def _extract_headings(text: str) -> list[tuple[int, str]]:
-    """Return (level, cleaned_text) for every h1/h2/h3 in a markdown string."""
+def _extract_headings(text: str, max_level: int = 3) -> list[tuple[int, str]]:
+    """Return (level, cleaned_text) for headings up to max_level in a markdown string."""
     headings = []
+    pattern = re.compile(rf'^(#{{1,{max_level}}})\s+(.+)')
     for line in text.splitlines():
-        m = re.match(r'^(#{1,3})\s+(.+)', line)
+        m = pattern.match(line)
         if m:
             headings.append((len(m.group(1)), _strip_inline(m.group(2))))
     return headings
+
+
+def _collapse_outline_items(writer) -> None:
+    """Set all outline items to start collapsed (negative /Count)."""
+    from pypdf.generic import NameObject, NumberObject
+
+    root = writer._root_object
+    outlines_key = NameObject("/Outlines")
+    if outlines_key not in root:
+        return
+
+    def visit(node_obj: object) -> None:
+        first_key = NameObject("/First")
+        next_key = NameObject("/Next")
+        count_key = NameObject("/Count")
+        if first_key not in node_obj:
+            return
+        child_ref = node_obj[first_key]
+        while child_ref is not None:
+            child = child_ref.get_object()
+            visit(child)
+            if count_key in child and int(child[count_key]) > 0:
+                child[count_key] = NumberObject(-int(child[count_key]))
+            child_ref = child.get(next_key)
+
+    visit(root[outlines_key].get_object())
 
 
 def _add_pdf_bookmarks(pdf_path: Path, headings: list[tuple[int, str]]) -> None:
@@ -136,6 +163,8 @@ def _add_pdf_bookmarks(pdf_path: Path, headings: list[tuple[int, str]]) -> None:
         parent = stack[-1][1] if stack else None
         item = writer.add_outline_item(text, find_page(text), parent=parent)
         stack.append((level, item))
+
+    _collapse_outline_items(writer)
 
     with open(str(pdf_path), "wb") as f:
         writer.write(f)
@@ -251,7 +280,11 @@ def main() -> None:
             continue
         print(f"  {name}")
         text = path.read_text(encoding="utf-8")
-        all_headings.extend(_extract_headings(text))
+        if re.match(r'^\d+_', name):
+            max_level = 2
+        else:
+            max_level = 1
+        all_headings.extend(_extract_headings(text, max_level))
         html = _md_to_html(text)
         html = _fix_img_paths(html)
         sep = "" if i == 0 else '<div class="chapter-sep"></div>\n'

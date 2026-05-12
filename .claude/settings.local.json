@@ -21,7 +21,8 @@
       "PowerShell(Rename-Item *)",
       "Bash(grep -n \"^\\\\$\\\\$\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\2_Horizontal.md\")",
       "Bash(grep -n \"^\\\\$\\\\$\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\3_Vertical.md\")",
-      "Bash(grep -n \"^\\\\$\\\\$\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")"
+      "Bash(grep -n \"^\\\\$\\\\$\" \"F:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\4_Cant.md\")",
+      "Bash(playwright install *)"
     ]
   }
 }

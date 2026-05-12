@@ -1,5 +1,11 @@
 # Section 6 - Offset Curves
 
+todo
+* mention that resource entitied need to be referenced by rooted entity, like ifcalignment, or error in validation service. see https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html
+* associated alignment gets warning in validation service if it doesnt have a stationing reference.  stationing might not make sence for an offset gutterline.
+* mention again the approximate length and linear placement, reference back to linear pkacement section
+* offset curves are approximations. lines and circular curves can be accurately offset as curve segments that are parallel to the base curve. But in general there aren't parallel spirals. Offset curves can be more complex if defined with multiple offsets that are not equal. In a very general case, the offsets can switch between left and right across the basis curve, thought there might not be a practical use case for this.
+
 ## 6.0 Introduction
 
 Offset curves are very common in infrastructure geometry. Some examples
@@ -40,7 +46,79 @@ Offset curve 2 has several offsets. Again, linear interpolotation is used to det
 Example model:
 [IfcOffsetCurveByDistances.ifc](examples/IfcOffsetCurveByDistances.ifc)
 
-todo
-* must represent something, like ifcalignment, or error in validation service. see https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html
-* mention again the approximate length and linear placement, reference back to linear pkacement section
-* associated alignment gets warning in validation service if it doesnt have a stationing reference.  stationing might not make sence for an offst gutterline.  
+---
+
+<!-- NEW DRAFT -->
+
+## 6.1 Offset Sign Convention
+
+Positive offset values place the offset curve to the left of the basis curve, measured perpendicular to the curve's direction of travel at each chainage position. Negative values place it to the right. This matches the curvature sign convention used throughout this guide — positive means left, negative means right.
+
+Offset values can change sign along the curve, meaning the offset curve can cross from one side of the basis curve to the other. Practical infrastructure uses for sign-crossing offsets are rare, but the representation allows it.
+
+## 6.2 Offset Curves and IfcAlignment
+
+In IFC4x3, `IfcOffsetCurveByDistance` is a resource-layer geometric entity and cannot exist independently in a model. Validation rule IFC105 requires that every resource entity be reachable from a rooted entity. In practice this means the offset curve must be assigned as the shape representation of an `IfcAlignment` (or another product), and that alignment must be aggregated into the project. Without this, the IFC validation service will report an IFC105 violation.
+
+The consequence is that offset curves in IFC4x3 models are represented as alignments. This is natural: an offset alignment has its own object identity, can carry properties, can support linear placement of objects, and participates in the project's spatial breakdown just like the basis alignment.
+
+The example file [`IfcOffsetCurveByDistances.ifc`](examples/IfcOffsetCurveByDistances.ifc) demonstrates this structure. The basis alignment "E-Line" and its two offsets, "Offset1" and "Offset2," are all `IfcAlignment` instances aggregated under the project. Each offset alignment's `Representation` references an `IfcShapeRepresentation` whose item is the corresponding `IfcOffsetCurveByDistance`.
+
+## 6.3 Stationing on Offset Alignments
+
+The IFC validation service warns when an `IfcAlignment` has no stationing referent — a `Pset_Stationing` property set attached via an `IfcReferent`. For many offset alignments this warning is valid and should be resolved: a ramp, a lane edge used for striping construction, or any offset alignment along which objects are linearly placed benefits from defined stationing.
+
+For offset alignments that are purely geometric — a drainage channel modeled for clash detection, a clearance envelope, a construction limit line — independent stationing may not be meaningful. In those cases the warning is acceptable to leave. An alternative is to assign a stationing referent that mirrors the basis alignment's stationing, so that chainage values on the offset alignment correspond directly to chainage on the basis. This is often the least confusing option when the two alignments are used together in quantity takeoff or reporting.
+
+## 6.4 Accuracy of Offset Curves
+
+`IfcOffsetCurveByDistance` is an exact representation for two curve types and an approximation for everything else.
+
+**Lines and circular arcs.** The geometric parallel of a line is another line; the geometric parallel of a circular arc of radius $R$ at offset $d$ is another circular arc of radius $R + d$ (left offset) or $R - d$ (right offset). For alignments composed entirely of tangents and circular arcs, a constant `IfcOffsetCurveByDistance` with a single `IfcPointByDistanceExpression` reproduces the true parallel exactly.
+
+**Transition curves.** The six transition curve types — Clothoid, Bloss, Cosine, Sine, Helmert, and VienneseBend — do not have closed-form geometric parallels. The true parallel of a Clothoid spiral, for example, is not a Clothoid. `IfcOffsetCurveByDistance` handles this by defining the offset through linearly interpolated lateral distances rather than a parallel curve formula. The resulting geometry is a piecewise-linear approximation of the true offset. Accuracy improves by adding more `IfcPointByDistanceExpression` values at shorter chainage intervals, densifying the approximation.
+
+For most infrastructure applications the linear interpolation error is small relative to construction tolerances. For applications requiring tighter accuracy — such as rail superelevation ramps or precision survey control — the approximation should be evaluated against the required tolerance and the offset point spacing adjusted accordingly.
+
+## 6.5 Arc Length of an Offset Curve
+
+The arc length of an offset curve differs from the basis curve length. For a constant offset $d$ from a circular arc of radius $R$ and arc length $L$:
+
+$$L_{\text{offset}} = L \cdot \frac{R + d}{R}$$
+
+A positive (left) offset increases arc length; a negative (right) offset inside the curve decreases it. For a left offset of 10 ft from a 1000-ft radius arc of length 200 ft:
+
+$$L_{\text{offset}} = 200 \cdot \frac{1010}{1000} = 202 \text{ ft}$$
+
+For varying offsets or non-circular basis curves there is no simple closed-form expression. `IfcOffsetCurveByDistance` does not expose an arc length attribute. When linear placement of objects along an offset alignment is needed (see Chapter 5), the chainage parameter is referenced directly from the basis curve, so the arc length of the offset curve itself is rarely needed in practice.
+
+## 6.6 Example Model Walkthrough
+
+The file [`IfcOffsetCurveByDistances.ifc`](examples/IfcOffsetCurveByDistances.ifc) contains a basis alignment and two offset alignments using feet as the length unit. The relevant IFC excerpts are shown below.
+
+**Basis curve.** The composite curve `#20` consists of a 200-foot circular arc (radius 1000 ft) starting at the origin heading east, followed by a zero-length line tangent. The arc subtends an angle of $200/1000 = 0.2$ radians, ending at approximately $(198.7, 19.9)$ ft. The basis alignment "E-Line" has stationing from 100+00 to 102+00.
+
+**Offset1** — left side, linearly varying:
+
+```
+#88=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(0.),10.,$,$,#20);
+#89=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(200.),20.,$,$,#20);
+#94=IFCOFFSETCURVEBYDISTANCES(#20,(#88,#89),$);
+```
+
+The offset begins at +10 ft at chainage 0 and increases linearly to +20 ft at chainage 200. The midpoint of the basis curve (chainage 100) has an interpolated offset of +15 ft. This produces a left-side offset curve that diverges from the basis alignment.
+
+**Offset2** — right side, multi-point:
+
+```
+#102=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(0.),-10.,$,$,#20);
+#103=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(50.),-40.,$,$,#20);
+#104=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(100.),-20.,$,$,#20);
+#105=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(150.),-30.,$,$,#20);
+#106=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(200.),-20.,$,$,#20);
+#111=IFCOFFSETCURVEBYDISTANCES(#20,(#102,#103,#104,#105,#106),$);
+```
+
+The right-side offset widens quickly from −10 ft to −40 ft over the first 50 feet, then narrows to −20 ft at mid-curve, widens again to −30 ft, and finishes at −20 ft. The piecewise-linear profile of the offset distance is visible in the geometry of the resulting curve.
+
+Both offset curves share the same basis curve `#20`. Each `IfcPointByDistanceExpression` also references `#20` directly, satisfying the requirement that the `BasisCurve` in `IfcOffsetCurveByDistance` and in its `OffsetValues` be the same curve object.
