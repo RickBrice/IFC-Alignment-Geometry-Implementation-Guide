@@ -18,14 +18,15 @@ The guide is organized as numbered markdown chapters at the repository root:
 | `2_Horizontal_Alignments.md` | Parametric equations for all horizontal curve types | Complete (longest, ~1,300 lines) |
 | `3_Vertical_Alignments.md` | Vertical alignment: grade lines, parabolic & circular arcs | Complete |
 | `4_Cant_Alignments.md` | Rail superelevation via IfcSegmentedReferenceCurve | Complete |
-| `5_Approximate_Alignment_Geometry.md` | IfcPolyline and IfcIndexedPolyCurve — survey/early-planning representations | Partial (template) |
-| `6_LinearPlacement.md` | Linear placement concepts | Partial |
-| `7_OffsetCurves.md` | Offset curve definitions | Partial |
-| `8_Referents_and_Stationing.md` | Referents and stationing | Partial |
-| `9_Specialized_Infrastructure_Geometry.md` | Domain-specific geometry (IfcSectionedSurface, IfcSectionedSolidHorizontal) | Stub |
-| `10_LandXML.md` | LandXML-to-IFC conversion | Partial |
-| `11_Precision_and_Tolerance.md` | Precision and tolerance guidance | Partial |
-| `12_Examples_and_Validation_Data.md` | Examples and validation data | Stub |
+| `5_OffsetCurves.md` | Offset curve definitions | Partial |
+| `6_Approximate_Alignment_Geometry.md` | IfcPolyline and IfcIndexedPolyCurve — survey/early-planning representations | Partial |
+| `7_Alignments_Reusing_Horizontal_Layout.md` | Multiple alignments sharing a common horizontal layout | Partial |
+| `8_LinearPlacement.md` | Linear placement concepts | Partial |
+| `9_Referents_and_Stationing.md` | Referents and stationing | Partial |
+| `10_Specialized_Infrastructure_Geometry.md` | Domain-specific geometry (IfcSectionedSurface, IfcSectionedSolidHorizontal) | Stub |
+| `11_LandXML.md` | LandXML-to-IFC conversion | Partial |
+| `12_Precision_and_Tolerance.md` | Precision and tolerance guidance | Partial |
+| `13_Examples_and_Validation_Data.md` | Examples and validation data | Stub |
 
 ### Examples
 

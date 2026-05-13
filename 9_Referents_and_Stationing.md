@@ -1,6 +1,6 @@
-# Section 8 - IfcReferent and Stationing
+# Section 9 - IfcReferent and Stationing
 
-## 8.0 Introduction
+## 9.0 Introduction
 
 Section 6 established that `IfcPointByDistanceExpression.DistanceAlong` is a **geometric distance** — a raw arc-length measure from the start of a curve. But civil engineering practice does not communicate location this way. Engineers say “Pier 3 is at Station 14+235.75,” not “Pier 3 is 14,235.75 metres from the start of the survey baseline.” The station label is a human-readable, project-specific identifier that may begin at an arbitrary value, may use different units than the project, and may not even progress continuously along the alignment.
 
@@ -16,7 +16,7 @@ This section covers:
 
 -----
 
-## 8.1 What Is a Referent?
+## 9.1 What Is a Referent?
 
 `IfcReferent` is a subtype of `IfcPositioningElement`, which is itself a subtype of `IfcProduct`. Like any product, it has an `ObjectPlacement` (typically `IfcLinearPlacement`) that locates it geometrically on an alignment, and it can carry property sets that provide additional semantic information at that location.
 
@@ -31,9 +31,9 @@ The single attribute `IfcReferent` adds beyond its supertypes is `PredefinedType
 
 -----
 
-## 8.2 Stationing: Concept and Practice
+## 9.2 Stationing: Concept and Practice
 
-### 8.2.1 What Is a Station?
+### 9.2.1 What Is a Station?
 
 Stationing (also called *chainage* in British practice) is a distance-based coordinate system used to identify locations along a linear route. In North American highway practice, stations are expressed in the form `ccc+dd.dd`, where the number before the `+` is the count of hundreds of feet (or hundreds of metres in metric projects) and the digits after are the remainder. For example, Sta. 142+35.75 means 14,235.75 feet (or metres) from the project datum.
 
@@ -41,7 +41,7 @@ The project datum — the zero point of stationing — is defined by the first `
 
 Stationing is a **display convention**, not a geometric quantity. The geometric position of a point is fully determined by `DistanceAlong` in `IfcPointByDistanceExpression`. The station label is metadata that identifies that point to engineers and field crews in human-readable terms.
 
-### 8.2.2 Pset_Stationing
+### 9.2.2 Pset_Stationing
 
 Stationing metadata is stored in `Pset_Stationing`, attached to an `IfcReferent` via `IfcRelDefinesByProperties`. The property set has three properties:
 
@@ -55,9 +55,9 @@ The `Station` value is expressed in the same units as the project length unit (t
 
 -----
 
-## 8.3 Station Equations: Gaps and Overlaps
+## 9.3 Station Equations: Gaps and Overlaps
 
-### 8.3.1 Why Station Equations Exist
+### 9.3.1 Why Station Equations Exist
 
 A station equation (also called a *chainage break* or *stationing equation*) is a discontinuity in the stationing system at which the station value jumps. Equations arise in several common situations:
 
@@ -67,7 +67,7 @@ A station equation (also called a *chainage break* or *stationing equation*) is 
 
 **Existing route adoption.** When a new project ties into an existing road with its own stationing, an equation reconciles the two stationing systems at the junction.
 
-### 8.3.2 Gap Equations
+### 9.3.2 Gap Equations
 
 A **gap equation** (also called a *station ahead* or *forward equation*) occurs when stationing jumps forward. The alignment geometry is continuous, but the station number increases by more than the physical length at the equation point.
 
@@ -81,7 +81,7 @@ Outgoing side:          Sta. 145+00.00  ┘ ────────────
 
 *Figure 8.3.2-1 — Station gap equation. Geometry is continuous; station numbers jump forward.*
 
-### 8.3.3 Overlap Equations
+### 9.3.3 Overlap Equations
 
 An **overlap equation** (also called a *station back* or *backward equation*) occurs when stationing jumps backward. The alignment geometry is continuous, but the station number decreases at the equation point.
 
@@ -95,7 +95,7 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 
 *Figure 8.3.3-1 — Station overlap equation. Geometry is continuous; station numbers jump backward.*
 
-### 8.3.4 Effect on DistanceAlong Conversion
+### 9.3.4 Effect on DistanceAlong Conversion
 
 The presence of station equations means that **you cannot convert a station label to `DistanceAlong` by simple subtraction of the starting station**. You must account for every equation encountered between the alignment start and the point of interest.
 
@@ -117,7 +117,7 @@ For simple alignments with no equations, this reduces to the familiar $\text{Dis
 
 *Figure 8.3.4-1 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation. Annotate the start station, equation points, and the non-linear relationship between station and distance.*
 
-### 8.3.5 Example: Starting Station and One Equation
+### 9.3.5 Example: Starting Station and One Equation
 
 The following pseudo-STEP example shows an alignment with:
 
@@ -173,9 +173,9 @@ Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.
 
 -----
 
-## 8.4 Nesting Referents to Alignments
+## 9.4 Nesting Referents to Alignments
 
-### 8.4.1 IfcRelNests
+### 9.4.1 IfcRelNests
 
 `IfcReferent` instances are connected to their parent `IfcAlignment` through `IfcRelNests`. This relationship has two important properties:
 
@@ -184,7 +184,7 @@ Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.
 
 The first `IfcReferent` in `RelatedObjects` defines the **starting station** of the alignment. Its `Pset_Stationing.Station` value is the station label at `DistanceAlong = 0.0` of the alignment curve.
 
-### 8.4.2 The Mixed-Nesting Problem
+### 9.4.2 The Mixed-Nesting Problem
 
 `IfcRelNests` is also used to attach alignment layout components (`IfcAlignmentHorizontal`, `IfcAlignmentVertical`, `IfcAlignmentCant`) to `IfcAlignment`. Both layout sub-objects and referents decompose the same parent through the same relationship type. This creates ambiguity: should layout sub-objects and referents share a single `IfcRelNests` instance, or should they use separate ones?
 
@@ -200,15 +200,15 @@ The IFC specification does not resolve this clearly. Two patterns are seen in pr
 
 *Figure 8.4.2-1 — Two `IfcRelNests` relationships: one for alignment layout sub-objects (horizontal, vertical, cant) and one for `IfcReferent` instances.*
 
-### 8.4.3 Referent Ordering Requirement
+### 9.4.3 Referent Ordering Requirement
 
 Referents in `IfcRelNests.RelatedObjects` must be ordered by their geometric position (increasing `DistanceAlong`). This ordering is not enforced by a WHERE rule in the schema but is stated as a requirement in the IFC concept template for [4.1.4.4](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/content.html) and [4.1.4.4.3 Object Nesting](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html) as applied to referents. Implementations that read referent data should not assume the list is sorted and should sort by `DistanceAlong` before processing; implementations that write referent data must produce a sorted list.
 
 -----
 
-## 8.5 Semantic vs. Geometric Positioning
+## 9.5 Semantic vs. Geometric Positioning
 
-### 8.5.1 The Distinction
+### 9.5.1 The Distinction
 
 It is important to understand that `IfcReferent` serves two distinct roles that must not be conflated:
 
@@ -218,7 +218,7 @@ It is important to understand that `IfcReferent` serves two distinct roles that 
 
 The geometric placement of an infrastructure element (a bridge pier, a sign, a drain inlet) is defined entirely by its own `IfcLinearPlacement` with an `IfcPointByDistanceExpression`. An associated referent gives that location a name. Removing or changing the referent does not move the object.
 
-### 8.5.2 IfcRelPositions
+### 9.5.2 IfcRelPositions
 
 The relationship between an `IfcReferent` and the object whose position it annotates is `IfcRelPositions`:
 
@@ -233,7 +233,7 @@ The relationship between an `IfcReferent` and the object whose position it annot
 
 -----
 
-## 8.6 Summary and Implementation Checklist
+## 9.6 Summary and Implementation Checklist
 
 |# |Item                                                                                                                                                      |Notes                                                                                   |
 |--|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|

@@ -1,6 +1,6 @@
-# Section 6 - Linear Placement
+# Section 8 - Linear Placement
 
-## 6.0 Introduction
+## 8.0 Introduction
 
 Most elements in the built environment for infrastructure works are located **relative to an alignment** rather than by absolute coordinates. A bridge pier, a drainage inlet, a light pole, a traffic sign — all are described in traditional engineering plans by where they fall along a road or railway centerline, how far they sit to the left or right of that centerline, and how high above (or below) a reference elevation they stand. This intuitive “station, offset, elevation” system has been the language of civil engineers for over a century.
 
@@ -14,9 +14,9 @@ This section covers:
 - Special cases: longitudinal offset for unreachable points, and placement along `IfcOffsetCurveByDistances`.
 - ISO 19148 Linear Referencing and how its concepts relate to IFC linear placement.
 
-## 6.1 Linear Placement in Practice
+## 8.1 Linear Placement in Practice
 
-### 6.1.1 The Traditional Approach
+### 8.1.1 The Traditional Approach
 
 Before examining IFC, it helps to recall how placement is expressed in conventional civil engineering plans. Two common cases illustrate the idea:
 
@@ -26,7 +26,7 @@ Before examining IFC, it helps to recall how placement is expressed in conventio
 
 Both cases share the same structure: **a distance along a reference curve, plus offsets from it**. `IfcLinearPlacement` captures exactly this structure.
 
-### 6.1.2 The IFC Object Graph
+### 8.1.2 The IFC Object Graph
 
 The IFC classes that implement linear placement form a short chain:
 
@@ -50,9 +50,9 @@ Figure 6.1.2-1 schematically represents the linear placement of a bridge pier an
 
 *Figure 6.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
-## 6.2 IfcLinearPlacement and IfcAxis2PlacementLinear
+## 8.2 IfcLinearPlacement and IfcAxis2PlacementLinear
 
-### 6.2.1 Distance Along the Directrix
+### 8.2.1 Distance Along the Directrix
 
 `IfcAxis2PlacementLinear.Location` is typed as `IfcPoint` but is constrained by a WHERE rule to be `IfcPointByDistanceExpression`. This class has two key attributes:
 
@@ -66,18 +66,18 @@ Figure 6.1.2-1 schematically represents the linear placement of a bridge pier an
 
 The `BasisCurve` attribute of `IfcPointByDistanceExpression` is the key to understanding which curve the distance is measured along. For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve — that is, along the underlying `IfcCompositeCurve` that represents the plan layout. This is consistent with how stationing is defined in transportation engineering: stationing is a horizontal measure.
 
-### 6.2.2 Stationing and DistanceAlong
+### 8.2.2 Stationing and DistanceAlong
 
-Stationing is addressed comprehensively in Section 8. For the purposes of linear placement, the key point is that `DistanceAlong` is a **geometric distance from the start of the basis curve**, not a station label. These two quantities are related but not identical:
+Stationing is addressed comprehensively in Section 9. For the purposes of linear placement, the key point is that `DistanceAlong` is a **geometric distance from the start of the basis curve**, not a station label. These two quantities are related but not identical:
 
 - **Geometric distance** begins at zero and increases continuously to the total length of the curve.
 - **Station value** may begin at an arbitrary value (e.g., 10+00.00 = 1000 ft from some project reference), may include equation gaps or overlaps where stationing is reset, and may use different units (feet vs. metres).
 
 When using `IfcPointByDistanceExpression`, supply the **geometric distance**, not the raw station label. If the alignment has an `IfcReferent` that defines the starting station, the geometric distance equals the station value minus the starting station value (adjusted for any station equations encountered along the way).
 
-## 6.3 The Placement Coordinate System
+## 8.3 The Placement Coordinate System
 
-### 6.3.1 Role of Axis and RefDirection
+### 8.3.1 Role of Axis and RefDirection
 
 `IfcAxis2PlacementLinear` defines a local right-handed coordinate system at the placement point. Two optional attributes control its orientation:
 
@@ -90,7 +90,7 @@ The Y-axis is derived as the cross product of `Axis` × `RefDirection` (after no
 
 When `Axis` and `RefDirection` are both omitted, the implementation must supply defaults. This is the most common scenario and is described below.
 
-### 6.3.2 Default Axis — An Open Issue
+### 8.3.2 Default Axis — An Open Issue
 
 The default value of `Axis` is not unambiguously defined in the IFC schema documentation. A known open issue in the buildingSMART community tracks this ambiguity (see [IFC4.x-IF Issue #125](https://github.com/buildingSMART/IFC4.x-IF/issues/125)).
 
@@ -101,7 +101,7 @@ Two interpretations exist in practice:
 
 **Recommendation:** Use interpretation 1 (Axis = global Z) unless the application specifically requires the tilted interpretation. When writing files, explicitly supply `Axis = (0, 0, 1)` to remove ambiguity.
 
-### 6.3.3 Step-by-Step Construction of the Default Local CS
+### 8.3.3 Step-by-Step Construction of the Default Local CS
 
 When `Axis` and `RefDirection` are not provided, the local coordinate system is constructed as follows. Let **T** be the unit tangent vector to the 3D alignment curve at the placement distance, and let **Z_g** = (0, 0, 1) be the global vertical.
 
@@ -124,9 +124,9 @@ This is the classic highway “station-offset” reference frame and is illusrat
 
 *Figure 6.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.*
 
-## 6.4 Longitudinal Offset and Unreachable Points
+## 8.4 Longitudinal Offset and Unreachable Points
 
-### 6.4.1 What Is an Unreachable Point?
+### 8.4.1 What Is an Unreachable Point?
 
 In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that **cannot be expressed** as a station plus a purely transverse offset.
 
@@ -136,7 +136,7 @@ The classic example is an **angle point** — the intersection of two tangents i
 
 *Figure 6.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 
-### 6.4.2 Using OffsetLongitudinal
+### 8.4.2 Using OffsetLongitudinal
 
 `IfcPointByDistanceExpression.OffsetLongitudinal` provides the solution. A non-zero `OffsetLongitudinal` moves the placement point along the local X-axis (the forward tangent direction) after the perpendicular offset is applied. The procedure is:
 
@@ -149,17 +149,17 @@ The resulting point is no longer “on” a perpendicular to the curve at `Dista
 
 **Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
 
-## 6.5 Linear Placement along IfcOffsetCurveByDistances
+## 8.5 Linear Placement along IfcOffsetCurveByDistances
 
-`IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centreline varies gradually. Offset curves are comprehensively discussed in [Section 7.0](7_OffsetCurves.md).
+`IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centreline varies gradually. Offset curves are comprehensively discussed in [Section 5.0](5_OffsetCurves.md).
 
-### 6.5.1 The Approximate Length Problem
+### 8.5.1 The Approximate Length Problem
 
 Because `IfcOffsetCurveByDistances` is a sampled, interpolated curve rather than an analytically defined curve, its **arc length is only approximate**. The arc length depends on the density of the sample points along the curve: more sample points produce a more accurate length estimate, but the length is never exact for a truly curved basis.
 
 This approximation has a critical consequence for linear placement: when `IfcPointByDistanceExpression.BasisCurve` is an `IfcOffsetCurveByDistances`, the `DistanceAlong` value cannot be mapped to a unique, precisely determined point on the curve. Two implementations with different sampling densities may compute slightly different positions for the same `DistanceAlong` value.
 
-### 6.5.2 Recommendations
+### 8.5.2 Recommendations
 
 For applications requiring precise linear placement:
 
@@ -167,15 +167,15 @@ For applications requiring precise linear placement:
 1. **If placement along an offset curve is unavoidable**, document the sampling density of the `IfcOffsetCurveByDistances` so that receivers can evaluate the precision of derived positions.
 1. **Do not rely on** `DistanceAlong` values along an `IfcOffsetCurveByDistances` being reproducible across different software implementations.
 
-## 6.6 ISO 19148 Linear Referencing
+## 8.6 ISO 19148 Linear Referencing
 
-### 6.6.1 Background
+### 8.6.1 Background
 
 ISO 19148 *Geographic information — Linear referencing* is the international standard that formalises the concept of locating features along a linear element. IFC4x3’s infrastructure extensions draw on ISO 19148 concepts, and `Pset_LinearReferencingMethod` (applicable to `IfcAlignment` and `IfcReferent`) is defined in terms of ISO 19148.
 
 Understanding the ISO 19148 model helps implementers correctly interpret `DistanceAlong` values, especially when data is exchanged between systems that use different linear referencing conventions.
 
-### 6.6.2 Key ISO 19148 Concepts
+### 8.6.2 Key ISO 19148 Concepts
 
 **Linear Referencing Method (LRM).** An LRM defines the rules for measuring distance along a linear element. The most common types are:
 
@@ -194,7 +194,7 @@ The key difference:
 - **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`).
 - **KP / Reference Post (Relative LRM):** `DistanceAlong` in IFC is always the absolute geometric distance from the curve start. A KP value must be converted to a geometric distance before use in `IfcPointByDistanceExpression`.
 
-### 6.6.3 LRM Name Examples from ISO 19148 Annex C
+### 8.6.3 LRM Name Examples from ISO 19148 Annex C
 
 ISO 19148 Annex C lists recognised LRM name aliases. Common examples include:
 
@@ -207,13 +207,13 @@ ISO 19148 Annex C lists recognised LRM name aliases. Common examples include:
 
 `Pset_LinearReferencingMethod.LRMName` should use one of these recognised names where possible for maximum interoperability.
 
-### 6.6.4 Impact on DistanceAlong
+### 8.6.4 Impact on DistanceAlong
 
 Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpression.DistanceAlong` is always the **geometric distance from the start of `BasisCurve`**. LRM labels (station values, KP values, etc.) are a display convention managed through `IfcReferent` and `Pset_LinearReferencingMethod`, not through `DistanceAlong` directly.
 
-See Section 8 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
+See Section 9 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
 
-## 6.7 Complete Example
+## 8.7 Complete Example
 
 The following example illustrates a point located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centreline.
 
@@ -239,7 +239,7 @@ In this example:
 - `OffsetVertical` is omitted; the is placed in the same plane as the horizontal alignment.
 - `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §6.3.3.
 
-## 6.8 Summary and Implementation Checklist
+## 8.8 Summary and Implementation Checklist
 
 |#|Item                                                                                              |Notes                                                                                                   |
 |-|--------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|

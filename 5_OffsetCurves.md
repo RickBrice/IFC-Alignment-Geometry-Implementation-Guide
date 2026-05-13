@@ -1,6 +1,6 @@
-# Section 7 - Offset Curves
+# Section 5 - Offset Curves
 
-## 7.0 Introduction
+## 5.0 Introduction
 
 Offset curves are very common in infrastructure geometry. Some examples are:
 
@@ -14,7 +14,7 @@ three attributes:
 
 * `BasisCurve`: The curve from which offsets are measured
 * `OffsetValues`: Defines the offsets along the curve
-* `Tag` (optional): An identifier for the curve, used to correlate offset curve points with positions in a variable cross-section (see Section 9)
+* `Tag` (optional): An identifier for the curve, used to correlate offset curve points with positions in a variable cross-section (see Section 10)
 
 A single offset value indicates a constant offset over the entire length of the curve.
 
@@ -35,13 +35,13 @@ Offset curve 2 has several offsets. Linear interpolation is used to determine th
 Example model:
 [IfcOffsetCurveByDistances.ifc](examples/IfcOffsetCurveByDistances.ifc)
 
-## 7.1 Offset Sign Convention
+## 5.1 Offset Sign Convention
 
 Positive offset values place the offset curve to the left of the basis curve, measured perpendicular to the curve's direction of travel at each chainage position. Negative values place it to the right. This matches the curvature sign convention used throughout this guide — positive means left, negative means right.
 
 Offset values can change sign along the curve, meaning the offset curve can cross from one side of the basis curve to the other. Practical infrastructure uses for sign-crossing offsets are rare, but the representation allows it.
 
-## 7.2 Offset Curves and IfcAlignment
+## 5.2 Offset Curves and IfcAlignment
 
 In IFC4x3, `IfcOffsetCurveByDistances` is a resource-layer geometric entity and cannot exist independently in a model. Validation rule IFC105 requires that every resource entity be reachable from a rooted entity. In practice this means the offset curve must be assigned as the shape representation of an `IfcAlignment` (or another product), and that alignment must be aggregated into the project. Without this, the IFC validation service will report an IFC105 violation.
 
@@ -49,13 +49,13 @@ The consequence is that offset curves in IFC4x3 models are represented as alignm
 
 The example file [`IfcOffsetCurveByDistances.ifc`](examples/IfcOffsetCurveByDistances.ifc) demonstrates this structure. The basis alignment "E-Line" and its two offsets, "Offset1" and "Offset2," are all `IfcAlignment` instances aggregated under the project. Each offset alignment's `Representation` references an `IfcShapeRepresentation` whose item is the corresponding `IfcOffsetCurveByDistances`.
 
-## 7.3 Stationing on Offset Alignments
+## 5.3 Stationing on Offset Alignments
 
 The IFC validation service warns when an `IfcAlignment` has no stationing referent — a `Pset_Stationing` property set attached via an `IfcReferent`. For many offset alignments this warning is valid and should be resolved: a ramp, a lane edge used for striping construction, or any offset alignment along which objects are linearly placed benefits from defined stationing.
 
 For offset alignments that are purely geometric — a drainage channel modeled for clash detection, a clearance envelope, a construction limit line — independent stationing may not be meaningful. In those cases the warning is acceptable to leave. An alternative is to assign a stationing referent that mirrors the basis alignment's stationing, so that chainage values on the offset alignment correspond directly to chainage on the basis. This is often the least confusing option when the two alignments are used together in quantity takeoff or reporting.
 
-## 7.4 Accuracy of Offset Curves
+## 5.4 Accuracy of Offset Curves
 
 `IfcOffsetCurveByDistances` is an exact representation for two curve types and an approximation for everything else.
 
@@ -65,7 +65,7 @@ For offset alignments that are purely geometric — a drainage channel modeled f
 
 For most infrastructure applications the linear interpolation error is small relative to construction tolerances. For applications requiring tighter accuracy — such as rail superelevation ramps or precision survey control — the approximation should be evaluated against the required tolerance and the offset point spacing adjusted accordingly.
 
-### 7.4.1 Approximate Distance Along and Its Effect on IfcLinearPlacement
+### 5.4.1 Approximate Distance Along and Its Effect on IfcLinearPlacement
 
 A related but distinct accuracy issue arises when `IfcOffsetCurveByDistances` is used as the `BasisCurve` in `IfcPointByDistanceExpression` for `IfcLinearPlacement`. The problem is not just that the shape of the offset curve is approximate — it is that **distance along** the offset curve is also approximate, and two independent implementations may compute different arc lengths for the same curve definition.
 
@@ -75,7 +75,7 @@ The consequence is that a `DistanceAlong` value specified against an `IfcOffsetC
 
 For precise linear placement, the recommended practice (discussed fully in §6.5) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
 
-## 7.5 Arc Length of an Offset Curve
+## 5.5 Arc Length of an Offset Curve
 
 The arc length of an offset curve differs from the basis curve length. For a constant offset $d$ from a circular arc of radius $R$ and arc length $L$:
 
@@ -87,7 +87,7 @@ $$L_{\text{offset}} = 200 \cdot \frac{1010}{1000} = 202 \text{ ft}$$
 
 For varying offsets or non-circular basis curves there is no simple closed-form expression. `IfcOffsetCurveByDistances` does not expose an arc length attribute. When linear placement of objects relative to an offset alignment is needed, the recommended practice (see §6.5) is to use the parent alignment as the `BasisCurve` in `IfcPointByDistanceExpression` rather than the offset curve itself, so the arc length of the offset curve is rarely needed in practice.
 
-## 7.6 Example Model Walkthrough
+## 5.6 Example Model Walkthrough
 
 The file [`IfcOffsetCurveByDistances.ifc`](examples/IfcOffsetCurveByDistances.ifc) contains a basis alignment and two offset alignments using feet as the length unit. The relevant IFC excerpts are shown below.
 
@@ -118,7 +118,7 @@ The right-side offset widens quickly from −10 ft to −40 ft over the first 50
 
 Both offset curves share the same basis curve `#20`. Each `IfcPointByDistanceExpression` also references `#20` directly, satisfying the requirement that the `BasisCurve` in `IfcOffsetCurveByDistances` and in its `OffsetValues` be the same curve object.
 
-## 7.7 Interpolation of Offset Values
+## 5.7 Interpolation of Offset Values
 
 The IFC specification does not prescribe how offset values are to be interpolated between `IfcPointByDistanceExpression` entries. Several methods are possible:
 
@@ -130,10 +130,10 @@ Different interpolation methods produce materially different geometry from the s
 
 The recommended best practice is **linear interpolation of offset values**: interpolate the lateral distance at each chainage position, then apply that distance perpendicular to the basis curve. This method is the most natural given the structure of `IfcOffsetCurveByDistances`, produces predictable geometry, and is the least ambiguous for interchange.
 
-## 7.8 The Tag Attribute
+## 5.8 The Tag Attribute
 
 The `Tag` attribute of `IfcOffsetCurveByDistances` is an optional label that assigns an identifier to the offset curve. Its primary purpose is to correlate an offset curve with a named point in a variable cross-section definition.
 
 `IfcSectionedSurface` and `IfcSectionedSolidHorizontal` define geometry by sweeping a series of cross-sections along a basis curve. Each cross-section can contain named control points — edge-of-pavement, top-of-rail, daylight line, and so on. The `Tag` on an `IfcOffsetCurveByDistances` matches one of those named points, allowing the surface or solid geometry to be driven by the offset curve's lateral positions rather than by fixed cross-section ordinates. This is the mechanism by which variable-width surfaces and solids are defined in IFC4x3.
 
-The full treatment of `IfcSectionedSurface` and `IfcSectionedSolidHorizontal`, including how `Tag` values are resolved against cross-section geometry, is covered in Section 9.
+The full treatment of `IfcSectionedSurface` and `IfcSectionedSolidHorizontal`, including how `Tag` values are resolved against cross-section geometry, is covered in Section 10.

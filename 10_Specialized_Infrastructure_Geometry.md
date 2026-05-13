@@ -1,10 +1,10 @@
-# Section 9 - Specialized Alignment-based Infrastructure Geometry
+# Section 10 - Specialized Alignment-based Infrastructure Geometry
 
-## 9.0 Introduction
+## 10.0 Introduction
 
 Placeholder - in this section it is intended that there is a discussion of IfcSectionedSurface and IfcSectionedSolidHorizontal. These are two new surface and solid geometries developed specifcially for infrastructure and alignments.
 
-## 9.1 IfcSectionedSurface
+## 10.1 IfcSectionedSurface
 
 Describe when this surface geometry might be advantagous to use
 * Roadway surface
@@ -14,7 +14,7 @@ Describe when this surface geometry might be advantagous to use
 
 *Figure 9.1-1 Superelevation transition*
 
-### 9.1.1 Breaklines
+### 10.1.1 Breaklines
 
 Describe the concept of breaklines for widening sections.
 
@@ -22,11 +22,11 @@ Describe the concept of breaklines for widening sections.
 
 *Figure 9.1.1-1 Sectioned surface with breaklines*
 
-### 9.1.2 Stringlines
+### 10.1.2 Stringlines
 
 Describe string lines and how they work (don't have a good implementation yet)
 
-## 9.2 IfcSectionedSolidHorizontal
+## 10.2 IfcSectionedSolidHorizontal
 
 * Describe when this geometry may be useful
 * Give examples for different kinds of rotations as defined in the documentation
@@ -35,7 +35,7 @@ Describe string lines and how they work (don't have a good implementation yet)
 * Clarify direction (CCW) for defining polygon points for the profile
 * Discuss error in documentation of profile orientation and compare it to the text for IfcSectionedSurface. Show my figures from github on the issue. https://github.com/buildingSMART/IFC4.x-IF/issues/147, and https://github.com/buildingSMART/IFC4.x-development/issues/1010.
 
-## 9.3 Gotcha
+## 10.3 Gotcha
 
 Need to discuss that for surface and horizontal section solid, the offset curves must be associated with an IfcAlignment or the IFC model gets flagged by the validation service. see https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html. Even though an IfcOffsetCurveByDistance is related to a surface or solid, which relates to a rooted entity, the validation service doesn't recognize this. This leads to having dummy alignments and each of those alignments needs to ahve stationing defined otherwise more validation service warnings
 

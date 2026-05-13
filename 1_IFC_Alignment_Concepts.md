@@ -152,7 +152,7 @@ defined by `IfcCurveSegment`. The mathematical computations for
 `IfcPolyline` and `IfcIndexedPolyCurve` produce approximate, discrete geometry
 rather than exact parametric curves. They arise in survey-derived alignments and early
 planning contexts. Their use, limitations, and incompatibility with the full semantic
-alignment definition are discussed in [Section 5](5_Approximate_Alignment_Geometry.md).
+alignment definition are discussed in [Section 6](6_Approximate_Alignment_Geometry.md).
 
 `IfcOffsetCurveByDistances` is treated in a dedication section.
 
@@ -268,7 +268,3 @@ Unless otherwise specified, the following unit conventions apply throughout this
 *Table 1.7-1 — Unit conventions used throughout this guide*
 
 Gradient is expressed as a decimal rise-over-run value — 0.02 represents a 2% grade — not as a percentage or angle.
-
-
-
-

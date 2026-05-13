@@ -1,0 +1,118 @@
+<svg width="820" height="460" viewBox="0 0 820 460" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Geometric chain for child alignments — shared IfcCompositeCurve BaseCurve</title>
+  <desc>Each child alignment has its own IfcSegmentedReferenceCurve and IfcGradientCurve. Both IfcGradientCurve instances reference the same IfcCompositeCurve instance as their BaseCurve.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: sans-serif; fill: #1a1a1a; }
+      .th  { font-size: 14px; font-weight: 500; }
+      .ts  { font-size: 12px; font-weight: 400; }
+      .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+      .c-purple .th  { fill: #3C3489; }
+      .c-purple .ts  { fill: #534AB7; }
+      .c-teal rect   { fill: #E1F5EE; stroke: #0F6E56; }
+      .c-teal .th    { fill: #085041; }
+      .c-teal .ts    { fill: #0F6E56; }
+      .c-blue rect   { fill: #E6F1FB; stroke: #185FA5; }
+      .c-blue .th    { fill: #0C447C; }
+      .c-blue .ts    { fill: #185FA5; }
+      .c-amber rect  { fill: #FEF3E2; stroke: #B45309; stroke-width: 1.5; }
+      .c-amber .th   { fill: #7C3D0A; }
+      .c-amber .ts   { fill: #B45309; }
+      .muted { fill: #888; font-size: 11px; }
+      .shared-note { fill: #B45309; font-size: 11px; font-style: italic; }
+    </style>
+  </defs>
+
+  <!-- IfcAlignment (parent) -->
+  <g class="c-purple">
+    <rect x="310" y="20" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="410" y="38" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+    <text class="ts" x="410" y="56" text-anchor="middle" dominant-baseline="central">(parent)</text>
+  </g>
+
+  <!-- Parent → child A -->
+  <path d="M365 64 L220 118" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="264" y="90" text-anchor="middle">aggregates</text>
+
+  <!-- Parent → child B -->
+  <path d="M455 64 L600 118" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="558" y="90" text-anchor="middle">aggregates</text>
+
+  <!-- Child A -->
+  <g class="c-purple">
+    <rect x="110" y="120" width="220" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="220" y="137" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+    <text class="ts" x="220" y="155" text-anchor="middle" dominant-baseline="central">(child A)</text>
+  </g>
+
+  <!-- Child B -->
+  <g class="c-purple">
+    <rect x="490" y="120" width="220" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="600" y="137" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+    <text class="ts" x="600" y="155" text-anchor="middle" dominant-baseline="central">(child B)</text>
+  </g>
+
+  <!-- Child A → SRC A -->
+  <path d="M220 164 L220 214" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="228" y="192">Representation</text>
+
+  <!-- Child B → SRC B -->
+  <path d="M600 164 L600 214" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="608" y="192">Representation</text>
+
+  <!-- IfcSegmentedReferenceCurve A -->
+  <g class="c-teal">
+    <rect x="55" y="216" width="330" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="220" y="233" text-anchor="middle" dominant-baseline="central">IfcSegmentedReferenceCurve</text>
+    <text class="ts" x="220" y="251" text-anchor="middle" dominant-baseline="central">(cant for A)</text>
+  </g>
+
+  <!-- IfcSegmentedReferenceCurve B -->
+  <g class="c-teal">
+    <rect x="435" y="216" width="330" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="600" y="233" text-anchor="middle" dominant-baseline="central">IfcSegmentedReferenceCurve</text>
+    <text class="ts" x="600" y="251" text-anchor="middle" dominant-baseline="central">(cant for B)</text>
+  </g>
+
+  <!-- SRC A → GC A -->
+  <path d="M220 260 L220 310" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="228" y="288">BaseCurve</text>
+
+  <!-- SRC B → GC B -->
+  <path d="M600 260 L600 310" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="608" y="288">BaseCurve</text>
+
+  <!-- IfcGradientCurve A -->
+  <g class="c-blue">
+    <rect x="75" y="312" width="290" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="220" y="329" text-anchor="middle" dominant-baseline="central">IfcGradientCurve</text>
+    <text class="ts" x="220" y="347" text-anchor="middle" dominant-baseline="central">(vertical for A)</text>
+  </g>
+
+  <!-- IfcGradientCurve B -->
+  <g class="c-blue">
+    <rect x="455" y="312" width="290" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="600" y="329" text-anchor="middle" dominant-baseline="central">IfcGradientCurve</text>
+    <text class="ts" x="600" y="347" text-anchor="middle" dominant-baseline="central">(vertical for B)</text>
+  </g>
+
+  <!-- GC A → shared IfcCompositeCurve (diagonal) -->
+  <path d="M220 356 L330 402" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="256" y="386" text-anchor="middle">BaseCurve</text>
+
+  <!-- GC B → shared IfcCompositeCurve (diagonal) -->
+  <path d="M600 356 L490 402" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="muted" x="564" y="386" text-anchor="middle">BaseCurve</text>
+
+  <!-- IfcCompositeCurve (shared) — highlighted with amber to denote the single shared instance -->
+  <g class="c-amber">
+    <rect x="230" y="404" width="360" height="44" rx="8"/>
+    <text class="th" x="410" y="421" text-anchor="middle" dominant-baseline="central">IfcCompositeCurve</text>
+    <text class="ts" x="410" y="439" text-anchor="middle" dominant-baseline="central">(horizontal — same instance)</text>
+  </g>
+
+</svg>

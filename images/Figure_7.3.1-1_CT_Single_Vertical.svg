@@ -1,0 +1,60 @@
+<svg width="580" height="240" viewBox="0 0 580 240" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>CT 4.1.4.4.1.1 — single IfcAlignmentVertical nested directly under IfcAlignment</title>
+  <desc>IfcAlignment nests both IfcAlignmentHorizontal and IfcAlignmentVertical via a single IfcRelNests when only one vertical is present.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: sans-serif; fill: #1a1a1a; }
+      .th  { font-size: 14px; font-weight: 500; }
+      .ts  { font-size: 12px; font-weight: 400; }
+      .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+      .c-purple .th  { fill: #3C3489; }
+      .c-gray rect   { fill: #F1EFE8; stroke: #5F5E5A; }
+      .c-gray .th    { fill: #2C2C2A; }
+      .c-gray .ts    { fill: #5F5E5A; }
+      .c-blue rect   { fill: #E6F1FB; stroke: #185FA5; }
+      .c-blue .th    { fill: #0C447C; }
+      .muted { fill: #888; }
+    </style>
+  </defs>
+
+  <!-- IfcAlignment -->
+  <g class="c-purple">
+    <rect x="190" y="24" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="290" y="51" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+  </g>
+
+  <!-- Arrow: IfcAlignment → IfcRelNests -->
+  <path d="M240 68 L158 118" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="ts muted" x="172" y="97" text-anchor="middle">RelatingObject</text>
+
+  <!-- IfcRelNests -->
+  <g class="c-gray">
+    <rect x="60" y="120" width="180" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="150" y="142" text-anchor="middle" dominant-baseline="central">IfcRelNests</text>
+  </g>
+
+  <!-- Spine from IfcRelNests right edge → branch point -->
+  <path d="M240 142 L268 142" fill="none" stroke="#888" stroke-width="1"/>
+  <!-- Branch up → IfcAlignmentHorizontal -->
+  <path d="M268 142 L268 122 L278 122" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <!-- Branch down → IfcAlignmentVertical -->
+  <path d="M268 142 L268 187 L278 187" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="ts muted" x="272" y="160" text-anchor="start">RelatedObjects</text>
+
+  <!-- IfcAlignmentHorizontal -->
+  <g class="c-blue">
+    <rect x="280" y="100" width="240" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="400" y="122" text-anchor="middle" dominant-baseline="central">IfcAlignmentHorizontal</text>
+  </g>
+
+  <!-- IfcAlignmentVertical -->
+  <g class="c-blue">
+    <rect x="280" y="165" width="240" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="400" y="187" text-anchor="middle" dominant-baseline="central">IfcAlignmentVertical</text>
+  </g>
+
+</svg>
