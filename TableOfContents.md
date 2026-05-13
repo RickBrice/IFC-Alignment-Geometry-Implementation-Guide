@@ -9,7 +9,7 @@
 7 [Alignments Reusing Horizontal Layout](7_Alignments_Reusing_Horizontal_Layout.md)  
 8 [Linear Placement](8_LinearPlacement.md)  
 9 [Referents and Stationing](9_Referents_and_Stationing.md)  
-10 [Specialized Alignment-based Infrastructure Geometry](10_Specialized_Infrastructure_Geometry.md)  
+10 [Sectioned Surfaces and Solids](10_Sectioned_Surfaces_and_Solids.md)  
 11 [LandXML to IFC](11_LandXML.md)  
 12 [Precision and Tolerance](12_Precision_and_Tolerance.md)  
 13 [Examples and Validation Data](13_Examples_and_Validation_Data.md)  

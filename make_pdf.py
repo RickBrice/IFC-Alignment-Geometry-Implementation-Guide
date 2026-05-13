@@ -24,7 +24,7 @@ CHAPTERS = [
     "7_Alignments_Reusing_Horizontal_Layout.md",
     "8_LinearPlacement.md",
     "9_Referents_and_Stationing.md",
-    "10_Specialized_Infrastructure_Geometry.md",
+    "10_Sectioned_Surfaces_and_Solids.md",
     "11_LandXML.md",
     "12_Precision_and_Tolerance.md",
     "13_Examples_and_Validation_Data.md",
@@ -266,12 +266,14 @@ body {
   color: #111;
   max-width: none;
 }
-h1 { font-size: 1.9em; border-bottom: 2px solid #222; margin-top: 2em; page-break-before: always; }
+h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
+h1 { font-size: 2.1em; border-bottom: 2px solid #222; margin-top: 2em; page-break-before: always; }
 h1:first-of-type { page-break-before: avoid; }
-h2 { font-size: 1.45em; border-bottom: 1px solid #555; margin-top: 1.4em; }
-h3 { font-size: 1.18em; margin-top: 1.1em; }
-h4 { font-size: 1.05em; }
-h5, h6 { font-size: 1em; font-style: italic; }
+h2 { font-size: 1.6em; border-bottom: 1px solid #555; margin-top: 1.6em; }
+h3 { font-size: 1.3em; margin-top: 1.3em; }
+h4 { font-size: 1.15em; margin-top: 1.1em; }
+h5 { font-size: 1.05em; font-style: italic; }
+h6 { font-size: 1em; font-style: italic; }
 code {
   font-family: Consolas, 'Courier New', monospace;
   background: #f2f2f2;
