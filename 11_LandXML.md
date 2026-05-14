@@ -1,10 +1,6 @@
 todo:
-* Review this section - it is completely generated
-* Add implementation for `<Chain>` and `<IrregularLine>` horizontal element types to the LX2IFC program. `<Chain>` could be decomposed into a sequence of `LINE` segments if approximate fidelity is acceptable
-* Consider noting that LandXML has no equivalent to the IFC `CLOTHOIDARC` vertical segment type
+* Consider noting that LandXML has no equivalent to the IFC `CLOTHOIDARC` vertical segment type - first verify this is true
 * Review the last paragraph of Section 11.6.2 regarding `staInternal` equality with `staAhead` in well-formed LandXML — verify this claim is accurate
-* Fix `<CircCurve>` start station calculation in LX2IFC — currently uses $s_{PVI} - L/2$ as an approximation; the exact tangent length is $T = R\tan(\Delta/2)$ where $\Delta = L/R$. Commented-out code in Profile.cpp already outlines the correct approach.
-* Review Section 11.8 — is it needed?
 
 # Section 11 - LandXML to IFC Conversion
 
@@ -22,12 +18,12 @@ The following table provides a high-level mapping of the two data models.
 |`<CoordGeom>`                 |`IfcAlignmentHorizontal` nested via `IfcRelNests`              |
 |`<Profile>` / `<ProfAlign>`   |`IfcAlignmentVertical` nested via `IfcRelNests`                |
 |`<Cant>`                      |`IfcAlignmentCant` nested via `IfcRelNests`                    |
-|`<StaEquation>`               |`IfcReferent` with stationing attributes                       |
+|`<StaEquation>`               |`IfcReferent` with stationing attributes and properties                       |
 |`<Units>`                     |`IfcUnitAssignment` in `IfcProject`                            |
 
 *Table 10.2-1 — LandXML to IFC schema conceptual comparison*
 
-The key conceptual difference between the two schemas is that LandXML describes geometry procedurally — PI-based for vertical alignment, point-to-point for horizontal — whereas IFC describes segments declaratively as typed business objects with a start point, radii, and length.
+The key conceptual difference between the two schemas is that LandXML defines geometry through PI and PVI points with derived curve parameters, whereas IFC defines geometry as explicit typed segments each carrying a start condition, length, and curve parameters.
 
 ## 11.2 Units
 
@@ -234,18 +230,3 @@ LandXML `<StaEquation>` records station breaks where the back station and ahead 
 
 The `staInternal` value should equal `staAhead` in a well-formed LandXML file. Log a warning if `staInternal != staAhead`, as this indicates an unusual stationing condition that may require manual review.
 
-## 11.8 Known Limitations and Unresolved Issues
-
-The following issues are known limitations of the LandXML-to-IFC conversion and should be documented for users of any converter implementation.
-
-**Unhandled spiral types.** The LandXML spiral types `radioid`, `weinerBogen`, `revBiquadratic`, `revBloss`, `revCosine`, and `revSinusoid` have no known mapping to IFC known to the author.
-
-**Unhandled horizontal element types.** `<Chain>` (polyline) and `<IrregularLine>` elements are skipped. A future implementation could decompose them into sequences of `LINE` segments.
-
-**`sineHalfWave` approximation.** Mapped to `COSINECURVE` as an approximation. The two curves are similar but not identical.
-
-**Asymmetric parabolic arc split.** The split of `<UnsymParaCurve>` into two `PARABOLICARC` segments is geometrically correct but results in two IFC segments where LandXML had one. Downstream tools must be able to handle this.
-
-**Imperial units.** Imperial linear unit conversion (foot, US Survey foot) must be applied to all coordinate values. Partial implementations that read the unit declaration but do not scale the coordinates will produce incorrect geometry.
-
-**No support for LandXML surface or roadway data.** `<Roadway>`, `<Survey>`, `<Surfaces>`, and other LandXML elements beyond alignment geometry are out of scope for an alignment-focused converter.
