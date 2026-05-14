@@ -17,7 +17,7 @@ project, alignment layout nesting, and the four alignment geometry
 variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
 provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The *partial* concept templates that
 cover individual curve segment geometry types, however, are sparse: they show class relationships but provide no
-mathematical equations or parameter mappings. This guide fills that gap. It assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized — and focuses specifically on the alignment geometry that IFC 4.3 ADD 2 introduced.
+mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Sections 2–4); offset curves (Section 5); approximate polyline representations (Section 6); alignments that share a common horizontal layout (Section 7); linear placement of objects along an alignment (Section 8); referents and stationing, including station equations (Section 9); alignment-based physical geometry — sectioned surfaces and solids (Section 10); LandXML-to-IFC conversion (Section 11); precision and tolerance guidance (Section 12); and examples and validation data (Section 13). It assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.
 
 ## 1.1 Horizontal Alignment
 
@@ -154,7 +154,7 @@ rather than exact parametric curves. They arise in survey-derived alignments and
 planning contexts. Their use, limitations, and incompatibility with the full semantic
 alignment definition are discussed in [Section 6](6_Approximate_Alignment_Geometry.md).
 
-`IfcOffsetCurveByDistances` is treated in a dedication section.
+`IfcOffsetCurveByDistances` is treated in a dedicated section.
 
 ### 1.5.2 Understanding Geometric Representation of Alignment
 
