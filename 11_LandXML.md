@@ -1,11 +1,16 @@
 todo:
 * Review this section - it is completely generated
+* Add implementation for `<Chain>` and `<IrregularLine>` horizontal element types to the LX2IFC program. `<Chain>` could be decomposed into a sequence of `LINE` segments if approximate fidelity is acceptable
+* Consider noting that LandXML has no equivalent to the IFC `CLOTHOIDARC` vertical segment type
+* Review the last paragraph of Section 11.6.2 regarding `staInternal` equality with `staAhead` in well-formed LandXML — verify this claim is accurate
+* Fix `<CircCurve>` start station calculation in LX2IFC — currently uses $s_{PVI} - L/2$ as an approximation; the exact tangent length is $T = R\tan(\Delta/2)$ where $\Delta = L/R$. Commented-out code in Profile.cpp already outlines the correct approach.
+* Review Section 11.8 — is it needed?
 
 # Section 11 - LandXML to IFC Conversion
 
 ## 11.0 Introduction
 
-LandXML 1.x is the dominant legacy format for civil alignment data; IFC 4x3 is the modern target. The goal of this chapter is to guide implementers through the non-obvious decisions and pitfalls that arise during conversion, drawn from practical experience.
+LandXML 1.x is the dominant legacy format for civil alignment data; IFC 4x3 is the modern target. The goal of this chapter is to guide implementers through the decisions and pitfalls that arise during conversion, drawn from practical experience implementing [LX2IFC](https://github.com/RickBrice/LX2IFC), the author's open-source LandXML to IFC conversion program. LX2IFC focuses on alignment conversion and is otherwise incomplete as a general-purpose LandXML to IFC conversion utility; it remains a work in progress.
 
 ## 11.1 Schema Conceptual Comparison
 
@@ -38,7 +43,7 @@ $$1\ \text{international foot} = 0.3048\ \text{m (exact)}$$
 
 Using the wrong conversion factor introduces a systematic error that compounds over long alignments.
 
-**Angular units.** LandXML directions can be expressed in decimal degrees, grads, or radians. `IfcAlignmentHorizontalSegment.StartDirection` is always in radians. Apply the appropriate conversion before writing IFC output.
+**Angular units.** LandXML directions can be expressed in decimal degrees, grads, or radians. IFC angular units are declared in `IfcUnitAssignment` — the SI base unit is radians, but `IfcConversionBasedUnit` can declare degrees, grads, or any other angular unit. When constructing an IFC model from LandXML, the converter controls what angular unit the output model declares; declaring radians (the default) avoids an extra conversion step and is the most common choice.
 
 **Bearing convention.** LandXML directions are azimuths measured clockwise from North. IFC plane angles are measured counter-clockwise from the positive X-axis (East). The conversion is
 
@@ -86,12 +91,12 @@ The following table maps LandXML `spiType` values to `IfcAlignmentHorizontalSegm
 |`sinusoid`           |`SINECURVE`   |Direct mapping                                  |
 |`sineHalfWave`       |`COSINECURVE` |Approximation — loss of fidelity, see note below|
 |`japaneseCubic`      |`VIENNESEBEND`|Direct mapping                                  |
-|`revBiquadratic`     |—             |No IFC equivalent, log warning and skip         |
-|`revBloss`           |—             |No IFC equivalent, log warning and skip         |
-|`revCosine`          |—             |No IFC equivalent, log warning and skip         |
-|`revSinusoid`        |—             |No IFC equivalent, log warning and skip         |
-|`radioid`            |—             |No IFC equivalent, log warning and skip         |
-|`weinerBogen`        |—             |No IFC equivalent, log warning and skip         |
+|`revBiquadratic`     |—             |IFC mapping unknown, log warning and skip       |
+|`revBloss`           |—             |IFC mapping unknown, log warning and skip       |
+|`revCosine`          |—             |IFC mapping unknown, log warning and skip       |
+|`revSinusoid`        |—             |IFC mapping unknown, log warning and skip       |
+|`radioid`            |—             |IFC mapping unknown, log warning and skip       |
+|`weinerBogen`        |—             |IFC mapping unknown, log warning and skip       |
 
 *Table 10.4.4-1 — LandXML spiType to IFC type mapping*
 
@@ -107,11 +112,7 @@ Apply this sign to both `StartRadius` and `EndRadius`.
 
 ### 11.3.6 Infinite Radius
 
-LandXML represents an infinite start or end radius by omitting the attribute or by supplying `DBL_MAX`. IFC uses `0.0` in `IfcAlignmentHorizontalSegment.StartRadius` or `EndRadius` to indicate an infinite radius. Substitute `0.0` whenever the LandXML value is absent or exceeds a practical threshold.
-
-### 11.3.7 Unhandled Horizontal Element Types
-
-`<Chain>` and `<IrregularLine>` elements have no direct equivalent in the IFC alignment semantic model. Log a warning when these elements are encountered and skip them. If approximate geometric fidelity is acceptable, a `<Chain>` (polyline) could be decomposed into a sequence of `LINE` segments.
+LandXML represents an infinite start or end radius by omitting the attribute or by supplying the value `INF`. IFC uses `0.0` in `IfcAlignmentHorizontalSegment.StartRadius` or `EndRadius` to indicate an infinite radius. Substitute `0.0` whenever the LandXML value is absent or is `INF`.
 
 ## 11.4 Vertical Alignment
 
@@ -160,13 +161,17 @@ Create two `PARABOLICARC` segments: the first from the curve start to the PVI st
 
 LandXML provides the radius and arc length. IFC `IfcAlignmentVerticalSegment` for `CIRCULARARC` accepts the radius directly in the `RadiusOfCurvature` attribute. Compute the start station and elevation the same way as for a symmetric parabolic arc, using $L/2$ as the half-length. Note that this is an approximation — the true tangent length of a circular vertical curve is $T = R \tan(\Delta/2)$ where $\Delta = L/R$, which differs from $L/2$ except for small deflection angles.
 
-### 11.3.6 Start Station Offset
+### 11.3.6 Station to Distance Along
 
-LandXML stations are absolute. `IfcAlignmentVerticalSegment.StartDistAlong` is measured from the start of the alignment. Subtract the alignment start station from every LandXML station:
+LandXML vertical profile elements are positioned by station. `IfcAlignmentVerticalSegment.StartDistAlong` is distance along the horizontal alignment measured from the alignment start — a continuous value with no breaks. These are not the same thing whenever station equations are present.
 
-$$\text{StartDistAlong} = s_{LandXML} - s_{alignment_start}$$
+In the simplest case — no station equations — the conversion is:
 
-The alignment start station is found in `<Alignment staStart="...">` and must be read before processing any profile elements.
+$$\text{StartDistAlong} = s_{LandXML} - s_{alignment\_start}$$
+
+where $s_{alignment\_start}$ is read from `<Alignment staStart="...">`.
+
+When station equations are present, the station numbering is discontinuous: a gap or overlap at each equation point means a given station value does not map to a unique physical distance without knowing which zone it falls in. The conversion must walk the list of `<StaEquation>` elements in order, accumulating the physical distance up to each equation point, then apply the appropriate offset for the zone containing the target station. The `staInternal` attribute on `<StaEquation>` gives the continuous internal distance and can serve as a cross-check.
 
 ## 11.5 Cant
 
@@ -180,13 +185,40 @@ Each `<CantSegment>` maps to an `IfcAlignmentCantSegment` with `StartCantLeft`, 
 
 ### 11.3.3 Rail Head Distance
 
-`IfcAlignmentCant.RailHeadDistance` is required and represents the distance between rail heads (track gauge). LandXML may carry gauge information in a `<Roadway>` or project-level element, or it may need to be supplied as an external parameter. The conversion must account for this value explicitly — it is used in the Viennese Bend cant factor calculation described in Section 2.
+`IfcAlignmentCant.RailHeadDistance` is the distance between rail heads (track gauge). In LandXML, this value is the `gauge` attribute on the `<Cant>` element:
+
+```xml
+<Cant name="001" gauge="1.524" rotationPoint="insideRail">
+```
+
+Map `gauge` directly to `IfcAlignmentCant.RailHeadDistance`. The value is in the model's declared length units.
+
+### 11.3.4 Rotation Point Mapping
+
+The `rotationPoint` attribute on `<Cant>` indicates which point on the cross-section serves as the pivot for superelevation rotation. LandXML defines three values: `insideRail`, `centerline`, and `outsideRail`. The `curvature` attribute on each `<CantStation>` indicates whether the curve is clockwise (`cw`, right turn) or counter-clockwise (`ccw`, left turn), which determines which physical rail is on the inside or outside.
+
+`IfcAlignmentCantSegment` has no explicit rotation point attribute. Instead, rotation point is encoded implicitly through the combination of `StartCantLeft`, `StartCantRight`, `EndCantLeft`, and `EndCantRight` values. A zero cant value on one side indicates the pivot is on that side; equal and opposite values indicate centerline rotation.
+
+Table 11.3.4-1 gives the IFC cant values in terms of the LandXML `appliedCant` magnitude $c$ for each combination of `curvature` and `rotationPoint`:
+
+| `curvature` | `rotationPoint` | `CantLeft` | `CantRight` |
+|-------------|-----------------|------------|-------------|
+| `ccw` (left turn, right = outside) | `insideRail` | $0$ | $+c$ |
+| `ccw` (left turn, right = outside) | `centerline` | $-c/2$ | $+c/2$ |
+| `ccw` (left turn, right = outside) | `outsideRail` | $-c$ | $0$ |
+| `cw` (right turn, left = outside) | `insideRail` | $+c$ | $0$ |
+| `cw` (right turn, left = outside) | `centerline` | $+c/2$ | $-c/2$ |
+| `cw` (right turn, left = outside) | `outsideRail` | $0$ | $-c$ |
+
+*Table 11.3.4-1 — LandXML curvature and rotationPoint to IFC CantLeft/CantRight mapping*
+
+Apply the same logic to both the start and end values of each segment. The `rotationPoint` is constant for the entire `<Cant>` element; `curvature` and `appliedCant` are read from each `<CantStation>` and applied to the corresponding segment start and end positions.
 
 ## 11.6 Stationing and Station Equations
 
 ### 11.3.1 Start Station
 
-The LandXML `<Alignment staStart="...">` attribute gives the station at the beginning of the alignment. Map this to an `IfcReferent` with `PredefinedType = REFERENCEMARKER` at `DistanceAlong = 0.0`, with the station value stored as a property in an associated property set.
+The LandXML `<Alignment staStart="...">` attribute gives the station at the beginning of the alignment. Map this to an `IfcReferent` with `PredefinedType = STATION`, with the station value stored in `Pset_Stationing.Station`. See Section 9 for the full `IfcReferent` and `Pset_Stationing` structure.
 
 ### 11.3.2 Station Equations (`<StaEquation>`)
 
@@ -202,37 +234,15 @@ LandXML `<StaEquation>` records station breaks where the back station and ahead 
 
 The `staInternal` value should equal `staAhead` in a well-formed LandXML file. Log a warning if `staInternal != staAhead`, as this indicates an unusual stationing condition that may require manual review.
 
-## 11.7 IFC Project Structure
-
-LandXML has no concept of project hierarchy. IFC requires a minimum entity graph regardless of what is in the LandXML file. The required structure is:
-
-```
-IfcProject
-  └── IfcRelAggregates
-        ├── IfcSite
-        └── IfcAlignment
-              └── IfcRelNests
-                    ├── IfcAlignmentHorizontal
-                    │     └── IfcRelNests → IfcAlignmentSegment (×n)
-                    ├── IfcAlignmentVertical
-                    │     └── IfcRelNests → IfcAlignmentSegment (×n)
-                    └── IfcAlignmentCant (if cant data present)
-                          └── IfcRelNests → IfcAlignmentSegment (×n)
-```
-
-The `IfcProject` must include an `IfcUnitAssignment` derived from the LandXML `<Units>` element (Section 11.3). The `IfcSite` provides the spatial context and local placement for the alignment.
-
 ## 11.8 Known Limitations and Unresolved Issues
 
 The following issues are known limitations of the LandXML-to-IFC conversion and should be documented for users of any converter implementation.
 
-**Unhandled spiral types.** The LandXML spiral types `radioid`, `weinerBogen`, `revBiquadratic`, `revBloss`, `revCosine`, and `revSinusoid` have no IFC equivalent. Segments of these types are skipped with a warning.
+**Unhandled spiral types.** The LandXML spiral types `radioid`, `weinerBogen`, `revBiquadratic`, `revBloss`, `revCosine`, and `revSinusoid` have no known mapping to IFC known to the author.
 
 **Unhandled horizontal element types.** `<Chain>` (polyline) and `<IrregularLine>` elements are skipped. A future implementation could decompose them into sequences of `LINE` segments.
 
 **`sineHalfWave` approximation.** Mapped to `COSINECURVE` as an approximation. The two curves are similar but not identical.
-
-**Circular vertical curve half-length approximation.** The start station of a `<CircCurve>` is approximated as $s_{PVI} - L/2$. The exact value depends on the tangent length, which requires iteration for large deflection angles.
 
 **Asymmetric parabolic arc split.** The split of `<UnsymParaCurve>` into two `PARABOLICARC` segments is geometrically correct but results in two IFC segments where LandXML had one. Downstream tools must be able to handle this.
 
