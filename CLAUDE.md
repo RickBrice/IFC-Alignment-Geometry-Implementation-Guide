@@ -24,9 +24,9 @@ The guide is organized as numbered markdown chapters at the repository root:
 | `8_LinearPlacement.md` | Linear placement concepts | Partial |
 | `9_Referents_and_Stationing.md` | Referents and stationing | Partial |
 | `10_Sectioned_Surfaces_and_Solids.md` | Sectioned surfaces and solids (IfcSectionedSurface, IfcSectionedSolidHorizontal) | Partial |
-| `11_LandXML.md` | LandXML-to-IFC conversion | Partial |
-| `12_Precision_and_Tolerance.md` | Precision and tolerance guidance | Partial |
-| `13_Examples_and_Validation_Data.md` | Examples and validation data | Stub |
+| `11_Precision_and_Tolerance.md` | Precision and tolerance guidance | Partial |
+| `12_Examples_and_Validation_Data.md` | Examples and validation data | Stub |
+| `Appendix_A_LandXML.md` | LandXML-to-IFC conversion (Appendix A) | Partial |
 
 ### Examples
 

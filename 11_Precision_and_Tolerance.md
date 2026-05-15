@@ -1,10 +1,10 @@
-# Section 12 - Precision and Tolerance
+# Section 11 - Precision and Tolerance
 
-## 12.0 Introduction
+## 11.0 Introduction
 
 Alignment geometry is rarely mathematically perfect. Design parameters are rounded to convenient values, segment coordinates are computed independently by different tools, and transition curve ordinates are approximated by numerical integration — all of which introduce small discrepancies at segment joints. Alignments derived from historical sources carry additional uncertainty from the original survey or drafting. IFC provides mechanisms for both declaring the intended geometric continuity at segment joints and communicating the tolerance within which that continuity should be evaluated.
 
-The primary declaration mechanism is `IfcCurveSegment.Transition`, which specifies the intended relationship between the end of one segment and the start of the next. Table 12.0-1 lists the available transition codes.
+The primary declaration mechanism is `IfcCurveSegment.Transition`, which specifies the intended relationship between the end of one segment and the start of the next. Table 11.0-1 lists the available transition codes.
 
 |Transition Value               |Description                                                                                                                                                                                                                                                                                                                    |
 |-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -13,13 +13,13 @@ The primary declaration mechanism is `IfcCurveSegment.Transition`, which specifi
 |`CONTSAMEGRADIENTSAMECURVATURE`|For a curve, the segments join, their tangent vectors are parallel and in the same direction and their curvatures are equal at the joint: equality of derivatives is not required. For a surface this implies that the principle curvatures are the same and the principle directions are coincident along the common boundary.|
 |`DISCONTINUOUS`                |The segments do not join. This is permitted only at the boundary of the curve or surface to indicate that it is not closed.                                                                                                                                                                                                |
 
-*Table 12.0-1 — IfcCurveSegment transition codes*
+*Table 11.0-1 — IfcCurveSegment transition codes*
 
-Figure 12.0-1 illustrates the various transition types. 
+Figure 11.0-1 illustrates the various transition types. 
 
 ![IfcTransitionCode](images/ifctransitioncode.gif)
 
-*Figure 12.0-1 - Illustration of segment transition types*
+*Figure 11.0-1 - Illustration of segment transition types*
 
 These transition codes declare intent, not guarantee. Adjacent segment end and start points may not exactly line up in position, gradient, or curvature for several reasons:
 

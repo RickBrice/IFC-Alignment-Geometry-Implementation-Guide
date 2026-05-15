@@ -10,14 +10,14 @@ The geometric representation of a vertical alignment is accomplished with `IfcGr
 
 Table 3.1-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corresponding parent curve type.
 
-  Business Logic (`IfcAlignmentVerticalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
-  ---------------------------------------|-----------------------------------
-  CONSTANTGRADIENT                       |`IfcLine`
-  CIRCULARARC                            |`IfcCircle`
-  CLOTHOID                               |`IfcClothoid`
-  PARABOLICARC                           |`IfcPolynomialCurve`
+| Business Logic (`IfcAlignmentVerticalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
+|---------------------------------------------------------------|----------------------------------------------------------|
+| CONSTANTGRADIENT                                              | `IfcLine`                                                |
+| CIRCULARARC                                                   | `IfcCircle`                                              |
+| CLOTHOID                                                      | `IfcClothoid`                                            |
+| PARABOLICARC                                                  | `IfcPolynomialCurve`                                     |
 
-  *Table 3.1-1 — Mapping of business logic to geometric representation for vertical alignment*
+*Table 3.1-1 — Mapping of business logic to geometric representation for vertical alignment*
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
@@ -184,7 +184,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (0.894427191,\ 0.447213595)$:
 
-$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.894427191}{0.447213595}\right) = 0.463647609\ \text{rad}$$
+$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.447213595}{0.894427191}\right) = 0.463647609\ \text{rad}$$
 
 $$M_N = \begin{bmatrix}
 0.894427191 & 0.447213595 & 0 & 0 \\
@@ -389,6 +389,8 @@ Compute the chord length between the start and end of the trimmed segment. This 
 
 ![](images/Circular_Vertical_Curve.png)
 
+*Figure 3.4.3-1 — Circular arc vertical curve geometry*
+
 Location point on parent curve corresponding to $\ell = 50$
 
 $$x = x_0 + \ell = 50\ m$$
@@ -404,9 +406,9 @@ $$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{58.2755
 
 Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.15159931828379261) = 58.331394062255001$
 
-Tangent angle at $\ell = 50\ m$
+Radial angle at $\ell = 50\ m$
 
-$\Delta_{pc} = \theta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$
+$\Delta_{pc} = \Delta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$
 
 Compute point on trimmed segment at $\ell$.
 
@@ -481,6 +483,12 @@ An example of an example file generated from the reference implementation is [ht
 ~~~
 
 Due to a lack of information, vertical clothoid transition curves have not yet been addressed.
+
+---
+todo - consider this alternative text
+
+Vertical clothoid transition curves are not addressed in this guide. The available reference implementation ([bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry)) produces degenerate results for this case — the generated IFC files have zero-length vertical alignments and a clothoid constant of zero, making them unsuitable as reference material. Until a correct reference or authoritative worked example is available, the geometric mapping for `IfcClothoid` in a vertical context remains undocumented here.
+---
 
 <!--
 Start angle = atan(startGradient)

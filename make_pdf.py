@@ -25,9 +25,9 @@ CHAPTERS = [
     "8_LinearPlacement.md",
     "9_Referents_and_Stationing.md",
     "10_Sectioned_Surfaces_and_Solids.md",
-    "11_LandXML.md",
-    "12_Precision_and_Tolerance.md",
-    "13_Examples_and_Validation_Data.md",
+    "11_Precision_and_Tolerance.md",
+    "12_Examples_and_Validation_Data.md",
+    "Appendix_A_LandXML.md",
 ]
 
 # ── Math protection ──────────────────────────────────────────────────────────
@@ -335,7 +335,7 @@ def main() -> None:
             continue
         print(f"  {name}")
         text = path.read_text(encoding="utf-8")
-        if re.match(r'^\d+_', name):
+        if re.match(r'^\d+_|^Appendix_', name):
             max_level = 2
         else:
             max_level = 1

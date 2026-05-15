@@ -6,7 +6,7 @@ The geometric representation of a horizontal alignment is accomplished with an `
 
 Table 2.0-1 maps each `IfcAlignmentHorizontalSegment.PredefinedType` to its corresponding parent curve type.
 
-| Business Logic (`IfcAlignmentHorizontaSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
+| Business Logic (`IfcAlignmentHorizontalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
 |---|---|
 | LINE | `IfcLine` |
 | CIRCULARARC | `IfcCircle` |
@@ -126,13 +126,13 @@ This semantic definition of this segment is:
 The geometric representation is an `IfcLine`. The line can be defined in
 different ways and is generally not important, as will be shown in the
 example below. `IfcLine` is an infinitely long line that passes through a
-specified point at some direction in the X-Y plane. A valid, but unnecessisarly complex parent curve is show in Figure 2.3.2.2-1. The `IfcLine` passes through poin t(1000,-800) and is direct at 135° from the x-axis. The `IfcCurveSegment` trim starts 10 m from (1000,-800) and the trimmed segment has a lenght of 1956.796 m.
+specified point at some direction in the X-Y plane. A valid, but unnecessarily complex parent curve is shown in Figure 2.3.2-2. The `IfcLine` passes through point (1000,-800) and is directed at 135° from the x-axis. The `IfcCurveSegment` trim starts 10 m from (1000,-800) and the trimmed segment has a length of 1956.796 m.
 
 ![](images/Figure_2.3_IfcLine_arbitrary_placement.svg)
 
 *Figure 2.3.2-2 IfcLine at arbitrary placement*
 
-Figure 2.3.2-2 represents a valid parent curve defiition and implementations must be prepared to properly interpret this parect curve geometry. This guide defines general algorithms to accomodate this geometry.
+Figure 2.3.2-2 represents a valid parent curve definition and implementations must be prepared to properly interpret this parent curve geometry. This guide defines general algorithms to accommodate this geometry.
 
 In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.
 
@@ -181,7 +181,7 @@ The segment placement is
 #50=IFCAXIS2PLACEMENT2D(#31,#49);
 ~~~
 
-The `IfcCurveSegment` is be defined as:
+The `IfcCurveSegment` is defined as:
 
 ~~~
 #55=IFCCURVESEGMENT(.CONTSAMEGRADIENT.,#50,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(1956.785654),#54);
@@ -215,7 +215,7 @@ Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmat
 
 **Step 3 — Evaluate and map each point**
 
-Evaluate the parent curve at $u = 100$
+Evaluate the parent curve at $u = 1500$
 
 $$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
@@ -343,7 +343,7 @@ $M_{CSP} = \begin{bmatrix}I\end{bmatrix}$
 
 **Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
-The trim begins where the local x-axis of the circle intersects the circumfrance. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
+The trim begins where the local x-axis of the circle intersects the circumference. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
@@ -422,7 +422,7 @@ $$u = \frac{s}{\left| A\sqrt{\pi} \right|}$$
 with
 $-\infty < u < \infty$. When $\theta = \pi/2$, $u = 1.0$.
 
-Care must be taken when evaluating clothoids because `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength` are defined with arc length. The details are illustreated in the example calculations.
+Care must be taken when evaluating clothoids because `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength` are defined with arc length. The details are illustrated in the example calculations.
 
 ### 2.5.2 Semantic Definition to Geometry Mapping
 
@@ -588,7 +588,7 @@ $$M_{h} = \begin{bmatrix}
 
 ## 2.6 Cubic Transition Curve
 
-`IfcPolynomalCurve` is the geometric type for cubic transition spirals.
+`IfcPolynomialCurve` is the geometric type for cubic transition spirals.
 
 <!--
 Source Model:
@@ -618,7 +618,7 @@ $$d = \int_{}^{}{\sqrt{9A_{3}^{2}x^{4} + 1}\ dx}$$
 This equation is solved for $x$ and then $y$ can be computed. This can
 be accomplished with numerical methods.
 
-1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Section 12](12_Precision_and_Tolerance.md) for a discussion on tolerances.
+1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Section 11](11_Precision_and_Tolerance.md) for a discussion on tolerances.
 
 2.  Compute $y(x) = A_{3}x^{3}$
 
@@ -653,51 +653,43 @@ The geometric representation is
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
 
-—-
-
-:warning:
-
-There is a flaw in the IFC Specification. [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) indicates the cubic formula is $y=\frac{x^3}{6RL}$ which means the `IfcPolynomialCurve.CoefficentY[3]` attribute must have unit of $Length^{-2}$. This is a direct contradiction to [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm) which clearly states the coefficent are real values (i.e. scalar values) with `IfcReal`.
-
-Why is this a problem? The calculation of a point on the polynomal curve is different depending on how the coefficients are defined.
-
-The parametric form of the polynomial curve is $\lambda(u) = ( x(u), y(u), z(u) )$. The polynomial curve represents real geometry so the resulting values, $x$, $y$, and $z$ must have units of $Length$.
-
-When $u$ is parametrized as a Length measure, as required by [IfcCurveSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcCurveSegment.htm), the parametric terms of the polynomal equation are:
-
-$x(u) = \sum\limits_{i=0}^{l} a_i u^i $
-
-$y(u) = \sum\limits_{j=0}^{m} b_j u^j $
-
-$z(u) = \sum\limits_{k=0}^{n} c_k u^k $
-
-For $x$, $y$, and $z$ to have values in $Length$ measure, the implicit unit of measure of the coefficients must be:
-
-$Length^{(1-i)}$ for $a_i$
-
-$Length^{(1-j)}$ for $b_j$
-
-$Length^{(1-k)}$ for $c_k$
-
-When $u$ is parametrized as a scalar, as required by [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm), the parametric terms of the polynomial equation are:
-
-$x(u) = L\sum\limits_{i=0}^{l} a_i u^i $
-
-$y(u) = L\sum\limits_{j=0}^{m} b_j u^j $
-
-$z(u) = L\sum\limits_{k=0}^{n} c_k u^k $
-
-The parameter $u$ and the coefficients are scalar so they must be multipled with the curve length $L$ to result values of Length.
-
-**The equations for $x$, $y$, and $z$ differ depending on the parameterization.**
-
-Concept Template [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html) and [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) provide clear direction (not withstanding typographical errors) that `IfcPolynomalCurve` is to be evaluated as $y = CoefficientsY[3]x^3$ which dictates that $CoefficientsY[3]$ must be in units of $Length^{-2}$ and must be encoded in the `IfcPolynomialCurve.CoefficientY` attribute as an `IfcReal`.
-
-An offical [Implementation Agreement](https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/) doesn't seem to exist, however, this interpetation is consistent with discussions on [GitHub](https://github.com/buildingSMART/IFC4.x-IF/issues/169). 
-
-:warning:
-
-—-
+> **Warning:** There is a flaw in the IFC Specification. [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) indicates the cubic formula is $y=\frac{x^3}{6RL}$ which means the `IfcPolynomialCurve.CoefficentY[3]` attribute must have unit of $Length^{-2}$. This is a direct contradiction to [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm) which clearly states the coefficients are real values (i.e. scalar values) with `IfcReal`.
+>
+> Why is this a problem? The calculation of a point on the polynomial curve is different depending on how the coefficients are defined.
+>
+> The parametric form of the polynomial curve is $\lambda(u) = ( x(u), y(u), z(u) )$. The polynomial curve represents real geometry so the resulting values, $x$, $y$, and $z$ must have units of $Length$.
+>
+> When $u$ is parametrized as a Length measure, as required by [IfcCurveSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcCurveSegment.htm), the parametric terms of the polynomial equation are:
+>
+> $x(u) = \sum\limits_{i=0}^{l} a_i u^i $
+>
+> $y(u) = \sum\limits_{j=0}^{m} b_j u^j $
+>
+> $z(u) = \sum\limits_{k=0}^{n} c_k u^k $
+>
+> For $x$, $y$, and $z$ to have values in $Length$ measure, the implicit unit of measure of the coefficients must be:
+>
+> $Length^{(1-i)}$ for $a_i$
+>
+> $Length^{(1-j)}$ for $b_j$
+>
+> $Length^{(1-k)}$ for $c_k$
+>
+> When $u$ is parametrized as a scalar, as required by [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm), the parametric terms of the polynomial equation are:
+>
+> $x(u) = L\sum\limits_{i=0}^{l} a_i u^i $
+>
+> $y(u) = L\sum\limits_{j=0}^{m} b_j u^j $
+>
+> $z(u) = L\sum\limits_{k=0}^{n} c_k u^k $
+>
+> The parameter $u$ and the coefficients are scalar so they must be multiplied with the curve length $L$ to result in values of Length.
+>
+> **The equations for $x$, $y$, and $z$ differ depending on the parameterization.**
+>
+> Concept Template [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html) and [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) provide clear direction (not withstanding typographical errors) that `IfcPolynomialCurve` is to be evaluated as $y = CoefficientsY[3]x^3$ which dictates that $CoefficientsY[3]$ must be in units of $Length^{-2}$ and must be encoded in the `IfcPolynomialCurve.CoefficientY` attribute as an `IfcReal`.
+>
+> An official [Implementation Agreement](https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/) does not appear to exist; however, this interpretation is consistent with discussions on [GitHub](https://github.com/buildingSMART/IFC4.x-IF/issues/169).
 
 ### 2.6.3 Compute Point on Curve
 
@@ -721,7 +713,7 @@ Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmat
 
 Compute point and curve tangent at 100 m from the start.
 
-From the `IfcPolynomalCurve` definition, 
+From the `IfcPolynomialCurve` definition, 
 
 X Coefficients = ($0 m^1$, $1 m^0$)
 
@@ -801,7 +793,7 @@ $$\theta(t) = \frac{t^{3}}{3A_{2}^{3}} + \frac{A_{1}}{2\left| A_{1}^{3} \right|}
 
 $$\kappa(t) = \frac{1}{A_{2}^{3}}t^{2} + \frac{A_{1}}{\left| A_{1}^{3} \right|}t + \frac{1}{A_{0}}$$
 
-The polynomial coefficietions carry a second subscript to indicate first half, $1$, and second half, $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
+The polynomial coefficients carry a second subscript to indicate first half, $1$, and second half, $2$. For example, $A_{21}$ is coefficient $A_2$ for the first half and $A_{02}$ is coefficient $A_0$ for the second half. 
 
 First Half
 
@@ -1416,10 +1408,11 @@ $$M_{h} =
 \end{bmatrix}$$
 
 ## 2.11 Viennese Transition Curve
-[todo: need a description of a viennese bend and its application in railroad. also need to note the unique feature that the cant parameters factor 
-into the horizontal geometry. state the parent curve type in this description]
+The Viennese Bend is a transition spiral developed for high-speed railway applications. Unlike every other transition curve type in this guide — all of which define horizontal geometry purely from geometric parameters (start radius, end radius, and arc length) — the Viennese Bend incorporates vehicle dynamics: its curvature variation is shaped by the superelevation (cant) transition that accompanies it. The result is a curve that simultaneously satisfies continuity requirements for curvature, cant, and their first derivatives, producing lower lateral jerk experienced by passengers.
 
-Parent curve type: `IfcSeventhOrderPolynomialSpiral`
+`IfcAlignmentHorizontalSegment.GravityCenterLineHeight` is required for `VIENNESEBEND` but is optional for all other horizontal segment types. The associated cant segment (`IfcAlignmentCantSegment` with `PredefinedType = VIENNESEBEND`) must span the same horizontal length.
+
+The IFC geometric type is `IfcSeventhOrderPolynomialSpiral`.
 
 <!--
 Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_VienneseBend_100.0_inf_300_1_Meter.ifc
@@ -1450,7 +1443,7 @@ Viennese Bend transition curves are unique in that the horizontal geometry of th
 
 $h_{cg}$ = Gravity Center Line Height = `IfcAlignmentHorizontalSegment.GravityCenterLineHeight`
 
-$d_{rh}$ = Rail Head Distance = `IfcAlignmentCant.RaliHeadDistance`
+$D_{rh}$ = Rail Head Distance = `IfcAlignmentCant.RailHeadDistance`
 
 $D_{sl}$ = `IfcAlignmentCantSegment.StartCantLeft`
 
@@ -1460,9 +1453,9 @@ $D_{sr}$ = `IfcAlignmentCantSegment.StartCantRight`
 
 $D_{er}$ = `IfcAlignmentCantSegment.EndCantRight`
 
-$\beta_s = \frac{(D_{sr} - D_{sl})}{d_{rh}}$,  Start Cross Slope
+$\beta_s = \frac{(D_{sr} - D_{sl})}{D_{rh}}$,  Start Cross Slope
 
-$\beta_e = \frac{(D_{er} - D_{el})}{d_{rh}}$,  End Cross Slope
+$\beta_e = \frac{(D_{er} - D_{el})}{D_{rh}}$,  End Cross Slope
 
 $cf = -420.\left ( \frac{h_{cg}}{L} \right) \left( \beta_e - \beta_s \right)$, Cant Factor
 

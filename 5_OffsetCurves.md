@@ -26,9 +26,9 @@ The `IfcOffsetCurveByDistances` geometry is derived by interpolating the `Offset
 
 ![](images/OffsetCurves.png)
 
-*Figure 7.0-1 Offset curves*
+*Figure 5.0-1 Offset curves*
 
-Figure 7.0-1 shows two offset curves that share a single basis curve. Offset curve 1 has different offset values defined at the start and the end of the basis curve. The start offset is 10 ft and the end offset is 20 ft. The basis curve is 100 ft long. The point on Offset curve 1 that corresponds to the mid-point of the basis curve is determined by evaluating the basis curve at 50 ft, then applying the linearly interpolated offset of 15 ft.
+Figure 5.0-1 shows two offset curves that share a single basis curve. Offset curve 1 has different offset values defined at the start and the end of the basis curve. The start offset is 10 ft and the end offset is 20 ft. The basis curve is 100 ft long. The point on Offset curve 1 that corresponds to the mid-point of the basis curve is determined by evaluating the basis curve at 50 ft, then applying the linearly interpolated offset of 15 ft.
 
 Offset curve 2 has several offsets. Linear interpolation is used to determine the offset from the basis curve to the offset curve between each pair of consecutive offset points.
 
@@ -69,11 +69,11 @@ For most infrastructure applications the linear interpolation error is small rel
 
 A related but distinct accuracy issue arises when `IfcOffsetCurveByDistances` is used as the `BasisCurve` in `IfcPointByDistanceExpression` for `IfcLinearPlacement`. The problem is not just that the shape of the offset curve is approximate — it is that **distance along** the offset curve is also approximate, and two independent implementations may compute different arc lengths for the same curve definition.
 
-The arc length of `IfcOffsetCurveByDistances` at any given chainage is obtained by numerically integrating the offset curve geometry between the sample points. Because the IFC specification does not prescribe the interpolation method (see §6.7), different software may produce different intermediate curve shapes from identical `OffsetValues`, and therefore different arc lengths. Even if the interpolation method is agreed upon, the arc length integral has no closed form for a general offset from a spiral, so implementations must use numerical quadrature with finite precision.
+The arc length of `IfcOffsetCurveByDistances` at any given chainage is obtained by numerically integrating the offset curve geometry between the sample points. Because the IFC specification does not prescribe the interpolation method (see §5.7), different software may produce different intermediate curve shapes from identical `OffsetValues`, and therefore different arc lengths. Even if the interpolation method is agreed upon, the arc length integral has no closed form for a general offset from a spiral, so implementations must use numerical quadrature with finite precision.
 
 The consequence is that a `DistanceAlong` value specified against an `IfcOffsetCurveByDistances` does not map to a unique, reproducible point across implementations. This is in direct contrast to `DistanceAlong` measured along an `IfcCompositeCurve` or `IfcGradientCurve`, where arc length is determined exactly by the curve equations.
 
-For precise linear placement, the recommended practice (discussed fully in §6.5) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
+For precise linear placement, the recommended practice (discussed fully in §5.5) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
 
 ## 5.5 Arc Length of an Offset Curve
 
@@ -85,7 +85,7 @@ A positive (left) offset increases arc length; a negative (right) offset inside 
 
 $$L_{\text{offset}} = 200 \cdot \frac{1010}{1000} = 202 \text{ ft}$$
 
-For varying offsets or non-circular basis curves there is no simple closed-form expression. `IfcOffsetCurveByDistances` does not expose an arc length attribute. When linear placement of objects relative to an offset alignment is needed, the recommended practice (see §6.5) is to use the parent alignment as the `BasisCurve` in `IfcPointByDistanceExpression` rather than the offset curve itself, so the arc length of the offset curve is rarely needed in practice.
+For varying offsets or non-circular basis curves there is no simple closed-form expression. `IfcOffsetCurveByDistances` does not expose an arc length attribute. When linear placement of objects relative to an offset alignment is needed, the recommended practice (see §5.5) is to use the parent alignment as the `BasisCurve` in `IfcPointByDistanceExpression` rather than the offset curve itself, so the arc length of the offset curve is rarely needed in practice.
 
 ## 5.6 Example Model Walkthrough
 

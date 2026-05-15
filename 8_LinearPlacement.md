@@ -44,11 +44,11 @@ IfcProduct
 
 The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference context. When it is **omitted**, the placement is measured from the start of the basis curve defined in `IfcPointByDistanceExpression`. This is the standard case when the basis curve is an alignment defined in the project coordinate system.
 
-Figure 6.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.
+Figure 8.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.
 
 ![](images/alignment_linear_placement_features.svg)
 
-*Figure 6.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
+*Figure 8.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
 ## 8.2 IfcLinearPlacement and IfcAxis2PlacementLinear
 
@@ -62,7 +62,7 @@ Figure 6.1.2-1 schematically represents the linear placement of a bridge pier an
 |`BasisCurve`        |`IfcCurve`                 |The curve along which the distance is measured.                                                                                                            |
 |`OffsetLateral`     |`OPTIONAL IfcLengthMeasure`|Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148).                             |
 |`OffsetVertical`    |`OPTIONAL IfcLengthMeasure`|Signed vertical offset. Positive upward.                                                                                                                   |
-|`OffsetLongitudinal`|`OPTIONAL IfcLengthMeasure`|Signed offset along the tangent direction. See §6.4 for uses.                                                                                              |
+|`OffsetLongitudinal`|`OPTIONAL IfcLengthMeasure`|Signed offset along the tangent direction. See §8.4 for uses.                                                                                              |
 
 The `BasisCurve` attribute of `IfcPointByDistanceExpression` is the key to understanding which curve the distance is measured along. For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve — that is, along the underlying `IfcCompositeCurve` that represents the plan layout. This is consistent with how stationing is defined in transportation engineering: stationing is a horizontal measure.
 
@@ -84,7 +84,7 @@ When using `IfcPointByDistanceExpression`, supply the **geometric distance**, no
 |Attribute     |Role in local CS          |Default                              |
 |--------------|--------------------------|-------------------------------------|
 |`RefDirection`|X-axis (forward direction)|Tangent to the 3D curve at `Location`|
-|`Axis`        |Z-axis (up direction)     |See §6.3.2                           |
+|`Axis`        |Z-axis (up direction)     |See §8.3.2                           |
 
 The Y-axis is derived as the cross product of `Axis` × `RefDirection` (after normalisation).
 
@@ -118,11 +118,11 @@ The result is a coordinate system whose:
 - Y-axis points to the left (lateral direction in the horizontal plane),
 - Z-axis points upward (global vertical).
 
-This is the classic highway “station-offset” reference frame and is illusrated in Figure 6.3.3-1.
+This is the classic highway “station-offset” reference frame and is illustrated in Figure 8.3.3-1.
 
 ![](images/linear_placement_offsets.svg)
 
-*Figure 6.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.*
+*Figure 8.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.*
 
 ## 8.4 Longitudinal Offset and Unreachable Points
 
@@ -130,11 +130,11 @@ This is the classic highway “station-offset” reference frame and is illusrat
 
 In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that **cannot be expressed** as a station plus a purely transverse offset.
 
-The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 6.4.1-1.
+The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 8.4.1-1.
 
 ![](images/pi_unreachable_zone.svg)
 
-*Figure 6.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
+*Figure 8.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 
 ### 8.4.2 Using OffsetLongitudinal
 
@@ -237,7 +237,7 @@ In this example:
 - `DistanceAlong = 1435.75` is the geometric distance from the start of `#102`.
 - `OffsetLateral = -5.25` places the point 5.25 m to the right of the horizontal alignment (negative = right of travel).
 - `OffsetVertical` is omitted; the is placed in the same plane as the horizontal alignment.
-- `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §6.3.3.
+- `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §8.3.3.
 
 ## 8.8 Summary and Implementation Checklist
 

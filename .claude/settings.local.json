@@ -29,7 +29,10 @@
       "Bash(mv 11_Precision_and_Tolerance.md 12_Precision_and_Tolerance.md)",
       "Bash(mv 10_LandXML.md 11_LandXML.md)",
       "Bash(mv 9_Specialized_Infrastructure_Geometry.md 10_Specialized_Infrastructure_Geometry.md)",
-      "Bash(mv 8_Referents_and_Stationing.md 9_Referents_and_Stationing.md)"
+      "Bash(mv 8_Referents_and_Stationing.md 9_Referents_and_Stationing.md)",
+      "Bash(Get-ChildItem -Path \"d:\\\\IFC-Alignment-Geometry-Implementation-Guide\" -Filter \"*.py\")",
+      "Bash(Select-Object Name)",
+      "Bash(Select-String \"image|tangent_segment|linear_placement_offsets|pi_unreachable|stationing_diagram|Superelevation\\\\.ifc|IfcSectionedSurface_with_breaklines\")"
     ]
   }
 }

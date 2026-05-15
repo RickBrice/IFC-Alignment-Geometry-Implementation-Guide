@@ -8,7 +8,7 @@ examples are provided in the available literature. This guide aims to
 document the relevant concepts and mathematics a software
 developer might need to implement alignment-based geometry.
 
-If you are unfamilar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Adminstration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673), Chapters 1 - 5 and Appendix B. 
+If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673), Chapters 1 - 5 and Appendix B. 
 
 The IFC specification identifies concept templates as the mechanism for
 mapping semantic alignment representations to their geometric
@@ -17,7 +17,7 @@ project, alignment layout nesting, and the four alignment geometry
 variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
 provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The *partial* concept templates that
 cover individual curve segment geometry types, however, are sparse: they show class relationships but provide no
-mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Sections 2–4); offset curves (Section 5); approximate polyline representations (Section 6); alignments that share a common horizontal layout (Section 7); linear placement of objects along an alignment (Section 8); referents and stationing, including station equations (Section 9); alignment-based physical geometry — sectioned surfaces and solids (Section 10); LandXML-to-IFC conversion (Section 11); precision and tolerance guidance (Section 12); and examples and validation data (Section 13). It assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.
+mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Sections 2–4); offset curves (Section 5); approximate polyline representations (Section 6); alignments that share a common horizontal layout (Section 7); linear placement of objects along an alignment (Section 8); referents and stationing, including station equations (Section 9); alignment-based physical geometry — sectioned surfaces and solids (Section 10); precision and tolerance guidance (Section 11); and examples and validation data (Section 12). LandXML-to-IFC conversion is covered in [Appendix A](Appendix_A_LandXML.md). It assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.
 
 ## 1.1 Horizontal Alignment
 
@@ -28,7 +28,7 @@ to provide gradual transitions between tangents and circular curves. The
 horizontal alignment is a plan view curvilinear path in a Cartesian
 coordinate system aligned with East and North. Positions along an
 alignment, measured along the plan view projection of the 3D alignment
-curve, are typically denoted with stations.
+curve, are typically denoted with *stations* (also called *chainage* in British and Australian practice; the two terms are used interchangeably throughout this guide).
 
 ## 1.2 Vertical Alignment
 
@@ -144,7 +144,7 @@ by the IFC concept templates for each alignment geometry variant are listed in T
 
 *Table 1.5.1-1 — Required RepresentationIdentifier and RepresentationType for each alignment geometry variant*
 
-`IfcGradientCurve` and `IfcSegmentReferenceCurve` inherit from
+`IfcGradientCurve` and `IfcSegmentedReferenceCurve` inherit from
 `IfcCompositeCurve`. These curves consist of a sequence of segments
 defined by `IfcCurveSegment`. The mathematical computations for
 `IfcCurveSegment` geometry are the primary focus of this document.
@@ -220,7 +220,7 @@ starts at (0,0) and progresses in horizontal direction, but the tangent segment 
 For `IfcGradientCurve` and `IfcSegmentedReferenceCurve` the segments do not
 need to start or end at the same location of their base curve. These
 curves can be shorter or longer than the horizontal alignment. This is illustrated
-in Figure 1.5.2.2-1 where the blue curve is the full horizontal curve and the
+in Figure 1.5.2-4 where the blue curve is the full horizontal curve and the
 orange curve is the portion of the horizontal curve coinciding with the
 vertical curve. The `IfcGradientCurve` (#770) has the `IfcCompositeCurve`
 (#657) as its base curve. The placement of the first `IfcCurveSegment`
@@ -242,7 +242,7 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 
 ![](images/image4.png)
 
-*Figure 1.5.2.2-1 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
+*Figure 1.5.2-4 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
 
 ## 1.6 Reference Implementation and Segment Mapping:
 

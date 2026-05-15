@@ -8,7 +8,7 @@ Cant is measured as a length — the height difference between railheads — rat
 
 ## 4.1 General
 
-An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accomodate the cross slope. 
+An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accommodate the cross slope. 
 
 An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of `IfcCompositeCurve`, an `IfcSegmentedReferenceCurve` consists of an end to start collection of `IfcCurveSegment`. An `IfcSegmentedReferenceCurve` also has a `BasisCurve` which is typically an `IfcGradientCurve`.
 
@@ -49,7 +49,7 @@ The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis
 
 ### 4.1.2 Coordinate System
 
-The coordinate system is shown in Figure 4.1.1-1, but it is difficult to understand.
+Figure 4.1.1-1 illustrates the cant coordinate system.
 
 `IfcCurveSegment.Placement.RefDirection` is tangent to the "distance along" the base curve in the horizontal plane, (e.g. `IfcSegmentedReferenceCurve.BaseCurve` => `IfcGradientCurve.BaseCurve` => `IfcCompositeCurve`).
 
@@ -126,7 +126,7 @@ $$\phi(s_0) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)(D(s_0) - D
 
 Because $D(s_0) = D_s,\ \phi(s_0) = \phi_s$.
 
-Construct the orthoginal vectors
+Construct the orthogonal vectors
 
 $$\mathbf{X}_{pcs} = (\cos\theta_s,\ \sin\theta_s,\ 0)$$
 $$\mathbf{Z}_{pcs} = (0,\ \cos\phi_s,\ \sin\phi_s)$$
@@ -179,7 +179,7 @@ $$\Delta\mathbf{T} = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
 
 Apply the increment to the curve segment placement:
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \Delta\mathbf{T}  = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \Delta\mathbf{T} + \mathbf{T}_{CSP} = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -362,40 +362,34 @@ $$M_{PC\ell} = \begin{bmatrix}
 $$R_{CSP} = \begin{bmatrix} 
         1 &         0 &         0 \\
        0 &  0.994295 &  0.106667 \\
-        0 & -0.106667 &  0.994295\\
-        0 &         0 &         0
+        0 & -0.106667 &  0.994295
 \end{bmatrix}$$
 $$R_{PCS} = \begin{bmatrix}
         1 &        0 &         0 \\
         0 &  0.994295 &  0.106667 \\
-        0 & -0.106667 &  0.994295 \\
-        0 &         0 &         0 
+        0 & -0.106667 &  0.994295
 \end{bmatrix}$$
 $$R_{PC\ell} = \begin{bmatrix}
         1 &        0 &         0 \\
         0 &  0.994295 &  0.106667 \\
-        0 & -0.106667 &  0.994295 \\
-        0 &         0 &         0 
+        0 & -0.106667 &  0.994295
 \end{bmatrix}$$
 
-$$\R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}=
+$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}=
 \begin{bmatrix}
         1 &        0 &         0 \\
         0 &  0.994295 &  0.106667 \\
-        0 & -0.106667 &  0.994295 \\
-        0 &         0 &         0 
+        0 & -0.106667 &  0.994295
 \end{bmatrix}
  \begin{bmatrix}
         1 &        0 &         0 \\
         0 &  0.994295 & -0.106667 \\
-        0 &  0.106667 &  0.994295 \\
-        0 &         0 &         0 
+        0 &  0.106667 &  0.994295
 \end{bmatrix}
 \begin{bmatrix} 
         1 &         0 &         0 \\
        0 &  0.994295 &  0.106667 \\
-        0 & -0.106667 &  0.994295\\
-        0 &         0 &         0
+        0 & -0.106667 &  0.994295
 \end{bmatrix}
 $$
 
@@ -403,8 +397,7 @@ $$R_c =
 \begin{bmatrix} 
         1 &         0 &         0 \\
        0 &  0.994295 &  0.106667 \\
-        0 & -0.106667 &  0.994295\\
-        0 &         0 &         0
+        0 & -0.106667 &  0.994295
 \end{bmatrix}
 $$
 
@@ -601,7 +594,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
 
 **Assemble**
 
@@ -760,7 +753,7 @@ Figure 4.5.2-1 shows the first and second half parent curves.
 
 ![](images/Helmert_Cant_Parent_Curves.svg)
 
-*Figure 4.5.2-1 - `IfcPolygonalSpiralCurve` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
+*Figure 4.5.2-1 - `IfcSecondOrderPolynomialSpiral` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
 
 The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 ~~~
@@ -893,7 +886,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
 
 **Assemble**
 
@@ -1081,7 +1074,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
 
 **Assemble**
 
@@ -1250,7 +1243,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
 
 **Assemble**
 
@@ -1433,7 +1426,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
 
 **Assemble**
 
@@ -1662,7 +1655,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{CSP} + \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
 
 **Assemble**
 
