@@ -171,6 +171,8 @@ vertical alignment.
 
 *Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
 
+**todo - need discussion for reusign horizontal to go along with figure, or remove figure**
+
 ![](images/Figure_2.1_Alignment_Geometry_Reuse.svg)
 
 *Figure 1.5.2-2 Reuse of a shared `IfcCompositeCurve` across multiple child alignments. Each child `IfcAlignment` nests only its own vertical and cant layouts; the horizontal `IfcCompositeCurve` is referenced as `BaseCurve` by each child's gradient or segmented reference curve.*
