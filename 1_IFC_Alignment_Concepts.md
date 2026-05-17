@@ -147,7 +147,7 @@ by the IFC concept templates for each alignment geometry variant are listed in T
 `IfcGradientCurve` and `IfcSegmentedReferenceCurve` inherit from
 `IfcCompositeCurve`. These curves consist of a sequence of segments
 defined by `IfcCurveSegment`. The mathematical computations for
-`IfcCurveSegment` geometry are the primary focus of this document.
+`IfcCurveSegment` geometry are the primary focus of Chapters 2 - 4.
 
 `IfcPolyline` and `IfcIndexedPolyCurve` produce approximate, discrete geometry
 rather than exact parametric curves. They arise in survey-derived alignments and early
