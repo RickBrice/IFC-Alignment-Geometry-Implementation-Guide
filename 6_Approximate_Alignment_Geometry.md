@@ -66,7 +66,7 @@ While `IfcPolyline` and `IfcIndexedPolyCurve` could each serve as an
 segment. A zero-length polyline segment requires two consecutive coincident vertices;
 `IfcPolyline` WHERE rule WR1 explicitly prohibits this. `IfcIndexedPolyCurve` has no
 equivalent schema-level prohibition, but a coincident point pair produces a degenerate
-segment with an undefined tangent direction.
+segment with an undefined tangent direction. This is unfortunate because an application needing detailed semantic information and only an approximate geometric representation is left with an unsupported use case.
 
 For this reason, `IfcPolyline` and `IfcIndexedPolyCurve` (as well as `IfcOffsetCurveByDistances`) can only represent an
 `IfcAlignment` without an accompanying semantic layout definition.
