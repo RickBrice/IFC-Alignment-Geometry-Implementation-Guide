@@ -38,7 +38,7 @@ parabolas, though sometimes circular arcs or clothoid curves are used. A
 vertical alignment is defined along the curvilinear path of a horizontal
 alignment in a 2D "Distance Along, Elevation" coordinate system. Combined,
 the horizontal and vertical alignments define a 3D curve. This
-combination of two 2D curves is sometimes referred to as a 2.5D or 2D+1D
+combination of two 2D curves is sometimes referred to as a 2.5D or 2+1D
 geometry. The IFC specification notes that contemporary alignment design
 almost always implements this 2.5D approach, with precision varying
 based on management priorities, design era, and available software tools.
