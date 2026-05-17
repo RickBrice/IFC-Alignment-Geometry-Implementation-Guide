@@ -26,8 +26,9 @@ CHAPTERS = [
     "9_Referents_and_Stationing.md",
     "10_Sectioned_Surfaces_and_Solids.md",
     "11_Precision_and_Tolerance.md",
-    "12_Examples_and_Validation_Data.md",
+    "12_Alignment_Geometry_Testset.md",
     "Appendix_A_LandXML.md",
+    "Index.md",
 ]
 
 # ── Math protection ──────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-# Section 8 - Linear Placement
+﻿# Chapter 8 - Linear Placement
 
 ## 8.0 Introduction
 
@@ -68,10 +68,10 @@ The `BasisCurve` attribute of `IfcPointByDistanceExpression` is the key to under
 
 ### 8.2.2 Stationing and DistanceAlong
 
-Stationing is addressed comprehensively in Section 9. For the purposes of linear placement, the key point is that `DistanceAlong` is a **geometric distance from the start of the basis curve**, not a station label. These two quantities are related but not identical:
+Stationing is addressed comprehensively in Chapter 9. For the purposes of linear placement, the key point is that `DistanceAlong` is a **geometric distance from the start of the basis curve**, not a station label. These two quantities are related but not identical:
 
 - **Geometric distance** begins at zero and increases continuously to the total length of the curve.
-- **Station value** may begin at an arbitrary value (e.g., 10+00.00 = 1000 ft from some project reference), may include equation gaps or overlaps where stationing is reset, and may use different units (feet vs. metres).
+- **Station value** may begin at an arbitrary value (e.g., 10+00.00 = 1000 ft from some project reference), may include equation gaps or overlaps where stationing is reset, and may use different units (feet vs. meters).
 
 When using `IfcPointByDistanceExpression`, supply the **geometric distance**, not the raw station label. If the alignment has an `IfcReferent` that defines the starting station, the geometric distance equals the station value minus the starting station value (adjusted for any station equations encountered along the way).
 
@@ -109,8 +109,8 @@ When `Axis` and `RefDirection` are not provided, the local coordinate system is 
 1. **Compute RefDirection** = unit tangent **T** to the 3D curve at `DistanceAlong`.  
    For a horizontal curve (grade = 0), **T** lies in the XY plane.  
    For a graded curve, **T** has a non-zero Z component.
-1. **Y** = normalise(**Z** × **T**)  *(points to the left of travel)*
-1. **X** = normalise(**Y** × **Z**)  *(points forward, projected onto the horizontal plane)*
+1. **Y** = normalize(**Z** × **T**)  *(points to the left of travel)*
+1. **X** = normalize(**Y** × **Z**)  *(points forward, projected onto the horizontal plane)*
 
 The result is a coordinate system whose:
 
@@ -149,33 +149,39 @@ The resulting point is no longer “on” a perpendicular to the curve at `Dista
 
 **Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
 
-## 8.5 Linear Placement along IfcOffsetCurveByDistances
+## 8.5 Fallback Cartesian Position
 
-`IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centreline varies gradually. Offset curves are comprehensively discussed in [Section 5.0](5_OffsetCurves.md).
+`IfcLinearPlacement.CartesianPosition` is an optional `IfcAxis2Placement3D` attribute that provides a fallback geometry placement for receiving applications that do not support linear placement. An importing application that does not implement linear placement evaluation can read the stored Cartesian frame directly, without evaluating any curve geometry.
 
-### 8.5.1 The Approximate Length Problem
+The attribute is populated by the exporting application, which evaluates `RelativePlacement` against the alignment geometry and stores the resulting absolute 3D frame in the project coordinate system before writing the file. The buildingSMART Validation Service treats `CartesianPosition` as a best-practice requirement: a file that omits it will be flagged as not conforming to best practices, and a file that includes it must pass consistency checking — the origin and axes of `CartesianPosition` must match the evaluated result of `RelativePlacement` to within model tolerance. A mismatched fallback is worse than no fallback, because it silently places the object at the wrong location for receivers that fall back to the Cartesian frame.
+
+## 8.6 Linear Placement along IfcOffsetCurveByDistances
+
+`IfcOffsetCurveByDistances` is an interpolated curve defined by a series of offset values measured from a basis curve. The offset values at intermediate positions are linearly interpolated between the defined sample points, forming a piecewise-linear offset profile. This is used, for example, to define a road edge line whose lateral distance from the centerline varies gradually. Offset curves are comprehensively discussed in [Chapter 5](5_OffsetCurves.md).
+
+### 8.6.1 The Approximate Length Problem
 
 Because `IfcOffsetCurveByDistances` is a sampled, interpolated curve rather than an analytically defined curve, its **arc length is only approximate**. The arc length depends on the density of the sample points along the curve: more sample points produce a more accurate length estimate, but the length is never exact for a truly curved basis.
 
 This approximation has a critical consequence for linear placement: when `IfcPointByDistanceExpression.BasisCurve` is an `IfcOffsetCurveByDistances`, the `DistanceAlong` value cannot be mapped to a unique, precisely determined point on the curve. Two implementations with different sampling densities may compute slightly different positions for the same `DistanceAlong` value.
 
-### 8.5.2 Recommendations
+### 8.6.2 Recommendations
 
 For applications requiring precise linear placement:
 
-1. **Prefer using the parent alignment** (e.g., the `IfcCompositeCurve` representing the horizontal alignment) as the `BasisCurve`, and use `OffsetLateral` to account for any transverse offset from the centreline. This avoids the approximation problem entirely.
+1. **Prefer using the parent alignment** (e.g., the `IfcCompositeCurve` representing the horizontal alignment) as the `BasisCurve`, and use `OffsetLateral` to account for any transverse offset from the centerline. This avoids the approximation problem entirely.
 1. **If placement along an offset curve is unavoidable**, document the sampling density of the `IfcOffsetCurveByDistances` so that receivers can evaluate the precision of derived positions.
 1. **Do not rely on** `DistanceAlong` values along an `IfcOffsetCurveByDistances` being reproducible across different software implementations.
 
-## 8.6 ISO 19148 Linear Referencing
+## 8.7 ISO 19148 Linear Referencing
 
-### 8.6.1 Background
+### 8.7.1 Background
 
 ISO 19148 *Geographic information — Linear referencing* is the international standard that formalises the concept of locating features along a linear element. IFC4x3’s infrastructure extensions draw on ISO 19148 concepts, and `Pset_LinearReferencingMethod` (applicable to `IfcAlignment` and `IfcReferent`) is defined in terms of ISO 19148.
 
 Understanding the ISO 19148 model helps implementers correctly interpret `DistanceAlong` values, especially when data is exchanged between systems that use different linear referencing conventions.
 
-### 8.6.2 Key ISO 19148 Concepts
+### 8.7.2 Key ISO 19148 Concepts
 
 **Linear Referencing Method (LRM).** An LRM defines the rules for measuring distance along a linear element. The most common types are:
 
@@ -187,35 +193,35 @@ Understanding the ISO 19148 model helps implementers correctly interpret `Distan
 
 `Pset_LinearReferencingMethod` records the LRM type (`LRMType`), its name (`LRMName`), and the units of measure (`LRMUnit`) for an alignment or referent element.
 
-**Referents and Milestones vs. Stationing.** In European road practice, distance along a route is often expressed using *kilometre posts* (KP) or *reference posts* — physical markers at known locations. A KP system is a Relative or Reference Post LRM: distance is measured to the nearest upstream post, plus an offset. In North American highway practice, *stationing* is an Absolute LRM: every point on the alignment is assigned a cumulative distance from the project start, expressed as `ccc+dd.dd` (hundreds of feet) or in metres.
+**Referents and Milestones vs. Stationing.** In European road practice, distance along a route is often expressed using *kilometer posts* (KP) or *reference posts* — physical markers at known locations. A KP system is a Relative or Reference Post LRM: distance is measured to the nearest upstream post, plus an offset. In North American highway practice, *stationing* is an Absolute LRM: every point on the alignment is assigned a cumulative distance from the project start, expressed as `ccc+dd.dd` (hundreds of feet) or in meters.
 
 The key difference:
 
 - **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`).
 - **KP / Reference Post (Relative LRM):** `DistanceAlong` in IFC is always the absolute geometric distance from the curve start. A KP value must be converted to a geometric distance before use in `IfcPointByDistanceExpression`.
 
-### 8.6.3 LRM Name Examples from ISO 19148 Annex C
+### 8.7.3 LRM Name Examples from ISO 19148 Annex C
 
-ISO 19148 Annex C lists recognised LRM name aliases. Common examples include:
+ISO 19148 Annex C lists recognized LRM name aliases. Common examples include:
 
 |Name           |Common Alias|Typical Region       |
 |---------------|------------|---------------------|
 |milepoint      |milepost, MP|USA, Canada          |
-|kilometre point|KP, PK      |Europe, Latin America|
+|kilometer point|KP, PK      |Europe, Latin America|
 |chainage       |ch          |UK, Australia, India |
 |reference post |RP          |Rail, some roads     |
 
-`Pset_LinearReferencingMethod.LRMName` should use one of these recognised names where possible for maximum interoperability.
+`Pset_LinearReferencingMethod.LRMName` should use one of these recognized names where possible for maximum interoperability.
 
-### 8.6.4 Impact on DistanceAlong
+### 8.7.4 Impact on DistanceAlong
 
 Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpression.DistanceAlong` is always the **geometric distance from the start of `BasisCurve`**. LRM labels (station values, KP values, etc.) are a display convention managed through `IfcReferent` and `Pset_LinearReferencingMethod`, not through `DistanceAlong` directly.
 
-See Section 9 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
+See Chapter 9 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
 
-## 8.7 Complete Example
+## 8.8 Complete Example
 
-The following example illustrates a point located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centreline.
+The following example illustrates a point located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centerline.
 
 ~~~
 #100 = IFCALIGNMENT(...);
@@ -236,10 +242,10 @@ In this example:
 
 - `DistanceAlong = 1435.75` is the geometric distance from the start of `#102`.
 - `OffsetLateral = -5.25` places the point 5.25 m to the right of the horizontal alignment (negative = right of travel).
-- `OffsetVertical` is omitted; the is placed in the same plane as the horizontal alignment.
+- `OffsetVertical` is omitted; the point is placed in the same plane as the horizontal alignment.
 - `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §8.3.3.
 
-## 8.8 Summary and Implementation Checklist
+## 8.9 Summary and Implementation Checklist
 
 |#|Item                                                                                              |Notes                                                                                                   |
 |-|--------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
@@ -250,3 +256,4 @@ In this example:
 |5|Use `OffsetLongitudinal` only for geometrically unreachable points (e.g., outside an angle point).|For all ordinary placements, omit or set to zero.                                                       |
 |6|Avoid using `IfcOffsetCurveByDistances` as `BasisCurve` for precise placement.                    |Use the parent alignment with `OffsetLateral` instead.                                                  |
 |7|Record the LRM type and units in `Pset_LinearReferencingMethod` on the `IfcAlignment`.            |Required for correct interpretation of `IfcReferent` stationing labels.                                 |
+|8|Provide `CartesianPosition` only when exchanging with applications that lack linear placement support; omit otherwise.|Regenerate it after any alignment geometry change; validate consistency with the buildingSMART Validation Service.|

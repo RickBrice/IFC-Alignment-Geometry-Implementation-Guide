@@ -3,4 +3,4 @@ An implementation guide for developers adding IFC4x3 alignment geometry support 
 
 Richard Brice, PE
 
-![](images/Cover.jpg)
+![](images/cover.svg)

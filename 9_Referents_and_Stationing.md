@@ -1,8 +1,8 @@
-# Section 9 - IfcReferent and Stationing
+﻿# Chapter 9 - IfcReferent and Stationing
 
 ## 9.0 Introduction
 
-Section 8 established that `IfcPointByDistanceExpression.DistanceAlong` is a **geometric distance** — a raw arc-length measure from the start of a curve. But civil engineering practice does not communicate location this way. Engineers say “Pier 3 is at Station 14+235.75,” not “Pier 3 is 14,235.75 metres from the start of the survey baseline.” The station label is a human-readable, project-specific identifier that may begin at an arbitrary value, may use different units than the project, and may not even progress continuously along the alignment.
+Chapter 8 established that `IfcPointByDistanceExpression.DistanceAlong` is a **geometric distance** — a raw arc-length measure from the start of a curve. But civil engineering practice does not communicate location this way. Engineers say “Pier 3 is at Station 14+235.75,” not “Pier 3 is 14,235.75 meters from the start of the survey baseline.” The station label is a human-readable, project-specific identifier that may begin at an arbitrary value, may use different units than the project, and may not even progress continuously along the alignment.
 
 `IfcReferent` is the IFC mechanism that bridges these two worlds. It is a positioned object that attaches semantic location information — most importantly, stationing — to a specific geometric point on an alignment. It does not change the geometry; it annotates it.
 
@@ -35,7 +35,7 @@ The single attribute `IfcReferent` adds beyond its supertypes is `PredefinedType
 
 ### 9.2.1 What Is a Station?
 
-Stationing (also called *chainage* in British practice) is a distance-based coordinate system used to identify locations along a linear route. In North American highway practice, stations are expressed in the form `ccc+dd.dd`, where the number before the `+` is the count of hundreds of feet (or hundreds of metres in metric projects) and the digits after are the remainder. For example, Sta. 142+35.75 means 14,235.75 feet (or metres) from the project datum.
+Stationing (also called *chainage* in British practice) is a distance-based coordinate system used to identify locations along a linear route. In North American highway practice, stations are expressed in the form `ccc+dd.dd`, where the number before the `+` is the count of hundreds of feet (or hundreds of meters in metric projects) and the digits after are the remainder. For example, Sta. 142+35.75 means 14,235.75 feet (or meters) from the project datum.
 
 The project datum — the zero point of stationing — is defined by the first `IfcReferent` nested in the alignment (see §9.4). Stationing typically begins at a round number such as 10+00 or 100+00 rather than 0+00, to avoid negative stations at points that may be surveyed upstream of the formal project start.
 
@@ -51,7 +51,7 @@ Stationing metadata is stored in `Pset_Stationing`, attached to an `IfcReferent`
 |`IncomingStation`     |`IfcLengthMeasure`|Present only at a station equation. The station value on the *incoming* (upstream) side of the break. The `Station` property holds the *outgoing* value immediately after the break.    |
 |`HasIncreasingStation`|`IfcBoolean`      |Controls the direction of stationing. If `TRUE` (or absent), subsequently nested referents have increasing station values. If `FALSE`, they decrease. Covers reverse-stationing schemes.|
 
-The `Station` value is expressed in the same units as the project length unit (typically metres or feet), **not** in the `ccc+dd.dd` string form. A station of 142+35.75 ft is stored as `14235.75` with feet as the project unit.
+The `Station` value is expressed in the same units as the project length unit (typically meters or feet), **not** in the `ccc+dd.dd` string form. A station of 142+35.75 ft is stored as `14235.75` with feet as the project unit.
 
 -----
 
@@ -182,7 +182,14 @@ Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.
 1. **`RelatingObject`** — the `IfcAlignment` (the parent).
 1. **`RelatedObjects`** — an **ordered list** of objects nested within. The order matters: referents must appear in the list in order of increasing `DistanceAlong` along the alignment.
 
-The first `IfcReferent` in `RelatedObjects` defines the **starting station** of the alignment. Its `Pset_Stationing.Station` value is the station label at `DistanceAlong = 0.0` of the alignment curve.
+The first `IfcReferent` in `RelatedObjects` defines the **starting station** of the alignment. Its `Pset_Stationing.Station` value is the station label at `DistanceAlong = 0.0` of the alignment curve. As a best practice, place this referent at `DistanceAlong = 0.0` so that the station origin and the geometric origin of the alignment coincide.
+
+`IfcReferent` is a subtype of `IfcPositioningElement`, which requires an `ObjectPlacement`. The appropriate choice depends on whether the alignment carries a geometric representation:
+
+- **Semantic-only alignment.** Set `IfcReferent.ObjectPlacement` equal to `IfcAlignment.ObjectPlacement`. Without geometric curves, a linear placement cannot be evaluated, so the referent borrows the alignment's own placement.
+- **Alignment with geometry.** Use `IfcLinearPlacement` with an `IfcPointByDistanceExpression.DistanceAlong = 0.0` referencing the alignment's horizontal geometric curve.
+
+Implementations that support both workflows — initially modeling without geometry, then adding a geometric representation later — must update the starting referent's `ObjectPlacement` when geometry is added. Leaving it as a copy of the alignment's placement after geometric curves exist will cause the referent's resolved position to diverge from its geometric intent.
 
 ### 9.4.2 The Mixed-Nesting Problem
 
@@ -239,7 +246,7 @@ The relationship between an `IfcReferent` and the object whose position it annot
 |--|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
 |1 |Use `IfcReferent` to attach station labels and other semantic location information to alignment positions.                                                |Referents are informational overlays on geometry, not geometry themselves.              |
 |2 |Store the station value in `Pset_Stationing.Station` as a plain `IfcLengthMeasure` in project length units.                                               |Do not store the `ccc+dd.dd` string — compute it from the numeric value when displaying.|
-|3 |For the first referent (starting station), set `Pset_Stationing.Station` to the station label at `DistanceAlong = 0`.                                     |This is commonly a round number like 1000.00 (Sta. 10+00).                              |
+|3 |Place the first referent at `DistanceAlong = 0.0` and set `Pset_Stationing.Station` to the starting station value.                                        |Commonly a round number like 1000.00 (Sta. 10+00). For semantic-only alignments, `ObjectPlacement` = alignment's placement; for geometric alignments, use `IfcLinearPlacement` at distance 0. Update when adding geometry.|
 |4 |At a station equation, provide both `IncomingStation` and `Station` on the same referent.                                                                 |`IncomingStation` = upstream label; `Station` = downstream label.                       |
 |5 |Do not convert station labels to `DistanceAlong` by simple subtraction. Iterate through all equation referents between the alignment start and the target.|See §9.3.4 for the full algorithm.                                                      |
 |6 |Use separate `IfcRelNests` instances for alignment layout sub-objects and referents.                                                                      |Mixing them in a single nest is allowed but makes parsing harder.                       |

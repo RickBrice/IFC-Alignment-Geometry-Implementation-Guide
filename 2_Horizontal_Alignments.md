@@ -1,4 +1,4 @@
-# Section 2 - Horizontal Alignments
+# Chapter 2 - Horizontal Alignments
 
 ## 2.0 Introduction
 
@@ -19,6 +19,12 @@ Table 2.0-1 maps each `IfcAlignmentHorizontalSegment.PredefinedType` to its corr
 | VIENNESEBEND | `IfcSeventhOrderPolynomialSpiral` |
 
 *Table 2.0-1 — Mapping of business logic to geometric representation for horizontal alignment*
+
+This chapter covers:
+
+- The three-step evaluation algorithm for computing position and tangent direction at any point on a horizontal curve segment.
+- Parametric equations and geometry mapping examples for all nine curve types in Table 2.0-1.
+- The zero-length closing segment required at the end of every `IfcCompositeCurve`.
 
 ## 2.1 General
 
@@ -217,13 +223,13 @@ Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmat
 
 Evaluate the parent curve at $u = 1500$
 
-$$\lambda(u) = C + \left( \int_{0}^{u = L}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u = L}{\sin\left( \theta(t) \right)}dt\ y \right)$$
+$$\lambda(u) = C + \left( \int_{0}^{u}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-$$\theta(100) = \arctan\left(\frac{0}{1}\right) = 0$$
+$$\theta(1500) = \arctan\left(\frac{0}{1}\right) = 0$$
 
-$$x = 0 + \cos(0)\int_{0}^{100}{dt} = 0 + 1(1500\ m - 0\ m) = 1500\ m$$
+$$x = 0 + \cos(0)\int_{0}^{1500}{dt} = 0 + 1(1500\ m - 0\ m) = 1500\ m$$
 
-$$y = 0 + \sin(0)\int_{0}^{100}{dt} = 0 + 0(1500\ m - 0\ m) = 0\ m$$
+$$y = 0 + \sin(0)\int_{0}^{1500}{dt} = 0 + 0(1500\ m - 0\ m) = 0\ m$$
 
 Though it is much easier to use the following calculation
 
@@ -286,9 +292,9 @@ $$\theta(s) = \frac{s}{R}$$
 
 $$\kappa(s) = \frac{1}{R}$$
 
-$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds}$$
+$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\!\left(\theta(s)\right)$$
 
-$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}}$$
+$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\!\left(1 - \cos\!\left(\theta(s)\right)\right)$$
 
 ### 2.4.2 Semantic Definition to Geometry Mapping
 
@@ -357,9 +363,9 @@ $$d_x = \cos(\theta(s)) = \cos(\frac{50}{300}) = 0.98614323$$
 
 $$d_y = \sin(\theta(s)) = \sin(\frac{50}{300}) = 0.16589613$$
 
-$$x(s) = \int_{}^{}{\cos\left( \theta(s) \right)ds} = \int_{0}^{50}{\cos\left( \frac{s}{300} \right)ds} = 300\sin\left(\frac{50}{300}\right) - 300\sin\left(\frac{0}{300}\right) = 49.76883981$$
+$$x(s) = R\sin\!\left(\theta(s)\right) = 300\sin\!\left(\frac{50}{300}\right) = 49.76883981$$
 
-$$y(s) = \int_{}^{}{\sin{\left( \theta(s) \right)\ ds}} = \int_{0}^{50}{\sin{\left( \frac{s}{300} \right)\ ds}} = - 300\cos\left(\frac{50}{300}\right) - \left( - 300\cos\left(\frac{0}{300}\right) \right) = 4.1570305$$
+$$y(s) = R\!\left(1 - \cos\!\left(\theta(s)\right)\right) = 300\!\left(1 - \cos\!\left(\frac{50}{300}\right)\right) = 4.1570305$$
 
 
 $$M_{PC} = 
@@ -618,7 +624,7 @@ $$d = \int_{}^{}{\sqrt{9A_{3}^{2}x^{4} + 1}\ dx}$$
 This equation is solved for $x$ and then $y$ can be computed. This can
 be accomplished with numerical methods.
 
-1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Section 11](11_Precision_and_Tolerance.md) for a discussion on tolerances.
+1.  For a distance $u$ along the curve, find $x$ for $d - u = 0$, within a tolerance consistent with the modeled elements. See [Chapter 11](11_Precision_and_Tolerance.md) for a discussion on tolerances.
 
 2.  Compute $y(x) = A_{3}x^{3}$
 
@@ -1133,7 +1139,7 @@ Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmat
 
 **Step 3 — Evaluate and map each point**
 
-Compute point and curve tangent at 100 m from the start.
+Compute point and curve tangent at 50 m from the start.
 
 $$x = \int_{0}^{50}{\cos{\theta(s)}}\ ds = 49.9962109$$
 
@@ -1633,3 +1639,16 @@ The zero-length `IfcCurveSegment` is placed at the endpoint of the alignment wit
 #181=IFCAXIS2PLACEMENT2D(#91,#180);
 #182=IFCCURVESEGMENT(.DISCONTINUOUS.,#181,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(0.),#179);
 ~~~
+
+## 2.13 Summary and Implementation Checklist
+
+| # | Item | Notes |
+|---|---|---|
+| 1 | Use `IfcLengthMeasure` for `SegmentStart` and `SegmentLength` on every `IfcCurveSegment` | Arc-length parameterization is mandatory per IFC schema Informal Proposition 1; `IfcParameterValue` (unit parameterization) is not valid for alignment geometry |
+| 2 | Handle negative `SegmentStart` and `SegmentLength` | A negative `SegmentStart` locates the trim origin on the opposite side of the parent curve's reference point; a negative `SegmentLength` indicates trimming in the direction of decreasing parameter. Both can occur in any combination. |
+| 3 | For clothoid curves, convert `SegmentStart` from arc-length to unit parameter before evaluating | Compute $u = s / \|A\sqrt{\pi}\|$ where $A$ is the clothoid constant; the Fresnel integrals are defined in terms of $u$, not $s$ |
+| 4 | Expect one `IfcAlignmentHorizontalSegment` with `PredefinedType = HELMERTCURVE` to map to two `IfcCurveSegment` entities | The Helmert curve is the only horizontal type where one semantic segment produces two geometric segments; evaluate the correct half based on the query distance relative to $L/2$ |
+| 5 | Treat `IfcPolynomialCurve` coefficients as having implicit units of $\text{Length}^{(1-i)}$ | For a cubic curve, `CoefficientsY[3]` has implicit units of $m^{-2}$; evaluate as $y = b_3 x^3$ where $x$ is a length. Do not multiply by curve length $L$ as you would for a unit-parameterized polynomial. |
+| 6 | Viennese Bend horizontal geometry requires `GravityCenterLineHeight` and a paired cant segment | `IfcAlignmentHorizontalSegment.GravityCenterLineHeight` is mandatory for `VIENNESEBEND`; the associated `IfcAlignmentCantSegment` with `PredefinedType = VIENNESEBEND` must span the same horizontal length, and its cant values enter the curvature formula via the cant factor $cf$ |
+| 7 | Do not assume the parent curve is centered at the origin or aligned with the x-axis | The three-step algorithm ($M_{CSP}$, $M_N$, $M_{PC}$) handles arbitrary parent curve placement; `SegmentStart` locates where trimming begins regardless of the parent curve's own position and orientation |
+| 8 | Apply the positive-left sign convention for radii | Positive `StartRadius` / `EndRadius` indicates a curve to the left of the direction of travel; negative indicates a curve to the right; zero indicates infinite radius (straight tangent) |

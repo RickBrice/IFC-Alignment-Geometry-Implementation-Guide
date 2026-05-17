@@ -1,18 +1,14 @@
-# Section 4 - Cant Alignments
+# Chapter 4 - Cant Alignments
 
 ## 4.0 Introduction
 
 Cant (also called superelevation) is the transverse inclination of a railway track cross-section: the elevation difference between the two railheads when one rail is raised above the other. By tilting the track into a curve, cant directs a component of gravitational force inward, partially offsetting the centrifugal acceleration experienced by vehicles negotiating the curve. The result is improved ride quality, reduced wheel–rail lateral forces, and the ability to operate at higher speeds through curves without exceeding comfort or safety limits.
 
-Cant is measured as a length — the height difference between railheads — rather than as an angle. The conversion between the two depends on track gauge. `IfcAlignmentCant.RailHeadDistance` supplies the centre-to-centre distance between railheads, which is the lever arm for this conversion.
+Cant is measured as a length — the height difference between railheads — rather than as an angle. The conversion between the two depends on track gauge. `IfcAlignmentCant.RailHeadDistance` supplies the center-to-center distance between railheads, which is the lever arm for this conversion.
 
-## 4.1 General
+The geometric representation of a cant alignment is accomplished with `IfcSegmentedReferenceCurve`. As a subtype of `IfcCompositeCurve`, it is an end-to-start collection of `IfcCurveSegment` segments. Its `BasisCurve` is typically an `IfcGradientCurve`, which supplies the combined horizontal and vertical geometry to which the cant offsets are applied to produce the full 3D track centerline.
 
-An `IfcSegmentedReferenceCurve` describes the cross slope of superelevated rail lines as a track banks through curves. When the point of rotation is about one of the railheads, the alignment elevation must deviate to accommodate the cross slope. 
-
-An `IfcSegmentedReferenceCurve` also describes this deviation in elevation. As a subtype of `IfcCompositeCurve`, an `IfcSegmentedReferenceCurve` consists of an end to start collection of `IfcCurveSegment`. An `IfcSegmentedReferenceCurve` also has a `BasisCurve` which is typically an `IfcGradientCurve`.
-
-Table 4.1-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its corresponding parent curve type.
+Table 4.0-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its corresponding parent curve type used in the geometric representation.
 
   Business Logic (`IfcAlignmentCantSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
   -----------------------------------------|-----------------------------------
@@ -24,12 +20,23 @@ Table 4.1-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its correspond
   SINECURVE                                |`IfcSineSpiral`
   VIENNESEBEND                             |`IfcSeventhOrderPolynomialSpiral`
 
-  *Table 4.1-1 — Mapping of business logic to geometric representation for cant alignment*
+  *Table 4.0-1 — Mapping of business logic to geometric representation for cant alignment*
+
+This chapter covers:
+
+- The cant segment types in Table 4.0-1 and the geometric curve types that represent them.
+- Parametric equations and geometry mapping examples for the curve types in Table 4.0-1.
+- An algorithm for composing cant, horizontal, and vertical matrices to produce a full 3D placement frame.
+- An implementation checklist in Section 4.12.
+
+## 4.1 General
+
+Each `IfcAlignmentCantSegment` is parameterized by distance along the horizontal alignment. The key semantic attributes are `StartDistAlong`, `SegmentLength` (the horizontal length of the cant segment), `StartCantLeft`, `EndCantLeft`, `StartCantRight`, and `EndCantRight`. From these, the deviating elevation $D_s$ at the start and $D_e$ at the end are derived as the averages of their respective left and right rail values (Section 4.1.3). Each cant curve segment uses `IfcAxis2Placement3D` for its placement, in contrast to the 2D placements used for horizontal and vertical segments, because cant carries an out-of-plane cross-slope rotation.
 
 ### 4.1.1 Cant Transition
 
 Cant transitions occur when the segment start elevation differs from the
-segment start elevation of the next segment. The left section in Figure 4.1-1 shows the cross section of a rail line. At the start of the segment, right rail is elevated above the left rail. The y-ordinate of `IfcCurveSegment.Placement.Location` indicates the deviating elevation at the centerline between rails, which is one-half the cant value at the right rail. The y-ordinate of `IfcCurveSegment.Placement.Location` for the next segment indicates a value of 0.0 meaning that the cant transitioned from the starting value to zero over the length of the segment. This transition is the rotation of the right rail about the left rail, and the corresponding change in deviating elevation at the centerline over the length of the segment. The cant transition is shown in the right section of Figure 4.1.1-1 as a linear transition. `IfcCurveSegment.ParentCurve` defines how the transition occurs. Figure 4.1.1-2 shows a non-linear transition of the centerline and right rail deviating elevations. Notice that the deviating elevation of the left rail is constant at zero because it is the point of rotation.
+segment start elevation of the next segment. The left section in Figure 4.1.1-1 shows the cross section of a rail line. At the start of the segment, right rail is elevated above the left rail. The y-ordinate of `IfcCurveSegment.Placement.Location` indicates the deviating elevation at the centerline between rails, which is one-half the cant value at the right rail. The y-ordinate of `IfcCurveSegment.Placement.Location` for the next segment indicates a value of 0.0 meaning that the cant transitioned from the starting value to zero over the length of the segment. This transition is the rotation of the right rail about the left rail, and the corresponding change in deviating elevation at the centerline over the length of the segment. The cant transition is shown in the right section of Figure 4.1.1-1 as a linear transition. `IfcCurveSegment.ParentCurve` defines how the transition occurs. Figure 4.1.1-2 shows a non-linear transition of the centerline and right rail deviating elevations. Notice that the deviating elevation of the left rail is constant at zero because it is the point of rotation.
 
 When the segment start elevation is the same as the start of the next segment, the deviating elevation along the length of the segment is constant. This occurs when centrifugal forces are constant or zero, in constant radius curvature and straight sections of the railway, respectively.
 
@@ -571,7 +578,7 @@ $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_\ell = -0.00079999$
 
 $\phi_e = \cos^{-1}(\tfrac{0.0}{1.5}) = \tfrac{\pi}{2}$ (both rails level at segment end)
 
-$\phi(50\ m) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
+$\phi(50\ m) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
 $\mathbf{X}_\ell = (0.999999680,\ -0.000799999744,\ 0)$
 
@@ -594,7 +601,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -630,7 +637,7 @@ In the first half of the cant transition
 Constant Term:
 
  $a_{01} = 4D_{s}$,
-$A_{01} = \tfrac{L^{2}}{\left| a_{o1} \right|}\tfrac{a_{01}}{\left| a_{o1} \right|}$
+$A_{01} = \tfrac{L^{2}}{\left| a_{01} \right|}\tfrac{a_{01}}{\left| a_{01} \right|}$
 
 Linear Term: 
 
@@ -647,7 +654,7 @@ In the second half
 Constant Term: 
 
 $a_{02} = -4\Delta D + 4D_{s}$,
-$A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{01}}{\left| a_{02} \right|}$
+$A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{02}}{\left| a_{02} \right|}$
 
 Linear Term: 
 
@@ -686,7 +693,7 @@ First half:
 
 $$a_{01} = 4D_{s} = 4(0.08\ m) = 0.32\ m$$
 
-$$A_{01} = \tfrac{L^{2}}{\left| a_{o1} \right|}\tfrac{a_{01}}{\left| a_{o1} \right|} = \tfrac{(100\ m)^{2}}{|0.32\ m|}\tfrac{0.32\ m}{|0.32\ m|} = 31250\ m$$
+$$A_{01} = \tfrac{L^{2}}{\left| a_{01} \right|}\tfrac{a_{01}}{\left| a_{01} \right|} = \tfrac{(100\ m)^{2}}{|0.32\ m|}\tfrac{0.32\ m}{|0.32\ m|} = 31250\ m$$
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
@@ -706,11 +713,24 @@ Determine the first half placement and trimming.
 
 Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition.
 
-<span style="background-color: yellow;color: black">
-[todo - Need to do a better job explaining why L/2 when A is computed on full L. There is a plot of the two parent curves planned, perhaps this will help explain the situation.]
-</span>
+The spiral coefficients $A_{01}$ and $A_{21}$ are computed from the **full** transition
+length $L = 100\ m$. The evaluation formula, by contrast, multiplies by the curve segment
+length squared — $(L_1)^2 = (50\ m)^2$ — because $L_1 = 50\ m$ is the trim length of
+the first-half curve segment. These two lengths work together by design. The $A$
+coefficients fix the boundary conditions of the deviating elevation profile at $s = 0$,
+$s = L/2$, and $s = L$ relative to the complete $100\ m$ transition. Using $(L_1)^2$
+in the evaluation then scales those boundary conditions correctly to physical distances
+within the trimmed half. Substituting $A_{01} = L^2/a_{01}$ confirms this:
 
-The deviation elevation at the start of the first half transition is
+$$\left(\frac{L}{2}\right)^2 \cdot \frac{a_{01}}{L^2} = \frac{a_{01}}{4} = \frac{4D_s}{4} = D_s$$
+
+Figure 4.5.2-1 illustrates this geometrically. Each parent curve is drawn solid over
+the portion used by its curve segment and dashed beyond the trim boundary. The dashed
+extension of the first-half curve diverges from the second-half curve after $s = 50\ m$,
+confirming that the two polynomials are distinct — each is correct only within its own
+half.
+
+The deviating elevation at the start of the first half transition is
 
 $$D(0\ m) = (50\ m)^{2}\left( \tfrac{1}{31250\ m} + \tfrac{1}{(-538.6086725\ m)^{3}}(0\ m)^{2} \right) = 0.08\ m$$
 
@@ -886,7 +906,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -1018,7 +1038,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
-$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{{0.16 - 0}}{1.5} \right) = 1.464531464$$
+$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{{0.16 - 0}}{1.5} \right) = 1.463926346$$
 
 $\mathbf{X}_s = (1,\ 0,\ 0)$
 
@@ -1047,7 +1067,7 @@ $D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\
 
 $\theta_\ell =\tan^{-1}(-0.0012) = -0.0011999994240005001$
 
-$\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
+$\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
 $\mathbf{X}_\ell = (0.9999980,\ -0.0019997,\ 0)$
 
@@ -1074,7 +1094,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -1191,7 +1211,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
-$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.464531464$$
+$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.463926346$$
 
 $\mathbf{X}_s = (1,\ 0,\ 0)$
 
@@ -1216,7 +1236,7 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 
 $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_\ell = -0.001256636$
 
-$\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
+$\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
 $\mathbf{X}_\ell = (0.99999921,\ -0.001256636,\ 0)$
 
@@ -1243,7 +1263,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -1266,7 +1286,7 @@ A Sine transition in cant is represented with an `IfcSineSpiral`
 
 ### 4.8.1 Parent Curve Parametric Equations
 
-The deviation elevation and its rate of change are given by the following equations.
+The deviating elevation and its rate of change are given by the following equations.
 
 $$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{0}} + \tfrac{A_{1}}{\left| A_{1} \right|}\left( \tfrac{1}{A_{1}} \right)^{2}s + \tfrac{1}{A_{2}}\sin\left( 2\pi\tfrac{s}{L} \right)$$
 
@@ -1293,7 +1313,7 @@ Consider an alignment segment that has a Sine transition curve towards the left.
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.SINECURVE.);
 ~~~
 
-Compute the paraent curve parameters
+Compute the parent curve parameters
 
 $D_{s} = \tfrac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \tfrac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0\ m - 0.08\ m = -0.08\ m$
 
@@ -1372,9 +1392,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
-**todo - check this value, it is different than above for the same inputs**
-
-$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.464531464$$
+$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.463926346$$
 
 $\mathbf{X}_s = (1,\ 0,\ 0)$
 
@@ -1399,7 +1417,7 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 
 $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_\ell = -0.0016$
 
-$\phi(\ell) = 1.464531464 + \left(\tfrac{\tfrac{\pi}{2} - 1.464531464}{-0.08}\right)(0.04 - 0.08) = 1.517663895$
+$\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
 $\mathbf{X}_\ell = (0.99999872,\ -0.0016,\ 0)$
 
@@ -1426,7 +1444,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -1443,7 +1461,7 @@ $$M_c = \begin{bmatrix}
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-$\mathbf{Axis} = (0.0000850,\ 0.053107,\ 0.998589),\quad \phi(50\ m) = 1.517663895$
+$\mathbf{Axis} = (0.0000850,\ 0.053107,\ 0.998589),\quad \phi(50\ m) = 1.517361336$
 
 ## 4.9 Viennese Bend
 
@@ -1493,10 +1511,7 @@ $$a_{7} = -20\Delta D, A_{7} = \tfrac{L^{\tfrac{9}{8}}}{\sqrt[8]{\left| a_{7} \r
 
 ### 4.9.2 Semantic Definition to Geometry Mapping
 
-Consider an alignment segment that has a Viennese Bend transition curve **???**.
-<span style="background-color: yellow;color: black">
-[todo - finish the description]
-</span>
+Consider a Viennese Bend cant transition on a left-hand curve where the curvature decreases — a transition from a tighter arc to an arc of larger radius. The right rail begins at 100 mm of superelevation and decreases to 30 mm over 100 m. The left rail carries no cant throughout.
 
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.10,0.03,.VIENNESEBEND.);
@@ -1557,11 +1572,9 @@ $dx_x = cos(\theta) = 1$
 
 $dx_y = sin(\theta) = 0$
 
-**todo - fix this, mixing cos and tan**
-
 The cross-slope at the start of the segment is
 
-$\phi_s = \cos^{-1}\left(\tfrac{D_{sr}-D{sl}}{D_{rh}}\right) = tan^{-1}\left(\tfrac{0.1-0.0}{1.5} \right) = 1.504080178$
+$\phi_s = \cos^{-1}\left(\tfrac{D_{sr}-D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.1-0.0}{1.5} \right) = 1.504080178$
 
 The cross slope orientation is
 
@@ -1601,11 +1614,11 @@ $$M_{CSP} = \begin{bmatrix}
 
 $s_0 = 0,\ D(0) = 0.05\ m,\ D'(0) = 0,\ \theta_s = 0$
 
-$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.10 - 0.0}{1.5} \right) = 1.504228163$$
+$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.10 - 0.0}{1.5} \right) = 1.504080178$$
 
 $\mathbf{X}_s = (1,\ 0,\ 0)$
 
-$\mathbf{Z}_s = (0,\ 0.066519011,\ 0.99778516)$
+$\mathbf{Z}_s = (0,\ 0.066666667,\ 0.997775303)$
 
 $\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.99778516,\ -0.066519011)$
 
@@ -1628,7 +1641,7 @@ $D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_\ell = -0.00076562$
 
 $\phi_e = cos^{-1}\left(\tfrac{D_{er} - D_{el}}{D_{rh}}\right) = cos^{-1}\left(\tfrac{0.03 - 0.0}{1.5}\right) = 1.550794993$
 
-$\phi(\ell) = 1.504228163 + \left(\tfrac{1.550799 - 1.504228163}{-0.035}\right)(0.0325 - 0.05) = 1.527511578$
+$\phi(\ell) = 1.504080178 + \left(\tfrac{1.550799 - 1.504080178}{-0.035}\right)(0.0325 - 0.05) = 1.527439589$
 
 $\mathbf{X}_\ell = (0.999999707,\ -0.00076562,\ 0)$
 
@@ -1655,7 +1668,7 @@ $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
 
 **Translation**
 
-$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS}$$ + \mathbf{T}_{CSP} 
+$$\mathbf{T}_c = \mathbf{T}_{PC\ell} - \mathbf{T}_{PCS} + \mathbf{T}_{CSP}$$
 
 **Assemble**
 
@@ -1873,7 +1886,7 @@ The resulting geometric representation is
 #127=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,-500.,746.900791092861,$,$);
 ~~~
 
-Table 4.10-1 compares the third order polynomal terms.
+Table 4.11-1 compares the third order polynomial terms.
 
 | Polynomial Term | EnrichIfc4x3 | This Guide |
 |---|---|---|
@@ -1882,7 +1895,7 @@ Table 4.10-1 compares the third order polynomal terms.
 | Quadratic | $160.91789\ m^{2/3}$| $746.90078\ m$|
 | Cubic | $-158.113883\ m^{3/4}$| $-500\ m$|
 
-*Table 4.10-1 — Comparison of polynomial coefficients*
+*Table 4.11-1 — Comparison of polynomial coefficients*
 
 The EnrichIfc4x3 reference implementation computes the correct value for the deviating elevation. This is because there is a compensating error in the implementation. The deviating elevation is computed as
 
@@ -1900,7 +1913,7 @@ Notice that the first term is $L^2$, not $L$ as in the reference implementation.
 
 $D(50\ m) = (100\ m)^2\left( \tfrac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \tfrac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$
 
-Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and visa-versa. Table 4.10-2 compares the results for all the combinations of the sematic to geometry mapping and deviation elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect proportional (or inversely proportional) to the length of the segment (100 or 1/100 in this example). 
+Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and vice versa. Table 4.11-2 compares the results for all the combinations of the semantic to geometry mapping and deviating elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect proportional (or inversely proportional) to the length of the segment (100 or 1/100 in this example). 
 
 | Mapping | $D(s)$ Equation | $D(50\ m)$ |
 |---|---|---|
@@ -1909,4 +1922,13 @@ Both approaches give the same result, however, a serious problem emerges if the 
 | EnrichIfc4x3 | This Guide | $4.0\ m$ |
 | This Guide | EnrichIfc4x3 | $0.0004\ m$ |
 
-*Table 4.10-2 — Comparison of deviation elevation results*
+*Table 4.11-2 — Comparison of deviating elevation results*
+
+## 4.12 Summary and Implementation Checklist
+
+| # | Item | Notes |
+|---|---|---|
+| 1 | Use `IfcAxis2Placement3D` (not `IfcAxis2Placement2D`) for cant curve segment placements | Cant encodes a cross-slope rotation that a 2D placement cannot represent; the `Axis` vector carries the cross-slope angle $\phi$ at the segment start |
+| 2 | The cross-slope angle $\phi$ is interpolated using deviating elevation as the interpolation parameter, not arc length | The interpolation formula in Section 4.1.3 uses $D(\ell) - D_s$ as the parameter; $\phi$ does not vary linearly with distance along the segment |
+| 3 | When forming $M'_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |
+| 4 | Do not mix the EnrichIfc4x3 semantic-to-geometry mapping with the deviating elevation equations from this guide | EnrichIfc4x3 contains two compensating errors that yield correct results within its own implementation; mixing its coefficient mapping with this guide's deviating elevation equation (or vice versa) breaks the cancellation and produces results off by a factor of $L$ or $1/L$ — see Section 4.11 |

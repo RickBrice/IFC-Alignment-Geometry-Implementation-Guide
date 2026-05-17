@@ -4,7 +4,7 @@ todo
 * create example that shows a section on a horizontal curve. the section widens through the curve. With templates, they are conneced with straight lines. With stringlines, the edges of the surface follow the curve.
 * This section needs a lot of validation with models to support the claims
 
-# Section 10 - Sectioned Surfaces and Solids
+# Chapter 10 - Sectioned Surfaces and Solids
 
 ## 10.0 Introduction
 

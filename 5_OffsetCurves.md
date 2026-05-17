@@ -1,4 +1,4 @@
-# Section 5 - Offset Curves
+# Chapter 5 - Offset Curves
 
 ## 5.0 Introduction
 
@@ -14,7 +14,7 @@ three attributes:
 
 * `BasisCurve`: The curve from which offsets are measured
 * `OffsetValues`: Defines the offsets along the curve
-* `Tag` (optional): An identifier for the curve, used to correlate offset curve points with positions in a variable cross-section (see Section 10)
+* `Tag` (optional): An identifier for the curve, used to correlate offset curve points with positions in a variable cross-section (see Chapter 10)
 
 A single offset value indicates a constant offset over the entire length of the curve.
 
@@ -73,7 +73,7 @@ The arc length of `IfcOffsetCurveByDistances` at any given chainage is obtained 
 
 The consequence is that a `DistanceAlong` value specified against an `IfcOffsetCurveByDistances` does not map to a unique, reproducible point across implementations. This is in direct contrast to `DistanceAlong` measured along an `IfcCompositeCurve` or `IfcGradientCurve`, where arc length is determined exactly by the curve equations.
 
-For precise linear placement, the recommended practice (discussed fully in §5.5) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
+For precise linear placement, the recommended practice (discussed fully in §8.6) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
 
 ## 5.5 Arc Length of an Offset Curve
 
@@ -85,7 +85,7 @@ A positive (left) offset increases arc length; a negative (right) offset inside 
 
 $$L_{\text{offset}} = 200 \cdot \frac{1010}{1000} = 202 \text{ ft}$$
 
-For varying offsets or non-circular basis curves there is no simple closed-form expression. `IfcOffsetCurveByDistances` does not expose an arc length attribute. When linear placement of objects relative to an offset alignment is needed, the recommended practice (see §5.5) is to use the parent alignment as the `BasisCurve` in `IfcPointByDistanceExpression` rather than the offset curve itself, so the arc length of the offset curve is rarely needed in practice.
+For varying offsets or non-circular basis curves there is no simple closed-form expression. `IfcOffsetCurveByDistances` does not expose an arc length attribute. When linear placement of objects relative to an offset alignment is needed, the recommended practice (see §8.6) is to use the parent alignment as the `BasisCurve` in `IfcPointByDistanceExpression` rather than the offset curve itself, so the arc length of the offset curve is rarely needed in practice.
 
 ## 5.6 Example Model Walkthrough
 
@@ -136,4 +136,4 @@ The `Tag` attribute of `IfcOffsetCurveByDistances` is an optional label that ass
 
 `IfcSectionedSurface` and `IfcSectionedSolidHorizontal` define geometry by sweeping a series of cross-sections along a basis curve. Each cross-section can contain named control points — edge-of-pavement, top-of-rail, daylight line, and so on. The `Tag` on an `IfcOffsetCurveByDistances` matches one of those named points, allowing the surface or solid geometry to be driven by the offset curve's lateral positions rather than by fixed cross-section ordinates. This is the mechanism by which variable-width surfaces and solids are defined in IFC4x3.
 
-The full treatment of `IfcSectionedSurface` and `IfcSectionedSolidHorizontal`, including how `Tag` values are resolved against cross-section geometry, is covered in Section 10.
+The full treatment of `IfcSectionedSurface` and `IfcSectionedSolidHorizontal`, including how `Tag` values are resolved against cross-section geometry, is covered in Chapter 10.

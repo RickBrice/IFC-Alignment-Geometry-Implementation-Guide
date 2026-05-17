@@ -1,4 +1,4 @@
-# Section 6 — Approximate Alignment Geometry
+# Chapter 6 — Approximate Alignment Geometry
 
 ## 6.0 Introduction
 
@@ -51,7 +51,7 @@ are absent.
 In contrast to Concept Templates 4.1.7.1.1.1 through 4.1.7.1.1.4, the IFC specification
 does not provide concept templates that show how `IfcPolyline` or `IfcIndexedPolyCurve`
 provide a geometric representation of an `IfcAlignment`. (The same gap applies to
-`IfcOffsetCurveByDistances`, covered in Section 5.)
+`IfcOffsetCurveByDistances`, covered in Chapter 5.)
 
 Section 1.4 establishes that every `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and
 `IfcAlignmentCant` must terminate with a zero-length `IfcAlignmentSegment`. When a

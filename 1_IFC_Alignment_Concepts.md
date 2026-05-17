@@ -1,4 +1,4 @@
-# Section 1 - IFC Alignment Concepts
+# Chapter 1 - IFC Alignment Concepts
 
 ## 1.0 Introduction
 
@@ -152,7 +152,7 @@ defined by `IfcCurveSegment`. The mathematical computations for
 `IfcPolyline` and `IfcIndexedPolyCurve` produce approximate, discrete geometry
 rather than exact parametric curves. They arise in survey-derived alignments and early
 planning contexts. Their use, limitations, and incompatibility with the full semantic
-alignment definition are discussed in [Section 6](6_Approximate_Alignment_Geometry.md).
+alignment definition are discussed in [Chapter 6](6_Approximate_Alignment_Geometry.md).
 
 `IfcOffsetCurveByDistances` is treated in a dedicated section.
 
@@ -212,8 +212,8 @@ coordinate is along the gradient curve's base curve, which is the horizontal ali
 
 When defining curve segment geometry with an `IfcCurveSegment`, the location and orientation of the
 parent curve are not particularly important. The `IfcCurveSegment.Placement` defines the location of the start point of the trimmed
-curve as well as the orientation of the tangent at the start of the trimmed curve. In the example above, the `IfcLine` parent curve is
-starts at (0,0) and progresses in horizontal direction, but the tangent segment of the alignment starts an specific (X,Y) position and is oriented in a North-East direction. The `IfcCurveSegment.Placement` attribute establishes this position and orientation.
+curve as well as the orientation of the tangent at the start of the trimmed curve. In the example above, the `IfcLine` parent curve
+starts at (0,0) and progresses in horizontal direction, but the tangent segment of the alignment starts at a specific (X,Y) position and is oriented in a North-East direction. The `IfcCurveSegment.Placement` attribute establishes this position and orientation.
 
 #### 1.5.2.2 Vertical and Cant Curve Extents
 
@@ -244,14 +244,14 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 
 *Figure 1.5.2-4 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
 
-## 1.6 Reference Implementation and Segment Mapping:
+## 1.6 Reference Implementation and Segment Mapping
 
 Sections [2.0](2_Horizontal_Alignments.md), [3.0](3_Vertical_Alignments.md), and [4.0](4_Cant_Alignments.md) discuss the mapping of the semantic definition of alignment segments (`IfcAlignmentSegment` subtypes) to their corresponding geometric representation (`IfcCurveSegment.ParentCurve`). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
 [IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 (github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry).
 
-The cant segment mappings in the EnrichIfc4x3 reference implementation are incorrect. These errors are documented in Section 4, which presents corrected formulas and explains why the reference implementation is incorrect.
+The cant segment mappings in the EnrichIfc4x3 reference implementation are incorrect. These errors are documented in Chapter 4, which presents corrected formulas and explains why the reference implementation is incorrect.
 
 ## 1.7 Units of Measure
 

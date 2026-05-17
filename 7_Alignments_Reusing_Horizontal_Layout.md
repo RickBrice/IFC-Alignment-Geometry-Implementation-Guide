@@ -1,4 +1,4 @@
-# Section 7 — Alignments Reusing Horizontal Layout
+# Chapter 7 — Alignments Reusing Horizontal Layout
 
 ## 7.0 Introduction
 
@@ -160,7 +160,7 @@ removed — restoring the structure shown in Figure 7.3.1-1.
 
 ## 7.4 Relationship to Offset Curves
 
-Section 5 describes `IfcOffsetCurveByDistances`, which defines a new curve laterally
+Chapter 5 describes `IfcOffsetCurveByDistances`, which defines a new curve laterally
 displaced from a basis alignment. Offset curves address a different need: they shift the
 curve horizontally (in plan) rather than reusing the same horizontal path at a different
 elevation. A left edge-of-shoulder offset and a right edge-of-shoulder offset use
@@ -171,7 +171,7 @@ shared-horizontal-layout pattern described in this section.
 The two patterns can coexist. For example, a road model might define:
 - The centerline as a parent `IfcAlignment` with a full horizontal definition, plus a
   child carrying the design vertical profile
-- The left and right edges of pavement as offset curves (lateral displacement, Section 5)
+- The left and right edges of pavement as offset curves (lateral displacement, Chapter 5)
 - The sub-grade profile as another child `IfcAlignment` under the same parent, sharing
   the centerline's horizontal but carrying an independent vertical profile (this section)
 
@@ -192,7 +192,7 @@ geometrically parallel, which defeats the purpose of horizontal sharing.
 **Dual carriageway.** A highway with a central reference alignment defining two
 independent carriageways faces the same problem: each carriageway has a distinct
 horizontal position offset from the reference, so the shared-horizontal-layout pattern
-does not apply. Modelling each carriageway as a child of a common parent would require
+does not apply. Modeling each carriageway as a child of a common parent would require
 the child alignments to carry their own `IfcAlignmentHorizontal`, which is not permitted
 under the concept template. IFC4x3 has no explicit concept template for dual-carriageway
 or multi-track configurations.

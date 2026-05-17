@@ -23,11 +23,11 @@ The key conceptual difference between the two schemas is that LandXML defines ge
 
 ## A.2 Units
 
-LandXML carries explicit unit declarations (`<Metric>`, `<Imperial>`) for linear and angular measure. IFC requires all geometry in SI base units (metres, radians) or with an explicit `IfcConversionBasedUnit`.
+LandXML carries explicit unit declarations (`<Metric>`, `<Imperial>`) for linear and angular measure. IFC requires all geometry in SI base units (meters, radians) or with an explicit `IfcConversionBasedUnit`.
 
 Read `<Units>` before processing any geometry — all coordinate values depend on it.
 
-**Linear units.** Convert foot and US Survey foot to metres as needed. Note that the US Survey foot and the international foot are not the same:
+**Linear units.** Convert foot and US Survey foot to meters as needed. Note that the US Survey foot and the international foot are not the same:
 
 $$1\ \text{US Survey foot} = \frac{1200}{3937}\ \text{m} \approx 0.3048006\ \text{m}$$
 
@@ -210,7 +210,7 @@ Apply the same logic to both the start and end values of each segment. The `rota
 
 ### A.6.1 Start Station
 
-The LandXML `<Alignment staStart="...">` attribute gives the station at the beginning of the alignment. Map this to an `IfcReferent` with `PredefinedType = STATION`, with the station value stored in `Pset_Stationing.Station`. See Section 9 for the full `IfcReferent` and `Pset_Stationing` structure.
+The LandXML `<Alignment staStart="...">` attribute gives the station at the beginning of the alignment. Map this to an `IfcReferent` with `PredefinedType = STATION`, with the station value stored in `Pset_Stationing.Station`. See Chapter 9 for the full `IfcReferent` and `Pset_Stationing` structure.
 
 ### A.6.2 Station Equations (`<StaEquation>`)
 

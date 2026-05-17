@@ -26,7 +26,7 @@
 | $\phi$ | Cross-slope angle; angle from the transverse $y$-axis to the `Axis` vector |
 | $\phi_s,\ \phi_e$ | Cross-slope angle at the start and end of a cant segment |
 | $\phi_p$ | Cross-slope angle of `IfcCurveSegment.Placement.Axis` |
-| $\Delta$ | Sweep angle of a circular arc; angle subtended at the centre by the arc from the trim start to an evaluation point |
+| $\Delta$ | Sweep angle of a circular arc; angle subtended at the center by the arc from the trim start to an evaluation point |
 | $\Delta_0$ | Angular position of the trim-start point on the parent circle; angle from the circle's positive $x$-axis to the radius vector at the trim start (Section 3.4) |
 | $\Delta_{pc}$ | Radial angle at the evaluation point on the parent circle; $\Delta_{pc} = \Delta_0 - \Delta$ for a clockwise segment, $\Delta_0 + \Delta$ for counter-clockwise (Section 3.4) |
 
@@ -66,17 +66,17 @@
 
 | Symbol | Definition |
 |--------|------------|
-| $D(s)$ | Deviating elevation at arc-length $s$; vertical offset of the track centreline from the gradient curve |
+| $D(s)$ | Deviating elevation at arc-length $s$; vertical offset of the track centerline from the gradient curve |
 | $D_0$ | Deviating elevation at the trim start; $D_0 = D(s_0)$ |
 | $D_s,\ D_e$ | Deviating elevation at the segment start and end; $D_s = (D_{sl} + D_{sr})/2$ |
 | $D_{sl},\ D_{sr}$ | Left and right cant elevation at the segment start; equals `StartCantLeft`, `StartCantRight` |
 | $D_{el},\ D_{er}$ | Left and right cant elevation at the segment end; equals `EndCantLeft`, `EndCantRight` |
 | $D_p$ | Deviating elevation component of `IfcCurveSegment.Placement.Location` |
 | $\Delta D$ | Change in deviating elevation over the segment; $\Delta D = D_e - D_s$ |
-| $D_{rh}$ | Rail head distance; centre-to-centre distance between railheads; equals `RailHeadDistance` |
+| $D_{rh}$ | Rail head distance; center-to-center distance between railheads; equals `RailHeadDistance` |
 | $\beta_s$ | Cross-slope ratio at the segment start; $\beta_s = (D_{sr} - D_{sl}) / D_{rh}$ |
 | $\beta_e$ | Cross-slope ratio at the segment end; $\beta_e = (D_{er} - D_{el}) / D_{rh}$ |
-| $h_{cg}$ | Gravity centre-line height; height of the vehicle centre of gravity above the rail plane; equals `GravityCenterLineHeight` |
+| $h_{cg}$ | Gravity centerline height; height of the vehicle center of gravity above the rail plane; equals `GravityCenterLineHeight` |
 | $cf$ | Cant factor; $cf = -420\,(h_{cg}/L)(\beta_e - \beta_s)$; scales the Viennese Bend polynomial coefficients |
 
 ### Spiral Curve Coefficients

@@ -32,7 +32,26 @@
       "Bash(mv 8_Referents_and_Stationing.md 9_Referents_and_Stationing.md)",
       "Bash(Get-ChildItem -Path \"d:\\\\IFC-Alignment-Geometry-Implementation-Guide\" -Filter \"*.py\")",
       "Bash(Select-Object Name)",
-      "Bash(Select-String \"image|tangent_segment|linear_placement_offsets|pi_unreachable|stationing_diagram|Superelevation\\\\.ifc|IfcSectionedSurface_with_breaklines\")"
+      "Bash(Select-String \"image|tangent_segment|linear_placement_offsets|pi_unreachable|stationing_diagram|Superelevation\\\\.ifc|IfcSectionedSurface_with_breaklines\")",
+      "Bash(Get-ChildItem *)",
+      "Bash(New-Item -ItemType Directory -Force -Path \"D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\scripts\")",
+      "Bash(Out-Null)",
+      "Bash(Write-Host \"Created scripts directory\")",
+      "Bash(findstr /V \"M_CSP\\\\|M_PCS\\\\|M_PCl\\\\|M_c\\\\|\\\\\\\\\\\\\\\\|Placement\\\\|Parent curve\\\\|Curve segment\")",
+      "Bash(Select-String -NotMatch \"M_CSP|M_PCS|M_PCl|Placement|Parent curve|Curve segment|\\\\\\\\\\\\\\\\\")",
+      "Bash(Select-String -NotMatch \"M_CSP|M_PCS|M_PCl|Placement|Parent curve|Curve segment|\\\\\\\\\\\\\\\\|^\\\\s*[\\\\d\\\\.\\\\-e\\\\+]\")",
+      "Bash(dir examples *)",
+      "PowerShell(Move-Item *)",
+      "PowerShell(Get-ChildItem D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\testset\\\\Alignment-semantic-testset -Recurse -File | Group-Object DirectoryName | ForEach-Object { \"$\\($_.Count\\)`t$\\($_.Name.Replace\\('D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\testset\\\\',''\\)\\)\" } | Sort-Object)",
+      "Bash(Select-Object -ExpandProperty Name)",
+      "PowerShell(Get-ChildItem -Recurse -Directory \"D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\testset\\\\Alignment-plots\" | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\(\"D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\testset\\\\Alignment-plots\\\\\", \"\"\\) })",
+      "Bash(git checkout *)",
+      "PowerShell(Get-Content *)",
+      "Bash(awk '{print $9, $5}')",
+      "Bash(sort -k2 -hr)",
+      "Bash(Copy-Item \"D:\\\\LX2IFC\\\\FTIA_LandXML\\\\BPaimio-Kupittaa_GK23_N2000_2020_patch_3.ifc\" \"D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\testset\\\\3D\\\\BPaimio-Kupittaa_GK23_N2000_2020.ifc\")",
+      "Bash(Write-Host \"Copied.\")",
+      "Bash(pip install *)"
     ]
   }
 }

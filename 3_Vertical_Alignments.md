@@ -1,14 +1,10 @@
-# Section 3 - Vertical Alignments
+# Chapter 3 - Vertical Alignments
 
 ## 3.0 Introduction
 
-A vertical alignment defines the elevation profile of a route as a function of distance along its horizontal path. Combined with the horizontal alignment, it establishes the three-dimensional geometry of a road, railway, or other linear infrastructure element. 
+The geometric representation of a vertical alignment is accomplished with `IfcGradientCurve`. It represents the elevation profile as a two-dimensional curve in a (distance along, elevation) coordinate system, where distance along is measured along the horizontal `IfcCompositeCurve` (`IfcGradientCurve.BaseCurve`). Combined with the horizontal alignment, the gradient curve establishes the three-dimensional geometry of the route.
 
-## 3.1 General
-
-The geometric representation of a vertical alignment is accomplished with `IfcGradientCurve`. This defines the vertical alignment in a "distance along, elevation" coordinate system. Distance along is measured along `IfcGradientCurve.BaseCurve` = `IfcCompositeCurve`.
-
-Table 3.1-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corresponding parent curve type.
+Table 3.0-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corresponding parent curve type.
 
 | Business Logic (`IfcAlignmentVerticalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
 |---------------------------------------------------------------|----------------------------------------------------------|
@@ -17,7 +13,22 @@ Table 3.1-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corres
 | CLOTHOID                                                      | `IfcClothoid`                                            |
 | PARABOLICARC                                                  | `IfcPolynomialCurve`                                     |
 
-*Table 3.1-1 — Mapping of business logic to geometric representation for vertical alignment*
+*Table 3.0-1 — Mapping of business logic to geometric representation for vertical alignment*
+
+This chapter covers:
+
+- The four-step evaluation algorithm: Steps 1–3 follow the same matrix composition as horizontal segments; Step 4 combines the vertical result with the horizontal placement matrix to produce a full 3D placement.
+- Parametric equations and geometry mapping examples for the curve types in Table 3.0-1.
+- The combined 3D evaluation that produces position, tangent, cross-track, and up-axis vectors from the `IfcGradientCurve`.
+- Known limitation: vertical clothoid curves are not addressed in this guide.
+
+## 3.1 General
+
+Each vertical segment is parameterized by arc-length $s$ along its parent curve, where $s = 0$ at the start of the parent curve. The key semantic attributes are `IfcAlignmentVerticalSegment.StartDistAlong` (horizontal distance from the alignment start to the segment start), `HorizontalLength` (the horizontal projection of the segment), `StartHeight` (elevation at the segment start), and `StartGradient` and `EndGradient` (decimal slopes; e.g., $0.005 = 0.5\%$).
+
+`IfcCurveSegment.SegmentLength` stores arc-length along the parent curve, not horizontal distance. The evaluator parameter is horizontal distance $\ell$, which must be converted to arc-length $s$ before calling the parent curve equations. For the grades typical in road and railway design ($\leq 5\%$), the difference is small but non-zero.
+
+The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \arctan(g(\ell))$, where $g(\ell)$ is the gradient. The cosine and sine of $\theta$ form the `RefDirection` of the vertical curve at that point.
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
@@ -109,12 +120,11 @@ A constant gradient is geometrically represented with a segment trimmed from an 
 
 ### 3.3.1 Parent Curve Parametric Equations
 
-$$x(s) = p_{x} + s$$
+$$x(s) = p_{x} + s \cdot dx$$
 
-$$y(s) = p_{y} + s(dy/dx)$$
+$$y(s) = p_{y} + s \cdot dy$$
 
-Note that these equations are different from the equations for
-horizontal.
+where $(p_x,\ p_y)$ is the `IfcLine` origin and $dx$ and $dy$ are the direction parameters.
 
 ### 3.3.2 Semantic Definition to Geometry Mapping
 
@@ -125,14 +135,14 @@ Consider a vertical gradient at an uphill slope of 0.5 starting at point
 (0,10). The horizontal projection of the segment length is 100.
 
 ~~~
-#44 = IFCALIGNMENTVERTICALSEGMENT($, $, 0., 100., 10., 0.5, 0., $, .CONSTANTGRADIENT.);
+#44 = IFCALIGNMENTVERTICALSEGMENT($, $, 0., 100., 10., 0.5, 0.5, $, .CONSTANTGRADIENT.);
 ~~~
 
-Define the direction of the `IfcLine` so it matches the vertical segment
+Define the direction of the `IfcLine` so it is horizontal
 
-$$dx = \cos\left( \tan^{- 1}{0.5} \right) = 0.894427191$$
+$$dx = 1$$
 
-$$dy = \sin\left( \tan^{- 1}{0.5} \right) = 0.44713595$$
+$$dy = 0$$
 
 Define the `IfcLine` as passing through point (0,0)
 
@@ -140,11 +150,14 @@ Define the `IfcLine` as passing through point (0,0)
 #80 = IFCLINE(#81, #82);
 #81 = IFCCARTESIANPOINT((0., 0.));
 #82 = IFCVECTOR(#83, 1.);
-#83 = IFCDIRECTION((0.894427190999916, 0.447213595499958));
+#83 = IFCDIRECTION((1., 0.));
 ~~~
 
+
 Place the curve segment at (0,10) with a tangent direction
-(0.894427190999916, 0.447213595499958).
+
+$$dx = \cos\left( \tan^{- 1}{0.5} \right) = 0.894427191$$
+$$dy = \sin\left( \tan^{- 1}{0.5} \right) = 0.44713595$$
 
 ~~~
 #77 = IFCAXIS2PLACEMENT2D(#78, #79);
@@ -182,13 +195,13 @@ $$M_{CSP} = \begin{bmatrix}
 
 **Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
 
-The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (0.894427191,\ 0.447213595)$:
+The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (1.,\ 0.)$:
 
-$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.447213595}{0.894427191}\right) = 0.463647609\ \text{rad}$$
+$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.}{1.}\right) = 0.\ \text{rad}$$
 
 $$M_N = \begin{bmatrix}
-0.894427191 & 0.447213595 & 0 & 0 \\
--0.447213595 & 0.894427191 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -201,15 +214,15 @@ $$s = s_0 + \frac{\ell}{dx} = 0 + \frac{50}{0.894427191} = 55.9016994\ \text{m}$
 
 Evaluate the parent curve at $s = 55.9016994$:
 
-$$d = x(55.9016994) = 55.9016994 \times 0.894427191 = 50.000\ \text{m}$$
+$$d = x(55.9016994) = 55.9016994 \times 1 = 55.9016994\ \text{m}$$
 
-$$z = y(55.9016994) = 55.9016994 \times 0.447213595 = 25.000\ \text{m}$$
+$$z = y(55.9016994) = 55.9016994 \times 0 = 0\ \text{m}$$
 
-$$\theta = 0.463647609\ \text{rad} \quad \text{(constant for a line)}$$
+$$\theta = 0.$$
 
 $$M_{PC} = \begin{bmatrix}
-0.894427191 & -0.447213595 & 0 & 50.000 \\
-0.447213595 & 0.894427191 & 0 & 25.000 \\
+1 & 0 & 0 & 55.9016994 \\
+0 & 1 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -223,14 +236,14 @@ $$M_v = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-0.894427191 & 0.447213595 & 0 & 0 \\
--0.447213595 & 0.894427191 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-0.894427191 & -0.447213595 & 0 & 50.000 \\
-0.447213595 & 0.894427191 & 0 & 25.000 \\
+1 & 0 & 0 & 55.9016994 \\
+0 & 1 & 0 & 0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -247,6 +260,18 @@ $$M_v = \begin{bmatrix}
 A circular vertical curve is geometrically represented with a segment trimmed from an `IfcCircle` parent curve.
 
 ### 3.4.1 Parent Curve Parametric Equations
+
+The `IfcCircle` parametric equations for a vertical circular arc are identical to the horizontal case (Section 2.4.1), with $x(s)$ representing distance along the horizontal alignment and $y(s)$ representing elevation.
+
+$$\theta(s) = \frac{s}{R}$$
+
+$$\kappa(s) = \frac{1}{R}$$
+
+$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\!\left(\theta(s)\right)$$
+
+$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\!\left(1 - \cos\!\left(\theta(s)\right)\right)$$
+
+where $R$ is `IfcCircle.Radius` and $s$ is arc length along the circle. The grade at arc length $s$ is $g(s) = \tan(\theta(s))$.
 
 ### 3.4.2 Semantic Definition to Geometry Mapping
 
@@ -530,7 +555,7 @@ $$y'(x) = 2A_2x + A_1$$
 
 ### 3.6.2 Semantic Definition to Geometry Mapping
 
-Consider a 1600 m parabolic vertical cover that starts 1200 m along the horizontal alignment. The entry grade is 1.75% and the exit grade is -1%. The elevation at the start of the curve is 121 m.
+Consider a 1600 m parabolic vertical curve that starts 1200 m along the horizontal alignment. The entry grade is 1.75% and the exit grade is -1%. The elevation at the start of the curve is 121 m.
 
 The semantic definition is
 
@@ -538,7 +563,7 @@ The semantic definition is
 #289=IFCALIGNMENTVERTICALSEGMENT($,$,1200.,1600.,121.,0.017500000000000002,-0.01,$,.PARABOLICARC.);
 ~~~
 
-Compute the polynomai curve coefficients
+Compute the polynomial curve coefficients
 
 
 $A_0 = 121.\ m$
@@ -566,7 +591,7 @@ It is easiest to place the parent curve at the origin and orient it with the glo
 >
 > $A_2 = Length^{-1}$
 >
-> The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Section 2.0 - Horizontal Alignments](./2_Horizontal_Alignments.md). Implicit units of measure are required for the polynomial coefficients.
+> The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Chapter 2 - Horizontal Alignments](./2_Horizontal_Alignments.md). Implicit units of measure are required for the polynomial coefficients.
 
 The polynomial curve is trimmed using `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength`. These parameters are measured along the length of the curve. The horizontal projection of the segment length, from `IfcAlignmentVerticalSegment.HorizontalLength` is $h_l = 1600$. `SegmentLength` will be slightly longer because it is the distance along the curve.
 
@@ -741,3 +766,13 @@ $$M_{3D} = \begin{bmatrix}
 0.012342809710188737 & 0.0 & 0.999923824622885 & 125.4765625 \\
 0.0 & 0.0 & 0.0 & 1.0
 \end{bmatrix}$$
+
+## 3.8 Summary and Implementation Checklist
+
+| # | Item | Notes |
+|---|---|---|
+| 1 | `SegmentStart` and `SegmentLength` are arc-length parameters, but vertical segments are evaluated at horizontal distance | Convert horizontal distance $\ell$ to arc-length $s$ using the parent curve geometry before passing to the evaluator; for low grades the difference is small but non-zero |
+| 2 | `SegmentLength` is negative for crest (cresting) circular arc curves | A negative `SegmentLength` indicates the arc is traversed clockwise; use its absolute value for length accumulation and preserve the sign for trim direction |
+| 3 | Do not rely on `IfcAlignmentVerticalSegment.RadiusOfCurvature` | This attribute is optional and may be absent or inconsistent; always compute the radius from `HorizontalLength`, `StartGradient`, and `EndGradient` |
+| 4 | Treat `IfcPolynomialCurve` coefficients as having implicit units of $\text{Length}^{(1-i)}$ | For a parabolic arc, $A_2$ has implicit units of Length$^{-1}$; evaluate as $y(x) = A_2 x^2 + A_1 x + A_0$ where $x$ is a length |
+| 5 | When forming $M'_v$ for Step 4, zero the distance-along component and swap rows/columns 2 and 3 | This maps elevation from the vertical plane's row 2 to row 3 of the 3D matrix, placing it on the Z axis where $M_h$ expects it |

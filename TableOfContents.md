@@ -11,8 +11,12 @@
 9 [Referents and Stationing](9_Referents_and_Stationing.md)  
 10 [Sectioned Surfaces and Solids](10_Sectioned_Surfaces_and_Solids.md)  
 11 [Precision and Tolerance](11_Precision_and_Tolerance.md)  
-12 [Examples and Validation Data](12_Examples_and_Validation_Data.md)  
+12 [Alignment Geometry Testset](12_Alignment_Geometry_Testset.md)  
 
 ## Appendix
 
 A [LandXML to IFC Conversion](Appendix_A_LandXML.md)  
+
+## Index
+
+[Index](Index.md)  
