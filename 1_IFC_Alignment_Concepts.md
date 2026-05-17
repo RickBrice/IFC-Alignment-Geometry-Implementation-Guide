@@ -171,17 +171,11 @@ vertical alignment.
 
 *Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
 
-**todo - need discussion for reusign horizontal to go along with figure, or remove figure**
-
-![](images/Figure_2.1_Alignment_Geometry_Reuse.svg)
-
-*Figure 1.5.2-2 Reuse of a shared `IfcCompositeCurve` across multiple child alignments. Each child `IfcAlignment` nests only its own vertical and cant layouts; the horizontal `IfcCompositeCurve` is referenced as `BaseCurve` by each child's gradient or segmented reference curve.*
-
 
 The geometric elements are modeled with `IfcCurveSegment`. `IfcCurveSegment`
 cuts a segment from a parent curve and places it in the alignment
 coordinate system. A horizontal circular arc is modeled with an
-`IfcCurveSegment` that cuts an arc from an `IfcCircle`. Figure 1.5.2-3 shows an
+`IfcCurveSegment` that cuts an arc from an `IfcCircle`. Figure 1.5.2-2 shows an
 alignment consisting of a tangent run (red) and a horizontal curve
 (green). The line and curve segments are cut from their `IfcLine` and
 `IfcCircle` parent curves, respectively. The process of defining a parent
@@ -193,7 +187,7 @@ geometric representation of the horizontal alignment.
 
 ![](images/image3.png)
 
-*Figure 1.5.2-3 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
+*Figure 1.5.2-2 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
 
 A similar process is used to create the vertical alignment.
 `IfcCurveSegment` trim geometry from parent curves and combine end to start to
