@@ -1,5 +1,7 @@
 # Chapter 12 — Alignment Geometry Testset
 
+**todo - need to create IFC models that have some of the issues that the validation service detects, such as with IfcOffsetCurve used for sectioned surface**
+
 ## 12.1 Background
 
 The test cases in this chapter are inspired by the alignment test sets developed by
