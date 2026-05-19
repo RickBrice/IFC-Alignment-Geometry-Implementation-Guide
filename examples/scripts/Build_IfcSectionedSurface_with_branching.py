@@ -1,0 +1,145 @@
+import matplotlib.pyplot as plt
+import math
+import ifcopenshell
+import ifcopenshell.api.alignment
+import ifcopenshell.api.unit
+import ifcopenshell.geom
+import numpy as np
+
+
+def make_angle(slope):
+    # from Fig 8.15.3.15.A, X is towards the left, Y is up, and angle is positive CW from +X.
+    # this function converts traditional engineering slopes to angular measure for use in IfcOpenCrossProfileDef
+    return math.pi + math.atan(slope)
+    
+
+file = ifcopenshell.file(schema="IFC4X3_ADD2")
+file.header.file_description.description = ("ViewDefinition [Alignment-basedView]",)
+
+project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(),Name="Sectioned Surface with branching")
+site = file.createIfcSite(GlobalId=ifcopenshell.guid.new(),Name="Site")
+
+length = ifcopenshell.api.unit.add_si_unit(file,unit_type="LENGTHUNIT")
+angle = ifcopenshell.api.unit.add_si_unit(file,unit_type="PLANEANGLEUNIT")
+ifcopenshell.api.unit.assign_unit(file,units=[length,angle])
+    
+geometric_representation_context = ifcopenshell.api.context.add_context(file, context_type="Model")
+axis_model_representation_subcontext = ifcopenshell.api.context.add_context(
+    file,
+    context_type="Model",
+    context_identifier="Axis",
+    target_view="MODEL_VIEW",
+    parent=geometric_representation_context,
+)
+body = ifcopenshell.api.context.add_context(
+    file,
+    context_type="Model", 
+    context_identifier="Body", 
+    target_view="MODEL_VIEW", 
+    parent=geometric_representation_context)
+
+ifcopenshell.api.aggregate.assign_object(file,relating_object=project,products=[site,])
+
+start_station = 500.
+alignment = ifcopenshell.api.alignment.create(file,"A-Line",include_vertical=True,start_station=start_station)
+layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
+
+segment1 = file.createIfcAlignmentHorizontalSegment(
+    StartPoint=file.createIfcCartesianPoint(Coordinates=((0.,0.))),
+    StartDirection=0.0,
+    StartRadiusOfCurvature=0.0,
+    EndRadiusOfCurvature=0.0,
+    SegmentLength=250.,
+    PredefinedType = "LINE"
+)
+
+end = ifcopenshell.api.alignment.create_layout_segment(file,layout,segment1)
+
+vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
+
+segment1 = file.createIfcAlignmentVerticalSegment(
+    StartDistAlong=0.,
+    HorizontalLength=250.,
+    StartHeight=0.,
+    StartGradient=0.,
+    EndGradient=0.,
+    PredefinedType = "CONSTANTGRADIENT"
+)
+
+end = ifcopenshell.api.alignment.create_layout_segment(file,vlayout,segment1)
+
+curve = ifcopenshell.api.alignment.get_curve(alignment)
+
+road = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(),Name="Road1")
+ifcopenshell.api.aggregate.assign_object(file,relating_object=site,products=[road,])
+
+road_part = file.createIfcRoadPart(GlobalId=ifcopenshell.guid.new(),Name="RoadPart1",UsageType="LONGITUDINAL")
+ifcopenshell.api.aggregate.assign_object(file,relating_object=road,products=[road_part,])
+
+crownslope = 0.2
+fullsuper = 0.6
+width = 30.
+
+cs1 = file.createIfcOpenCrossProfileDef(
+        ProfileType="CURVE",
+        HorizontalWidths=True,
+        Widths=[width,width],
+        Slopes=[make_angle(-crownslope),make_angle(crownslope)],
+        Tags=["A","B","C"],
+        OffsetPoint=file.createIfcCartesianPoint((width,-width*crownslope))
+    )
+
+cs2 = file.createIfcOpenCrossProfileDef(
+        ProfileType="CURVE",
+        HorizontalWidths=True,
+        Widths=[width,0.,width],
+        Slopes=[make_angle(-crownslope),make_angle(0.),make_angle(crownslope)],
+        Tags=["A","B","D","C"],
+        OffsetPoint=file.createIfcCartesianPoint((width,-width*crownslope))
+    )
+
+cs3 = file.createIfcOpenCrossProfileDef(
+        ProfileType="CURVE",
+        HorizontalWidths=True,
+        Widths=[width,width,width],
+        Slopes=[make_angle(-crownslope),make_angle(0.0),make_angle(crownslope)],
+        Tags=["A","B","D","C"],
+        OffsetPoint=file.createIfcCartesianPoint((1.5*width,-width*crownslope))
+    )
+
+
+op1 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(0.),BasisCurve=curve))
+op2 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(50.),BasisCurve=curve))
+op3 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(100.),BasisCurve=curve))
+op4 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(150.),BasisCurve=curve))
+op5 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(200.),BasisCurve=curve))
+op6 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(250.),BasisCurve=curve))
+
+surface = file.createIfcSectionedSurface(
+    Directrix = curve,
+    CrossSectionPositions=[op1,op2,op3,op4,op5,op6],
+    CrossSections=[cs1,cs2,cs3,cs3,cs2,cs1]
+)
+
+
+representation = file.createIfcShapeRepresentation(
+    ContextOfItems=body, RepresentationIdentifier="Surface", RepresentationType="SectionedSurface", Items=[surface])
+
+
+product_rep = file.createIfcProductDefinitionShape(Representations=[representation])
+
+
+proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name="Proxy",
+        ObjectPlacement=file.createIfcLocalPlacement(
+            RelativePlacement=file.createIfcAxis2Placement3D(
+                Location=file.createIfcCartesianPoint(Coordinates=((0.0,0.0,0.0)))
+            )
+        ),
+        Representation=product_rep
+)
+
+ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[proxy])
+
+
+file.write(r"..\IfcSectionedSurface_with_branching.ifc")
+print("Done!")

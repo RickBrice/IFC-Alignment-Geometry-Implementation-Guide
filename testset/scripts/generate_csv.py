@@ -93,8 +93,8 @@ def write_vertical_csv(alignment, dest, unit_scale):
         d_m = float(i)
         m = evaluate_at(real_segs, d_m, unit_scale)
         dist = m[3, 0] / unit_scale
-        y    = m[3, 2] / unit_scale
-        rows.append([f'{dist:.6f}', f'{y:.6f}', f'{m[0,0]:.6f}', f'{m[0,2]:.6f}'])
+        y    = m[3, 1] / unit_scale
+        rows.append([f'{dist:.6f}', f'{y:.6f}', f'{m[0,0]:.6f}', f'{m[0,1]:.6f}'])
     write_csv(dest, ['dist_along', 'Y', 'RefDir_dx', 'RefDir_dy'], rows)
 
 
