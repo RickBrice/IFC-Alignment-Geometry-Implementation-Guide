@@ -410,20 +410,27 @@ From Step 2
 
 $x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
 
-Compute the chord length between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the green triangle. Once the point on the parent curve is known, a chord distance between the start of the trim and the point can be computed. From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
+Compute the chord length, $c$ between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the right triangle shown. Once the point on the parent curve is known, a chord distance between the start of the trim and this point can be computed (see inset chord line detail). From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
 
-![](images/Circular_Vertical_Curve.png)
+![](images/vertical_circular_arc_diagram.svg)
 
-*Figure 3.4.3-1 — Circular arc vertical curve geometry*
+*Figure 3.4.3-1 — Geometry of a vertical circular arc. The chord $c$ connects two points on the arc. The right triangle simplifies locating points on the arc. The inset highlights the distinction between the straight chord and the curved arc.*
 
 Location point on parent curve corresponding to $\ell = 50$
 
-$$x = x_0 + \ell = 50\ m$$
-$$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 + (50 - (-172.075922005613))^2}=-19.933926737614911$$
+$$x = x_0 + \ell = 0 + 50 = 50\ m$$
+
+From the right triangle
+
+$$R^2 = (x-C_x)^2 + (y-C_y)^2$$
+
+Solving for $y$,
+
+$$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 - (50 - (-172.075922005613))^2}=-29.933926737614911$$
 
 Compute the chord length from the trim start to the point
 
-$$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-19.933926737614911 - 10)^2} = 58.275552077461235$$
+$$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-29.933926737614911 - 10)^2} = 58.275552077461235\ m$$
 
 Angle subtented by the trimmed segment
 
@@ -480,40 +487,27 @@ $$M_v = \begin{bmatrix}
 
 ## 3.5 Clothoid
 
-<span style="background-color: yellow;color: black">
-[todo - finish this]
-</span>
+Vertical clothoid transition curves are not addressed in this guide. The available reference implementation ([bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry)) produces degenerate results for this case — the generated IFC files have zero-length vertical alignments and a clothoid constant of zero, making them unsuitable as reference material. Until a correct reference or authoritative worked example is available, the geometric mapping for `IfcClothoid` in a vertical context remains undocumented here.
+An example of a file generated from the reference implementation is [https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc).
 
-The reference implementation at 
-[IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
-at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
-(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry), does not seem to correctly handle vertical alignments with clothoids. The examples provided are incomplete. The vertical alignments have a total length of zero and the resulting clothoid constants are zero.
-
-An example of an example file generated from the reference implementation is [https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc).
-
+The mapping from the sementic curve definition to the gemoetric defintion is shown in this IFC coding.
 ~~~
+// Semantic defintion
 #41 = IFCALIGNMENTVERTICAL('1FNFyDAJeHwv87wDZHIYI1', $, $, $, $, #89, $);
 #42 = IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI2', #3, $, $, $, #72, #75, #44);
 #43 = IFCRELNESTS('4CGecNrjCHwxOSbERtTLTf', $, $, $, #41, (#42));
 #44 = IFCALIGNMENTVERTICALSEGMENT($, $, 0., 100., 10., 5.E-1, 0., $, .CLOTHOID.);
 
+// Geometric definition
 #70 = IFCGRADIENTCURVE((#71), .F., #45, #86);
 #71 = IFCCURVESEGMENT(.CONTINUOUS., #77, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(0.), #80);
 #77 = IFCAXIS2PLACEMENT2D(#78, #79);
 #78 = IFCCARTESIANPOINT((0., 10.));
 #79 = IFCDIRECTION((8.94427190999916E-1, 4.47213595499958E-1));
-#80 = IFCCLOTHOID(#81, 0.);
+#80 = IFCCLOTHOID(#81, 0.); // <--- degenerate clothoid
 #81 = IFCAXIS2PLACEMENT2D(#82, $);
 #82 = IFCCARTESIANPOINT((0., 0.));
 ~~~
-
-Due to a lack of information, vertical clothoid transition curves have not yet been addressed.
-
----
-todo - consider this alternative text
-
-Vertical clothoid transition curves are not addressed in this guide. The available reference implementation ([bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry)) produces degenerate results for this case — the generated IFC files have zero-length vertical alignments and a clothoid constant of zero, making them unsuitable as reference material. Until a correct reference or authoritative worked example is available, the geometric mapping for `IfcClothoid` in a vertical context remains undocumented here.
----
 
 <!--
 Start angle = atan(startGradient)
