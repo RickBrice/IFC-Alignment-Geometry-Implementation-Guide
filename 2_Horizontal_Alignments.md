@@ -1598,15 +1598,13 @@ $$M_{h} =
 
 ## 2.12 Zero Length Segment
 
-** todo - need to say something about needing to compute end of segment placement to start nect segment**
-
 IFC Concept Templates [4.1.4.4.1.1](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Alignment_Layouts/Alignment_Layout_-_Horizontal,_Vertical_and_Cant/content.html), [4.1.4.4.1.2](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Alignment_Layouts/Alignment_Layout_-_Reusing_Horizontal_Layout/content.html), [4.1.7.1.1.1](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Horizontal/content.html), [4.1.7.1.1.2](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Horizontal_and_Vertical/content.html), [4.1.7.1.1.3](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Horizontal,_Vertical_and_Cant/content.html), and [4.1.7.1.1.4](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Segments/content.html) require that the final `IfcAlignmentSegment` nested within `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant` has a `SegmentLength` of zero. A corresponding zero-length `IfcCurveSegment` is required in each associated geometric representation (`IfcCompositeCurve`, `IfcGradientCurve`, or `IfcSegmentedReferenceCurve`).
 
 The specification imposes no constraint on which curve type backs the zero-length geometric segment. As best practice, use `.LINE.` (`IfcAlignmentHorizontalSegment`), `.CONSTANTGRADIENT.` (`IfcAlignmentVerticalSegment`), or `.CONSTANTCANT.` (`IfcAlignmentCantSegment`) as the `PredefinedType` of the semantic closing segment, and an `IfcLine` as the parent curve of the corresponding `IfcCurveSegment`. The placement of both the semantic and geometric closing segments must match the endpoint and end direction of the preceding segment.
 
 ### 2.12.1 Semantic Closing Segment
 
-The `StartPoint` and `StartDirection` of the semantic segment are taken from the end state of the preceding segment, and `SegmentLength` is set to zero.
+The `StartPoint` and `StartDirection` of the semantic segment are taken from the end state of the preceding segment, and `SegmentLength` is set to zero. One implenentation strategy is to map the preceding semantic segment definition to its geometric representation as described in this chapter, as well as in Chapters 3 and 4, and evaluate it at its end point.
 
 ~~~
 // Last non-zero length segment
