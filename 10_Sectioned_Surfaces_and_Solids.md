@@ -1,7 +1,6 @@
 todo
-* create new example files to illustrate string lines
-* need real examples that shows the difference between using stringlines and templates, though every example I've come up with are exactly the same. Stringlines seem to be limited because they must be offset curves. This means the stringlines are not independent geometry from the sweeping curve.
-* create example that shows a section on a horizontal curve. the section widens through the curve. With templates, they are conneced with straight lines. With stringlines, the edges of the surface follow the curve.
+* create example that shows a section on a horizontal curve. the section widens through the curve. With templates, they are conneced with straight lines. With stringlines, the edges of the surface follow the curve. - this is the v4 example - this example needs some serious work. right now surface definition is "dummy". The real points on the profile that lay on the offset lines need to be computed.
+* need to create sample models for sectioned solid horizontal that show the various transition supported.
 * This section needs a lot of validation with models to support the claims
 
 # Chapter 10 - Sectioned Surfaces and Solids
@@ -90,6 +89,17 @@ The example file [`IfcSectionedSurface_with_branching.ifc`](examples/IfcSectione
 Although the IFC specification does not state this explicitly, the `Width` of an `IfcOpenCrossProfileDef` segment must be zero at the distance along the directrix where a breakline initiates or terminates. When a new feature vertex first appears — the start of a widening lane, for example — the cross-section at that distance must include the new tagged vertex with a zero-width segment. This zero-width entry establishes the vertex at a defined position without introducing any lateral extent, allowing the geometry to grow from that point as subsequent sections carry non-zero widths. Without a zero-width segment at the breakpoint position, the surface has no defined starting position for the new feature and the geometry is ambiguous. IFC Figure 8.8.3.37.B — *Sectioned surface with branching longitudinal breaklines* — illustrates this pattern for a surface where breaklines branch from the main cross-section.
 
 The tag mechanism serves both breaklines and stringlines simultaneously. A tag on a profile vertex identifies that vertex's correspondence across sections with different topology and, when a matching `IfcOffsetCurveByDistances` guide curve exists, controls the vertex's trajectory between sections. The two functions — topological correspondence and geometric guidance — share the same tag infrastructure.
+
+### 10.3.2 Stringlines
+
+There is a series of examples of for a section surface developed with stringlines.
+
+1) IfcSectionSurface_with_stringlines_v1.ifc - A basic sectioned surface with stringlines. While this model is valid IFC, the validation service flags it as not meeting industry best practices. The issue is the the IfcOffsetCurveByDistances and their constituent IfcPointByDistanceExpression offsets are not identified as being related directly or indirectly to a rotted entity. See ghirkin rule IFC106. However, the IfcPointByDistanceExpression are related to IfcOffsetCurveByDistances through the OffsetValues attribute, and the IfcOffsetCurveByDistances are related to the IfcCompositeCurve through the BasisCurve attribute. The IfcCompositeCurve is related to the IfcAlignment, which is a rooted entity.
+2) IfcSectionedSurface_with_stringlines_v2.ifc - This is the same sectioned surface as the v1 example, however the stringlines are now assigned as representations of three new alignments. This eliminates the IFC106 issue, but the model now has three additional alignments. It is interesting to note that every though there is a primary alignment whose directrix is the basis curve for three offset curves, that aligment cannot be used as a stringline because it does not have a Tag attribute. In this example, Line-B is an offset from Main-Line with all offset values being zero.
+3) IfcSectionedSurface_with_stringlines_v3.ifc - This is similar to v1 and v2, but this time the stringines are IfcOffsetCurveByDistances relative to alignment that are not associated with the surface's Diretrix. This use is most consistent with the idea of stringlines, but it also highlights shortcomings in the IFC specification. The issues are:
+   - The surface measures 200 along the Main-Line alignment, but the ends of the Left_Edge and Right_Edge alignments and thus the related offset lines don't project to the end of Main-Line. The guide curves are too short.
+   - The surface is defined by two cross sections, one at each end of the surface. The guide curves are supposed to provide the key points in between. However, the overall width of the end section does not align with the guide curves. It is unclear if an implementation should ignore the guide curve or ignore the profile and adjust the tagged points so that they fall on the guide curves.
+4) IfcSectionedSurface_without_stringlines_v4.ifc - This example is supposed to be the same as the v3, except it is created with a tight sampling of cross sections to approximate the points on a curve. The curved alignments are retained to visually show the gap between the true curve and the approximated curve. This example serves to illustrate the simplicity of stringlines in regions of complex geometry and where section templates fall a little short.
 
 ## 10.4 IfcSectionedSolidHorizontal
 

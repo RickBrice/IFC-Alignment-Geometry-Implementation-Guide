@@ -1,7 +1,5 @@
 # Chapter 12 — Alignment Geometry Testset
 
-**todo - need to create IFC models that have some of the issues that the validation service detects, such as with IfcOffsetCurve used for sectioned surface**
-
 ## 12.1 Background
 
 The test cases in this chapter are inspired by the alignment test sets developed by
@@ -230,7 +228,7 @@ types, and case counts.
 
 ### 12.3.4 Real-World Alignments
 
-Two real-world alignments are provided as 3D test cases under `testset/RealWorldAlignments/`. Unlike the
+Three real-world alignments are provided as 3D test cases under `testset/RealWorldAlignments/`. Unlike the
 single-component cases in Sections 12.3.1–12.3.3, these exercise the complete evaluation
 pipeline — from combined horizontal, vertical, and (where present) cant layouts — and
 produce full 3D placement matrices at each sample point.
@@ -268,9 +266,29 @@ complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment is appr
 | Project unit | Meter (ETRS-TM35FIN) |
 | 3D curve type | `IfcSegmentedReferenceCurve` |
 
+#### Exit Turnout — Huni Valley Station
+
+The third case is the mainline alignment of an exit turnout at Huni Valley Station on a
+Swiss railway line. The IFC file was created using IfcOpenShell from LandXML source data.
+It is a full 3D railway alignment including horizontal, vertical, and cant layouts,
+exercising the complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment
+runs from station 84+521.000 to 88+524.656 (approximately 4003.656 m) and is expressed in
+SI meters with LV95 coordinates (Swiss national coordinate system). The horizontal layout
+consists of clothoid transitions and circular arcs; the vertical layout is a single flat
+constant-gradient segment; and the cant layout uses linear transitions and constant-cant
+segments with a rail head distance of 1.0 m.
+
+| | |
+|---|---|
+| IFC file | `testset/RealWorldAlignments/Exit_Turnout_Huni_Valley_Station.ifc` |
+| Reference coordinates | `testset/RealWorldAlignments/Exit_Turnout_Huni_Valley_Station.csv` |
+| Alignment name | Centerline |
+| Project unit | Meter (LV95) |
+| 3D curve type | `IfcSegmentedReferenceCurve` |
+
 #### Reference coordinate format
 
-Both CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
+All three CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
 length. All positions are in project units; direction components are dimensionless. The
 column definitions are given in Section 12.5.2.
 

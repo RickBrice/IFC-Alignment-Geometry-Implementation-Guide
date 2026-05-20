@@ -142,5 +142,5 @@ proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name
 ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[proxy])
 
 
-file.write(r"F:\IFC-Alignment-Geometry-Implementation-Guide\examples\IfcSectionedSurface_with_stringlines.ifc")
+file.write("D:/IFC-Alignment-Geometry-Implementation-Guide/examples/IfcSectionedSurface_with_stringlines_v2.ifc")
 print("Done!")
