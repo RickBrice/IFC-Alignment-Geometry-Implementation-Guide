@@ -1,10 +1,16 @@
-import matplotlib.pyplot as plt
+# Author: Richard Brice, PE
+# Date: 2026-05-20
+# This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
+#
+# Demonstrates IfcSectionedSurface with a branching cross-section topology, where the
+# number of control points in the profile increases mid-length to represent a feature
+# such as a median or added lane emerging along the road.
+
+import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
 import ifcopenshell.api.unit
-import ifcopenshell.geom
-import numpy as np
 
 
 def make_angle(slope):
@@ -141,5 +147,6 @@ proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name
 ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[proxy])
 
 
-file.write(r"..\IfcSectionedSurface_with_branching.ifc")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSurface_with_branching.ifc")
+file.write(output_path)
 print("Done!")

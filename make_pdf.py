@@ -270,11 +270,11 @@ body {
 h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
 h1 { font-size: 2.1em; border-bottom: 2px solid #222; margin-top: 2em; page-break-before: always; }
 h1:first-of-type { page-break-before: avoid; }
-h2 { font-size: 1.6em; border-bottom: 1px solid #555; margin-top: 1.6em; }
-h3 { font-size: 1.3em; margin-top: 1.3em; }
-h4 { font-size: 1.15em; margin-top: 1.1em; }
-h5 { font-size: 1.05em; font-style: italic; }
-h6 { font-size: 1em; font-style: italic; }
+h2 { font-size: 1.6em; color: #1a3a6b; border-bottom: 2px solid #1a3a6b; margin-top: 1.8em; padding-bottom: 0.15em; }
+h3 { font-size: 1.3em; color: #1a3a6b; border-left: 3px solid #7a9cce; padding-left: 0.5em; margin-top: 1.4em; }
+h4 { font-size: 1.05em; font-weight: bold; font-style: italic; color: #444; margin-top: 1.1em; }
+h5 { font-size: 1em; font-style: italic; font-weight: normal; }
+h6 { font-size: 1em; font-style: italic; font-weight: normal; }
 code {
   font-family: Consolas, 'Courier New', monospace;
   background: #f2f2f2;

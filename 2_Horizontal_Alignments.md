@@ -38,8 +38,7 @@ $$x(s) = \int \cos\theta(s)\ ds \qquad y(s) = \int \sin\theta(s)\ ds$$
 
 This algorithm evaluates the 2D position and tangent direction of a point on an `IfcCurveSegment` in the alignment coordinate system. Let $s_0$ = `SegmentStart` and $s$ = the arc-length parameter of the point to evaluate, where $s_0 \leq s < s_0 + \texttt{SegmentLength}$.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $M_{CSP}$ places the trimmed segment into the alignment coordinate system. It is constructed directly from `IfcCurveSegment.Placement`, where $(x_p, y_p)$ is the `Location` and $\theta_p$ is the bearing of the `RefDirection`.
 
 $$M_{CSP} = \begin{bmatrix} 
@@ -49,8 +48,7 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Compute the position $(x_0, y_0)$ and tangent angle $\theta_0$ of the parent curve at $s_0$. This establishes the frame of the parent curve at the point where trimming begins.
 
 $M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
@@ -62,8 +60,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:
 
 $$M_{PC} = \begin{bmatrix} 
@@ -198,8 +195,7 @@ The `IfcCurveSegment` is defined as:
 Compute the position matrix for a point 1500 m from the start of the
 curve segment.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 From the `IfcCurveSegment.Placement`:
 
 $$x = 500, y = 2500$$
@@ -213,14 +209,12 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Evaluate the parent curve at $u = 1500$
 
 $$\lambda(u) = C + \left( \int_{0}^{u}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u}{\sin\left( \theta(t) \right)}dt\ y \right)$$
@@ -292,9 +286,9 @@ $$\theta(s) = \frac{s}{R}$$
 
 $$\kappa(s) = \frac{1}{R}$$
 
-$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\!\left(\theta(s)\right)$$
+$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\left(\theta(s)\right)$$
 
-$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\!\left(1 - \cos\!\left(\theta(s)\right)\right)$$
+$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\left(1 - \cos\left(\theta(s)\right)\right)$$
 
 ### 2.4.2 Semantic Definition to Geometry Mapping
 
@@ -343,18 +337,15 @@ the parent curve starting at 0.0 for a length of 100.0 along the curve.
 Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $M_{CSP} = \begin{bmatrix}I\end{bmatrix}$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 The trim begins where the local x-axis of the circle intersects the circumference. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point on parent curve at $u = 50$
 
 $$\theta(s) = \frac{s}{R} = \frac{50}{300} $$
@@ -363,9 +354,9 @@ $$d_x = \cos(\theta(s)) = \cos(\frac{50}{300}) = 0.98614323$$
 
 $$d_y = \sin(\theta(s)) = \sin(\frac{50}{300}) = 0.16589613$$
 
-$$x(s) = R\sin\!\left(\theta(s)\right) = 300\sin\!\left(\frac{50}{300}\right) = 49.76883981$$
+$$x(s) = R\sin\left(\theta(s)\right) = 300\sin\left(\frac{50}{300}\right) = 49.76883981$$
 
-$$y(s) = R\!\left(1 - \cos\!\left(\theta(s)\right)\right) = 300\!\left(1 - \cos\!\left(\frac{50}{300}\right)\right) = 4.1570305$$
+$$y(s) = R\left(1 - \cos\left(\theta(s)\right)\right) = 300\left(1 - \cos\left(\frac{50}{300}\right)\right) = 4.1570305$$
 
 
 $$M_{PC} = 
@@ -495,16 +486,14 @@ Define the curve segment
 Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix. This is not true in all cases.
 
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Start by computing the point and curve tangent at the start of the parent curve trim.
 
 Recall that the clothoid equations are in terms of a unit parameterization. Compute the parametric position on the curve.
@@ -542,8 +531,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point and curve tangent at 50 m from the start,
 
 $$ s = -142.8571428 + 50 = -92.8571428$$
@@ -558,7 +546,7 @@ $$\theta(-0.25306307) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.2530
 
 $$dx = \cos(-0.100595238) = 0.994944564$$
 
-$$dy = \sin{(-0.100595238) = -0.100425663}$$
+$$dy = \sin(-0.100595238) = -0.100425663$$
 
 In matrix form
 
@@ -701,22 +689,19 @@ The geometric representation is
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point and curve tangent at 100 m from the start.
 
 From the `IfcPolynomialCurve` definition, 
@@ -961,8 +946,7 @@ Compute the curve coordinates at a distance along the curve, $u = 100$ (the end 
 
 The point falls in the second half ($50 < u \leq 100$). The parent curve parameter is $t = \text{SegmentStart} + (u - 50) = 50 + 50 = 100$.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 The curve segment `Placement` for the second half is at $(x_{join}, y_{join}) = (49.9972,\ 0.347204)$ with direction $\theta_{join} = 0.027778\ \text{rad}$:
 
 $$M_{CSP} = \begin{bmatrix}
@@ -972,8 +956,7 @@ $$M_{CSP} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the second half parent curve at SegmentStart and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the second half parent curve at SegmentStart and form the normalization matrix $M_N$
 The second half parent curve has `Position` at $(x_p, y_p) = (0.011503,\ -0.694370)$ with direction $\theta_p = 0.055556\ \text{rad}$. This was chosen so that the parent curve at $t = L/2 = 50$ yields $(x_1, y_1, \theta_1) = (49.9972,\ 0.347204,\ 0.027778)$ — the endpoint of the first half.
 
 $M_N$ maps $(x_1, y_1, \theta_1)$ to the origin with the $x$-axis tangent direction:
@@ -992,8 +975,7 @@ $$M_N = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying `Position`) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:
 
 $$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$
@@ -1123,22 +1105,19 @@ $$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \rig
 
 Compute the curve coordinates at a distance along the curve, $u = 50$
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point and curve tangent at 50 m from the start.
 
 $$x = \int_{0}^{50}{\cos{\theta(s)}}\ ds = 49.9962109$$
@@ -1235,22 +1214,19 @@ $$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \fra
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{600}t - \frac{100}{600\pi}\sin\left( \frac{\pi}{100}t \right)$$
@@ -1356,22 +1332,19 @@ $$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \fr
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{2}\left( \frac{t}{173.2050808} \right)^{2} + \frac{100}{2\pi(1884.955592)}\left( \cos\left( \frac{2\pi}{100}t \right) - 1 \right)$$
@@ -1539,22 +1512,19 @@ $$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \rig
 
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$**
-
+#### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
-**Step 3 — Evaluate and map each point**
-
+#### Step 3 — Evaluate and map each point
 Compute point and curve tangent at 100 m from the start.
 
 $$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s $$

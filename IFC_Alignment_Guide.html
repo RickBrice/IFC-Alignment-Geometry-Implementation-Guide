@@ -27,11 +27,11 @@ body {
 h1, h2, h3, h4, h5, h6 { font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
 h1 { font-size: 2.1em; border-bottom: 2px solid #222; margin-top: 2em; page-break-before: always; }
 h1:first-of-type { page-break-before: avoid; }
-h2 { font-size: 1.6em; border-bottom: 1px solid #555; margin-top: 1.6em; }
-h3 { font-size: 1.3em; margin-top: 1.3em; }
-h4 { font-size: 1.15em; margin-top: 1.1em; }
-h5 { font-size: 1.05em; font-style: italic; }
-h6 { font-size: 1em; font-style: italic; }
+h2 { font-size: 1.6em; color: #1a3a6b; border-bottom: 2px solid #1a3a6b; margin-top: 1.8em; padding-bottom: 0.15em; }
+h3 { font-size: 1.3em; color: #1a3a6b; border-left: 3px solid #7a9cce; padding-left: 0.5em; margin-top: 1.4em; }
+h4 { font-size: 1.05em; font-weight: bold; font-style: italic; color: #444; margin-top: 1.1em; }
+h5 { font-size: 1em; font-style: italic; font-weight: normal; }
+h6 { font-size: 1em; font-style: italic; font-weight: normal; }
 code {
   font-family: Consolas, 'Courier New', monospace;
   background: #f2f2f2;
@@ -77,15 +77,15 @@ a { color: #1a4f8a; }
 <hh1 id="ifc4x3-alignment-geometry-implementation-guide">IFC4x3 Alignment Geometry Implementation Guide</hh1>
 <p>An implementation guide for developers adding IFC4x3 alignment geometry support to infrastructure software applications.</p>
 <p>Richard Brice, PE</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/cover.svg" alt="" /></p>
 
 <div class="chapter-sep"></div>
 <a id="Foreword"></a>
 <hh1 id="foreword">Foreword</hh1>
-<p><code>IfcAlignment</code>, and the related geometric concepts, are new to the IFC4x3 specification. By virtue of expanding the IFC specification into the infrastructure domain, an entirely new audience is summoned into the <a href="buildingsmart.org">buildingSmart</a> community. I am one of those new arrivals.</p>
-<p>The IFC specification is very technical and is written with an expectation that the reader has a high level of knowledge and experience with IFC. Being a technical specification, there is no hand-holding for the novice. Industry guidance documents are generally not available to assist those new to the infrastructure and alignment aspects of IFC4x3.</p>
-<p>I set out to add alignment geometry support to the <a href="https://www.ifcopenshell.org">IfcOpenShell Toolkit</a>. Being a bridge engineer, I am well versed in highway alignment geometry. I was completely overwhelmed and befuddled with alignment representations in the IFC specifications. Through a long and persistent struggle, I was able to figure out most all of what a developer needs to implement IFC alignment geometry in a software application.</p>
-<p>This implementation guide captures what I have learned about IFC4x3 alignment geometry and provides guidance as to how a software developer may go about creating an implementation. I hope that other developers find this guide useful, because in the end, IFC is about interoperability. We all need a common understanding of the infrastructure alignment concepts and geometry to successfully exchange information.</p>
+<p><code>IfcAlignment</code>, and the related geometric concepts, are new to the IFC 4x3 specification. By expanding IFC into the infrastructure domain, an entirely new audience has been summoned into the buildingSMART community. I am one of those new arrivals.</p>
+<p>The IFC specification is highly technical and written with the expectation that the reader already has substantial IFC experience. There is no hand-holding for the newcomer, and industry guidance documents for the infrastructure and alignment aspects of IFC 4x3 are scarce.</p>
+<p>My entry point was a practical one: I set out to add alignment geometry support to the IfcOpenShell Toolkit. As a bridge engineer with more than 30 years of experience at the Washington State Department of Transportation — and as the lead developer of the BridgeLink software suite used by DOTs and engineering firms across the United States — I am well versed in highway alignment geometry as it is practiced in bridge and transportation engineering. Even so, I was completely overwhelmed by how alignment geometry is represented in the IFC specification. Through a long and persistent struggle, I was able to work out most of what a developer needs to implement IFC alignment geometry in a software application.</p>
+<p>That experience is what motivated this guide. I have spent my career building tools that make complex engineering knowledge accessible and actionable — from prestressed concrete design software to recommended practices for girder stability. This document is written in that same spirit: to capture what I have learned about IFC 4x3 alignment geometry and provide practical guidance for developers implementing it in their own applications. I hope it saves others the painful hours of confusion I experienced, because in the end, IFC is about interoperability. We all need a shared understanding of infrastructure alignment concepts and geometry to successfully exchange information.</p>
+<p>Richard Brice, PE</p>
 
 <div class="chapter-sep"></div>
 <a id="TableOfContents"></a>
@@ -516,7 +516,7 @@ project, alignment layout nesting, and the four alignment geometry
 variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
 provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The <em>partial</em> concept templates that
 cover individual curve segment geometry types, however, are sparse: they show class relationships but provide no
-mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Sections 2–4); offset curves (Section 5); approximate polyline representations (Section 6); alignments that share a common horizontal layout (Section 7); linear placement of objects along an alignment (Section 8); referents and stationing, including station equations (Section 9); alignment-based physical geometry — sectioned surfaces and solids (Section 10); precision and tolerance guidance (Section 11); and examples and validation data (Section 12). LandXML-to-IFC conversion is covered in <a href="#Appendix_A_LandXML">Appendix A</a>. It assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.</p>
+mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Chapters 2–4); offset curves (Chapter 5); approximate polyline representations (Chapter 6); alignments that share a common horizontal layout (Chapter 7); linear placement of objects along an alignment (Chapter 8); referents and stationing, including station equations (Chapter 9); alignment-based physical geometry — sectioned surfaces and solids (Chapter 10); precision and tolerance guidance (Chapter 11); and examples and validation data (Chapter 12). LandXML-to-IFC conversion is covered in <a href="#Appendix_A_LandXML">Appendix A</a>. This guide assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.</p>
 <hh2 id="11-horizontal-alignment">1.1 Horizontal Alignment</hh2>
 <p>A horizontal alignment typically consists of straight lines called
 tangents (or tangent runs) that are connected by curves. The curves are usually circular
@@ -533,12 +533,12 @@ parabolas, though sometimes circular arcs or clothoid curves are used. A
 vertical alignment is defined along the curvilinear path of a horizontal
 alignment in a 2D &quot;Distance Along, Elevation&quot; coordinate system. Combined,
 the horizontal and vertical alignments define a 3D curve. This
-combination of two 2D curves is sometimes referred to as a 2.5D or 2D+1D
+combination of two 2D curves is sometimes referred to as a 2.5D or 2+1D
 geometry. The IFC specification notes that contemporary alignment design
 almost always implements this 2.5D approach, with precision varying
 based on management priorities, design era, and available software tools.</p>
 <hh2 id="13-cant-alignment">1.3 Cant Alignment</hh2>
-<p>When a rail vehicle traverses a horizontal curve, centrifugal force acts laterally on passengers and cargo. Tilting the track cross-section — raising the outer (high) rail above the inner (low) rail — converts part of that lateral force into a downward component, improving ride comfort and permitting higher operating speeds through curves. This tilt is called <strong>cant</strong> (or <em>superelevation</em> in road engineering, though the two are geometrically analogous).</p>
+<p>When a rail vehicle traverses a horizontal curve, centrifugal force acts laterally on passengers and cargo. Tilting the track cross-section — raising the outer (high) rail above the inner (low) rail — converts part of that lateral force into a downward component, improving ride comfort and permitting higher operating speeds through curves. This tilt is called <strong>cant</strong> (or <em>superelevation</em>).</p>
 <p>Cant is measured as the height difference between the two rail heads, perpendicular to the track. The low (inner-curve) rail is the conventional pivot for rotation; the high (outer-curve) rail rises by the cant amount.</p>
 <p>A cant alignment is structured similarly to the horizontal and vertical alignments: <strong>constant-cant zones</strong> — corresponding to the circular arc sections of the horizontal alignment, where cant is held at a fixed value — are connected by <strong>cant transitions</strong> that ramp over the length of the horizontal transition spiral. Transitions may be linear or may follow the same non-linear curve families used for horizontal spirals.</p>
 <p>Like the vertical alignment, the cant alignment is defined in a two-dimensional profile: distance along the horizontal alignment on one axis, cant value on the other. The cant profile encodes not only a deviating elevation but also the cross slope of the rail head, fully defining the rotated cross-section. This profile is then layered onto the combined horizontal and vertical alignment to produce a full 3D alignment curve incorporating cross-sectional banking.</p>
@@ -558,7 +558,7 @@ and can be used and exchanged separately. A proper IFC file may contain only the
 representation, which is common in early design stages when geometry
 has not yet been computed.</p>
 <p>An <code>IfcAlignment</code> may be defined with a horizontal layout only, a horizontal and vertical layout, or a full horizontal, vertical, and cant layout. Each layout type is composed through an <code>IfcRelNests</code> relationship: <code>IfcAlignmentHorizontal</code>, <code>IfcAlignmentVertical</code>, and <code>IfcAlignmentCant</code> are nested within the <code>IfcAlignment</code> as applicable. Each layout is in turn composed of one or more <code>IfcAlignmentSegment</code> entities, also through <code>IfcRelNests</code>. The <code>IfcAlignmentSegment</code> models the segment design parameters in a subtype of <code>IfcAlignmentParameterSegment</code>: <code>IfcAlignmentHorizontalSegment</code>, <code>IfcAlignmentVerticalSegment</code>, or <code>IfcAlignmentCantSegment</code>, depending on the layout. The semantic definition model is shown in Figure 1.4-1.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_1_Semantic_Alignment_Model.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_1_Semantic_Alignment_Model.svg" alt="" /></p>
 <p><em>Figure 1.4-1 Semantic alignment model</em></p>
 <p><code>IfcRelNests.RelatedObjects</code> is an ordered collection, so the layout sub-objects have a defined sequence within the nest. The IFC specification does not state this order explicitly, but it can be inferred from the diagrams in the <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignment.htm#5.4.3.1.5-Concept-usage"><code>IfcAlignment</code> documentation (§5.4.3.1.5)</a>: <code>IfcAlignmentHorizontal</code> precedes <code>IfcAlignmentVertical</code>, which precedes <code>IfcAlignmentCant</code>.</p>
 <p>The ordering of <code>IfcAlignmentSegment</code> instances within each layout's nest is similarly unspecified by the schema. For <code>IfcAlignmentHorizontalSegment</code> the only logical order is start to end. For <code>IfcAlignmentVerticalSegment</code> and <code>IfcAlignmentCantSegment</code>, positional order could theoretically be derived from the <code>StartDistAlong</code> attribute regardless of list order, but relying on this is unnecessarily complex. Segments should always be ordered start to end in <code>IfcRelNests.RelatedObjects</code>.</p>
@@ -654,7 +654,7 @@ by the IFC concept templates for each alignment geometry variant are listed in T
 <p><code>IfcGradientCurve</code> and <code>IfcSegmentedReferenceCurve</code> inherit from
 <code>IfcCompositeCurve</code>. These curves consist of a sequence of segments
 defined by <code>IfcCurveSegment</code>. The mathematical computations for
-<code>IfcCurveSegment</code> geometry are the primary focus of this document.</p>
+<code>IfcCurveSegment</code> geometry are the primary focus of Chapters 2 - 4.</p>
 <p><code>IfcPolyline</code> and <code>IfcIndexedPolyCurve</code> produce approximate, discrete geometry
 rather than exact parametric curves. They arise in survey-derived alignments and early
 planning contexts. Their use, limitations, and incompatibility with the full semantic
@@ -667,14 +667,12 @@ alignment definition are discussed in <a href="#6_Approximate_Alignment_Geometry
 <code>IfcCompositeCurve</code> and the vertical alignment is defined by an
 <code>IfcGradientCurve</code>. The horizontal alignment is the basis curve for the
 vertical alignment.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2_Alignment_Geometry_Variants.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2_Alignment_Geometry_Variants.svg" alt="" /></p>
 <p><em>Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed <code>IfcGradientCurve</code> box in the H+V+C row appears as a <code>BaseCurve</code> intermediate only — it is not itself a shape representation.</em></p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2.1_Alignment_Geometry_Reuse.svg" alt="" /></p>
-<p><em>Figure 1.5.2-2 Reuse of a shared <code>IfcCompositeCurve</code> across multiple child alignments. Each child <code>IfcAlignment</code> nests only its own vertical and cant layouts; the horizontal <code>IfcCompositeCurve</code> is referenced as <code>BaseCurve</code> by each child's gradient or segmented reference curve.</em></p>
 <p>The geometric elements are modeled with <code>IfcCurveSegment</code>. <code>IfcCurveSegment</code>
 cuts a segment from a parent curve and places it in the alignment
 coordinate system. A horizontal circular arc is modeled with an
-<code>IfcCurveSegment</code> that cuts an arc from an <code>IfcCircle</code>. Figure 1.5.2-3 shows an
+<code>IfcCurveSegment</code> that cuts an arc from an <code>IfcCircle</code>. Figure 1.5.2-2 shows an
 alignment consisting of a tangent run (red) and a horizontal curve
 (green). The line and curve segments are cut from their <code>IfcLine</code> and
 <code>IfcCircle</code> parent curves, respectively. The process of defining a parent
@@ -683,8 +681,8 @@ into the alignment is repeated to define the entire horizontal
 alignment. All the horizontal alignment <code>IfcCurveSegment</code> objects are then
 combined to create an <code>IfcCompositeCurve</code> to complete the plan view
 geometric representation of the horizontal alignment.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/image3.png" alt="" /></p>
-<p><em>Figure 1.5.2-3 Illustration of parent curves and their placement with <code>IfcCurveSegment.Placement</code></em></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/image3.png" alt="" /></p>
+<p><em>Figure 1.5.2-2 Illustration of parent curves and their placement with <code>IfcCurveSegment.Placement</code></em></p>
 <p>A similar process is used to create the vertical alignment.
 <code>IfcCurveSegment</code> trim geometry from parent curves and combine end to start to
 create an <code>IfcGradientCurve</code>. <code>IfcGradientCurve</code> is a sub-type of
@@ -724,10 +722,10 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 #777 = IFCAXIS2PLACEMENT2D(#778, #779);
 #778 = IFCCARTESIANPOINT((250.003634293681, 145.312908277025));
 </code></pre>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/image4.png" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/image4.png" alt="" /></p>
 <p><em>Figure 1.5.2-4 — Example of <code>IfcGradientCurve</code> with a start location and length different than the <code>IfcCompositeCurve</code> BaseCurve.</em></p>
 <hh2 id="16-reference-implementation-and-segment-mapping">1.6 Reference Implementation and Segment Mapping</hh2>
-<p>Sections <a href="#2_Horizontal_Alignments">2.0</a>, <a href="#3_Vertical_Alignments">3.0</a>, and <a href="#4_Cant_Alignments">4.0</a> discuss the mapping of the semantic definition of alignment segments (<code>IfcAlignmentSegment</code> subtypes) to their corresponding geometric representation (<code>IfcCurveSegment.ParentCurve</code>). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
+<p>Chapter <a href="#2_Horizontal_Alignments">2.0</a>, <a href="#3_Vertical_Alignments">3.0</a>, and <a href="#4_Cant_Alignments">4.0</a> discuss the mapping of the semantic definition of alignment segments (<code>IfcAlignmentSegment</code> subtypes) to their corresponding geometric representation (<code>IfcCurveSegment.ParentCurve</code>). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
 <a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry">IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 (github.com)</a>.</p>
@@ -832,7 +830,7 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 <p>$$x(s) = \int \cos\theta(s)\ ds \qquad y(s) = \int \sin\theta(s)\ ds$$</p>
 <hh2 id="22-curve-segment-evaluation-algorithm">2.2 Curve Segment Evaluation Algorithm</hh2>
 <p>This algorithm evaluates the 2D position and tangent direction of a point on an <code>IfcCurveSegment</code> in the alignment coordinate system. Let $s_0$ = <code>SegmentStart</code> and $s$ = the arc-length parameter of the point to evaluate, where $s_0 \leq s < s_0 + \texttt{SegmentLength}$.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$M_{CSP}$ places the trimmed segment into the alignment coordinate system. It is constructed directly from <code>IfcCurveSegment.Placement</code>, where $(x_p, y_p)$ is the <code>Location</code> and $\theta_p$ is the bearing of the <code>RefDirection</code>.</p>
 <p>$$M_{CSP} = \begin{bmatrix} 
 \cos\theta_p & -\sin\theta_p & 0 & x_p \\ 
@@ -840,7 +838,7 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 0 & 0 & 1 & 0 \\ 
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Compute the position $(x_0, y_0)$ and tangent angle $\theta_0$ of the parent curve at $s_0$. This establishes the frame of the parent curve at the point where trimming begins.</p>
 <p>$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.</p>
 <p>$$M_N = \begin{bmatrix}
@@ -849,7 +847,7 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point">Step 3 — Evaluate and map each point</hh4>
 <p>For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:</p>
 <p>$$M_{PC} = \begin{bmatrix} 
 \cos(\theta(s)) & -\sin(\theta(s)) & 0 & x(s) \\
@@ -882,7 +880,7 @@ can be either <code>IfcParameterValue</code> (a dimensionless scalar based on un
 geometric definition is described with the following example.</p>
 <p>Given a horizontal alignment segment is a line segment starting at point
 (500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/tangent_segment.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/tangent_segment.svg" alt="" /></p>
 <p><em>Figure 2.3.2-1 Tangent segment</em></p>
 <p>This semantic definition of this segment is:</p>
 <pre><code>#31=IFCCARTESIANPOINT((500.,2500.));
@@ -892,11 +890,11 @@ geometric definition is described with the following example.</p>
 different ways and is generally not important, as will be shown in the
 example below. <code>IfcLine</code> is an infinitely long line that passes through a
 specified point at some direction in the X-Y plane. A valid, but unnecessarily complex parent curve is shown in Figure 2.3.2-2. The <code>IfcLine</code> passes through point (1000,-800) and is directed at 135° from the x-axis. The <code>IfcCurveSegment</code> trim starts 10 m from (1000,-800) and the trimmed segment has a length of 1956.796 m.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2.3_IfcLine_arbitrary_placement.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_2.3_IfcLine_arbitrary_placement.svg" alt="" /></p>
 <p><em>Figure 2.3.2-2 IfcLine at arbitrary placement</em></p>
 <p>Figure 2.3.2-2 represents a valid parent curve definition and implementations must be prepared to properly interpret this parent curve geometry. This guide defines general algorithms to accommodate this geometry.</p>
 <p>In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/ifcline_parent_curve.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifcline_parent_curve.svg" alt="" /></p>
 <p><em>Figure 2.3.2-3 IfcLine parent curve at origin</em></p>
 <p>The parent curve definition is:</p>
 <pre><code>#51=IFCCARTESIANPOINT((0.,0.));
@@ -932,7 +930,7 @@ oriented into the horizontal alignment. The tangent segment begins at (500,2500)
 <hh3 id="233-compute-point-on-curve">2.3.3 Compute Point on Curve</hh3>
 <p>Compute the position matrix for a point 1500 m from the start of the
 curve segment.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-1">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>From the <code>IfcCurveSegment.Placement</code>:</p>
 <p>$$x = 500, y = 2500$$</p>
 <p>$$dx\  = 0.839252789970355,\ dy\  = -0.54374144087698$$</p>
@@ -942,10 +940,10 @@ curve segment.</p>
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-1">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-1">Step 3 — Evaluate and map each point</hh4>
 <p>Evaluate the parent curve at $u = 1500$</p>
 <p>$$\lambda(u) = C + \left( \int_{0}^{u}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u}{\sin\left( \theta(t) \right)}dt\ y \right)$$</p>
 <p>$$\theta(1500) = \arctan\left(\frac{0}{1}\right) = 0$$</p>
@@ -996,8 +994,8 @@ Source Model:
 <p>The curve tangent angle, curvature, and point on the curve are given by the following equations</p>
 <p>$$\theta(s) = \frac{s}{R}$$</p>
 <p>$$\kappa(s) = \frac{1}{R}$$</p>
-<p>$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\!\left(\theta(s)\right)$$</p>
-<p>$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\!\left(1 - \cos\!\left(\theta(s)\right)\right)$$</p>
+<p>$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\left(\theta(s)\right)$$</p>
+<p>$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\left(1 - \cos\left(\theta(s)\right)\right)$$</p>
 <hh3 id="242-semantic-definition-to-geometry-mapping">2.4.2 Semantic Definition to Geometry Mapping</hh3>
 <p><code>IfcCircle</code> is defined by its center (<code>IfcCircle.Position</code>) and radius
 (<code>IfcCircle.Radius</code>).</p>
@@ -1014,7 +1012,7 @@ of 300 m, and an arc length of 100 m. The semantic definition is</p>
 </code></pre>
 <p>This is a circle centered at point (0,300) with the local X-axis aligned
 with the negative global Y-axis as shown in Figure 2.4.2-1.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcCircle_Parent_Curve_Trimming.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcCircle_Parent_Curve_Trimming.svg" alt="" /></p>
 <p><em>Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve</em></p>
 <p>The parent curve is placed such that a trim starting at 0.0 is at
 (0,0) and the tangent is in the direction (1,0).</p>
@@ -1028,18 +1026,18 @@ the parent curve starting at 0.0 for a length of 100.0 along the curve.</p>
 <hh3 id="243-compute-point-on-curve">2.4.3 Compute Point on Curve</hh3>
 <p>Compute the placement matrix for a point 50 m from the start of the
 curve segment.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-2">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-2">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>The trim begins where the local x-axis of the circle intersects the circumference. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-2">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point on parent curve at $u = 50$</p>
 <p>$$\theta(s) = \frac{s}{R} = \frac{50}{300} $$</p>
 <p>$$d_x = \cos(\theta(s)) = \cos(\frac{50}{300}) = 0.98614323$$</p>
 <p>$$d_y = \sin(\theta(s)) = \sin(\frac{50}{300}) = 0.16589613$$</p>
-<p>$$x(s) = R\sin\!\left(\theta(s)\right) = 300\sin\!\left(\frac{50}{300}\right) = 49.76883981$$</p>
-<p>$$y(s) = R\!\left(1 - \cos\!\left(\theta(s)\right)\right) = 300\!\left(1 - \cos\!\left(\frac{50}{300}\right)\right) = 4.1570305$$</p>
+<p>$$x(s) = R\sin\left(\theta(s)\right) = 300\sin\left(\frac{50}{300}\right) = 49.76883981$$</p>
+<p>$$y(s) = R\left(1 - \cos\left(\theta(s)\right)\right) = 300\left(1 - \cos\left(\frac{50}{300}\right)\right) = 4.1570305$$</p>
 <p>$$M_{PC} = 
 \begin{bmatrix}
 0.98614323 & -0.16589613 & 0 & 49.76883981\\
@@ -1111,7 +1109,7 @@ is -207.0196678. Solve for distance from origin.</p>
 <p>$$\frac{1}{300} = \frac{- 207.0196678}{\left| - {207.0196678}^{3} \right|}s$$</p>
 <p>$$s = -142.8571429$$</p>
 <p>Figure 2.5.2-1 shows the parent curve clothoid with the segment having $\kappa_s = \frac{1}{300}$ and $\kappa_e = \frac{1}{1000}$ highlighted. This is the segment that <code>IfcCurveSegment</code> must trim from the parent curve. The negative clothoid constant results in the parent curve in quadrants 2 and 4. The curvature is positive in quadrant 2. For this reason, the <code>SegmentStart</code> attribute is negative. From ths starting point, the trimming progresses to a larger radius, which is towards the origin. For this reason <code>SegmentLength</code> is a positive value. If the trimming were to progress to a smaller radius, <code>SegmentLength</code> would be a negative value. The <code>SegmentStart</code> and <code>SegmentLength</code> attributes can be positive and negative values in any combination. This is true for all parent curve types.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcClothoid.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcClothoid.svg" alt="" /></p>
 <p><em>Figure 2.5.2-1 - <code>IfcCurveSegment</code> trimmed from an <code>IfcClothoid</code> parent curve</em></p>
 <p>Place the curve segment at (0,0) with the tangent in the direction
 (1,0).</p>
@@ -1125,12 +1123,12 @@ is -207.0196678. Solve for distance from origin.</p>
 <hh3 id="253-compute-point-on-curve">2.5.3 Compute Point on Curve</hh3>
 <p>Compute the placement matrix for a point 50 m from the start of the
 curve segment.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-3">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>Represent <code>IfcCurveSegment.Placement</code> in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix. This is not true in all cases.</p>
 <p>$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-3">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Start by computing the point and curve tangent at the start of the parent curve trim.</p>
 <p>Recall that the clothoid equations are in terms of a unit parameterization. Compute the parametric position on the curve.</p>
 <p>$$u = \frac{-142.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = -0.3893278$$</p>
@@ -1155,7 +1153,7 @@ identity matrix. This is not true in all cases.</p>
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-3">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point and curve tangent at 50 m from the start,</p>
 <p>$$ s = -142.8571428 + 50 = -92.8571428$$</p>
 <p>$$u = \frac{-92.8571428}{\left|-207.0196678\sqrt{\pi} \right|} = -0.25306307$$</p>
@@ -1163,7 +1161,7 @@ identity matrix. This is not true in all cases.</p>
 <p>$$y(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}s^{2} \right)\ }ds} = 3.1114126254443812$$</p>
 <p>$$\theta(-0.25306307) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.25306307)^{2} = -0.100595238$$</p>
 <p>$$dx = \cos(-0.100595238) = 0.994944564$$</p>
-<p>$$dy = \sin{(-0.100595238) = -0.100425663}$$</p>
+<p>$$dy = \sin(-0.100595238) = -0.100425663$$</p>
 <p>In matrix form</p>
 <p>$$M_{PC} = \begin{bmatrix}
 0.994944564 & 0.100425663 & 0 & -92.763220844871512 \\
@@ -1265,15 +1263,15 @@ The semantic definition is</p>
 </blockquote>
 <hh3 id="263-compute-point-on-curve">2.6.3 Compute Point on Curve</hh3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-4">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>Represent <code>IfcCurveSegment.Placement</code> in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.</p>
 <p>$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-4">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-4">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point and curve tangent at 100 m from the start.</p>
 <p>From the <code>IfcPolynomialCurve</code> definition,</p>
 <p>X Coefficients = ($0 m^1$, $1 m^0$)</p>
@@ -1373,7 +1371,7 @@ The semantic definition is</p>
 <p>$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1.33333}{|1.33333|} = 86.602540378\ m$$</p>
 <p>$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$</p>
 <p>Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Parent_Curves.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Parent_Curves.svg" alt="" /></p>
 <p><em>Figure 2.7.2-1 First and second half of parent curves, without placement adjustments</em></p>
 <hh4 id="two-level-placement-for-the-second-half">Two-level placement for the second half</hh4>
 <p><code>IfcCurveSegment</code> evaluation normalizes the parent curve at <code>SegmentStart</code>, then applies the curve segment <code>Placement</code>. For the second half, <code>SegmentStart = L/2</code>, so the second half parent curve's value at $t = L/2$ is the normalization origin. The second half parent curve's own <code>Position</code> attribute is therefore set so that the point at $L/2$ exactly matches the endpoint of the first half.</p>
@@ -1408,7 +1406,7 @@ The semantic definition is</p>
 <p>$$dx_p = \cos(\theta_p) = \cos(0.055555555) = 0.998457$$</p>
 <p>$$dy_p = \sin(\theta_p) = \sin(0.055555555) = 0.055527$$</p>
 <p>Figure 2.7.2-2 shows the same first and second half parent curves, with the origin of the second half curve translated $(x_p,y_p)$ and rotated so that the curve tangent is $(dx_p,dy_p)$</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Parent_Curves_Placed.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Parent_Curves_Placed.svg" alt="" /></p>
 <p><em>Figure 2.7.2-2 - First and second half parent curves with second half curve positioned</em></p>
 <p><strong>Finding the curve segment Placement</strong></p>
 <p>The <code>Placement</code> is the world-space position and direction at the join point, obtained by rotating $(x_1, y_1)$ by the overall segment start direction $\theta_s$ and translating by the start point $(x_s, y_s)$:</p>
@@ -1433,12 +1431,12 @@ The semantic definition is</p>
 #55 = IFCDIRECTION((0.998457186998745, 0.0555269820047339));
 </code></pre>
 <p>Figure 2.7.2-3 shows the trimmed and positioned first and second half parent curves resulting in the full Helmert transition curve.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Curve_Segments.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Curve_Segments.svg" alt="" /></p>
 <p><em>Figure 2.7.2-3 - Final Helmert transition curve</em></p>
 <hh3 id="273-compute-point-on-curve">2.7.3 Compute Point on Curve</hh3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$ (the end of the full Helmert segment).</p>
 <p>The point falls in the second half ($50 < u \leq 100$). The parent curve parameter is $t = \text{SegmentStart} + (u - 50) = 50 + 50 = 100$.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-5">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>The curve segment <code>Placement</code> for the second half is at $(x_{join}, y_{join}) = (49.9972,\ 0.347204)$ with direction $\theta_{join} = 0.027778\ \text{rad}$:</p>
 <p>$$M_{CSP} = \begin{bmatrix}
 0.999614 & -0.027774 & 0 & 49.9972\\
@@ -1446,7 +1444,7 @@ The semantic definition is</p>
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the second half parent curve at SegmentStart and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-second-half-parent-curve-at-segmentstart-and-form-the-normalization-matrix-m_n">Step 2 — Evaluate the second half parent curve at SegmentStart and form the normalization matrix $M_N$</hh4>
 <p>The second half parent curve has <code>Position</code> at $(x_p, y_p) = (0.011503,\ -0.694370)$ with direction $\theta_p = 0.055556\ \text{rad}$. This was chosen so that the parent curve at $t = L/2 = 50$ yields $(x_1, y_1, \theta_1) = (49.9972,\ 0.347204,\ 0.027778)$ — the endpoint of the first half.</p>
 <p>$M_N$ maps $(x_1, y_1, \theta_1)$ to the origin with the $x$-axis tangent direction:</p>
 <p>$$M_N = \begin{bmatrix}
@@ -1461,7 +1459,7 @@ The semantic definition is</p>
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-5">Step 3 — Evaluate and map each point</hh4>
 <p>Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying <code>Position</code>) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:</p>
 <p>$$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$</p>
 <p>$$\theta_{raw}(100) = -0.22222 + 0.66666 - 0.33333 = 0.11111\ \text{rad}$$</p>
@@ -1552,15 +1550,15 @@ $$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \rig
 </code></pre>
 <hh3 id="283-compute-point-on-curve">2.8.3 Compute Point on Curve</hh3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 50$</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-6">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>Represent <code>IfcCurveSegment.Placement</code> in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.</p>
 <p>$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-5">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-6">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point and curve tangent at 50 m from the start.</p>
 <p>$$x = \int_{0}^{50}{\cos{\theta(s)}}\ ds = 49.9962109$$</p>
 <p>$$y = \int_{0}^{50}{\sin{\theta(s)}}\ ds = 0.416638875$$</p>
@@ -1627,15 +1625,15 @@ $$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \fra
 </code></pre>
 <hh3 id="293-compute-point-on-curve">2.9.3 Compute Point on Curve</hh3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-7">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>Represent <code>IfcCurveSegment.Placement</code> in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.</p>
 <p>$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-6">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-7">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point and curve tangent at 100 m from the start.</p>
 <p>$$\theta(t) = \frac{1}{600}t - \frac{100}{600\pi}\sin\left( \frac{\pi}{100}t \right)$$</p>
 <p>$$x = \int_{0}^{100}{\cos{\theta(t)}}\ dt = 99.7485\ m$$</p>
@@ -1708,15 +1706,15 @@ $$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \fr
 </code></pre>
 <hh3 id="2103-compute-point-on-curve">2.10.3 Compute Point on Curve</hh3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-8">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>Represent <code>IfcCurveSegment.Placement</code> in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.</p>
 <p>$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-7">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-8">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point and curve tangent at 100 m from the start.</p>
 <p>$$\theta(t) = \frac{1}{2}\left( \frac{t}{173.2050808} \right)^{2} + \frac{100}{2\pi(1884.955592)}\left( \cos\left( \frac{2\pi}{100}t \right) - 1 \right)$$</p>
 <p>$$x = \int_{0}^{100}{\cos{\theta(t)}}\ dt = 99.75698\ m$$</p>
@@ -1815,15 +1813,15 @@ Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Co
 </code></pre>
 <hh3 id="2113-compute-point-on-curve">2.11.3 Compute Point on Curve</hh3>
 <p>Compute the curve coordinates at a distance along the curve, $u = 100$</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-9">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>Represent <code>IfcCurveSegment.Placement</code> in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.</p>
 <p>$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-8">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.</p>
 <p>Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.</p>
-<p><strong>Step 3 — Evaluate and map each point</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-9">Step 3 — Evaluate and map each point</hh4>
 <p>Compute point and curve tangent at 100 m from the start.</p>
 <p>$$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s $$</p>
 <p>$$x = \int_{0}^{100}{\cos{\theta(s)}}\ ds = 99.76319823871657 $$</p>
@@ -1858,7 +1856,7 @@ $$M_{h} =
 <p>IFC Concept Templates <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Alignment_Layouts/Alignment_Layout_-_Horizontal,_Vertical_and_Cant/content.html">4.1.4.4.1.1</a>, <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Alignment_Layouts/Alignment_Layout_-_Reusing_Horizontal_Layout/content.html">4.1.4.4.1.2</a>, <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Horizontal/content.html">4.1.7.1.1.1</a>, <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Horizontal_and_Vertical/content.html">4.1.7.1.1.2</a>, <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Horizontal,_Vertical_and_Cant/content.html">4.1.7.1.1.3</a>, and <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/Alignment_Geometry_-_Segments/content.html">4.1.7.1.1.4</a> require that the final <code>IfcAlignmentSegment</code> nested within <code>IfcAlignmentHorizontal</code>, <code>IfcAlignmentVertical</code>, and <code>IfcAlignmentCant</code> has a <code>SegmentLength</code> of zero. A corresponding zero-length <code>IfcCurveSegment</code> is required in each associated geometric representation (<code>IfcCompositeCurve</code>, <code>IfcGradientCurve</code>, or <code>IfcSegmentedReferenceCurve</code>).</p>
 <p>The specification imposes no constraint on which curve type backs the zero-length geometric segment. As best practice, use <code>.LINE.</code> (<code>IfcAlignmentHorizontalSegment</code>), <code>.CONSTANTGRADIENT.</code> (<code>IfcAlignmentVerticalSegment</code>), or <code>.CONSTANTCANT.</code> (<code>IfcAlignmentCantSegment</code>) as the <code>PredefinedType</code> of the semantic closing segment, and an <code>IfcLine</code> as the parent curve of the corresponding <code>IfcCurveSegment</code>. The placement of both the semantic and geometric closing segments must match the endpoint and end direction of the preceding segment.</p>
 <hh3 id="2121-semantic-closing-segment">2.12.1 Semantic Closing Segment</hh3>
-<p>The <code>StartPoint</code> and <code>StartDirection</code> of the semantic segment are taken from the end state of the preceding segment, and <code>SegmentLength</code> is set to zero.</p>
+<p>The <code>StartPoint</code> and <code>StartDirection</code> of the semantic segment are taken from the end state of the preceding segment, and <code>SegmentLength</code> is set to zero. One implenentation strategy is to map the preceding semantic segment definition to its geometric representation as described in this chapter, as well as in Chapters 3 and 4, and evaluate it at its end point.</p>
 <pre><code>// Last non-zero length segment
 #88=IFCCARTESIANPOINT((7790.93212831259,4006.73076454875));
 #89=IFCALIGNMENTHORIZONTALSEGMENT($,$,#88,-1.23849516741382,0.,0.,2112.2850844257,$,.LINE.);
@@ -1987,7 +1985,7 @@ $$M_{h} =
 <hh2 id="32-curve-segment-evaluation-algorithm">3.2 Curve Segment Evaluation Algorithm</hh2>
 <p>Vertical segments are evaluated in a two-dimensional &quot;distance along, elevation&quot; coordinate system. In this system $x(s)$ is the distance measured along the horizontal <code>IfcCompositeCurve</code> and $y(s)$ is the elevation. The grade angle is $\theta(\ell) = \tan^{-1}(g(\ell))$ where $g(\ell)$ is the gradient.</p>
 <p><strong>Steps 1–3</strong> follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = <code>IfcAlignmentVerticalSegment.StartDistAlong</code>.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-10">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$M_{CSP}$ is constructed from <code>IfcCurveSegment.Placement</code>, where $(d_p, z_p)$ is the <code>Location</code> (distance along, elevation) and $\theta_p$ is the grade angle of the <code>RefDirection</code>.</p>
 <p>$$M_{CSP} = \begin{bmatrix} 
 \cos\theta_p & -\sin\theta_p & 0 & d_p \\
@@ -1995,7 +1993,7 @@ $$M_{h} =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-9">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.</p>
 <p>$M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.</p>
 <p>$$M_N = \begin{bmatrix}
@@ -2004,7 +2002,7 @@ $$M_{h} =
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate and map each point in the vertical plane</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-in-the-vertical-plane">Step 3 — Evaluate and map each point in the vertical plane</hh4>
 <p>For the point at distance along $s$, compute $x(s)$, $y(s)$, and $\theta(\ell)$:</p>
 <p>$$M_{PC} = \begin{bmatrix} 
 \cos\theta(\ell) & -\sin\theta(\ell) & 0 & x(s) \\ 
@@ -2014,7 +2012,7 @@ $$M_{h} =
 \end{bmatrix}$$</p>
 <p>$$M_v = M_{CSP} M_N M_{PC}$$</p>
 <p>Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 4 is performed immediately for this point before moving to the next point.</p>
-<p><strong>Step 4 — Combine with the horizontal alignment point to produce the 3D placement matrix</strong></p>
+<hh4 id="step-4-combine-with-the-horizontal-alignment-point-to-produce-the-3d-placement-matrix">Step 4 — Combine with the horizontal alignment point to produce the 3D placement matrix</hh4>
 <p>The vertical result lives in the (distance along, elevation) plane and must be merged with the horizontal alignment to form a 3D position and orientation. The &quot;distance along&quot; axis corresponds to the curve tangent of the horizontal alignment and the vertical $y$ is elevation (Z in 3D).</p>
 <p>Evaluate the horizontal placement matrix $M_h$ at distance $d$ along the <code>IfcCompositeCurve</code>. This yields the horizontal 2D position $(x_h, y_h)$ and the horizontal alignment tangent direction $(dx_h, dy_h) = (\cos\theta_h, \sin\theta_h)$.</p>
 <p>$M_v$ is a two-dimensional matrix whose rows index the vertical frame: row 1 = distance-along, row 2 = elevation, row 3 = out-of-plane. Three modifications produce $M'_v$, the form required for multiplication with $M_h$.</p>
@@ -2080,16 +2078,16 @@ $100/0.894427190999916 = 111.803398874989\ m$</p>
 </code></pre>
 <hh3 id="333-compute-point-on-curve">3.3.3 Compute Point on Curve</hh3>
 <p>Compute the vertical placement matrix for the point at horizontal distance $\ell = 50$ m from the start of the curve segment.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-11">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>From <code>IfcCurveSegment.Placement</code>: $(d_p,\ z_p) = (0,\ 10)$, $\theta_p = 0.463647609\ \text{rad}$:</p>
-<p>$cos\theta_p = cos(0.463647609)=0.894427191 \quad sin\theta_p = sin(0.463647609)=0.447213595$</p>
+<p>$\cos\theta_p = \cos(0.463647609)=0.894427191 \quad \sin\theta_p = \sin(0.463647609)=0.447213595$</p>
 <p>$$M_{CSP} = \begin{bmatrix}
 0.894427191 & -0.447213595 & 0 & 0 \\
 0.447213595 & 0.894427191 & 0 & 10 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-10">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>The trim begins at $s_0 = \text{SegmentStart} = 0$. For the <code>IfcLine</code> through the origin with direction $(dx,\ dy) = (1.,\ 0.)$:</p>
 <p>$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.}{1.}\right) = 0.\ \text{rad}$$</p>
 <p>$$M_N = \begin{bmatrix}
@@ -2098,7 +2096,7 @@ $100/0.894427190999916 = 111.803398874989\ m$</p>
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate and map each point in the vertical plane</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-in-the-vertical-plane-1">Step 3 — Evaluate and map each point in the vertical plane</hh4>
 <p>The horizontal distance $\ell = 50$ m is not the arc-length parameter. Convert to arc-length $s$ along the <code>IfcLine</code>:</p>
 <p>$$s = s_0 + \frac{\ell}{dx} = 0 + \frac{50}{0.894427191} = 55.9016994\ \text{m}$$</p>
 <p>Evaluate the parent curve at $s = 55.9016994$:</p>
@@ -2142,8 +2140,8 @@ $100/0.894427190999916 = 111.803398874989\ m$</p>
 <p>The <code>IfcCircle</code> parametric equations for a vertical circular arc are identical to the horizontal case (Section 2.4.1), with $x(s)$ representing distance along the horizontal alignment and $y(s)$ representing elevation.</p>
 <p>$$\theta(s) = \frac{s}{R}$$</p>
 <p>$$\kappa(s) = \frac{1}{R}$$</p>
-<p>$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\!\left(\theta(s)\right)$$</p>
-<p>$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\!\left(1 - \cos\!\left(\theta(s)\right)\right)$$</p>
+<p>$$x(s) = \int{\cos\left( \theta(s) \right)ds} = R\sin\left(\theta(s)\right)$$</p>
+<p>$$y(s) = \int{\sin\left( \theta(s) \right)ds} = R\left(1 - \cos\left(\theta(s)\right)\right)$$</p>
 <p>where $R$ is <code>IfcCircle.Radius</code> and $s$ is arc length along the circle. The grade at arc length $s$ is $g(s) = \tan(\theta(s))$.</p>
 <hh3 id="342-semantic-definition-to-geometry-mapping">3.4.2 Semantic Definition to Geometry Mapping</hh3>
 <p>Vertical circular arcs are tricky. The &quot;distance along&quot; dimension is
@@ -2161,9 +2159,9 @@ horizontal while the <code>IfcCurveSegment</code> trimming parameters <code>Segm
 <p>$\theta_{end} = tan^{-1}(-1) = -0.785398$</p>
 <p>Compute the radius of the circle.</p>
 <p><code>IfcAlignmentVerticalSegment.RadiusOfCurvature</code> is optional. If provided, it should be consistent with the <code>HorizontalLength</code>, <code>StartGradient</code> and <code>EndGradient</code>, but is not guaranteed. For this reason, the radius is computed from the required  <code>HorizontalLength</code>, <code>StartGradient</code> and <code>EndGradient</code> attributes. Note that in computing the radius, it is taken to be an absolute value because <code>IfcCircle.Radius</code> is a <code>IfcPositiveLengthMeasure</code>.</p>
-<p>$R = \left| \frac{h_l}{sin(\theta_{start}) - sin(\theta_{end})}\right |$</p>
+<p>$R = \left| \frac{h_l}{\sin(\theta_{start}) - \sin(\theta_{end})}\right |$</p>
 <p>$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$</p>
-<p>$R = \left| \frac{328.083989501312}{sin(-0.785398) - sin(-0.463648)} \right | = 384.773458895502$</p>
+<p>$R = \left| \frac{328.083989501312}{\sin(-0.785398) - \sin(-0.463648)} \right | = 384.773458895502$</p>
 <p>Compute the arc-length trimming parameters <code>SegmentStart</code> and <code>SegmentLength</code>.</p>
 <p>For an <code>IfcCircle</code> with CCW parametrization and <code>RefDirection</code> = (1, 0), the arc-length parameter at a point where the grade angle is $\theta$ depends on which half of the circle the vertical curve occupies.</p>
 <p>If $\theta_{start} < \theta_{end}$ — sagging curve (lower half of circle):</p>
@@ -2181,8 +2179,8 @@ horizontal while the <code>IfcCurveSegment</code> trimming parameters <code>Segm
 <p>Y = <code>IfcAlignmentVerticalSegment.StartHeight</code> = 10.0</p>
 <p>$$C_x = R d_y = 384.773458895502(-0.447213595) = -172.075922$$</p>
 <p>$$C_y = -R d_x = -384.773458895502(0.894427191) = -344.151844$$</p>
-<p>$dx = cos(\theta_{start}) = cos(-0.463647609) = 0.894427191$</p>
-<p>$dy = sin(\theta_{start}) = sin(-0.463647609) = -0.447213595$</p>
+<p>$dx = \cos(\theta_{start}) = \cos(-0.463647609) = 0.894427191$</p>
+<p>$dy = \sin(\theta_{start}) = \sin(-0.463647609) = -0.447213595$</p>
 <p>The geometric representation is</p>
 <pre><code>#71 = IFCCURVESEGMENT(.CONTINUOUS., #77, IFCLENGTHMEASURE(426.001441657352), IFCLENGTHMEASURE(-123.801073716741), #80);
 #77 = IFCAXIS2PLACEMENT2D(#78, #79);
@@ -2196,7 +2194,7 @@ horizontal while the <code>IfcCurveSegment</code> trimming parameters <code>Segm
 </code></pre>
 <hh3 id="343-compute-point-on-curve">3.4.3 Compute Point on Curve</hh3>
 <p>Compute the vertical placement matrix for the point at horizontal distance $\ell = 50$ m from the start of the curve segment.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-12">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>From <code>IfcCurveSegment.Placement</code>: $(d_p,\ z_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$</p>
 <p>$$M_{CSP} = \begin{bmatrix}
 0.894427190999916 & 0.447213595499958 & 0 & 0 \\
@@ -2204,7 +2202,7 @@ horizontal while the <code>IfcCurveSegment</code> trimming parameters <code>Segm
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-11">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>$$\Delta_0 = tan^{-1}\left(\tfrac{-344.151844011225}{-172.075922005613}\right) = 1.1071487177940900$$</p>
 <p>$$x_0 = C_x + R \cos(\Delta_0) = -172.075922 + 384.773458895502\cos(1.1071487177940900) = 0$$
 $$y_0 = C_y + R \sin(\Delta_0) = -344.151844 + 384.773458895502\sin(1.1071487177940900) = 0$$</p>
@@ -2217,28 +2215,31 @@ $$y_0 = C_y + R \sin(\Delta_0) = -344.151844 + 384.773458895502\sin(1.1071487177
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate and map each point in the vertical plane</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-in-the-vertical-plane-2">Step 3 — Evaluate and map each point in the vertical plane</hh4>
 <p>Compute the vertical placement matrix for the point at horizontal distance $\ell = 50\ m$ from the start of the curve segment.</p>
 <p>The center point of the trimmed circular arc is</p>
 <p>$C_x = -172.075922005613,\ C_y = -344.151844011225$</p>
 <p>From Step 2</p>
 <p>$x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$</p>
-<p>Compute the chord length between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the green triangle. Once the point on the parent curve is known, a chord distance between the start of the trim and the point can be computed. From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Circular_Vertical_Curve.png" alt="" /></p>
-<p><em>Figure 3.4.3-1 — Circular arc vertical curve geometry</em></p>
+<p>Compute the chord length, $c$ between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the right triangle shown. Once the point on the parent curve is known, a chord distance between the start of the trim and this point can be computed (see inset chord line detail). From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/vertical_circular_arc_diagram.svg" alt="" /></p>
+<p><em>Figure 3.4.3-1 — Geometry of a vertical circular arc. The chord $c$ connects two points on the arc. The right triangle simplifies locating points on the arc. The inset highlights the distinction between the straight chord and the curved arc.</em></p>
 <p>Location point on parent curve corresponding to $\ell = 50$</p>
-<p>$$x = x_0 + \ell = 50\ m$$
-$$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 + (50 - (-172.075922005613))^2}=-19.933926737614911$$</p>
+<p>$$x = x_0 + \ell = 0 + 50 = 50\ m$$</p>
+<p>From the right triangle</p>
+<p>$$R^2 = (x-C_x)^2 + (y-C_y)^2$$</p>
+<p>Solving for $y$,</p>
+<p>$$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 - (50 - (-172.075922005613))^2}=-29.933926737614911$$</p>
 <p>Compute the chord length from the trim start to the point</p>
-<p>$$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-19.933926737614911 - 10)^2} = 58.275552077461235$$</p>
+<p>$$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-29.933926737614911 - 10)^2} = 58.275552077461235\ m$$</p>
 <p>Angle subtented by the trimmed segment</p>
 <p>$$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{58.275552077461235}{2 \cdot 384.773458895502}\right) = 0.15159931828379261$$</p>
 <p>Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.15159931828379261) = 58.331394062255001$</p>
 <p>Radial angle at $\ell = 50\ m$</p>
 <p>$\Delta_{pc} = \Delta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$</p>
 <p>Compute point on trimmed segment at $\ell$.</p>
-<p>$$x_{pc} = C_x + R cos(\Delta_{pc}) = (-172.075922005613) + 384.77345889550202\cos(0.95554939951029738) = 50$$
-$$y_{pc} = C_y + R sin(\Delta_{pc}) = (-344.15184401122502) + 384.77345889550202\sin(0.95554939951029738) = -29.933926737614570$$</p>
+<p>$$x_{pc} = C_x + R \cos(\Delta_{pc}) = (-172.075922005613) + 384.77345889550202\cos(0.95554939951029738) = 50$$
+$$y_{pc} = C_y + R \sin(\Delta_{pc}) = (-344.15184401122502) + 384.77345889550202\sin(0.95554939951029738) = -29.933926737614570$$</p>
 <p>$$dx_{pc} = -\tfrac{L}{|L|}\sin(\Delta_{pc}) = -\tfrac{-123.801073716741}{|-123.801073716741|}\sin(0.95554939951029738) = 0.81663095520043849$$
 $$dy_{pc} = \tfrac{L}{|L|}\cos(\Delta_{pc}) = \tfrac{-123.801073716741}{|-123.801073716741|}\cos(0.95554939951029738) = -0.57716018834325311$$</p>
 <p>$$M_{PC} = \begin{bmatrix}
@@ -2273,33 +2274,25 @@ $$dy_{pc} = \tfrac{L}{|L|}\cos(\Delta_{pc}) = \tfrac{-123.801073716741}{|-123.80
 0 & 0 & 0 & 1
  \end{bmatrix}$$</p>
 <hh2 id="35-clothoid">3.5 Clothoid</hh2>
-<span style="background-color: yellow;color: black">
-[todo - finish this]
-</span>
-
-<p>The reference implementation at
-<a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry">IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
-at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
-(github.com)</a>, does not seem to correctly handle vertical alignments with clothoids. The examples provided are incomplete. The vertical alignments have a total length of zero and the resulting clothoid constants are zero.</p>
-<p>An example of an example file generated from the reference implementation is <a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc">https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc</a>.</p>
-<pre><code>#41 = IFCALIGNMENTVERTICAL('1FNFyDAJeHwv87wDZHIYI1', $, $, $, $, #89, $);
+<p>Vertical clothoid transition curves are not addressed in this guide. The available reference implementation (<a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry">bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code</a>) produces degenerate results for this case — the generated IFC files have zero-length vertical alignments and a clothoid constant of zero, making them unsuitable as reference material. Until a correct reference or authoritative worked example is available, the geometric mapping for <code>IfcClothoid</code> in a vertical context remains undocumented here.
+An example of a file generated from the reference implementation is <a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc">https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc</a>.</p>
+<p>The mapping from the sementic curve definition to the gemoetric defintion is shown in this IFC coding.</p>
+<pre><code>// Semantic defintion
+#41 = IFCALIGNMENTVERTICAL('1FNFyDAJeHwv87wDZHIYI1', $, $, $, $, #89, $);
 #42 = IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI2', #3, $, $, $, #72, #75, #44);
 #43 = IFCRELNESTS('4CGecNrjCHwxOSbERtTLTf', $, $, $, #41, (#42));
 #44 = IFCALIGNMENTVERTICALSEGMENT($, $, 0., 100., 10., 5.E-1, 0., $, .CLOTHOID.);
 
+// Geometric definition
 #70 = IFCGRADIENTCURVE((#71), .F., #45, #86);
 #71 = IFCCURVESEGMENT(.CONTINUOUS., #77, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(0.), #80);
 #77 = IFCAXIS2PLACEMENT2D(#78, #79);
 #78 = IFCCARTESIANPOINT((0., 10.));
 #79 = IFCDIRECTION((8.94427190999916E-1, 4.47213595499958E-1));
-#80 = IFCCLOTHOID(#81, 0.);
+#80 = IFCCLOTHOID(#81, 0.); // &lt;--- degenerate clothoid
 #81 = IFCAXIS2PLACEMENT2D(#82, $);
 #82 = IFCCARTESIANPOINT((0., 0.));
 </code></pre>
-<p>Due to a lack of information, vertical clothoid transition curves have not yet been addressed.</p>
-<hr />
-<p>todo - consider this alternative text</p>
-<hh2 id="vertical-clothoid-transition-curves-are-not-addressed-in-this-guide-the-available-reference-implementation-bsi-railwayroomifc-rail-unit-test-reference-code-produces-degenerate-results-for-this-case-the-generated-ifc-files-have-zero-length-vertical-alignments-and-a-clothoid-constant-of-zero-making-them-unsuitable-as-reference-material-until-a-correct-reference-or-authoritative-worked-example-is-available-the-geometric-mapping-for-ifcclothoid-in-a-vertical-context-remains-undocumented-here">Vertical clothoid transition curves are not addressed in this guide. The available reference implementation (<a href="https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry">bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code</a>) produces degenerate results for this case — the generated IFC files have zero-length vertical alignments and a clothoid constant of zero, making them unsuitable as reference material. Until a correct reference or authoritative worked example is available, the geometric mapping for <code>IfcClothoid</code> in a vertical context remains undocumented here.</hh2>
 <!--
 Start angle = atan(startGradient)
 
@@ -2361,7 +2354,7 @@ is equal to the specified horizontal length. Numerically solve
 <p>The solution to this integral is:</p>
 <!-- see https://www.integral-table.com, equation #37 -->
 
-<p>$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2ax}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$</p>
+<p>$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2ax}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} \ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$</p>
 <p>The length along the curve is $L_c = s(h_l) - s(0.0)$.</p>
 <p>Let $\quad a = 4A_2^2 \quad b = 4A_2A_1 \quad c = A_1^2 + 1$</p>
 <p>Compute the coefficients $a, b, c$, substitute curve length equation and solve. The curve length is</p>
@@ -2369,8 +2362,8 @@ is equal to the specified horizontal length. Numerically solve
 <p>The placement of the trimmed curve segment is noteworthy. From the <code>IfcAlignmentVerticalSegment</code> attributes, the parabolic segment of the vertical alignment starts at 1200 from the beginning of the horizontal alignment and is at an elevation of 121. The RefDirection vector at the start of the curve is needed as well.</p>
 <p>The gradient is $y'(x=0) = 0.0175$</p>
 <p>$\theta_p =  tan^{-1}(0.0175) = 0.017498213869856595$</p>
-<p>$dx = cos(0.017498213869856595) = 0.017497320927833689$</p>
-<p>$dy = sin(0.017498213869856595) = 0.99984691016192495$</p>
+<p>$dx = \cos(0.017498213869856595) = 0.017497320927833689$</p>
+<p>$dy = \sin(0.017498213869856595) = 0.99984691016192495$</p>
 <p>The geometric representation is</p>
 <pre><code>#291=IFCCARTESIANPOINT((0.,0.));
 #292=IFCDIRECTION((1.,0.));
@@ -2383,7 +2376,7 @@ is equal to the specified horizontal length. Numerically solve
 </code></pre>
 <hh3 id="363-compute-point-on-curve">3.6.3 Compute Point on Curve</hh3>
 <p>Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $\ell=1500-1200=300$ from the start of the segment.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-13">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>From <code>IfcCurveSegment.Placement</code>: $(d_p,\ z_p) = (1200,\ 121)$, $dx_p = 0.99984691016192495$, $dy_p = 0.017497320927833689$</p>
 <p>$$M_{CSP} = \begin{bmatrix}
 0.99984691016192495 & -0.017497320927833689 & 0 & 1200 \\
@@ -2391,10 +2384,10 @@ is equal to the specified horizontal length. Numerically solve
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-and-form-the-normalization-matrix-m_n-12">Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$</hh4>
 <p>Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.</p>
 <p>Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = \begin{bmatrix}I\end{bmatrix}$</p>
-<p><strong>Step 3 — Evaluate and map each point in the vertical plane</strong></p>
+<hh4 id="step-3-evaluate-and-map-each-point-in-the-vertical-plane-3">Step 3 — Evaluate and map each point in the vertical plane</hh4>
 <p>Evaluate the parent curve at $x = 300$</p>
 <p>$y(300) = -8.59375 \cdot 10^{-6} 300^2 + 0.0175(300) + 121 = 125.4765625$</p>
 <p>$y'(300) = 2(-8.59375 \cdot 10^{-6}) 300 + 0.0175 = 0.01234375$</p>
@@ -2575,12 +2568,12 @@ dy_v & 0 & dx_v & z \\
 <p>Cant transitions occur when the segment start elevation differs from the
 segment start elevation of the next segment. The left section in Figure 4.1.1-1 shows the cross section of a rail line. At the start of the segment, right rail is elevated above the left rail. The y-ordinate of <code>IfcCurveSegment.Placement.Location</code> indicates the deviating elevation at the centerline between rails, which is one-half the cant value at the right rail. The y-ordinate of <code>IfcCurveSegment.Placement.Location</code> for the next segment indicates a value of 0.0 meaning that the cant transitioned from the starting value to zero over the length of the segment. This transition is the rotation of the right rail about the left rail, and the corresponding change in deviating elevation at the centerline over the length of the segment. The cant transition is shown in the right section of Figure 4.1.1-1 as a linear transition. <code>IfcCurveSegment.ParentCurve</code> defines how the transition occurs. Figure 4.1.1-2 shows a non-linear transition of the centerline and right rail deviating elevations. Notice that the deviating elevation of the left rail is constant at zero because it is the point of rotation.</p>
 <p>When the segment start elevation is the same as the start of the next segment, the deviating elevation along the length of the segment is constant. This occurs when centrifugal forces are constant or zero, in constant radius curvature and straight sections of the railway, respectively.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcSegmentedReferenceCurve.jpg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/IfcSegmentedReferenceCurve.jpg" alt="" /></p>
 <p><em>Figure 4.1.1-1 - cross section and elevation of a cant segment (source: bSI)</em></p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Cant.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Cant.svg" alt="" /></p>
 <p><em>Figure 4.1.1-2 - Deviating elevation of rails</em></p>
 <p>The railhead cross slope angle is defined by the <code>IfcCurveSegment.Placement.Axis</code> attribute. The <code>Axis</code> direction is generally upwards. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, The cross slope angle is measured from the y-axis is $\tfrac{\pi}{2}$.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/CrossSlopeAngle.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/CrossSlopeAngle.svg" alt="" /></p>
 <p><em>Figure 4.1.1-3 - Rail head cross slope</em></p>
 <hh3 id="412-coordinate-system">4.1.2 Coordinate System</hh3>
 <p>Figure 4.1.1-1 illustrates the cant coordinate system.</p>
@@ -2608,7 +2601,7 @@ segment start elevation of the next segment. The left section in Figure 4.1.1-1 
 <hh2 id="42-curve-segment-evaluation-algorithm">4.2 Curve Segment Evaluation Algorithm</hh2>
 <p>Cant segments are evaluated in a two-dimensional &quot;distance along, deviating elevation&quot; $(\ell,D(\ell))$ coordinate system in which $\ell$ is the distance measured along the horizontal <code>IfcCompositeCurve</code> and $D(\ell)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.</p>
 <p>Let $s_0 = $ <code>IfcAlignmentCantSegment.StartDistAlong</code>.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-14">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$M_{CSP}$ is constructed from <code>IfcCurveSegment.Placement</code>: $(s_p, D_p)$ is the <code>Location</code> (distance along, deviating elevation).</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p$</p>
 <p>$\mathbf{X}_p = \mathbf{Y}_p \times \mathbf{Axis}_p$</p>
@@ -2620,7 +2613,7 @@ X_p.y & Y_p.y & Z_p.y & D_p \\
 X_p.z & Y_p.z & Z_p.z & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start - $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs">Step 2 — Evaluate the parent curve at the trim start - $M_{PCS}$</hh4>
 <p>Compute the deviating elevation $D_s = D(s_0)$ and the slope angle $\theta_s = \tan^{-1}(D'(s_0))$.</p>
 <p>Compute the cross slope
 $$\phi(s_0) = \phi_s + \left(\tfrac{\phi_e - \phi_s}{\Delta D}\right)(D(s_0) - D_s)$$</p>
@@ -2638,7 +2631,7 @@ RefDir_{pcs}.y & Y_{pcs}.y & Axis_{pcs}.y & D_s \\
 RefDir_{pcs}.z & Y_{pcs}.z & Axis_{pcs}.z & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate the parent curve at the point under consideration, $\ell$ - $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-the-point-under-consideration-ell-m_pcell">Step 3 — Evaluate the parent curve at the point under consideration, $\ell$ - $M_{PC\ell}$</hh4>
 <p>This step follows the same calculations as Step 2, except $D$ and $D'$ are evaluated at $\ell$.</p>
 <p>The resulting matrix is</p>
 <p>$$M_{PC\ell} = \begin{bmatrix}
@@ -2647,7 +2640,7 @@ RefDir_{\ell}.y & Y_{\ell}.y & Axis_{\ell}.y & D_{\ell} \\
 RefDir_{\ell}.z & Y_{\ell}.z & Axis_{\ell}.z & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p>The cant frame at $\ell$ is obtained by applying the incremental change in the parent curve — from the trim start to $\ell$ — to the curve segment placement. Because the 4×4 matrices encode both orientation and parameter-space coordinates (distance along, deviating elevation) in column 4, the rotation and translation must be computed separately to prevent the rotation from acting on the position coordinates.</p>
 <p><strong>Rotation</strong></p>
 <p>Let $R_{CSP}$, $R_{PCS}$, and $R_{PC\ell}$ denote the upper-left 3×3 rotation submatrix of $M_{CSP}$, $M_{PCS}$, and $M_{PC\ell}$ respectively. The incremental rotation from trim start to $\ell$ is:</p>
@@ -2666,7 +2659,7 @@ R_c & \mathbf{T}_c \\
 \mathbf{0}^T & 1 
 \end{bmatrix}$$</p>
 <p>Step 5 is performed immediately for this point before moving to the next $\ell$.</p>
-<p><strong>Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix</strong></p>
+<hh4 id="step-5-combine-with-horizontal-and-vertical-to-produce-the-3d-placement-matrix">Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix</hh4>
 <p>The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $\ell$ along the <code>IfcCompositeCurve</code>) and the vertical matrix $M_v$ (evaluated at the same $\ell$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.</p>
 <p>Construct $M'_v$ as described in Section 3.2.</p>
 <p>Construct $M'_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D_{\ell}$ from row 2 to row 3 in column 4 of $M_c$:</p>
@@ -2722,8 +2715,8 @@ X.z & Y.z & Z.z & D_{\ell} \\
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
@@ -2732,7 +2725,7 @@ X.z & Y.z & Z.z & D_{\ell} \\
 </code></pre>
 <hh3 id="433-compute-point-on-curve">4.3.3 Compute Point on Curve</hh3>
 <p>Compute the placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-15">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (1,\ 0,\ 0)$</p>
 <p>$\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.106667)$</p>
@@ -2742,7 +2735,7 @@ X.z & Y.z & Z.z & D_{\ell} \\
         0 & -0.106667 &  0.994295 &         0 \\
         0 &         0 &         0 &         1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-1">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$s_0 = 0,\ D(0) = 0\ m,\ D'(0) = 0,\ \theta_s = 0$</p>
 <p>For constant cant $\Delta D = 0$, so $\phi(s_0) = \phi_s = \phi_e = 1.463926346$.</p>
 <p>$\mathbf{X}_s = (1,\ 0,\ 0)$</p>
@@ -2756,7 +2749,7 @@ X.z & Y.z & Z.z & D_{\ell} \\
         0 & -0.106667 &  0.994295 &         0 \\
         0 &         0 &         0 &         1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-50-m-m_pcell">Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</hh4>
 <p>$D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_\ell = 0$</p>
 <p>Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.</p>
 <p>$\mathbf{X}_\ell = (1,\ 0,\ 0)$</p>
@@ -2768,7 +2761,7 @@ X.z & Y.z & Z.z & D_{\ell} \\
         0 & -0.106667 &  0.994295 &         0 \\
         0 &         0 &         0 &         1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-1">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong>
 $$R_{CSP} = \begin{bmatrix} 
         1 &         0 &         0 \\
@@ -2861,13 +2854,13 @@ R_c & \mathbf{T}_c \\
 <p>The slope at the start of the segment is</p>
 <p>$$D'(0\ m) = (100\ m)^{2}\tfrac{-3535.533906}{\left| -3535.533906^{3} \right|} = -0.0008$$</p>
 <p>$$\theta_0 = tan^{-1}(-0.0008) = -0.00079999$$</p>
-<p>$dx_x = cos(\theta_0) = 0.999999680$</p>
-<p>$dy_x = sin(\theta_0) = -0.000799999744$</p>
+<p>$dx_x = \cos(\theta_0) = 0.999999680$</p>
+<p>$dy_x = \sin(\theta_0) = -0.000799999744$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((0.999999680,-0.000799999744,0.));
@@ -2876,7 +2869,7 @@ R_c & \mathbf{T}_c \\
 </code></pre>
 <hh3 id="443-compute-point-on-curve">4.4.3 Compute Point on Curve</hh3>
 <p>Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-16">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (0.9999996800,\ -0.000799999744,\ 0)$</p>
 <p>$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871,\ 0.9943588828,\ -0.1060649471)$</p>
@@ -2886,14 +2879,14 @@ R_c & \mathbf{T}_c \\
  8.48464658869504e-05 &    -0.106666632921711 &     0.994294836666782 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-2">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$s_0 = 0,\ D(0) = 0\ m,\ D'(0) = -0.0008,\ \theta_s = -0.00079999$</p>
 <p>$dx_x = \cos(\theta_s) = \cos(-0.00079999) = 0.999999680$</p>
 <p>$dx_y = \sin(\theta_s) = \sin(-0.00079999) = -0.000799999744$</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <p>$\mathbf{X}_s = (0.999999680,\ -0.000799999744,\ 0)$</p>
 <p>$\mathbf{Z}_s = (0,\ 0.106666667,\ 0.994294837)$</p>
 <p>$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0.0007954871,\ 0.9943588828,\ -0.1060649471)$</p>
@@ -2905,7 +2898,7 @@ R_c & \mathbf{T}_c \\
                    0 &   -0.106666666663253 &    0.994294836666782 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-50-m-m_pcell-1">Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</hh4>
 <p>$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_\ell = -0.00079999$</p>
 <p>$\phi_e = \cos^{-1}(\tfrac{0.0}{1.5}) = \tfrac{\pi}{2}$ (both rails level at segment end)</p>
 <p>$\phi(50\ m) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$</p>
@@ -2918,7 +2911,7 @@ R_c & \mathbf{T}_c \\
                    0 &  -0.0534095653083467 &    0.998572690560578 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-2">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong></p>
 <p>$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$</p>
 <p><strong>Translation</strong></p>
@@ -3008,8 +3001,8 @@ half.</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <pre><code>#108=IFCCARTESIANPOINT((0.,0.08,0.));
 #109=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #110=IFCDIRECTION((1.,0.,0.));
@@ -3024,7 +3017,7 @@ $$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{
 <p>$$a_{22} = -8\Delta D = -8(-0.08\ m) = 0.64\ m$$</p>
 <p>$$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22}}{\left| a_{22} \right|} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\tfrac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$</p>
 <p>Figure 4.5.2-1 shows the first and second half parent curves.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Cant_Parent_Curves.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Helmert_Cant_Parent_Curves.svg" alt="" /></p>
 <p><em>Figure 4.5.2-1 - <code>IfcSecondOrderPolynomialSpiral</code> parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.</em></p>
 <p>The second half parent curve <code>IfcSecondOrderPolynomialSpiral</code> is</p>
 <pre><code>#113=IFCCARTESIANPOINT((0.,0.));
@@ -3041,8 +3034,8 @@ $$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{
 <p>$\tfrac{(D_{sr} - D_{sl}) + (D_{er} - D_{el})}{2} = \tfrac{(0.16 - 0.0) + (0.0 + 0.0)}{2} = 0.08$</p>
 <p>The cross slope at the end of the first half is</p>
 <p>$\phi(50\ m) = \cos^{-1}\left(\tfrac{0.08}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.08}{1.5}\right) = 1.517437677$</p>
-<p>$dy_z = cos(\phi_s) = cos(1.517437677) = 0.053333333$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.517437677) = 0.998576765$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.517437677) = 0.053333333$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.517437677) = 0.998576765$</p>
 <p>The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the second half segment.</p>
 <pre><code>#117=IFCCARTESIANPOINT((50.,0.04,0.));
 #118=IFCDIRECTION((0.,0.053333333333333337,0.99857676497881498));
@@ -3053,7 +3046,7 @@ $$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{
 <hh3 id="453-compute-point-on-curve">4.5.3 Compute Point on Curve</hh3>
 <p>Compute the cant placement matrix for a point $75\ m$ from the start of the curve segment using the algorithm in Section 4.2. $75\ m$ falls in the second half of the Helmert
 transition, $\ell = 75\ m - 50\ m = 25\ m$.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-17">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (0.9999987200024576,\ -0.0015999979520039342,\ 0.)$</p>
 <p>$\mathbf{Axis}_p = (0.,\ 0.053333333333333337,\ 0.99857676497881498)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.00159772,\ 0.998575,\  -0.0533333)$</p>
@@ -3063,7 +3056,7 @@ transition, $\ell = 75\ m - 50\ m = 25\ m$.</p>
 8.52117751841028e-05 &  -0.0533332652609777 &    0.998576764978815 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-3">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$$D_s = D(50\ m) = (50\ m)^{2}\left(\tfrac{1}{(538.6086725\ m)^{3}}(50\ m)^{2} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|}(50\ m) + \tfrac{1}{15625\ m}\right) = 0.16\ m$$</p>
 <p>$$D'(s) = D'(50\ m) = (50\ m)^{2}\left( \tfrac{(2)(50\ m)}{(538.6086725\ m)^{3}} + \tfrac{(-883.8834765\ m)}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0016$$</p>
 <p>$dx_x = \tfrac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.99999872$</p>
@@ -3080,12 +3073,12 @@ transition, $\ell = 75\ m - 50\ m = 25\ m$.</p>
                    0 &  -0.0533332650667977 &    0.998576764978815 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 25\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-25-m-m_pcell">Step 3 — Evaluate the parent curve at $\ell = 25\ m$ — $M_{PC\ell}$</hh4>
 <p>Add curve start $25 + 50 = 75\ m$.</p>
 <p>$$D_{\ell} = D(75\ m) = (50\ m)^{2}\left(\tfrac{1}{(538.6086725\ m)^{3}}(75\ m)^{2} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|}(75\ m) + \tfrac{1}{15625\ m}\right) = 0.01\ m$$</p>
 <p>$$D'_{\ell} = D'(75\ m) = (50\ m)^{2}\left( \tfrac{(2)(75\ m)}{(538.6086725\ m)^{3}} + \tfrac{(-883.8834765\ m)}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0008$$</p>
-<p>$dx_x = cos(\theta) = 0.99999968000015360$</p>
-<p>$dx_y = sin(\theta) = -0.00079999974400011946$</p>
+<p>$dx_x = \cos(\theta) = 0.99999968000015360$</p>
+<p>$dx_y = \sin(\theta) = -0.00079999974400011946$</p>
 <p>$\phi(\ell) = 1.517437677 + \left(\tfrac{\tfrac{\pi}{2} - 1.517437677}{-0.04}\right)(0.01 - 0.08) = 1.5574756139049735$</p>
 <p>$dz_y = \cos(1.5574756139049735) = 0.013320318952445506$</p>
 <p>$dz_z = \sin(1.5574756139049735) = 0.99991128061593804$</p>
@@ -3100,7 +3093,7 @@ transition, $\ell = 75\ m - 50\ m = 25\ m$.</p>
                     0 &   -0.0133392625359523 &     0.999911028022552 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-3">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong></p>
 <p>$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$</p>
 <p><strong>Translation</strong></p>
@@ -3153,13 +3146,13 @@ R_c & \mathbf{T}_c \\
 </code></pre>
 <p>$$D_0 = D(0\ m) = (100\ m)^2\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \tfrac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \tfrac{1}{125000\ m} \right) = 0.08\ m$$</p>
 <p>$$D'(0) = 0,\ \theta_0 = 0$$</p>
-<p>$dx_x = cos(\theta_0) = 1$</p>
-<p>$dy_x = sin(\theta_0) = 0$</p>
+<p>$dx_x = \cos(\theta_0) = 1$</p>
+<p>$dy_x = \sin(\theta_0) = 0$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
@@ -3168,7 +3161,7 @@ R_c & \mathbf{T}_c \\
 </code></pre>
 <hh3 id="463-compute-point-on-curve">4.6.3 Compute Point on Curve</hh3>
 <p>Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-18">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (1,\ 0,\ 0)$</p>
 <p>$\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.1066667)$</p>
@@ -3178,7 +3171,7 @@ R_c & \mathbf{T}_c \\
                  0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-4">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$</p>
 <p>$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{{0.16 - 0}}{1.5} \right) = 1.463926346$$</p>
 <p>$\mathbf{X}_s = (1,\ 0,\ 0)$</p>
@@ -3193,7 +3186,7 @@ R_c & \mathbf{T}_c \\
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$</p>
 <p>$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-50-m-m_pcell-2">Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</hh4>
 <p>$D(50\ m) = 0.04\ m$</p>
 <p>$D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m) \right) = -0.0012$</p>
 <p>$\theta_\ell =\tan^{-1}(-0.0012) = -0.0011999994240005001$</p>
@@ -3209,7 +3202,7 @@ R_c & \mathbf{T}_c \\
                    0 &  -0.0534095268552106 &    0.998572690560578 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-4">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong></p>
 <p>$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$</p>
 <p><strong>Translation</strong></p>
@@ -3260,8 +3253,8 @@ R_c & \mathbf{T}_c \\
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
@@ -3270,7 +3263,7 @@ R_c & \mathbf{T}_c \\
 </code></pre>
 <hh3 id="473-compute-point-on-curve">4.7.3 Compute Point on Curve</hh3>
 <p>Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-19">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (1,\ 0,\ 0)$</p>
 <p>$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$</p>
@@ -3280,7 +3273,7 @@ R_c & \mathbf{T}_c \\
                  0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-5">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$</p>
 <p>$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.463926346$$</p>
 <p>$\mathbf{X}_s = (1,\ 0,\ 0)$</p>
@@ -3295,7 +3288,7 @@ R_c & \mathbf{T}_c \\
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$</p>
 <p>$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-50-m-m_pcell-3">Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</hh4>
 <p>$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_\ell = -0.001256636$</p>
 <p>$\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$</p>
 <p>$\mathbf{X}_\ell = (0.99999921,\ -0.001256636,\ 0)$</p>
@@ -3309,7 +3302,7 @@ R_c & \mathbf{T}_c \\
                    0 &  -0.0534095653058388 &    0.998572690560578 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-5">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong></p>
 <p>$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$</p>
 <p><strong>Translation</strong></p>
@@ -3365,13 +3358,13 @@ $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$</p>
 <p>$$D(0\ m) = (100\ m)^{2}\left(\tfrac{1}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \tfrac{1}{785398.1634\ m}\sin\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.08\ m$$</p>
 <p>$$D'(0\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.$$</p>
 <p>$\theta_0 = 0$</p>
-<p>$dx_x = cos(\theta_0) = 1$</p>
-<p>$dx_y = sin(\theta_0) = 0$</p>
+<p>$dx_x = \cos(\theta_0) = 1$</p>
+<p>$dx_y = \sin(\theta_0) = 0$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.16 - 0.0}{1.5}\right) = 1.463926346$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$</p>
-<p>$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$</p>
+<p>$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$</p>
+<p>$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.08,0.));
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
@@ -3380,7 +3373,7 @@ $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$</p>
 </code></pre>
 <hh3 id="483-compute-point-on-curve">4.8.3 Compute Point on Curve</hh3>
 <p>Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-20">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (1,\ 0,\ 0)$</p>
 <p>$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$</p>
@@ -3390,7 +3383,7 @@ $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$</p>
                  0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-6">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$</p>
 <p>$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.463926346$$</p>
 <p>$\mathbf{X}_s = (1,\ 0,\ 0)$</p>
@@ -3405,7 +3398,7 @@ $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$</p>
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$</p>
 <p>$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-50-m-m_pcell-4">Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</hh4>
 <p>$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_\ell = -0.0016$</p>
 <p>$\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$</p>
 <p>$\mathbf{X}_\ell = (0.99999872,\ -0.0016,\ 0)$</p>
@@ -3419,7 +3412,7 @@ $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$</p>
                    0 &  -0.0534095653032194 &    0.998572690560578 &                    0 \\
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-6">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong></p>
 <p>$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$</p>
 <p><strong>Translation</strong></p>
@@ -3493,13 +3486,13 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 </code></pre>
 <p>$$D(0\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \tfrac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \tfrac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \tfrac{1}{200000\ m}\right) = 0.05\ m$$</p>
 <p>$D'(0) = 0,\ \theta_0 = 0$</p>
-<p>$dx_x = cos(\theta) = 1$</p>
-<p>$dx_y = sin(\theta) = 0$</p>
+<p>$dx_x = \cos(\theta) = 1$</p>
+<p>$dx_y = \sin(\theta) = 0$</p>
 <p>The cross-slope at the start of the segment is</p>
 <p>$\phi_s = \cos^{-1}\left(\tfrac{D_{sr}-D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.1-0.0}{1.5} \right) = 1.504080178$</p>
 <p>The cross slope orientation is</p>
-<p>$dy_z = cos(\phi_s) = 0.066666667$</p>
-<p>$dz_z = sin(\phi_s) = 0.997775303$</p>
+<p>$dy_z = \cos(\phi_s) = 0.066666667$</p>
+<p>$dz_z = \sin(\phi_s) = 0.997775303$</p>
 <pre><code>#100=IFCCARTESIANPOINT((0.,0.05,0.));
 #101=IFCDIRECTION((0.,0.066666666666666666,0.99777530313971774));
 #102=IFCDIRECTION((1.,0.,0.));
@@ -3508,7 +3501,7 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
 </code></pre>
 <hh3 id="493-compute-point-on-curve">4.9.3 Compute Point on Curve</hh3>
 <p>Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.</p>
-<p><strong>Step 1 — Form the curve segment placement matrix $M_{CSP}$</strong></p>
+<hh4 id="step-1-form-the-curve-segment-placement-matrix-m_csp-21">Step 1 — Form the curve segment placement matrix $M_{CSP}$</hh4>
 <p>$\mathbf{RefDir}_p = (1,\ 0,\ 0)$</p>
 <p>$\mathbf{Axis}_p = (0,\ 0.066519011,\ 0.99778516)$</p>
 <p>$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.99778516,\ -0.066519011)$</p>
@@ -3518,7 +3511,7 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
                   0 & -0.0666666666666667 &   0.997775303139718 &                   0 \\
                   0 &                   0 &                   0 &                   1
 \end{bmatrix}$$</p>
-<p><strong>Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</strong></p>
+<hh4 id="step-2-evaluate-the-parent-curve-at-the-trim-start-m_pcs-7">Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$</hh4>
 <p>$s_0 = 0,\ D(0) = 0.05\ m,\ D'(0) = 0,\ \theta_s = 0$</p>
 <p>$$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.10 - 0.0}{1.5} \right) = 1.504080178$$</p>
 <p>$\mathbf{X}_s = (1,\ 0,\ 0)$</p>
@@ -3533,7 +3526,7 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
                   0 &                   0 &                   0 &                   1
 \end{bmatrix}$$</p>
 <p>$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.</p>
-<p><strong>Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</strong></p>
+<hh4 id="step-3-evaluate-the-parent-curve-at-ell-50-m-m_pcell-5">Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$</hh4>
 <p>$D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_\ell = -0.00076562$</p>
 <p>$\phi_e = cos^{-1}\left(\tfrac{D_{er} - D_{el}}{D_{rh}}\right) = cos^{-1}\left(\tfrac{0.03 - 0.0}{1.5}\right) = 1.550794993$</p>
 <p>$\phi(\ell) = 1.504080178 + \left(\tfrac{1.550799 - 1.504080178}{-0.035}\right)(0.0325 - 0.05) = 1.527439589$</p>
@@ -3548,7 +3541,7 @@ $$a_{1} = 0, A_{1} = 0\ m$$</p>
                     0 &    -0.043345143967377 &     0.999060157044173 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$</p>
-<p><strong>Step 4 — Compute the cant placement matrix $M_c$</strong></p>
+<hh4 id="step-4-compute-the-cant-placement-matrix-m_c-7">Step 4 — Compute the cant placement matrix $M_c$</hh4>
 <p><strong>Rotation</strong></p>
 <p>$$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$</p>
 <p><strong>Translation</strong></p>
@@ -3589,7 +3582,7 @@ R_c & \mathbf{T}_c \\
 0 & 0 & 0.9985888041 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$</p>
-<p><strong>Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix</strong></p>
+<hh4 id="step-5-combine-with-horizontal-and-vertical-to-produce-the-3d-placement-matrix-1">Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix</hh4>
 <p>Construct $M'_v$ as described in Section 3.2</p>
 <p>$$M'_v =
  \begin{bmatrix}
@@ -3837,53 +3830,23 @@ three attributes:</p>
 <ul>
 <li><code>BasisCurve</code>: The curve from which offsets are measured</li>
 <li><code>OffsetValues</code>: Defines the offsets along the curve</li>
-<li><code>Tag</code> (optional): An identifier for the curve, used to correlate offset curve points with positions in a variable cross-section (see Chapter 10)</li>
+<li><code>Tag</code> (optional): An identifier for the curve, used to correlate offset curve points with positions in a variable cross-section (see <a href="#10_Sectioned_Surfaces_and_Solids">Chapter 10</a>)</li>
 </ul>
 <p>A single offset value indicates a constant offset over the entire length of the curve.</p>
 <p>If the offsets do not span the full length of the curve, the first and last offset are implicitly continued to the head and tail of the basis curve, respectively.</p>
-<p>The <code>IfcOffsetCurveByDistances.OffsetValues</code> are of type <code>IfcPointByDistanceExpression</code>. <code>IfcOffsetCurveByDistances.BasisCurve</code> and <code>IfcPointByDistanceExpression.BasisCurve</code> must reference the same curve.</p>
+<p>The <code>IfcOffsetCurveByDistances.OffsetValues</code> are of type <code>IfcPointByDistanceExpression</code>. The <code>IfcOffsetCurveByDistances.BasisCurve</code> and <code>IfcPointByDistanceExpression.BasisCurve</code> should logically reference the same curve since the offset value is defining an offset from <code>IfcOffsetCurveByDistances.BasisCurve</code>. However, this is not an explicitly stated requirement in the IFC specifications.</p>
 <p>The <code>IfcOffsetCurveByDistances</code> geometry is derived by interpolating the <code>OffsetValues</code>.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/OffsetCurves.png" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/OffsetCurves.png" alt="" /></p>
 <p><em>Figure 5.0-1 Offset curves</em></p>
 <p>Figure 5.0-1 shows two offset curves that share a single basis curve. Offset curve 1 has different offset values defined at the start and the end of the basis curve. The start offset is 10 ft and the end offset is 20 ft. The basis curve is 100 ft long. The point on Offset curve 1 that corresponds to the mid-point of the basis curve is determined by evaluating the basis curve at 50 ft, then applying the linearly interpolated offset of 15 ft.</p>
 <p>Offset curve 2 has several offsets. Linear interpolation is used to determine the offset from the basis curve to the offset curve between each pair of consecutive offset points.</p>
-<p>Example model:
-<a href="examples/IfcOffsetCurveByDistances.ifc">IfcOffsetCurveByDistances.ifc</a></p>
-<hh2 id="51-offset-sign-convention">5.1 Offset Sign Convention</hh2>
-<p>Positive offset values place the offset curve to the left of the basis curve, measured perpendicular to the curve's direction of travel at each chainage position. Negative values place it to the right. This matches the curvature sign convention used throughout this guide — positive means left, negative means right.</p>
-<p>Offset values can change sign along the curve, meaning the offset curve can cross from one side of the basis curve to the other. Practical infrastructure uses for sign-crossing offsets are rare, but the representation allows it.</p>
-<hh2 id="52-offset-curves-and-ifcalignment">5.2 Offset Curves and IfcAlignment</hh2>
-<p>In IFC4x3, <code>IfcOffsetCurveByDistances</code> is a resource-layer geometric entity and cannot exist independently in a model. Validation rule IFC105 requires that every resource entity be reachable from a rooted entity. In practice this means the offset curve must be assigned as the shape representation of an <code>IfcAlignment</code> (or another product), and that alignment must be aggregated into the project. Without this, the IFC validation service will report an IFC105 violation.</p>
-<p>The consequence is that offset curves in IFC4x3 models are represented as alignments. This is natural: an offset alignment has its own object identity, can carry properties, can support linear placement of objects, and participates in the project's spatial breakdown just like the basis alignment.</p>
-<p>The example file <a href="examples/IfcOffsetCurveByDistances.ifc"><code>IfcOffsetCurveByDistances.ifc</code></a> demonstrates this structure. The basis alignment &quot;E-Line&quot; and its two offsets, &quot;Offset1&quot; and &quot;Offset2,&quot; are all <code>IfcAlignment</code> instances aggregated under the project. Each offset alignment's <code>Representation</code> references an <code>IfcShapeRepresentation</code> whose item is the corresponding <code>IfcOffsetCurveByDistances</code>.</p>
-<hh2 id="53-stationing-on-offset-alignments">5.3 Stationing on Offset Alignments</hh2>
-<p>The IFC validation service warns when an <code>IfcAlignment</code> has no stationing referent — a <code>Pset_Stationing</code> property set attached via an <code>IfcReferent</code>. For many offset alignments this warning is valid and should be resolved: a ramp, a lane edge used for striping construction, or any offset alignment along which objects are linearly placed benefits from defined stationing.</p>
-<p>For offset alignments that are purely geometric — a drainage channel modeled for clash detection, a clearance envelope, a construction limit line — independent stationing may not be meaningful. In those cases the warning is acceptable to leave. An alternative is to assign a stationing referent that mirrors the basis alignment's stationing, so that chainage values on the offset alignment correspond directly to chainage on the basis. This is often the least confusing option when the two alignments are used together in quantity takeoff or reporting.</p>
-<hh2 id="54-accuracy-of-offset-curves">5.4 Accuracy of Offset Curves</hh2>
-<p><code>IfcOffsetCurveByDistances</code> is an exact representation for two curve types and an approximation for everything else.</p>
-<p><strong>Lines and circular arcs.</strong> The geometric parallel of a line is another line; the geometric parallel of a circular arc of radius $R$ at offset $d$ is another circular arc of radius $R + d$ (left offset) or $R - d$ (right offset). For alignments composed entirely of tangents and circular arcs, a constant <code>IfcOffsetCurveByDistances</code> with a single <code>IfcPointByDistanceExpression</code> reproduces the true parallel exactly.</p>
-<p><strong>Transition curves.</strong> The six transition curve types — Clothoid, Bloss, Cosine, Sine, Helmert, and VienneseBend — do not have closed-form geometric parallels. The true parallel of a Clothoid spiral, for example, is not a Clothoid. <code>IfcOffsetCurveByDistances</code> handles this by defining the offset through linearly interpolated lateral distances rather than a parallel curve formula. The resulting geometry is a piecewise-linear approximation of the true offset. Accuracy improves by adding more <code>IfcPointByDistanceExpression</code> values at shorter chainage intervals, densifying the approximation.</p>
-<p>For most infrastructure applications the linear interpolation error is small relative to construction tolerances. For applications requiring tighter accuracy — such as rail superelevation ramps or precision survey control — the approximation should be evaluated against the required tolerance and the offset point spacing adjusted accordingly.</p>
-<hh3 id="541-approximate-distance-along-and-its-effect-on-ifclinearplacement">5.4.1 Approximate Distance Along and Its Effect on IfcLinearPlacement</hh3>
-<p>A related but distinct accuracy issue arises when <code>IfcOffsetCurveByDistances</code> is used as the <code>BasisCurve</code> in <code>IfcPointByDistanceExpression</code> for <code>IfcLinearPlacement</code>. The problem is not just that the shape of the offset curve is approximate — it is that <strong>distance along</strong> the offset curve is also approximate, and two independent implementations may compute different arc lengths for the same curve definition.</p>
-<p>The arc length of <code>IfcOffsetCurveByDistances</code> at any given chainage is obtained by numerically integrating the offset curve geometry between the sample points. Because the IFC specification does not prescribe the interpolation method (see §5.7), different software may produce different intermediate curve shapes from identical <code>OffsetValues</code>, and therefore different arc lengths. Even if the interpolation method is agreed upon, the arc length integral has no closed form for a general offset from a spiral, so implementations must use numerical quadrature with finite precision.</p>
-<p>The consequence is that a <code>DistanceAlong</code> value specified against an <code>IfcOffsetCurveByDistances</code> does not map to a unique, reproducible point across implementations. This is in direct contrast to <code>DistanceAlong</code> measured along an <code>IfcCompositeCurve</code> or <code>IfcGradientCurve</code>, where arc length is determined exactly by the curve equations.</p>
-<p>For precise linear placement, the recommended practice (discussed fully in §8.6) is to reference the <strong>parent alignment</strong> as the <code>BasisCurve</code> in <code>IfcPointByDistanceExpression</code> and use <code>OffsetLateral</code> to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.</p>
-<hh2 id="55-arc-length-of-an-offset-curve">5.5 Arc Length of an Offset Curve</hh2>
-<p>The arc length of an offset curve differs from the basis curve length. For a constant offset $d$ from a circular arc of radius $R$ and arc length $L$:</p>
-<p>$$L_{\text{offset}} = L \cdot \frac{R + d}{R}$$</p>
-<p>A positive (left) offset increases arc length; a negative (right) offset inside the curve decreases it. For a left offset of 10 ft from a 1000-ft radius arc of length 200 ft:</p>
-<p>$$L_{\text{offset}} = 200 \cdot \frac{1010}{1000} = 202 \text{ ft}$$</p>
-<p>For varying offsets or non-circular basis curves there is no simple closed-form expression. <code>IfcOffsetCurveByDistances</code> does not expose an arc length attribute. When linear placement of objects relative to an offset alignment is needed, the recommended practice (see §8.6) is to use the parent alignment as the <code>BasisCurve</code> in <code>IfcPointByDistanceExpression</code> rather than the offset curve itself, so the arc length of the offset curve is rarely needed in practice.</p>
-<hh2 id="56-example-model-walkthrough">5.6 Example Model Walkthrough</hh2>
-<p>The file <a href="examples/IfcOffsetCurveByDistances.ifc"><code>IfcOffsetCurveByDistances.ifc</code></a> contains a basis alignment and two offset alignments using feet as the length unit. The relevant IFC excerpts are shown below.</p>
-<p><strong>Basis curve.</strong> The composite curve <code>#20</code> consists of a 200-foot circular arc (radius 1000 ft) starting at the origin heading east, followed by a zero-length line tangent. The arc subtends an angle of $200/1000 = 0.2$ radians, ending at approximately $(198.7, 19.9)$ ft. The basis alignment &quot;E-Line&quot; has stationing from 100+00 to 102+00.</p>
+<p>The following IFC STEP excerpt illustrates how these two offset curves are encoded. The basis curve <code>#20</code> is a circular arc.</p>
 <p><strong>Offset1</strong> — left side, linearly varying:</p>
 <pre><code>#88=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(0.),10.,$,$,#20);
 #89=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(200.),20.,$,$,#20);
 #94=IFCOFFSETCURVEBYDISTANCES(#20,(#88,#89),$); /* Tag omitted */
 </code></pre>
-<p>The offset begins at +10 ft at chainage 0 and increases linearly to +20 ft at chainage 200. The midpoint of the basis curve (chainage 100) has an interpolated offset of +15 ft. This produces a left-side offset curve that diverges from the basis alignment.</p>
+<p>The offset begins at +10 at distance 0 and increases linearly to +20 at distance 200 along the basis curve. At the midpoint of the basis curve (distance 100) the interpolated offset is +15.</p>
 <p><strong>Offset2</strong> — right side, multi-point:</p>
 <pre><code>#102=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(0.),-10.,$,$,#20);
 #103=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(50.),-40.,$,$,#20);
@@ -3892,9 +3855,22 @@ three attributes:</p>
 #106=IFCPOINTBYDISTANCEEXPRESSION(IFCLENGTHMEASURE(200.),-20.,$,$,#20);
 #111=IFCOFFSETCURVEBYDISTANCES(#20,(#102,#103,#104,#105,#106),$); /* Tag omitted */
 </code></pre>
-<p>The right-side offset widens quickly from −10 ft to −40 ft over the first 50 feet, then narrows to −20 ft at mid-curve, widens again to −30 ft, and finishes at −20 ft. The piecewise-linear profile of the offset distance is visible in the geometry of the resulting curve.</p>
-<p>Both offset curves share the same basis curve <code>#20</code>. Each <code>IfcPointByDistanceExpression</code> also references <code>#20</code> directly, satisfying the requirement that the <code>BasisCurve</code> in <code>IfcOffsetCurveByDistances</code> and in its <code>OffsetValues</code> be the same curve object.</p>
-<hh2 id="57-interpolation-of-offset-values">5.7 Interpolation of Offset Values</hh2>
+<p>The right-side offset widens quickly from −10 to −40 over the first 50 distance units along the basis curve, then narrows to −20 at mid-curve, widens again to −30, and finishes at −20. Positive lateral offsets place the offset curve to the left of the basis curve and negative offsets to the right, measured perpendicular to the curve looking in the direction of increasing distance.</p>
+<p>Both offset curves share the same basis curve <code>#20</code>. Each <code>IfcPointByDistanceExpression</code> also references <code>#20</code> directly — the logical choice, since each offset value defines a lateral distance from that curve. This is not an explicit requirement in the IFC specification, however, and the validation service does not check it.</p>
+<p>The STEP excerpt above is drawn from the example models <a href="examples/IfcOffsetCurveByDistances_2D.ifc"><code>IfcOffsetCurveByDistances_2D.ifc</code></a> and <a href="examples/IfcOffsetCurveByDistances_3D.ifc"><code>IfcOffsetCurveByDistances_3D.ifc</code></a>, which are discussed further in §5.5.</p>
+<hh2 id="51-offset-curves-and-ifcalignment">5.1 Offset Curves and IfcAlignment</hh2>
+<p>In IFC4x3, <code>IfcOffsetCurveByDistances</code> is a resource-layer geometric entity and cannot exist independently in a model. Validation rule <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a> requires that every resource entity be reachable from a rooted entity. In practice this means the offset curve must be assigned as the shape representation of an <code>IfcAlignment</code> (or another product), and that alignment must be aggregated into the project. Without this, the IFC validation service will report an IFC105 violation.</p>
+<p>The consequence is that offset curves in IFC4x3 models are represented as alignments. This is natural: an offset alignment has its own object identity, can carry properties, can support linear placement of objects, and participates in the project's spatial breakdown just like the basis alignment.</p>
+<p>The example file <a href="examples/IfcOffsetCurveByDistances_2D.ifc"><code>IfcOffsetCurveByDistances_2D.ifc</code></a> demonstrates this structure. The basis alignment &quot;E-Line&quot; and its two offsets, &quot;Offset1&quot; and &quot;Offset2,&quot; are all <code>IfcAlignment</code> instances aggregated under the project. Each offset alignment's <code>Representation</code> references an <code>IfcShapeRepresentation</code> whose item is the corresponding <code>IfcOffsetCurveByDistances</code>.</p>
+<p>When <code>IfcOffsetCurveByDistances</code> is used as a guide curve for <code>IfcSectionedSurface</code> or <code>IfcSectionedSolidHorizontal</code>, the same requirement applies with an additional complication. The guide curve is geometrically referenced by the surface or solid through the tag mechanism, and the surface or solid is itself a rooted entity — so the chain of references back to a rooted entity exists. The validation service does not trace this path, however, and still flags guide curves that are not directly assigned as a representation of a rooted entity. See <a href="#validation-service-ifcoffsetcurvebydistances-must-be-referenced-by-a-rooted-entity">§10.5</a> for the practical consequence.</p>
+<hh2 id="52-accuracy-of-offset-curves">5.2 Accuracy of Offset Curves</hh2>
+<p><code>IfcOffsetCurveByDistances</code> produces an exact geometric parallel only for lines and circular arcs with a constant offset. Even with a constant offset, transition curves have no closed-form geometric parallel — the true parallel of a Clothoid spiral, for example, is not a Clothoid. The resulting geometry is always a piecewise-linear approximation of the true offset, regardless of whether the offset is constant or varying. Accuracy improves by adding more <code>IfcPointByDistanceExpression</code> values at shorter intervals, densifying the approximation.</p>
+<p>For most infrastructure applications, the linear interpolation error is small relative to construction tolerances. For applications requiring tighter accuracy — such as rail superelevation ramps or precision survey control — the approximation should be evaluated against the required tolerance and the offset point spacing adjusted accordingly.</p>
+<p>A further consequence of the approximation is that <strong>distance along</strong> the offset curve is also approximate. When <code>IfcOffsetCurveByDistances</code> is used as the <code>BasisCurve</code> in <code>IfcPointByDistanceExpression</code> for <code>IfcLinearPlacement</code>, two independent implementations may compute different arc lengths for the same curve definition.</p>
+<p>The arc length of <code>IfcOffsetCurveByDistances</code> at any given location is obtained by numerically integrating the offset curve geometry between the sample points. Because the IFC specification does not prescribe the interpolation method (see §5.3), different software may produce different intermediate curve shapes from identical <code>OffsetValues</code>, and therefore different arc lengths. Even if the interpolation method is agreed upon, the arc length integral has no closed form for a general offset from a spiral, so implementations must use numerical quadrature with finite precision or approximate series expansion solutions.</p>
+<p>The consequence is that a <code>DistanceAlong</code> value specified against an <code>IfcOffsetCurveByDistances</code> does not map to a unique, reproducible point across implementations. This is in direct contrast to <code>DistanceAlong</code> measured along an <code>IfcCompositeCurve</code> or <code>IfcGradientCurve</code>, where arc length is determined exactly by the curve equations.</p>
+<p>For precise linear placement, the recommended practice (discussed fully in <a href="#86-linear-placement-along-ifcoffsetcurvebydistances">§8.6</a>) is to reference the <strong>parent alignment</strong> as the <code>BasisCurve</code> in <code>IfcPointByDistanceExpression</code> and use <code>OffsetLateral</code> to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.</p>
+<hh2 id="53-interpolation-of-offset-values">5.3 Interpolation of Offset Values</hh2>
 <p>The IFC specification does not prescribe how offset values are to be interpolated between <code>IfcPointByDistanceExpression</code> entries. Several methods are possible:</p>
 <ul>
 <li><strong>Linear interpolation of offset values</strong> — the lateral offset distance is interpolated linearly between consecutive offset points, and the interpolated distance is applied perpendicular to the basis curve at each chainage. This keeps the offset curve anchored to the basis curve geometry.</li>
@@ -3903,10 +3879,24 @@ three attributes:</p>
 </ul>
 <p>Different interpolation methods produce materially different geometry from the same <code>IfcOffsetCurveByDistances</code> data. Without a formal implementation agreement, two compliant applications may render the same model differently.</p>
 <p>The recommended best practice is <strong>linear interpolation of offset values</strong>: interpolate the lateral distance at each chainage position, then apply that distance perpendicular to the basis curve. This method is the most natural given the structure of <code>IfcOffsetCurveByDistances</code>, produces predictable geometry, and is the least ambiguous for interchange.</p>
-<hh2 id="58-the-tag-attribute">5.8 The Tag Attribute</hh2>
+<hh2 id="54-the-tag-attribute">5.4 The Tag Attribute</hh2>
 <p>The <code>Tag</code> attribute of <code>IfcOffsetCurveByDistances</code> is an optional label that assigns an identifier to the offset curve. Its primary purpose is to correlate an offset curve with a named point in a variable cross-section definition.</p>
 <p><code>IfcSectionedSurface</code> and <code>IfcSectionedSolidHorizontal</code> define geometry by sweeping a series of cross-sections along a basis curve. Each cross-section can contain named control points — edge-of-pavement, top-of-rail, daylight line, and so on. The <code>Tag</code> on an <code>IfcOffsetCurveByDistances</code> matches one of those named points, allowing the surface or solid geometry to be driven by the offset curve's lateral positions rather than by fixed cross-section ordinates. This is the mechanism by which variable-width surfaces and solids are defined in IFC4x3.</p>
-<p>The full treatment of <code>IfcSectionedSurface</code> and <code>IfcSectionedSolidHorizontal</code>, including how <code>Tag</code> values are resolved against cross-section geometry, is covered in Chapter 10.</p>
+<p>The full treatment of <code>IfcSectionedSurface</code> and <code>IfcSectionedSolidHorizontal</code>, including how <code>Tag</code> values are resolved against cross-section geometry, is covered in <a href="#10_Sectioned_Surfaces_and_Solids">Chapter 10</a>.</p>
+<hh2 id="55-example-models">5.5 Example Models</hh2>
+<p>Three example models illustrate <code>IfcOffsetCurveByDistances</code> in progressively more demanding configurations. The 2D and 3D variants share the same geometry and offset profiles; the difference is whether the basis curve is an <code>IfcCompositeCurve</code> (horizontal only) or an <code>IfcGradientCurve</code> (3D). The split-basis variant tests a configuration the IFC specification does not prohibit but leaves geometrically ambiguous.</p>
+<hh3 id="551-two-dimensional-basis-curve">5.5.1 Two-Dimensional Basis Curve</hh3>
+<p>The file <a href="examples/IfcOffsetCurveByDistances_2D.ifc"><code>IfcOffsetCurveByDistances_2D.ifc</code></a> contains a basis alignment and two offset alignments. The basis curve is an <code>IfcCompositeCurve</code> — a horizontal-only curve with no elevation component.</p>
+<p><strong>Validation.</strong> Both offset alignments in this model fail the validation rule <code>IfcShapeRepresentation.CorrectItemsForType</code>. The <code>IfcShapeRepresentation</code> for each offset alignment uses <code>RepresentationType = &quot;Curve3D&quot;</code>, which requires its items to be 3D curves. The <code>IfcOffsetCurveByDistances</code> entities here are 2D because their <code>BasisCurve</code> is an <code>IfcCompositeCurve</code> — a planar horizontal curve with no elevation component. The <code>IfcAlignment</code> specification states that <code>IfcOffsetCurveByDistances</code> may represent either a 2D or 3D alignment curve, but the <code>CorrectItemsForType</code> rule is applied at the shape representation level and does not recognise this exception. The conflict between the <code>IfcAlignment</code> statement and the shape representation rule is unresolved in IFC4x3.</p>
+<hh3 id="552-three-dimensional-basis-curve">5.5.2 Three-Dimensional Basis Curve</hh3>
+<p>The file <a href="examples/IfcOffsetCurveByDistances_3D.ifc"><code>IfcOffsetCurveByDistances_3D.ifc</code></a> contains the same geometry as the 2D example — the same 200-ft circular arc &quot;E-Line&quot; with the same two offset profiles — but with a flat vertical alignment added to &quot;E-Line&quot;. This makes its basis curve an <code>IfcGradientCurve</code>. The two offset alignments are constructed to demonstrate how basis curve choice affects dimensionality and validation outcome.</p>
+<p><strong>Offset1</strong> references the <code>IfcGradientCurve</code> as the <code>BasisCurve</code> in both the <code>IfcOffsetCurveByDistances</code> and all <code>IfcPointByDistanceExpression</code> offset values. Because <code>IfcGradientCurve</code> is a 3D curve, the resulting offset curve is 3D. Offset1 satisfies <code>IfcShapeRepresentation.CorrectItemsForType</code>.</p>
+<p><strong>Offset2</strong> references <code>IfcGradientCurve.BaseCurve</code> — the underlying <code>IfcCompositeCurve</code> — as the <code>BasisCurve</code> for its offset values. <code>IfcCompositeCurve</code> is a 2D horizontal curve, so the resulting offset curve is 2D regardless of whether the parent alignment has a vertical component. Offset2 fails <code>IfcShapeRepresentation.CorrectItemsForType</code> for the same reason as the 2D example.</p>
+<p>The key finding is that the dimensionality of an <code>IfcOffsetCurveByDistances</code> is determined by which curve object is referenced as its <code>BasisCurve</code> — not by the dimensionality of the alignment that owns it. Referencing an <code>IfcGradientCurve</code> produces a 3D offset curve; referencing its constituent <code>IfcCompositeCurve</code> produces a 2D one.</p>
+<hh3 id="553-split-basis-curves">5.5.3 Split Basis Curves</hh3>
+<p>The file <a href="examples/IfcOffsetCurveByDistances_split_basis.ifc"><code>IfcOffsetCurveByDistances_split_basis.ifc</code></a> demonstrates the edge case described in §5.0 where <code>IfcOffsetCurveByDistances.BasisCurve</code> and <code>IfcPointByDistanceExpression.BasisCurve</code> reference different curves. The model contains two alignments: &quot;E-Line&quot; (a 200-ft circular arc with a flat vertical profile) and &quot;Reference-Line&quot; (a 200-ft straight line offset 10 ft north, also with a flat vertical profile). Both carry <code>IfcGradientCurve</code> basis curves.</p>
+<p>The single offset alignment &quot;Offset1&quot; has its <code>IfcOffsetCurveByDistances.BasisCurve</code> set to &quot;E-Line&quot;'s <code>IfcGradientCurve</code>. Its <code>IfcPointByDistanceExpression</code> offset values reference &quot;Reference-Line&quot;'s <code>IfcGradientCurve</code>. The offset value of 5 ft at each end is a distance measured along &quot;Reference-Line,&quot; applied as a lateral offset from &quot;E-Line.&quot; Because the two curves have different shapes — one a circular arc, the other a straight line — the parameterization of the offset values is inconsistent with the curve to which they are applied.</p>
+<p>The IFC specification does not prohibit this configuration, and the model passes all validation service checks. This is itself a gap: the split-basis configuration is semantically ambiguous and should be flagged as either an error or a best-practices violation. A future validation rule requiring that <code>IfcOffsetCurveByDistances.BasisCurve</code> and the <code>BasisCurve</code> of all its <code>OffsetValues</code> reference the same curve object would close this gap without breaking any legitimate use case.</p>
 
 <div class="chapter-sep"></div>
 <a id="6_Approximate_Alignment_Geometry"></a>
@@ -3963,7 +3953,7 @@ the requirements for the geometric counterpart to a full alignment layout.</p>
 segment. A zero-length polyline segment requires two consecutive coincident vertices;
 <code>IfcPolyline</code> WHERE rule WR1 explicitly prohibits this. <code>IfcIndexedPolyCurve</code> has no
 equivalent schema-level prohibition, but a coincident point pair produces a degenerate
-segment with an undefined tangent direction.</p>
+segment with an undefined tangent direction. This is unfortunate because an application needing detailed semantic information and only an approximate geometric representation is left with an unsupported use case.</p>
 <p>For this reason, <code>IfcPolyline</code> and <code>IfcIndexedPolyCurve</code> (as well as <code>IfcOffsetCurveByDistances</code>) can only represent an
 <code>IfcAlignment</code> without an accompanying semantic layout definition.</p>
 
@@ -4013,7 +4003,7 @@ reuse the horizontal definition from the parent. The parent itself carries no ve
 layout; its sole role is to hold the shared horizontal and aggregate the children. Children
 that require cant also nest an <code>IfcAlignmentCant</code> via <code>IfcRelNests</code>. Figure 7.1.1-1 shows
 the complete parent/child layout structure.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.1.1-1_Alignment_Layout.svg" alt="Figure 7.1.1-1 — Alignment layout for the reusing-horizontal-layout pattern." /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.1.1-1_Alignment_Layout.svg" alt="Figure 7.1.1-1 — Alignment layout for the reusing-horizontal-layout pattern." /></p>
 <p><em>Figure 7.1.1-1 — Alignment layout for the reusing-horizontal-layout pattern.</em></p>
 <p>Only the <code>IfcAlignmentHorizontal</code> is shared. Each child alignment owns its
 <code>IfcAlignmentVertical</code> and <code>IfcAlignmentCant</code> exclusively — those layout entities are
@@ -4023,7 +4013,7 @@ taking an <code>IfcGradientCurve</code> as its own <code>BaseCurve</code>. Each 
 cant definition gets its own <code>IfcSegmentedReferenceCurve</code> and its own <code>IfcGradientCurve</code>;
 only the <code>IfcCompositeCurve</code> at the base of the chain is the shared instance, as shown in
 Figure 7.1.1-2:</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.1.1-2_Geometric_Chain.svg" alt="Figure 7.1.1-2 — Geometric chain for child alignments with cant." /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.1.1-2_Geometric_Chain.svg" alt="Figure 7.1.1-2 — Geometric chain for child alignments with cant." /></p>
 <p><em>Figure 7.1.1-2 — Geometric chain for child alignments with cant. Each child alignment has its own <code>IfcSegmentedReferenceCurve</code> and <code>IfcGradientCurve</code>; the <code>IfcCompositeCurve</code> is the shared instance.</em></p>
 <hh3 id="712-geometric-representation-shared-basecurve">7.1.2 Geometric Representation — Shared BaseCurve</hh3>
 <p>Each child alignment's 3D curve references the horizontal <code>IfcCompositeCurve</code> through its
@@ -4096,13 +4086,13 @@ vertical lives in its own child <code>IfcAlignment</code> aggregated under the p
 between them is not additive — it requires restructuring the existing model.</p>
 <hh3 id="731-transitioning-to-reusing-horizontal-layout">7.3.1 Transitioning to Reusing Horizontal Layout</hh3>
 <p>Figure 7.3.1-1 shows the CT 4.1.4.4.1.1 structure used when a single vertical is present:</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.3.1-1_CT_Single_Vertical.svg" alt="Figure 7.3.1-1 — CT 4.1.4.4.1.1: single vertical nested directly under IfcAlignment." /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.3.1-1_CT_Single_Vertical.svg" alt="Figure 7.3.1-1 — CT 4.1.4.4.1.1: single vertical nested directly under IfcAlignment." /></p>
 <p><em>Figure 7.3.1-1 — CT 4.1.4.4.1.1: single <code>IfcAlignmentVertical</code> nested directly under <code>IfcAlignment</code>.</em></p>
 <p>When a second vertical is added, the model must be restructured to CT 4.1.4.4.1.2. The
 <code>IfcAlignmentVertical (V1)</code> that was directly nested under the original <code>IfcAlignment</code>
 must be moved into a new child alignment. A second child alignment is created for V2,
 yielding the structure shown in Figure 7.3.1-2:</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.3.1-2_CT_Reusing_Horizontal.svg" alt="Figure 7.3.1-2 — CT 4.1.4.4.1.2: vertical layouts moved into child alignments aggregated under the parent." /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_7.3.1-2_CT_Reusing_Horizontal.svg" alt="Figure 7.3.1-2 — CT 4.1.4.4.1.2: vertical layouts moved into child alignments aggregated under the parent." /></p>
 <p><em>Figure 7.3.1-2 — CT 4.1.4.4.1.2: vertical layouts moved into child alignments aggregated under the parent.</em></p>
 <p>The inverse transition is equally important but easier to overlook. When the designer
 removes a vertical layout and only one remains, the model must revert back to CT 4.1.4.4.1.1.
@@ -4178,7 +4168,7 @@ or multi-track configurations.</p>
 </code></pre>
 <p>The <code>PlacementRelTo</code> attribute of <code>IfcLinearPlacement</code> establishes the reference context. When it is <strong>omitted</strong>, the placement is measured from the start of the basis curve defined in <code>IfcPointByDistanceExpression</code>. This is the standard case when the basis curve is an alignment defined in the project coordinate system.</p>
 <p>Figure 8.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/alignment_linear_placement_features.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/alignment_linear_placement_features.svg" alt="" /></p>
 <p><em>Figure 8.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.</em></p>
 <hh2 id="82-ifclinearplacement-and-ifcaxis2placementlinear">8.2 IfcLinearPlacement and IfcAxis2PlacementLinear</hh2>
 <hh3 id="821-distance-along-the-directrix">8.2.1 Distance Along the Directrix</hh3>
@@ -4278,13 +4268,13 @@ For a graded curve, <strong>T</strong> has a non-zero Z component.</li>
 <li>Z-axis points upward (global vertical).</li>
 </ul>
 <p>This is the classic highway “station-offset” reference frame and is illustrated in Figure 8.3.3-1.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/linear_placement_offsets.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/linear_placement_offsets.svg" alt="" /></p>
 <p><em>Figure 8.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.</em></p>
 <hh2 id="84-longitudinal-offset-and-unreachable-points">8.4 Longitudinal Offset and Unreachable Points</hh2>
 <hh3 id="841-what-is-an-unreachable-point">8.4.1 What Is an Unreachable Point?</hh3>
 <p>In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that <strong>cannot be expressed</strong> as a station plus a purely transverse offset.</p>
 <p>The classic example is an <strong>angle point</strong> — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 8.4.1-1.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/pi_unreachable_zone.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/pi_unreachable_zone.svg" alt="" /></p>
 <p><em>Figure 8.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.</em></p>
 <hh3 id="842-using-offsetlongitudinal">8.4.2 Using OffsetLongitudinal</hh3>
 <p><code>IfcPointByDistanceExpression.OffsetLongitudinal</code> provides the solution. A non-zero <code>OffsetLongitudinal</code> moves the placement point along the local X-axis (the forward tangent direction) after the perpendicular offset is applied. The procedure is:</p>
@@ -4564,7 +4554,7 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 </ol>
 <p>$$\text{DistanceAlong} = \text{referent\_distance} + \frac{S - \text{segment\_start\_station}}{\text{segment\_station\_span}} \times \text{segment\_geometry\_length}$$</p>
 <p>For simple alignments with no equations, this reduces to the familiar $\text{DistanceAlong} = S - \text{starting\_station}$.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/stationing_diagram.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/stationing_diagram.svg" alt="" /></p>
 <p><em>Figure 9.3.4-1 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation.</em></p>
 <hh3 id="935-example-starting-station-and-one-equation">9.3.5 Example: Starting Station and One Equation</hh3>
 <p>The following pseudo-STEP example shows an alignment with:</p>
@@ -4637,7 +4627,7 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <p><strong>Pattern A — Shared nest.</strong> A single <code>IfcRelNests</code> instance contains both layout objects and referents interleaved or grouped. This works but can make parsing complex, because consumers must distinguish layout objects from referents by type.</p>
 <p><strong>Pattern B — Separate nests (recommended).</strong> Two distinct <code>IfcRelNests</code> instances are used: one whose <code>RelatedObjects</code> contains only the alignment layout sub-objects, and one whose <code>RelatedObjects</code> contains only <code>IfcReferent</code> instances.</p>
 <p><strong>Recommendation:</strong> Use Pattern B — separate nests. This is the pattern illustrated in the existing Figure 9.4.2-1 and is more robust for software implementations. The layout nest and the referent nest are independent, and each can be processed without concern for the content of the other.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/ifc_alignment_relnests_erd.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifc_alignment_relnests_erd.svg" alt="" /></p>
 <p><em>Figure 9.4.2-1 — Two <code>IfcRelNests</code> relationships: one for alignment layout sub-objects (horizontal, vertical, cant) and one for <code>IfcReferent</code> instances.</em></p>
 <hh3 id="943-referent-ordering-requirement">9.4.3 Referent Ordering Requirement</hh3>
 <p>Referents in <code>IfcRelNests.RelatedObjects</code> must be ordered by their geometric position (increasing <code>DistanceAlong</code>). This ordering is not enforced by a WHERE rule in the schema but is stated as a requirement in the IFC concept template for <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/content.html">4.1.4.4</a> and <a href="https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html">4.1.4.4.3 Object Nesting</a> as applied to referents. Implementations that read referent data should not assume the list is sorted and should sort by <code>DistanceAlong</code> before processing; implementations that write referent data must produce a sorted list.</p>
@@ -4655,7 +4645,7 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <li><code>RelatedProducts</code> — the set of <code>IfcProduct</code> instances (the positioned objects) whose station label is defined by this referent.</li>
 </ul>
 <p><em>Example:</em> A bridge pier (<code>IfcBridgePart.PIER</code>) is geometrically placed at <code>DistanceAlong = 14235.75</code>. An <code>IfcReferent</code> with <code>PredefinedType = STATION</code> and <code>Pset_Stationing.Station = 14235.75</code> (relative to the starting station) is connected to the pier via <code>IfcRelPositions</code>. The pier’s station label is now Sta. 142+35.75. The pier’s geometry is unchanged. This is shown in Figure 9.5.2-1.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/ifc_referent_entity_relationship.svg" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifc_referent_entity_relationship.svg" alt="" /></p>
 <p><em>Figure 9.5.2-1 — Object graph showing an <code>IfcBridgePart.PIER</code> with its own <code>IfcLinearPlacement</code>, an <code>IfcReferent</code> (STATION type) with <code>Pset_Stationing</code>, and the <code>IfcRelPositions</code> link between them.</em></p>
 <hr />
 <hh2 id="96-summary-and-implementation-checklist">9.6 Summary and Implementation Checklist</hh2>
@@ -4725,10 +4715,10 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <a id="10_Sectioned_Surfaces_and_Solids"></a>
 <p>todo</p>
 <ul>
-<li>create new example files to illustrate string lines</li>
-<li>need real examples that shows the difference between using stringlines and templates, though every example I've come up with are exactly the same. Stringlines seem to be limited because they must be offset curves. This means the stringlines are not independent geometry from the sweeping curve.</li>
-<li>create example that shows a section on a horizontal curve. the section widens through the curve. With templates, they are conneced with straight lines. With stringlines, the edges of the surface follow the curve.</li>
+<li>need to create sample models for sectioned solid horizontal that show the various transition supported.</li>
+<li>Add <code>IfcReferent</code> widening event markers to <code>IfcSectionedSurface_with_branching.ifc</code> (§10.6.2), similar to the superelevation event referents in <code>Superelevation.ifc</code>.</li>
 <li>This section needs a lot of validation with models to support the claims</li>
+<li>Need to be clear with the stringline stuff - for the basic stringline where offset curves all use the same directrix, tags are surface unique. If stringlines are used with different basis curves, then tags must be globally unique. This is not clear in the IFC specification.</li>
 </ul>
 <hh1 id="chapter-10-sectioned-surfaces-and-solids">Chapter 10 - Sectioned Surfaces and Solids</hh1>
 <hh2 id="100-introduction">10.0 Introduction</hh2>
@@ -4738,51 +4728,10 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <hh2 id="101-template-based-approach">10.1 Template-Based Approach</hh2>
 <p>In the template-based approach, cross-sections are defined at discrete distances along the <code>Directrix</code>. The geometry engine interpolates linearly between consecutive cross-section positions to generate the surface or solid. The cross-sections need not be identical — width, slope, and shape can all vary from one distance to the next — but the transition between any two consecutive sections is linear.</p>
 <p>For simple geometry this is entirely adequate. A road with a constant typical section can be fully described by two cross-sections with linear interpolation between them. A superelevation transition with a uniform rotation rate can be captured with sections at each end of the transition. The template approach becomes strained when the geometry between defined sections is not linear — a curved edge taper through a widening, for example — requiring progressively denser section spacing to reduce the approximation error.</p>
-<hh3 id="profile-types">Profile Types</hh3>
-<p>The cross-section profile type differs between the two entities.</p>
-<p><code>IfcSectionedSurface</code> uses <code>IfcOpenCrossProfileDef</code>, an infrastructure-specific profile type introduced in IFC4x3. It defines an open profile as a series of segments radiating from a starting point, each characterized by a width and a slope.</p>
-<table>
-<thead>
-<tr>
-  <th>Attribute</th>
-  <th>Type</th>
-  <th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-  <td><code>HorizontalWidths</code></td>
-  <td><code>IfcBoolean</code></td>
-  <td>If true, <code>Widths</code> are measured horizontally; if false, along the slope</td>
-</tr>
-<tr>
-  <td><code>Widths</code></td>
-  <td><code>LIST [1:?] OF IfcNonNegativeLengthMeasure</code></td>
-  <td>Width of each segment</td>
-</tr>
-<tr>
-  <td><code>Slopes</code></td>
-  <td><code>LIST [1:?] OF IfcPlaneAngleMeasure</code></td>
-  <td>Slope of each segment</td>
-</tr>
-<tr>
-  <td><code>Tags</code></td>
-  <td><code>OPTIONAL LIST [2:?] OF IfcLabel</code></td>
-  <td>Label for each vertex; one more entry than the number of segments</td>
-</tr>
-<tr>
-  <td><code>OffsetPoint</code></td>
-  <td><code>OPTIONAL IfcCartesianPoint</code></td>
-  <td>Starting point; if absent, the profile originates at the alignment</td>
-</tr>
-</tbody>
-</table>
-<p><em>Table 10.1-1 — IfcOpenCrossProfileDef attributes</em></p>
-<p>The profile starts at <code>OffsetPoint</code> (or at the alignment if <code>OffsetPoint</code> is absent) and extends segment by segment. With $N$ segments there are $N+1$ vertices — the starting point plus the far endpoint of each segment. This is enforced by the formal proposition <code>CorrespondingTags</code>, which requires the <code>Tags</code> list to contain exactly one more entry than the <code>Slopes</code> list. A typical half-section for a two-lane road might have three segments: crown to edge of travel path, edge of travel path to shoulder break, and shoulder break to edge of roadway.</p>
-<p><code>IfcSectionedSolidHorizontal</code> uses closed profile types — typically <code>IfcArbitraryClosedProfileDef</code> with an <code>IfcIndexedPolyCurve</code> referencing an <code>IfcCartesianPointList2D</code>. The profile polygon is defined in two dimensions with points listed in counter-clockwise order when viewed from the direction the profile normal points. The <code>IfcCartesianPointList2D</code> entity includes a <code>TagList</code> attribute, introduced in IFC4x3, that assigns a label to each coordinate in the list and enables the stringline mechanism described in Section 10.2.</p>
+<p>Inevitably all roadways encounter other roadways, requiring complex intersection designs that must move smoothly through 3D space. This is where template-based design becomes difficult.</p>
 <hh2 id="102-stringlines">10.2 Stringlines</hh2>
 <p>A stringline is a continuous three-dimensional curve tracing the path of a specific feature — edge of pavement, shoulder break, top of curb — along the full extent of the design. Where the template approach interpolates linearly between section endpoints, a stringline defines the exact trajectory of a tagged cross-section point, independent of section density.</p>
-<p>In IFC, stringlines are represented as <code>IfcOffsetCurveByDistances</code> instances. The <code>Tag</code> attribute on <code>IfcOffsetCurveByDistances</code> — an optional <code>IfcLabel</code> — connects a guide curve to the cross-section points that carry the matching tag value. A tagged point in a cross-section profile is constrained to follow the guide curve carrying the same tag.</p>
+<p>In IFC, stringlines are represented as <code>IfcOffsetCurveByDistances</code> instances. The <code>Tag</code> attribute on <code>IfcOffsetCurveByDistances</code> connects a guide curve to the cross-section points that carry the matching tag value. A tagged point in a cross-section profile is constrained to follow the guide curve carrying the same tag. Throughout this chapter, the industry term <em>stringline</em> and the IFC term <em>guide curve</em> refer to the same construct — a tagged <code>IfcOffsetCurveByDistances</code> — and are used interchangeably.</p>
 <p>The tag mechanism differs between the two entities:</p>
 <ul>
 <li>For <code>IfcSectionedSurface</code>, tags are carried by <code>IfcOpenCrossProfileDef.Tags</code> — a list of $N+1$ labels, one per vertex of the open profile. Each vertex can be independently associated with a guide curve.</li>
@@ -4820,17 +4769,23 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 </table>
 <p><em>Table 10.3-1 — IfcSectionedSurface attributes</em></p>
 <p>The surface is generated by sweeping the cross-sections between the defined <code>CrossSectionPositions</code>. It does not extend to the head or tail of the <code>Directrix</code> — the surface is bounded by its first and last cross-section positions. The <code>CrossSectionPositions</code> and <code>CrossSections</code> lists must be equal in length. Figure 10.3-1 illustrates a sectioned surface through a superelevation transition, showing how the open cross-section profile varies along the directrix.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.3-1_Superelevation_Transition.png" alt="" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.3-1_Superelevation_Transition.png" alt="" /></p>
 <p><em>Figure 10.3-1 — Sectioned surface illustrating a superelevation transition</em></p>
-<p>The example file <a href="examples/Superelevation.ifc"><code>Superelevation.ifc</code></a> is a working IFC model of this configuration.</p>
 <hh3 id="1031-breaklines">10.3.1 Breaklines</hh3>
 <p>In the context of <code>IfcSectionedSurface</code>, a breakline is a line along the surface where the cross-slope changes abruptly — an edge of travel path, a shoulder break, the face of a curb. This usage is distinct from DTM breaklines, which force TIN triangulation to honor a feature edge. Here the term describes a topological feature of the swept surface itself: a ridge or valley line where adjacent surface facets meet at a non-tangent angle.</p>
-<p>Breaklines arise from the tag mechanism when consecutive cross-sections have different numbers of segments. A widening lane introduces a new vertex at the distance along the directrix where the widening begins. Tags identify which vertices in one section correspond to vertices in the next, even when the two sections have different segment counts. A vertex present in one section but absent in the adjacent section causes the surface to initiate or terminate at that longitudinal position, which is the geometric definition of a breakline in this context. Figure 10.3.1-1 illustrates a sectioned surface with breaklines resulting from cross-section topology changes along the route.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.3.1-1_Sectioned_Surface_with_Breaklines.png" alt="" /></p>
-<p><em>Figure 10.3.1-1 — Sectioned surface with breaklines at cross-section topology changes. Conceptually based on IFC Figure 8.8.3.37.B; unlike that figure, which shows only a widening, this figure shows the surface widening and returning to its original width.</em></p>
-<p>The example file <a href="examples/IfcSectionedSurface_with_branching.ifc"><code>IfcSectionedSurface_with_branching.ifc</code></a> is a working IFC model of this configuration.</p>
-<p>Although the IFC specification does not state this explicitly, the <code>Width</code> of an <code>IfcOpenCrossProfileDef</code> segment must be zero at the distance along the directrix where a breakline initiates or terminates. When a new feature vertex first appears — the start of a widening lane, for example — the cross-section at that distance must include the new tagged vertex with a zero-width segment. This zero-width entry establishes the vertex at a defined position without introducing any lateral extent, allowing the geometry to grow from that point as subsequent sections carry non-zero widths. Without a zero-width segment at the breakpoint position, the surface has no defined starting position for the new feature and the geometry is ambiguous. IFC Figure 8.8.3.37.B — <em>Sectioned surface with branching longitudinal breaklines</em> — illustrates this pattern for a surface where breaklines branch from the main cross-section.</p>
+<p>Breaklines arise from the tag mechanism when consecutive cross-sections have different numbers of segments. A widening lane introduces a new vertex at the distance along the directrix where the widening begins. Tags identify which vertices in one section correspond to vertices in the next, even when the two sections have different segment counts. A vertex present in one section but absent in the adjacent section causes the surface to initiate or terminate at that longitudinal position, which is the geometric definition of a breakline in this context. <code>IfcOpenCrossProfileDef</code> is the only profile that supports breaklines. Figure 10.3.1-1 illustrates a sectioned surface with breaklines resulting from cross-section topology changes along the route.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.3.1-1_Sectioned_Surface_with_Breaklines.png" alt="" /></p>
+<p><em>Figure 10.3.1-1 — Sectioned surface with breaklines at cross-section topology changes. (source bSI)</em></p>
+<p>Figure 10.3.1-2 shows a sectioned surface inspired by Figure 10.3.1-1 with both a widening and narrowing of the surface.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.3.1-2_Sectioned_Surface_with_Breaklines.png" alt="" /></p>
+<p><em>Figure 10.3.1-2 — Sectioned surface with breaklines at cross-section topology changes. This figure shows the surface widening and returning to its original width.</em></p>
+<p>Although the IFC specification does not state this explicitly, the <code>Slope</code> and <code>Width</code> of an <code>IfcOpenCrossProfileDef</code> segment must be zero at the distance along the directrix where a breakline initiates or terminates. When a new feature vertex first appears — the start of a widening lane, for example — the cross-section at that distance must include the new tagged vertex with a zero-width segment. In Figure 10.3.1-1, this is why points B and D coincide in the second cross-section: the zero-width segment collapses those tagged vertices to the same position, establishing the breakline origin without introducing lateral extent. Without a zero-width segment at the breakpoint position, the surface has no defined starting position for the new feature and the geometry is ambiguous. The branching example in §10.6.2 illustrates this pattern for a surface where breaklines branch from the main cross-section.</p>
 <p>The tag mechanism serves both breaklines and stringlines simultaneously. A tag on a profile vertex identifies that vertex's correspondence across sections with different topology and, when a matching <code>IfcOffsetCurveByDistances</code> guide curve exists, controls the vertex's trajectory between sections. The two functions — topological correspondence and geometric guidance — share the same tag infrastructure.</p>
+<hh3 id="1032-stringlines">10.3.2 Stringlines</hh3>
+<p>Within <code>IfcSectionedSurface</code>, stringlines are implemented through the <code>Tags</code> attribute of <code>IfcOpenCrossProfileDef</code>. This attribute holds a list of $N+1$ labels — one per vertex of the open profile, where $N$ is the number of segments. An <code>IfcOffsetCurveByDistances</code> guide curve whose <code>Tag</code> matches one of these vertex labels takes control of that vertex's trajectory along the surface. Where a guide curve governs a vertex, the vertex position at any distance along the directrix is read from the guide curve rather than interpolated from the authored cross-section positions.</p>
+<p>The <code>OffsetPoint</code> attribute of <code>IfcOpenCrossProfileDef</code> positions the first tagged vertex in the directrix's local coordinate system. Subsequent vertices are derived from there by accumulating the segment <code>Widths</code> and <code>Slopes</code>. All tagged vertices participate in the matching process independently: a surface can have some vertices guided by offset curves and others governed by linear interpolation between authored sections.</p>
+<p>Because guide curves carry the intermediate geometry, very few authored cross-sections are needed in practice. A widening surface that spans 200 m of alignment can be fully described by two cross-sections — one at the start, one at the end — with the edge guide curves encoding the widening trajectory between them. The same surface described purely by template interpolation would require progressively denser section spacing to approximate the same edge path.</p>
+<p>For a guide curve to be well-defined relative to the surface, its <code>BasisCurve</code> must be the same curve as the surface <code>Directrix</code>. The <code>OffsetLateral</code> and <code>OffsetVertical</code> values in the guide curve's <code>IfcPointByDistanceExpression</code> entries position the tagged vertex laterally and vertically from the directrix at each defined distance, and those values are linearly interpolated between explicitly defined points. When a guide curve's <code>BasisCurve</code> differs from the surface <code>Directrix</code>, the distance parameterization is inconsistent and the tag-matching interpolation is undefined — a specification gap discussed further in §10.5.</p>
 <hh2 id="104-ifcsectionedsolidhorizontal">10.4 IfcSectionedSolidHorizontal</hh2>
 <p><code>IfcSectionedSolidHorizontal</code> defines a solid by sweeping closed cross-sections along a directrix curve. It follows the same fundamental structure as <code>IfcSectionedSurface</code> but produces a volumetric solid bounded by the swept faces and the cross-section planes at each end.</p>
 <table>
@@ -4886,8 +4841,34 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <p>This is incorrect. The profile is defined in a 2D XY plane and has a normal — the axis perpendicular to that plane — which determines how the profile is oriented in 3D space when swept along the directrix. It is that normal, not the profile X axis, that is the direction of <code>RefDirection</code>. When <code>RefDirection</code> is omitted from <code>IfcAxis2PlacementLinear</code> it defaults to the curve tangent direction. If the profile X axis were to align with the tangent, the profile plane would lie parallel to the sweep direction rather than perpendicular to it, producing degenerate geometry. The correct behavior is that the profile normal aligns with <code>RefDirection</code> (or the curve tangent when <code>RefDirection</code> is absent), placing the profile face perpendicular to the sweep path.</p>
 <p>The specification for <code>IfcSectionedSurface</code> states this correctly: &quot;the profile normal is derived from the associated <code>IfcAxis2PlacementLinear</code>.&quot; The <code>IfcSectionedSolidHorizontal</code> documentation should be read consistently with the <code>IfcSectionedSurface</code> text. This error is documented in buildingSMART issues <a href="https://github.com/buildingSMART/IFC4.x-IF/issues/147">IFC4.x-IF #147</a> and <a href="https://github.com/buildingSMART/IFC4.x-development/issues/1010">IFC4.x-development #1010</a>.</p>
 <hh3 id="validation-service-ifcoffsetcurvebydistances-must-be-referenced-by-a-rooted-entity">Validation Service: IfcOffsetCurveByDistances Must Be Referenced by a Rooted Entity</hh3>
-<p>The buildingSMART validation service enforces rule <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a>, which requires all resource entities to be referenced by a rooted entity. <code>IfcOffsetCurveByDistances</code> is a resource entity. Although guide curves are geometrically referenced by a surface or solid, which in turn is referenced by a rooted entity, the validation service does not trace this indirect path and flags guide curves not directly associated with a rooted entity.</p>
-<p>In practice, each <code>IfcOffsetCurveByDistances</code> guide curve must be directly associated with an <code>IfcAlignment</code>. If the model does not already contain an alignment whose geometry includes the guide curve naturally, a placeholder alignment is required. Each such placeholder alignment must also have stationing defined, or additional validation warnings will be raised.</p>
+<p>As discussed in <a href="#52-offset-curves-and-ifcalignment">§5.2</a>, <code>IfcOffsetCurveByDistances</code> is a resource entity and must be directly associated with a rooted entity to satisfy validation rule <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a>. This requirement has an extra complication in the guide curve context: although a guide curve is geometrically referenced through the surface or solid (itself a rooted entity), the validation service does not trace that indirect path and flags guide curves not directly associated with a rooted entity.</p>
+<p>In practice, each <code>IfcOffsetCurveByDistances</code> guide curve must be assigned as the shape representation of an <code>IfcAlignment</code>. If the model does not already contain an alignment that naturally owns the guide curve, a placeholder alignment must be created for this purpose. Each such placeholder alignment must also have stationing defined, or additional validation warnings will be raised.</p>
+<hh2 id="106-example-models">10.6 Example Models</hh2>
+<p>Six example models illustrate the concepts of this chapter in progressively more complex configurations. The first two demonstrate <code>IfcSectionedSurface</code> without stringlines; the remaining four form a series that explores stringline authoring approaches and their trade-offs.</p>
+<hh3 id="1061-superelevation">10.6.1 Superelevation</hh3>
+<p>The file <a href="examples/Superelevation.ifc"><code>Superelevation.ifc</code></a> is a template-based <code>IfcSectionedSurface</code> illustrating a superelevation transition, shown in Figure 10.3-1. The surface is defined by cross-sections at discrete positions along a <code>Directrix</code>, with linear interpolation between them. No guide curves are used. This is the simplest configuration and produces adequate geometry when the variation between sections is itself linear — which is the case for uniform superelevation rotation. The model also includes <code>IfcReferent</code> instances marking the superelevation events along the alignment.</p>
+<hh3 id="1062-sectioned-surface-with-branching">10.6.2 Sectioned Surface with Branching</hh3>
+<p>The file <a href="examples/IfcSectionedSurface_with_branching.ifc"><code>IfcSectionedSurface_with_branching.ifc</code></a> is shown in Figure 10.3.1-2. It is based on the breakline example given in the <code>IfcSectionedSurface</code> documentation, enhanced to show both a widening and a subsequent narrowing of the section — a median or auxiliary lane that emerges from the main roadway and then returns.</p>
+<hh3 id="1063-stringlines-guide-curves-as-resource-entities">10.6.3 Stringlines — Guide Curves as Resource Entities</hh3>
+<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_as_resource_entities.ifc"><code>IfcSectionedSurface_with_stringlines_as_resource_entities.ifc</code></a> is the baseline stringline example. The directrix is a 200 m straight alignment with a flat vertical profile. The symmetric open profile has two segments and three tagged vertices: <code>A</code> (right edge), <code>B</code> (centerline), and <code>C</code> (left edge), each with a corresponding <code>IfcOffsetCurveByDistances</code> guide curve sharing the same basis curve as the surface directrix.</p>
+<p>Only two cross-sections are authored — one at each end of the surface. The guide curves carry all intermediate geometry. Guide curves A and C define a variable-width surface: both edges begin at ±30 m, widen to ±45 m at the 100 m midpoint, and return to ±30 m at 200 m. Guide curve B holds the centerline at a constant zero offset throughout. Without the guide curves, linear interpolation between the two end sections would produce a uniform 30 m width along the full 200 m — the guide curves are what create the widening.</p>
+<p>Note that <code>Main-Line</code> cannot itself serve as the guide curve for the centerline vertex: <code>IfcAlignment</code> does not have a <code>Tag</code> attribute. Guide curve B is therefore an <code>IfcOffsetCurveByDistances</code> with a zero lateral offset from <code>Main-Line</code>, existing solely to carry the tag <code>&quot;B&quot;</code> on behalf of the alignment.</p>
+<p><strong>Validation note.</strong> The three <code>IfcOffsetCurveByDistances</code> instances in this model are bare resource entities: they are referenced by the surface but not assigned as representations of any rooted entity. The IFC validation service flags this as an <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a> violation. The model is geometrically correct but does not conform to industry best-practice validation rules.</p>
+<hh3 id="1064-stringlines-guide-curves-as-alignments">10.6.4 Stringlines — Guide Curves as Alignments</hh3>
+<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc</code></a> contains the same geometry as v1 but wraps each guide curve as an <code>IfcAlignment</code> instance — <code>A-line</code>, <code>B-line</code>, and <code>C-line</code> — aggregated under the project. The <code>Tag</code> is set on the <code>IfcOffsetCurveByDistances</code> carried by each alignment's shape representation. This structure satisfies the <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a> rooted-entity requirement and eliminates the validation service warning from v1.</p>
+<p>Because all three guide curves in this example (and in v1) share the same <code>BasisCurve</code> as the surface <code>Directrix</code>, tag matching is scoped to that shared basis curve. Tags <code>&quot;A&quot;</code>, <code>&quot;B&quot;</code>, and <code>&quot;C&quot;</code> need only be unique within the set of guide curves on <code>Main-Line</code> — they do not need to be globally unique across the model. The IFC specification does not state this scoping rule explicitly, but it follows from the interpretation discussed in §10.5.</p>
+<hh3 id="1065-stringlines-independent-edge-alignments">10.6.5 Stringlines — Independent Edge Alignments</hh3>
+<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc</code></a> takes a different approach: the edge stringlines are derived from independent <code>IfcAlignment</code> instances whose geometry is circular arcs, rather than parametric offsets from the centerline. <code>Main-Line</code> is a 200 m straight alignment. <code>Left_Edge</code> and <code>Right_Edge</code> are 150 m circular arcs (radius 300 m) starting at ±30 m from the centerline. The guide curves for tags A and C are zero-offset curves from these arc alignments; the guide curve for tag B is a zero-offset from <code>Main-Line</code>. As previously discussed, the alignments themselves cannot carry tags, so zero-offset <code>IfcOffsetCurveByDistances</code> instances are used.</p>
+<p>Because the guide curves for tags A and C have a different <code>BasisCurve</code> than the surface <code>Directrix</code>, the basis-curve scoping rule from §10.5 no longer provides a natural disambiguation boundary. There is no shared parameterization to define which guide curves belong to which surface, so tags must be treated as globally unique across the entire model to avoid ambiguity. The IFC specification is silent on this distinction — it neither requires global uniqueness nor defines when surface-scoped uniqueness is sufficient.</p>
+<p>This configuration is the most conceptually faithful to the idea of stringlines — each edge path is an independent geometric entity — but it exposes two further specification gaps. First, <code>Left_Edge</code> and <code>Right_Edge</code> are 150 m long while the surface directrix is 200 m long. The guide curves' parameterization ends before the surface does, and the IFC specification's implicit extension rule (the last offset value continues to the end of the basis curve) does not resolve the inconsistency because the guide curves' basis curves are different from the surface directrix. Second, the cross-section at distance 200 m authors a width of 60 m each side, but the circular arc guide curves would position the edge vertices at a different lateral distance at that station. The specification does not state which governs — the authored section or the guide curve.</p>
+<hh3 id="1066-stringlines-dense-section-approximation">10.6.6 Stringlines — Dense Section Approximation</hh3>
+<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc"><code>IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc</code></a> reproduces the same edge geometry as v3 — a straight centerline with curved edges defined by 300 m radius arcs — but using the template approach rather than guide curves. Cross-section widths at five evenly-spaced stations are computed analytically from the arc geometry, and the resulting <code>IfcOpenCrossProfileDef</code> instances embed the exact width at each station. The edge alignment instances from v3 are retained in the model to provide a visual reference. Figure 10.6.6-1 shows the resulting surface; the mesh lines mark each cross-section boundary and the curved overall shape reflects the analytically computed widths.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.6.6-1_Dense_Section_Approximation.png" alt="" /></p>
+<p><em>Figure 10.6.6-1 — Sectioned surface with five cross-sections approximating curved edge geometry. Mesh lines mark cross-section boundaries; the edge paths between them are piecewise-linear.</em></p>
+<p>Figure 10.6.6-2 zooms in on the far-right corner of the surface, where the gap between the exact circular arc guide curve (shown in orange) and the piecewise-linear surface edge is most visible. With only five sections, the approximation error is perceptible at the scale of the model.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.6.6-2_Edge_Approximation_Gap.png" alt="" /></p>
+<p><em>Figure 10.6.6-2 — Zoomed view of the far-right corner showing the gap between the piecewise-linear surface edge and the exact circular arc guide curve (orange). The error is largest at the midpoint between cross-sections.</em></p>
+<p>This example illustrates the trade-off between the two approaches. The template approach with dense sections can approximate curved edge geometry to any desired tolerance, but requires explicit computation of profile widths at each station and produces a model with many cross-section instances. The stringline approach of v3 requires only two sections and lets the guide curves carry the geometry exactly — but leaves the specification gaps noted in §10.6.5 unresolved.</p>
 
 <div class="chapter-sep"></div>
 <a id="11_Precision_and_Tolerance"></a>
@@ -4923,7 +4904,7 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 </table>
 <p><em>Table 11.0-1 — IfcCurveSegment transition codes</em></p>
 <p>Figure 11.0-1 illustrates the various transition types.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/images/ifctransitioncode.gif" alt="IfcTransitionCode" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/ifctransitioncode.gif" alt="IfcTransitionCode" /></p>
 <p><em>Figure 11.0-1 - Illustration of segment transition types</em></p>
 <p>These transition codes declare intent, not guarantee. Adjacent segment end and start points may not exactly line up in position, gradient, or curvature for several reasons:</p>
 <ul>
@@ -5070,7 +5051,7 @@ three subfolders that mirror the alignment type structure:</p>
 <p>Figure 12.2.5-1 shows a representative example: a Helmert arc-to-arc transition from
 R = +300 m to R = +1000 m. The upper panel shows the horizontal plan view; the lower
 panel shows the corresponding cant profile.</p>
-<p><img src="file:///D:/IFC-Alignment-Geometry-Implementation-Guide/testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_1_Meter.svg" alt="Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)" /></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_1_Meter.svg" alt="Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)" /></p>
 <p><strong>Figure 12.2.5-1</strong> — Combined horizontal and cant plot for <code>Cant_HelmertCurve_100.0_300_1000_1_Meter</code>.</p>
 <hr />
 <hh2 id="123-test-cases">12.3 Test Cases</hh2>
@@ -5307,7 +5288,7 @@ types, and case counts.</p>
 </tbody>
 </table>
 <hh3 id="1234-real-world-alignments">12.3.4 Real-World Alignments</hh3>
-<p>Two real-world alignments are provided as 3D test cases under <code>testset/RealWorldAlignments/</code>. Unlike the
+<p>Three real-world alignments are provided as 3D test cases under <code>testset/RealWorldAlignments/</code>. Unlike the
 single-component cases in Sections 12.3.1–12.3.3, these exercise the complete evaluation
 pipeline — from combined horizontal, vertical, and (where present) cant layouts — and
 produce full 3D placement matrices at each sample point.</p>
@@ -5384,8 +5365,48 @@ complete <code>IfcSegmentedReferenceCurve</code> evaluation pipeline. The alignm
 </tr>
 </tbody>
 </table>
+<hh4 id="exit-turnout-huni-valley-station">Exit Turnout — Huni Valley Station</hh4>
+<p>The third case is the mainline alignment of an exit turnout at Huni Valley Station on a
+Swiss railway line. The IFC file was created using IfcOpenShell from LandXML source data.
+It is a full 3D railway alignment including horizontal, vertical, and cant layouts,
+exercising the complete <code>IfcSegmentedReferenceCurve</code> evaluation pipeline. The alignment
+runs from station 84+521.000 to 88+524.656 (approximately 4003.656 m) and is expressed in
+SI meters with LV95 coordinates (Swiss national coordinate system). The horizontal layout
+consists of clothoid transitions and circular arcs; the vertical layout is a single flat
+constant-gradient segment; and the cant layout uses linear transitions and constant-cant
+segments with a rail head distance of 1.0 m.</p>
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>IFC file</td>
+  <td><code>testset/RealWorldAlignments/Exit_Turnout_Huni_Valley_Station.ifc</code></td>
+</tr>
+<tr>
+  <td>Reference coordinates</td>
+  <td><code>testset/RealWorldAlignments/Exit_Turnout_Huni_Valley_Station.csv</code></td>
+</tr>
+<tr>
+  <td>Alignment name</td>
+  <td>Centerline</td>
+</tr>
+<tr>
+  <td>Project unit</td>
+  <td>Meter (LV95)</td>
+</tr>
+<tr>
+  <td>3D curve type</td>
+  <td><code>IfcSegmentedReferenceCurve</code></td>
+</tr>
+</tbody>
+</table>
 <hh4 id="reference-coordinate-format">Reference coordinate format</hh4>
-<p>Both CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
+<p>All three CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
 length. All positions are in project units; direction components are dimensionless. The
 column definitions are given in Section 12.5.2.</p>
 <hr />

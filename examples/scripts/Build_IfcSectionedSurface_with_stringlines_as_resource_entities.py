@@ -1,10 +1,16 @@
-import matplotlib.pyplot as plt
+# Author: Richard Brice, PE
+# Date: 2026-05-20
+# This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
+#
+# Demonstrates IfcSectionedSurface with variable-width stringlines defined as
+# IfcOffsetCurveByDistances resource entities embedded directly in the surface definition,
+# without wrapping them as IfcAlignment instances.
+
+import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
 import ifcopenshell.api.unit
-import ifcopenshell.geom
-import numpy as np
 
 
 def make_angle(slope):
@@ -40,11 +46,9 @@ body = ifcopenshell.api.context.add_context(
 
 ifcopenshell.api.aggregate.assign_object(file,relating_object=project,products=[site,])
 
-crownslope = 0.2
-width = 30.
-
 start_station = 500.
 alignment = ifcopenshell.api.alignment.create(file,"Main-Line",include_vertical=True,start_station=start_station)
+layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 
 segment1 = file.createIfcAlignmentHorizontalSegment(
     StartPoint=file.createIfcCartesianPoint(Coordinates=((0.,0.))),
@@ -55,11 +59,11 @@ segment1 = file.createIfcAlignmentHorizontalSegment(
     PredefinedType = "LINE"
 )
 
-layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 end = ifcopenshell.api.alignment.create_layout_segment(file,layout,segment1)
 
+vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
 
-vsegment1 = file.createIfcAlignmentVerticalSegment(
+segment1 = file.createIfcAlignmentVerticalSegment(
     StartDistAlong=0.,
     HorizontalLength=200.,
     StartHeight=0.,
@@ -68,56 +72,9 @@ vsegment1 = file.createIfcAlignmentVerticalSegment(
     PredefinedType = "CONSTANTGRADIENT"
 )
 
-vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
-ifcopenshell.api.alignment.create_layout_segment(file,vlayout,vsegment1)
-
-left_alignment = ifcopenshell.api.alignment.create(file,"Left_Edge",include_vertical=True)
-
-segment1 = file.createIfcAlignmentHorizontalSegment(
-    StartPoint=file.createIfcCartesianPoint(Coordinates=((0.,width))),
-    StartDirection=0.0,
-    StartRadiusOfCurvature=300.,
-    EndRadiusOfCurvature=300.,
-    SegmentLength=150.,
-    PredefinedType = "CIRCULARARC"
-)
-
-layout = ifcopenshell.api.alignment.get_horizontal_layout(left_alignment)
-end = ifcopenshell.api.alignment.create_layout_segment(file,layout,segment1)
-
-vsegment1 = file.createIfcAlignmentVerticalSegment(
-    StartDistAlong=0.,
-    HorizontalLength=200.,
-    StartHeight=-width*crownslope/2,
-    StartGradient=0.,
-    EndGradient=0.,
-    PredefinedType = "CONSTANTGRADIENT"
-)
-
-vlayout = ifcopenshell.api.alignment.get_vertical_layout(left_alignment)
-ifcopenshell.api.alignment.create_layout_segment(file,vlayout,vsegment1)
-
-right_alignment = ifcopenshell.api.alignment.create(file,"Right_Edge",include_vertical=True)
-
-segment1 = file.createIfcAlignmentHorizontalSegment(
-    StartPoint=file.createIfcCartesianPoint(Coordinates=((0.,-width))),
-    StartDirection=0.0,
-    StartRadiusOfCurvature=-300.,
-    EndRadiusOfCurvature=-300.,
-    SegmentLength=150.,
-    PredefinedType = "CIRCULARARC"
-)
-
-layout = ifcopenshell.api.alignment.get_horizontal_layout(right_alignment)
-end = ifcopenshell.api.alignment.create_layout_segment(file,layout,segment1)
-
-vlayout = ifcopenshell.api.alignment.get_vertical_layout(right_alignment)
-ifcopenshell.api.alignment.create_layout_segment(file,vlayout,vsegment1)
-
+end = ifcopenshell.api.alignment.create_layout_segment(file,vlayout,segment1)
 
 basis_curve = ifcopenshell.api.alignment.get_curve(alignment)
-left_curve = ifcopenshell.api.alignment.get_curve(left_alignment)
-right_curve = ifcopenshell.api.alignment.get_curve(right_alignment)
 
 road = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(),Name="Road1")
 ifcopenshell.api.aggregate.assign_object(file,relating_object=site,products=[road,])
@@ -125,39 +82,30 @@ ifcopenshell.api.aggregate.assign_object(file,relating_object=site,products=[roa
 road_part = file.createIfcRoadPart(GlobalId=ifcopenshell.guid.new(),Name="RoadPart1",UsageType="LONGITUDINAL")
 ifcopenshell.api.aggregate.assign_object(file,relating_object=road,products=[road_part,])
 
-alignment_a = ifcopenshell.api.alignment.create_as_offset_curve(file,name="A-line",offsets=[
-                                                          file.createIfcPointByDistanceExpression(BasisCurve=left_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=0.,OffsetVertical=0.)
-                                                        ])
-alignment_b = ifcopenshell.api.alignment.create_as_offset_curve(file,name="B-line",offsets=[
-                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=0.,OffsetVertical=0.)
-                                                        ])
-alignment_c = ifcopenshell.api.alignment.create_as_offset_curve(file,name="C-line",offsets=[
-                                                          file.createIfcPointByDistanceExpression(BasisCurve=right_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=0.,OffsetVertical=0.)
-                                                        ])
+crownslope = 0.2
+width = 30.
 
-offset_curve_a = ifcopenshell.api.alignment.get_curve(alignment_a)
-offset_curve_b = ifcopenshell.api.alignment.get_curve(alignment_b)
-offset_curve_c = ifcopenshell.api.alignment.get_curve(alignment_c)
+offset_curve_a = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve,OffsetValues=[
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=width,OffsetVertical=-width*crownslope),
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(100.),OffsetLateral=1.5*width,OffsetVertical=-1.5*width*crownslope),
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(200.),OffsetLateral=width,OffsetVertical=-width*crownslope)
+                                                            ], Tag="A")
 
-offset_curve_a.Tag = "A"
-offset_curve_b.Tag = "B"
-offset_curve_c.Tag = "C"
+offset_curve_b = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve,OffsetValues=[
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=0.,OffsetVertical=0.),
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(100.),OffsetLateral=0.,OffsetVertical=0.),
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(200.),OffsetLateral=0.,OffsetVertical=0.),
+                                                        ], Tag="B")
+offset_curve_c = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve,OffsetValues=[
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=-width,OffsetVertical=-width*crownslope),
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(100.),OffsetLateral=-1.5*width,OffsetVertical=-1.5*width*crownslope),
+                                                          file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(200.),OffsetLateral=-width,OffsetVertical=-width*crownslope),
+                                                        ], Tag="C")
 
-
-
-cs1 = file.createIfcOpenCrossProfileDef(
+cs = file.createIfcOpenCrossProfileDef(
         ProfileType="CURVE",
         HorizontalWidths=True,
         Widths=[width,width],
-        Slopes=[make_angle(-crownslope),make_angle(crownslope)],
-        Tags=["A","B","C"],
-        OffsetPoint=file.createIfcCartesianPoint((width,-width*crownslope))
-    )
-
-cs2 = file.createIfcOpenCrossProfileDef(
-        ProfileType="CURVE",
-        HorizontalWidths=True,
-        Widths=[2*width,2*width],
         Slopes=[make_angle(-crownslope),make_angle(crownslope)],
         Tags=["A","B","C"],
         OffsetPoint=file.createIfcCartesianPoint((width,-width*crownslope))
@@ -169,7 +117,7 @@ op2 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceE
 surface = file.createIfcSectionedSurface(
     Directrix = basis_curve,
     CrossSectionPositions=[op1,op2],
-    CrossSections=[cs1,cs2]
+    CrossSections=[cs,cs]
 )
 
 
@@ -191,5 +139,6 @@ proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name
 ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[proxy])
 
 
-file.write("D:/IFC-Alignment-Geometry-Implementation-Guide/examples/IfcSectionedSurface_with_stringlines_v3.ifc")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSurface_with_stringlines_as_resource_entities.ifc")
+file.write(output_path)
 print("Done!")

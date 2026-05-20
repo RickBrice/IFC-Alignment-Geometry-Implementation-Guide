@@ -1,10 +1,15 @@
-import matplotlib.pyplot as plt
+# Author: Richard Brice, PE
+# Date: 2026-05-20
+# This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
+#
+# Same variable-width stringline surface as v1, but each offset curve is wrapped as a
+# separate IfcAlignment to satisfy the IFC rooted-entity validation requirement (IFC105).
+
+import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
 import ifcopenshell.api.unit
-import ifcopenshell.geom
-import numpy as np
 
 
 def make_angle(slope):
@@ -79,22 +84,31 @@ ifcopenshell.api.aggregate.assign_object(file,relating_object=road,products=[roa
 crownslope = 0.2
 width = 30.
 
-offset_curve_a = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve,OffsetValues=[
+alignment_a = ifcopenshell.api.alignment.create_as_offset_curve(file,name="A-line",offsets=[
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=width,OffsetVertical=-width*crownslope),
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(100.),OffsetLateral=1.5*width,OffsetVertical=-1.5*width*crownslope),
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(200.),OffsetLateral=width,OffsetVertical=-width*crownslope)
-                                                            ], Tag="A")
-
-offset_curve_b = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve,OffsetValues=[
+                                                        ])
+alignment_b = ifcopenshell.api.alignment.create_as_offset_curve(file,name="B-line",offsets=[
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=0.,OffsetVertical=0.),
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(100.),OffsetLateral=0.,OffsetVertical=0.),
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(200.),OffsetLateral=0.,OffsetVertical=0.),
-                                                        ], Tag="B")
-offset_curve_c = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve,OffsetValues=[
+                                                        ])
+alignment_c = ifcopenshell.api.alignment.create_as_offset_curve(file,name="C-line",offsets=[
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(0.),OffsetLateral=-width,OffsetVertical=-width*crownslope),
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(100.),OffsetLateral=-1.5*width,OffsetVertical=-1.5*width*crownslope),
                                                           file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(200.),OffsetLateral=-width,OffsetVertical=-width*crownslope),
-                                                        ], Tag="C")
+                                                        ])
+
+offset_curve_a = ifcopenshell.api.alignment.get_curve(alignment_a)
+offset_curve_b = ifcopenshell.api.alignment.get_curve(alignment_b)
+offset_curve_c = ifcopenshell.api.alignment.get_curve(alignment_c)
+
+offset_curve_a.Tag = "A"
+offset_curve_b.Tag = "B"
+offset_curve_c.Tag = "C"
+
+
 
 cs = file.createIfcOpenCrossProfileDef(
         ProfileType="CURVE",
@@ -133,5 +147,6 @@ proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name
 ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[proxy])
 
 
-file.write("D:/IFC-Alignment-Geometry-Implementation-Guide/examples/IfcSectionedSurface_with_stringlines_v1.ifc")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc")
+file.write(output_path)
 print("Done!")

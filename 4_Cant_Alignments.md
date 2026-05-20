@@ -105,8 +105,7 @@ Cant segments are evaluated in a two-dimensional "distance along, deviating elev
 
 Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation).
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p$
@@ -124,8 +123,7 @@ X_p.z & Y_p.z & Z_p.z & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start - $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start - $M_{PCS}$
 Compute the deviating elevation $D_s = D(s_0)$ and the slope angle $\theta_s = \tan^{-1}(D'(s_0))$.
 
 Compute the cross slope
@@ -151,8 +149,7 @@ RefDir_{pcs}.z & Y_{pcs}.z & Axis_{pcs}.z & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate the parent curve at the point under consideration, $\ell$ - $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at the point under consideration, $\ell$ - $M_{PC\ell}$
 This step follows the same calculations as Step 2, except $D$ and $D'$ are evaluated at $\ell$.
 
 The resulting matrix is
@@ -164,8 +161,7 @@ RefDir_{\ell}.z & Y_{\ell}.z & Axis_{\ell}.z & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 The cant frame at $\ell$ is obtained by applying the incremental change in the parent curve — from the trim start to $\ell$ — to the curve segment placement. Because the 4×4 matrices encode both orientation and parameter-space coordinates (distance along, deviating elevation) in column 4, the rotation and translation must be computed separately to prevent the rotation from acting on the position coordinates.
 
 **Rotation**
@@ -198,8 +194,7 @@ R_c & \mathbf{T}_c \\
 
 Step 5 is performed immediately for this point before moving to the next $\ell$.
 
-**Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
-
+#### Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix
 The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $\ell$ along the `IfcCompositeCurve`) and the vertical matrix $M_v$ (evaluated at the same $\ell$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.
 
 Construct $M'_v$ as described in Section 3.2.
@@ -290,9 +285,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -306,8 +301,7 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 Compute the placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (1,\ 0,\ 0)$
 
 $\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
@@ -321,8 +315,7 @@ $$M_{CSP} = \begin{bmatrix}
         0 &         0 &         0 &         1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $s_0 = 0,\ D(0) = 0\ m,\ D'(0) = 0,\ \theta_s = 0$
 
 For constant cant $\Delta D = 0$, so $\phi(s_0) = \phi_s = \phi_e = 1.463926346$.
@@ -344,8 +337,7 @@ $$M_{PCS} = \begin{bmatrix}
         0 &         0 &         0 &         1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 $D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_\ell = 0$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
@@ -363,8 +355,7 @@ $$M_{PC\ell} = \begin{bmatrix}
         0 &         0 &         0 &         1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 $$R_{CSP} = \begin{bmatrix} 
         1 &         0 &         0 \\
@@ -498,9 +489,9 @@ $$D'(0\ m) = (100\ m)^{2}\tfrac{-3535.533906}{\left| -3535.533906^{3} \right|} =
 
 $$\theta_0 = tan^{-1}(-0.0008) = -0.00079999$$
 
-$dx_x = cos(\theta_0) = 0.999999680$
+$dx_x = \cos(\theta_0) = 0.999999680$
 
-$dy_x = sin(\theta_0) = -0.000799999744$
+$dy_x = \sin(\theta_0) = -0.000799999744$
 
 The cross-slope at the start of the segment is
 
@@ -508,9 +499,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -524,8 +515,7 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (0.9999996800,\ -0.000799999744,\ 0)$
 
 $\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
@@ -539,8 +529,7 @@ $$M_{CSP} = \begin{bmatrix}
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $s_0 = 0,\ D(0) = 0\ m,\ D'(0) = -0.0008,\ \theta_s = -0.00079999$
 
 $dx_x = \cos(\theta_s) = \cos(-0.00079999) = 0.999999680$
@@ -551,9 +540,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 $\mathbf{X}_s = (0.999999680,\ -0.000799999744,\ 0)$
 
@@ -572,8 +561,7 @@ $$M_{PCS} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_\ell = -0.00079999$
 
 $\phi_e = \cos^{-1}(\tfrac{0.0}{1.5}) = \tfrac{\pi}{2}$ (both rails level at segment end)
@@ -593,8 +581,7 @@ $$M_{PC\ell} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 
 $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
@@ -744,9 +731,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 ~~~
 #108=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -801,9 +788,9 @@ The cross slope at the end of the first half is
 
 $\phi(50\ m) = \cos^{-1}\left(\tfrac{0.08}{D_{rh}}\right) = \cos^{-1}\left(\tfrac{0.08}{1.5}\right) = 1.517437677$
 
-$dy_z = cos(\phi_s) = cos(1.517437677) = 0.053333333$
+$dy_z = \cos(\phi_s) = \cos(1.517437677) = 0.053333333$
 
-$dz_z = sin(\phi_s) = sin(1.517437677) = 0.998576765$
+$dz_z = \sin(\phi_s) = \sin(1.517437677) = 0.998576765$
 
 The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the second half segment.
 ~~~
@@ -819,8 +806,7 @@ The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the se
 Compute the cant placement matrix for a point $75\ m$ from the start of the curve segment using the algorithm in Section 4.2. $75\ m$ falls in the second half of the Helmert
 transition, $\ell = 75\ m - 50\ m = 25\ m$.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (0.9999987200024576,\ -0.0015999979520039342,\ 0.)$
 
 $\mathbf{Axis}_p = (0.,\ 0.053333333333333337,\ 0.99857676497881498)$
@@ -834,8 +820,7 @@ $$M_{CSP} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $$D_s = D(50\ m) = (50\ m)^{2}\left(\tfrac{1}{(538.6086725\ m)^{3}}(50\ m)^{2} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|}(50\ m) + \tfrac{1}{15625\ m}\right) = 0.16\ m$$
 
 $$D'(s) = D'(50\ m) = (50\ m)^{2}\left( \tfrac{(2)(50\ m)}{(538.6086725\ m)^{3}} + \tfrac{(-883.8834765\ m)}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0016$$
@@ -863,17 +848,16 @@ $$M_{PCS} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 3 — Evaluate the parent curve at $\ell = 25\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 25\ m$ — $M_{PC\ell}$
 Add curve start $25 + 50 = 75\ m$.
 
 $$D_{\ell} = D(75\ m) = (50\ m)^{2}\left(\tfrac{1}{(538.6086725\ m)^{3}}(75\ m)^{2} + \tfrac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|}(75\ m) + \tfrac{1}{15625\ m}\right) = 0.01\ m$$
 
 $$D'_{\ell} = D'(75\ m) = (50\ m)^{2}\left( \tfrac{(2)(75\ m)}{(538.6086725\ m)^{3}} + \tfrac{(-883.8834765\ m)}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0008$$
 
-$dx_x = cos(\theta) = 0.99999968000015360$
+$dx_x = \cos(\theta) = 0.99999968000015360$
 
-$dx_y = sin(\theta) = -0.00079999974400011946$
+$dx_y = \sin(\theta) = -0.00079999974400011946$
 
 $\phi(\ell) = 1.517437677 + \left(\tfrac{\tfrac{\pi}{2} - 1.517437677}{-0.04}\right)(0.01 - 0.08) = 1.5574756139049735$
 
@@ -898,8 +882,7 @@ $$M_{PC\ell} = \begin{bmatrix}
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 
 $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
@@ -993,9 +976,9 @@ $$D_0 = D(0\ m) = (100\ m)^2\left( \tfrac{500\ m}{\left| (500\ m)^{5} \right|}(0
 
 $$D'(0) = 0,\ \theta_0 = 0$$
 
-$dx_x = cos(\theta_0) = 1$
+$dx_x = \cos(\theta_0) = 1$
 
-$dy_x = sin(\theta_0) = 0$
+$dy_x = \sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
@@ -1003,9 +986,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -1019,8 +1002,7 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (1,\ 0,\ 0)$
 
 $\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$
@@ -1034,8 +1016,7 @@ $$M_{CSP} = \begin{bmatrix}
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{{0.16 - 0}}{1.5} \right) = 1.463926346$$
@@ -1059,8 +1040,7 @@ $$M_{PCS} = \begin{bmatrix}
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
-**Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 $D(50\ m) = 0.04\ m$
 
 $D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m) \right) = -0.0012$
@@ -1086,8 +1066,7 @@ $$M_{PC\ell} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 
 $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
@@ -1176,9 +1155,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -1192,8 +1171,7 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (1,\ 0,\ 0)$
 
 $\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
@@ -1207,8 +1185,7 @@ $$M_{CSP} = \begin{bmatrix}
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.463926346$$
@@ -1232,8 +1209,7 @@ $$M_{PCS} = \begin{bmatrix}
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
-**Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_\ell = -0.001256636$
 
 $\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
@@ -1255,8 +1231,7 @@ $$M_{PC\ell} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 
 $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
@@ -1347,9 +1322,9 @@ $$D'(0\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|
 
 $\theta_0 = 0$
 
-$dx_x = cos(\theta_0) = 1$
+$dx_x = \cos(\theta_0) = 1$
 
-$dx_y = sin(\theta_0) = 0$
+$dx_y = \sin(\theta_0) = 0$
 
 The cross-slope at the start of the segment is
 
@@ -1357,9 +1332,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = cos(1.463926346) = 0.106666667$
+$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$
 
-$dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
+$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
@@ -1373,8 +1348,7 @@ $dz_z = sin(\phi_s) = sin(1.463926346) = 0.994294837$
 
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (1,\ 0,\ 0)$
 
 $\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$
@@ -1388,8 +1362,7 @@ $$M_{CSP} = \begin{bmatrix}
                  0 &                  0 &                  0 &                  1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$
 
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.16 - 0}{1.5} \right) = 1.463926346$$
@@ -1413,8 +1386,7 @@ $$M_{PCS} = \begin{bmatrix}
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
-**Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 $D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_\ell = -0.0016$
 
 $\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
@@ -1436,8 +1408,7 @@ $$M_{PC\ell} = \begin{bmatrix}
                    0 &                    0 &                    0 &                    1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 
 $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
@@ -1568,9 +1539,9 @@ $$D(0\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{|(185.93568367635672\
 
 $D'(0) = 0,\ \theta_0 = 0$
 
-$dx_x = cos(\theta) = 1$
+$dx_x = \cos(\theta) = 1$
 
-$dx_y = sin(\theta) = 0$
+$dx_y = \sin(\theta) = 0$
 
 The cross-slope at the start of the segment is
 
@@ -1578,9 +1549,9 @@ $\phi_s = \cos^{-1}\left(\tfrac{D_{sr}-D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\
 
 The cross slope orientation is
 
-$dy_z = cos(\phi_s) = 0.066666667$
+$dy_z = \cos(\phi_s) = 0.066666667$
 
-$dz_z = sin(\phi_s) = 0.997775303$
+$dz_z = \sin(\phi_s) = 0.997775303$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.05,0.));
@@ -1595,8 +1566,7 @@ $dz_z = sin(\phi_s) = 0.997775303$
 
 Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of the curve segment using the algorithm in Section 4.2.
 
-**Step 1 — Form the curve segment placement matrix $M_{CSP}$**
-
+#### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $\mathbf{RefDir}_p = (1,\ 0,\ 0)$
 
 $\mathbf{Axis}_p = (0,\ 0.066519011,\ 0.99778516)$
@@ -1610,8 +1580,7 @@ $$M_{CSP} = \begin{bmatrix}
                   0 &                   0 &                   0 &                   1
 \end{bmatrix}$$
 
-**Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$**
-
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 $s_0 = 0,\ D(0) = 0.05\ m,\ D'(0) = 0,\ \theta_s = 0$
 
 $$\phi_s = \cos^{-1}\left(\tfrac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\tfrac{0.10 - 0.0}{1.5} \right) = 1.504080178$$
@@ -1635,8 +1604,7 @@ $$M_{PCS} = \begin{bmatrix}
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
-**Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$**
-
+#### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 $D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_\ell = -0.00076562$
 
 $\phi_e = cos^{-1}\left(\tfrac{D_{er} - D_{el}}{D_{rh}}\right) = cos^{-1}\left(\tfrac{0.03 - 0.0}{1.5}\right) = 1.550794993$
@@ -1660,8 +1628,7 @@ $$M_{PC\ell} = \begin{bmatrix}
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-**Step 4 — Compute the cant placement matrix $M_c$**
-
+#### Step 4 — Compute the cant placement matrix $M_c$
 **Rotation**
 
 $$R_c = R_{PC\ell} \cdot R_{PCS}^T \cdot R_{CSP}$$
@@ -1717,8 +1684,7 @@ $$M_c = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-**Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix**
-
+#### Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix
 Construct $M'_v$ as described in Section 3.2
 
 $$M'_v =
