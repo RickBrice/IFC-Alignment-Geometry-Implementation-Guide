@@ -1,4 +1,4 @@
-**todo - need to discuss gradient curve end point and how it is redundant with sero length segment and must have the same placement. test vs to see if it catches discrepency between end point snd zero length segment. check ifcopenshell implementation to see if the endpoint is provided**
+**todo - test VS to see if it catches discrepancy between EndPoint and zero-length segment. Check IfcOpenShell implementation to see if EndPoint is provided.**
 # Chapter 3 - Vertical Alignments
 
 ## 3.0 Introduction
@@ -749,7 +749,13 @@ $$M_{3D} = \begin{bmatrix}
 0.0 & 0.0 & 0.0 & 1.0
 \end{bmatrix}$$
 
-## 3.8 Summary and Implementation Checklist
+## 3.8 Zero-Length Closing Segment and `IfcGradientCurve.EndPoint`
+
+The zero-length closing segment requirement described in Section 2.12 applies equally to `IfcGradientCurve`. The final `IfcAlignmentVerticalSegment` nested within `IfcAlignmentVertical` must have `SegmentLength = 0`, and the corresponding geometric counterpart in `IfcGradientCurve` must be a zero-length `IfcCurveSegment` placed at the endpoint of the profile with its tangent direction matching the end grade direction.
+
+`IfcGradientCurve.EndPoint` is an *optional* `IfcCartesianPoint` attribute whose purpose overlaps with the zero-length segment: it encodes the 3D endpoint of the gradient curve, providing the same geometric information as the placement of the zero-length `IfcCurveSegment`. Because `EndPoint` is optional and the zero-length segment is required by the IFC Concept Templates, the zero-length segment is the primary, normative source of the endpoint geometry. When `EndPoint` is present, it must be consistent with the placement of the zero-length closing segment — a discrepancy between the two is a data error. Implementations should not rely on `EndPoint` as a substitute for the zero-length segment, nor assume it will be populated.
+
+## 3.9 Summary and Implementation Checklist
 
 | # | Item | Notes |
 |---|---|---|
@@ -758,3 +764,4 @@ $$M_{3D} = \begin{bmatrix}
 | 3 | Do not rely on `IfcAlignmentVerticalSegment.RadiusOfCurvature` | This attribute is optional and may be absent or inconsistent; always compute the radius from `HorizontalLength`, `StartGradient`, and `EndGradient` |
 | 4 | Treat `IfcPolynomialCurve` coefficients as having implicit units of $\text{Length}^{(1-i)}$ | For a parabolic arc, $A_2$ has implicit units of Length$^{-1}$; evaluate as $y(x) = A_2 x^2 + A_1 x + A_0$ where $x$ is a length |
 | 5 | When forming $M'_v$ for Step 4, zero the distance-along component and swap rows/columns 2 and 3 | This maps elevation from the vertical plane's row 2 to row 3 of the 3D matrix, placing it on the Z axis where $M_h$ expects it |
+| 6 | Include a zero-length `IfcCurveSegment` at the end of `IfcGradientCurve`; treat `IfcGradientCurve.EndPoint` as secondary | The zero-length segment is required by the IFC Concept Templates and is the normative endpoint; `EndPoint` is optional — if present, it must agree with the zero-length segment placement |

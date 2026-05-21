@@ -1,4 +1,4 @@
-**todo - need to discuss segmented curve end point and how it is redundant with sero length segment and must have the same placement. test vs to see if it catches discrepency between end point snd zero length segment. check ifcopenshell implementation to see if the endpoint is provided**
+**todo - test VS to see if it catches discrepancy between EndPoint and zero-length segment. Check IfcOpenShell implementation to see if EndPoint is provided.**
 # Chapter 4 - Cant Alignments
 
 ## 4.0 Introduction
@@ -1891,7 +1891,13 @@ Both approaches give the same result, however, a serious problem emerges if the 
 
 *Table 4.11-2 — Comparison of deviating elevation results*
 
-## 4.12 Summary and Implementation Checklist
+## 4.12 Zero-Length Closing Segment and `IfcSegmentedReferenceCurve.EndPoint`
+
+The zero-length closing segment requirement described in Section 2.12 applies equally to `IfcSegmentedReferenceCurve`. The final `IfcAlignmentCantSegment` nested within `IfcAlignmentCant` must have `SegmentLength = 0`, and the corresponding geometric counterpart in `IfcSegmentedReferenceCurve` must be a zero-length `IfcCurveSegment` placed at the endpoint of the cant alignment with its placement matching the end cant state of the preceding segment.
+
+`IfcSegmentedReferenceCurve.EndPoint` is an *optional* `IfcCartesianPoint` attribute whose purpose overlaps with the zero-length segment: it encodes the 3D endpoint of the segmented reference curve, providing the same geometric information as the placement of the zero-length `IfcCurveSegment`. Because `EndPoint` is optional and the zero-length segment is required by the IFC Concept Templates, the zero-length segment is the primary, normative source of the endpoint geometry. When `EndPoint` is present, it must be consistent with the placement of the zero-length closing segment — a discrepancy between the two is a data error. Implementations should not rely on `EndPoint` as a substitute for the zero-length segment, nor assume it will be populated.
+
+## 4.13 Summary and Implementation Checklist
 
 | # | Item | Notes |
 |---|---|---|
@@ -1899,3 +1905,4 @@ Both approaches give the same result, however, a serious problem emerges if the 
 | 2 | The cross-slope angle $\phi$ is interpolated using deviating elevation as the interpolation parameter, not arc length | The interpolation formula in Section 4.1.3 uses $D(\ell) - D_s$ as the parameter; $\phi$ does not vary linearly with distance along the segment |
 | 3 | When forming $M'_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |
 | 4 | Do not mix the EnrichIfc4x3 semantic-to-geometry mapping with the deviating elevation equations from this guide | EnrichIfc4x3 contains two compensating errors that yield correct results within its own implementation; mixing its coefficient mapping with this guide's deviating elevation equation (or vice versa) breaks the cancellation and produces results off by a factor of $L$ or $1/L$ — see Section 4.11 |
+| 5 | Include a zero-length `IfcCurveSegment` at the end of `IfcSegmentedReferenceCurve`; treat `IfcSegmentedReferenceCurve.EndPoint` as secondary | The zero-length segment is required by the IFC Concept Templates and is the normative endpoint; `EndPoint` is optional — if present, it must agree with the zero-length segment placement |
