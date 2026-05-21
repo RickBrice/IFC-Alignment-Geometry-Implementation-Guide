@@ -37,7 +37,7 @@ The tag mechanism differs between the two entities:
 
 In both cases, the geometry of the surface or solid at a tagged point follows the corresponding guide curve rather than relying on linear interpolation between the authored section positions. A widening with a curved edge taper can be represented exactly with sections only at the start and end of the transition — the guide curve carries the taper geometry between them.
 
-The stringline approach is not an alternative to the template approach but an augmentation of it. Cross-sections are always required; guide curves control interpolation between them. In the limiting case with infinitely dense sections, both approaches produce the same geometry. In practice, stringlines allow compact models with few sections and geometrically exact results where section-only interpolation would require dense section spacing to achieve acceptable approximation.
+The stringline approach is not an alternative to the template approach but an augmentation of it. Cross-sections are always required; guide curves control interpolation between them. In the limiting case with infinitely dense sections, both approaches produce the same geometry. In practice, stringlines allow compact models with few sections and geometrically exact results where section-only interpolation would require dense section spacing to achieve acceptable approximation. **todo - this last sentence seems redundant**
 
 ## 10.3 IfcSectionedSurface
 
@@ -78,14 +78,14 @@ Although the IFC specification does not state this explicitly, the `Slope` and `
 The tag mechanism serves both breaklines and stringlines simultaneously. A tag on a profile vertex identifies that vertex's correspondence across sections with different topology and, when a matching `IfcOffsetCurveByDistances` guide curve exists, controls the vertex's trajectory between sections. The two functions — topological correspondence and geometric guidance — share the same tag infrastructure.
 
 ### 10.3.2 Stringlines
-
+**todo - a lot of this seems redundant wih 10.2**
 Within `IfcSectionedSurface`, stringlines are implemented through the `Tags` attribute of `IfcOpenCrossProfileDef`. This attribute holds a list of $N+1$ labels — one per vertex of the open profile, where $N$ is the number of segments. An `IfcOffsetCurveByDistances` guide curve whose `Tag` matches one of these vertex labels takes control of that vertex's trajectory along the surface. Where a guide curve governs a vertex, the vertex position at any distance along the directrix is read from the guide curve rather than interpolated from the authored cross-section positions.
 
 The `OffsetPoint` attribute of `IfcOpenCrossProfileDef` positions the first tagged vertex in the directrix's local coordinate system. Subsequent vertices are derived from there by accumulating the segment `Widths` and `Slopes`. All tagged vertices participate in the matching process independently: a surface can have some vertices guided by offset curves and others governed by linear interpolation between authored sections.
 
 Because guide curves carry the intermediate geometry, very few authored cross-sections are needed in practice. A widening surface that spans 200 m of alignment can be fully described by two cross-sections — one at the start, one at the end — with the edge guide curves encoding the widening trajectory between them. The same surface described purely by template interpolation would require progressively denser section spacing to approximate the same edge path.
 
-For a guide curve to be well-defined relative to the surface, its `BasisCurve` must be the same curve as the surface `Directrix`. The `OffsetLateral` and `OffsetVertical` values in the guide curve's `IfcPointByDistanceExpression` entries position the tagged vertex laterally and vertically from the directrix at each defined distance, and those values are linearly interpolated between explicitly defined points. When a guide curve's `BasisCurve` differs from the surface `Directrix`, the distance parameterization is inconsistent and the tag-matching interpolation is undefined — a specification gap discussed further in §10.5.
+For a guide curve to be well-defined relative to the surface, its `BasisCurve` must be the same curve as the surface `Directrix`. The `OffsetLateral` and `OffsetVertical` values in the guide curve's `IfcPointByDistanceExpression` entries position the tagged vertex laterally and vertically from the directrix at each defined distance, and those values are linearly interpolated between explicitly defined points. When a guide curve's `BasisCurve` differs from the surface `Directrix`, the distance parameterization is inconsistent and the tag-matching interpolation is undefined — a specification gap discussed further in §10.5. **todo - review carefully, this doesnt seem right**
 
 ## 10.4 IfcSectionedSolidHorizontal
 
@@ -99,7 +99,7 @@ For a guide curve to be well-defined relative to the surface, its `BasisCurve` m
 
 *Table 10.4-1 — IfcSectionedSolidHorizontal attributes*
 
-As with `IfcSectionedSurface`, the solid is generated by sweeping only between the defined `CrossSectionPositions`. It does not extend to the head or tail of the `Directrix`. The `CrossSections` and `CrossSectionPositions` lists must be equal in length, and the position expressions must not use longitudinal offsets.
+As with `IfcSectionedSurface`, the solid is generated by sweeping only between the defined `CrossSectionPositions`. It does not extend to the head or tail of the `Directrix` (**todo - reference discussion below about error in ifc spec figure**. The `CrossSections` and `CrossSectionPositions` lists must be equal in length, and the position expressions must not use longitudinal offsets.
 
 Cross-sections are typically `IfcArbitraryClosedProfileDef` profiles. The profile outline is defined as an `IfcIndexedPolyCurve` referencing an `IfcCartesianPointList2D`. Profile points are listed in counter-clockwise order when viewed from the direction the profile normal points. The `IfcCartesianPointList2D.TagList` attribute assigns a label to each point in the coordinate list, enabling the stringline mechanism of Section 10.2.
 
@@ -112,6 +112,8 @@ Cross-section rotation accommodates superelevation — the banking of a road or 
 **Single superelevation** applies a uniform rotation to the entire cross-section at each defined position along the directrix. `IfcDerivedProfileDef` expresses this rotation, with its `ParentProfile` referencing the base (unrotated) profile. Each entry in `CrossSections` can reference its own `IfcDerivedProfileDef` instance with a different rotation angle, allowing the rotation to vary along the directrix while the underlying profile shape remains constant.
 
 **Multiple independent superelevations** apply when different parts of the cross-section rotate independently — for example, a divided highway where left and right carriageways have different cross-slopes, or a cross-section with a varying median shape. In this case each `CrossSection` is a distinct profile instance. The tagged points in `IfcCartesianPointList2D.TagList` and their corresponding `IfcOffsetCurveByDistances` guide curves control where each point travels independently along the route. The guide curves effectively encode the superelevation variation for each tagged feature point without requiring explicit rotation parameters.
+
+**todo - back this up with examples**
 
 ## 10.5 Specification Gaps and Implementation Notes
 
