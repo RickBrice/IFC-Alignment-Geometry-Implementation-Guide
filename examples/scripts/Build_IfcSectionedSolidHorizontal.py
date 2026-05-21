@@ -2,12 +2,10 @@
 # Date: 2026-05-21
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
-# Demonstrates IfcSectionedSolidHorizontal swept along a complete 3D alignment comprising:
-#   - 100 m Bloss horizontal transition (infinite to 300 m radius, curving left)
-#   - 100 m flat vertical alignment
-#   - 100 m Bloss cant segment (0 to 500 mm, right rail elevated)
-# The trapezoidal cross-section is defined as an IfcArbitraryClosedProfileDef using
-# IfcIndexedPolyCurve. The solid is contained in an IfcRailwayPart.
+# Demonstrates the minimal definition of IfcSectionedSolidHorizontal: a uniform trapezoidal
+# cross-section swept along a 3D alignment comprising a Bloss horizontal transition, flat
+# vertical grade, and Bloss cant segment. No profile rotation, superelevation, or guide
+# curves are used. See §10.6.7 of the guide.
 
 import os
 import ifcopenshell
@@ -17,7 +15,7 @@ import ifcopenshell.api.unit
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
 file.header.file_description.description = ("ViewDefinition [Alignment-basedView]",)
 
-project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(), Name="Sectioned Solid Horizontal - Bloss Cant")
+project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(), Name="Sectioned Solid Horizontal - Minimal")
 site = file.createIfcSite(GlobalId=ifcopenshell.guid.new(), Name="Site")
 
 length = ifcopenshell.api.unit.add_si_unit(file, unit_type="LENGTHUNIT")
@@ -43,7 +41,7 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products
 
 start_station = 0.
 alignment = ifcopenshell.api.alignment.create(
-    file, "Bloss-Alignment",
+    file, "Alignment",
     include_vertical=True,
     include_cant=True,
     start_station=start_station
@@ -84,7 +82,7 @@ c_segment = file.createIfcAlignmentCantSegment(
     StartCantLeft=0.,
     EndCantLeft=0.,
     StartCantRight=0.,
-    EndCantRight=0.5,
+    EndCantRight=0.16,
     PredefinedType="BLOSSCURVE"
 )
 ifcopenshell.api.alignment.create_layout_segment(file, clayout, c_segment)
@@ -96,7 +94,8 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=site, products=[r
 railway_part = file.createIfcRailwayPart(
     GlobalId=ifcopenshell.guid.new(),
     Name="Track",
-    PredefinedType="TRACK"
+    PredefinedType="TRACK",
+    UsageType="LONGITUDINAL"
 )
 ifcopenshell.api.aggregate.assign_object(file, relating_object=railway, products=[railway_part])
 
@@ -149,9 +148,10 @@ representation = file.createIfcShapeRepresentation(
 
 product_rep = file.createIfcProductDefinitionShape(Representations=[representation])
 
-proxy = file.createIfcBuildingElementProxy(
+course = file.createIfcCourse(
     GlobalId=ifcopenshell.guid.new(),
-    Name="Track Body",
+    Name="Ballast Bed",
+    PredefinedType="BALLASTBED",
     ObjectPlacement=file.createIfcLocalPlacement(
         RelativePlacement=file.createIfcAxis2Placement3D(
             Location=file.createIfcCartesianPoint(Coordinates=(0., 0., 0.))
@@ -160,8 +160,8 @@ proxy = file.createIfcBuildingElementProxy(
     Representation=product_rep
 )
 
-ifcopenshell.api.spatial.assign_container(file, relating_structure=railway_part, products=[proxy])
+ifcopenshell.api.spatial.assign_container(file, relating_structure=railway_part, products=[course])
 
-output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSolidHorizontal_bloss_cant.ifc")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSolidHorizontal.ifc")
 file.write(output_path)
 print("Done!")

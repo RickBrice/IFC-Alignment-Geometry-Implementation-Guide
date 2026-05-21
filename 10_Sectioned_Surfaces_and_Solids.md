@@ -143,11 +143,15 @@ Each `IfcAxis2PlacementLinear` entry in `CrossSectionPositions` defines the loca
 
 - **Axis perpendicular to the 3D tangent.** The cross-section "up" direction tilts with the grade, remaining in the vertical plane containing the 3D tangent. Cross-section faces are truly perpendicular to the 3D curve. On a graded alignment the faces lean forward or backward relative to the direction of travel, producing a different solid with different volume and cross-sectional area at any given distance. This interpretation yields the same solid that `IfcExtrudedAreaSolid` would produce for the same profile swept along the same path.
 
-Figure 10.5-1 shows a solid swept along a graded directrix with `Axis = (0, 0, 1)` — cross-section faces are plumb. Figure 10.5-2 shows the same solid with `Axis` perpendicular to the 3D tangent — faces tilt with the grade.
+Both figures show an elevation view of the retaining wall example (§10.6.8) swept along a 10% graded directrix. The key distinction is the orientation of the end face — the cross-section plane at the terminal position of the solid. In Figure 10.5-1 the end face is vertical; in Figure 10.5-2 it is inclined, perpendicular to the 3D alignment tangent. The two interpretations produce geometrically different solids with different volumes and cross-sectional areas at every station along the grade. This difference makes clarity on the default `Axis` direction crucial for reliable model exchange.
 
-*[Figure 10.5-1 — IfcSectionedSolidHorizontal on graded alignment with Axis = (0,0,1): cross-section faces are plumb.]*
+![Figure 10.5-1 — Elevation view of IfcSectionedSolidHorizontal on a 10% graded alignment with Axis = (0,0,1): end face is vertical.](images/Figure_10.5-1_Axis_GlobalZ.png)
 
-*[Figure 10.5-2 — IfcSectionedSolidHorizontal on graded alignment with Axis perpendicular to 3D tangent: cross-section faces tilt with the grade.]*
+*Figure 10.5-1 — Elevation view of `IfcSectionedSolidHorizontal` on a 10% graded alignment with `Axis = (0, 0, 1)`: end face is vertical (plumb).*
+
+![Figure 10.5-2 — Elevation view of IfcSectionedSolidHorizontal on a 10% graded alignment with Axis perpendicular to the 3D tangent: end face is inclined, perpendicular to the alignment.](images/Figure_10.5-2_Axis_Tilted.png)
+
+*Figure 10.5-2 — Elevation view of `IfcSectionedSolidHorizontal` on a 10% graded alignment with `Axis` perpendicular to the 3D tangent: end face is inclined, perpendicular to the alignment.*
 
 **Recommendation.** Authors should always supply `Axis` explicitly in every `IfcAxis2PlacementLinear` entry within `CrossSectionPositions`. For infrastructure design, `Axis = (0, 0, 1)` is the appropriate choice and matches the original design intent of `IfcSectionedSolidHorizontal`. Relying on the default invites geometrically inconsistent results across implementations.
 
@@ -169,7 +173,7 @@ In practice, each `IfcOffsetCurveByDistances` guide curve must be assigned as th
 
 ## 10.6 Example Models
 
-Seven example models illustrate the concepts of this chapter in progressively more complex configurations. The first two demonstrate `IfcSectionedSurface` without stringlines; the next four form a series that explores stringline authoring approaches and their trade-offs; the final example demonstrates `IfcSectionedSolidHorizontal` with a full 3D alignment including cant.
+Twelve example models illustrate the concepts of this chapter in progressively more complex configurations. The first two demonstrate `IfcSectionedSurface` without stringlines; the next four form a series that explores stringline authoring approaches and their trade-offs; the remaining six demonstrate `IfcSectionedSolidHorizontal` in progressively more complex configurations — from minimal definitions through single and multiple superelevations to stringline-based geometry.
 
 ### 10.6.1 Superelevation
 
@@ -205,7 +209,7 @@ This configuration is the most conceptually faithful to the idea of stringlines 
 
 ### 10.6.6 Stringlines — Dense Section Approximation
 
-The file [`IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc`](examples/IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc) reproduces the same edge geometry as v3 — a straight centerline with curved edges defined by 300 m radius arcs — but using the template approach rather than guide curves. Cross-section widths at five evenly-spaced stations are computed analytically from the arc geometry, and the resulting `IfcOpenCrossProfileDef` instances embed the exact width at each station. The edge alignment instances from v3 are retained in the model to provide a visual reference. Figure 10.6.6-1 shows the resulting surface; the mesh lines mark each cross-section boundary and the curved overall shape reflects the analytically computed widths.
+The file [`IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc`](examples/IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc) reproduces the same edge geometry as §10.6.5 — a straight centerline with curved edges defined by 300 m radius arcs — but using the template approach rather than guide curves. Cross-section widths at five evenly-spaced stations are computed analytically from the arc geometry, and the resulting `IfcOpenCrossProfileDef` instances embed the exact width at each station. The edge alignment instances from v3 are retained in the model to provide a visual reference. Figure 10.6.6-1 shows the resulting surface; the mesh lines mark each cross-section boundary and the curved overall shape reflects the analytically computed widths.
 
 ![](images/Figure_10.6.6-1_Dense_Section_Approximation.png)
 
@@ -217,16 +221,43 @@ Figure 10.6.6-2 zooms in on the far-right corner of the surface, where the gap b
 
 *Figure 10.6.6-2 — Zoomed view of the far-right corner showing the gap between the piecewise-linear surface edge and the exact circular arc guide curve (orange). The error is largest at the midpoint between cross-sections.*
 
-This example illustrates the trade-off between the two approaches. The template approach with dense sections can approximate curved edge geometry to any desired tolerance, but requires explicit computation of profile widths at each station and produces a model with many cross-section instances. The stringline approach of v3 requires only two sections and lets the guide curves carry the geometry exactly — but leaves the specification gaps noted in §10.6.5 unresolved.
+This example illustrates the trade-off between the two approaches. The template approach with dense sections can approximate curved edge geometry to any desired tolerance, but requires explicit computation of profile widths at each station and produces a model with many cross-section instances. The stringline approach of §10.6.5 requires only two sections and lets the guide curves carry the geometry exactly — but leaves the specification gaps noted there unresolved.
 
-### 10.6.7 IfcSectionedSolidHorizontal — Bloss Cant Transition
+### 10.6.7 IfcSectionedSolidHorizontal — Minimal Definition
 
-The file [`IfcSectionedSolidHorizontal_bloss_cant.ifc`](examples/IfcSectionedSolidHorizontal_bloss_cant.ifc) demonstrates `IfcSectionedSolidHorizontal` swept along a complete 3D alignment that includes a cant component. The alignment comprises three stacked layouts:
+The file [`IfcSectionedSolidHorizontal.ifc`](examples/IfcSectionedSolidHorizontal.ifc) is the minimal definition of `IfcSectionedSolidHorizontal`: a uniform, unrotated cross-section placed at two positions along a 3D alignment, with linear interpolation between them. No profile rotation, superelevation, or guide curves are used. This isolates the core solid sweep mechanism from the additional complexity addressed in §10.6.8–10.6.11.
+
+The alignment comprises three stacked layouts:
 
 - **Horizontal**: a 100 m Bloss transition starting from infinite radius (tangent entry) and transitioning to a 300 m radius curve to the left.
 - **Vertical**: a 100 m flat grade at zero gradient.
-- **Cant**: a 100 m Bloss transition from zero cant to 500 mm of right-rail elevation, consistent with the left-curving horizontal alignment. The 500 mm value is intentionally exaggerated beyond realistic railway practice to make the banking effect clearly visible in a viewer.
+- **Cant**: a 100 m Bloss transition from zero cant to 160 mm of right-rail elevation, consistent with the left-curving horizontal alignment.
 
-The horizontal and vertical layouts combine into an `IfcGradientCurve`; adding the cant layout produces an `IfcSegmentedReferenceCurve`, which serves as the `Directrix` of the solid. The cross-section is a trapezoid defined by four vertices — `(-30, 0)`, `(30, 0)`, `(28, 0.5)`, `(-28, 0.5)` — wider at the base than at the top. It is encoded as an `IfcArbitraryClosedProfileDef` whose `OuterCurve` is an `IfcIndexedPolyCurve` with an explicit `IfcLineIndex` closing the loop back to the first vertex. The same profile is placed at distances 0 and 100 m along the directrix, and the geometry engine interpolates linearly between them.
+The horizontal and vertical layouts combine into an `IfcGradientCurve`; adding the cant layout produces an `IfcSegmentedReferenceCurve`, which serves as the `Directrix` of the solid. The cross-section is a trapezoid defined by four vertices — `(-30, 0)`, `(30, 0)`, `(29.5, 0.5)`, `(-29.5, 0.5)` — wider at the base than at the top. It is encoded as an `IfcArbitraryClosedProfileDef` whose `OuterCurve` is an `IfcIndexedPolyCurve` with an explicit `IfcLineIndex` closing the loop back to the first vertex. The same profile is placed at distances 0 and 100 m along the directrix, and the geometry engine interpolates linearly between them.
 
-The solid is contained in an `IfcBuildingElementProxy` assigned to an `IfcRailwayPart` with `PredefinedType = TRACK`, which is aggregated under an `IfcRailway`.
+The solid is contained in an `IfcCourse` with `PredefinedType = BALLASTBED`, assigned to an `IfcRailwayPart` with `PredefinedType = TRACK`, which is aggregated under an `IfcRailway`.
+
+### 10.6.8 IfcSectionedSolidHorizontal — Retaining Wall with Variable Section
+
+Two files demonstrate `IfcSectionedSolidHorizontal` with a cross-section whose shape transforms along the alignment:
+
+- [`IfcSectionedSolidHorizontal_retaining_wall_explicit_axis.ifc`](examples/IfcSectionedSolidHorizontal_retaining_wall_explicit_axis.ifc) — `Axis = (0, 0, 1)` supplied explicitly at each `CrossSectionPosition`; cross-section faces are plumb (Figure 10.5-1).
+- [`IfcSectionedSolidHorizontal_retaining_wall_implicit_axis.ifc`](examples/IfcSectionedSolidHorizontal_retaining_wall_implicit_axis.ifc) — `Axis` omitted; the resulting orientation is implementation-defined (Figure 10.5-2).
+
+The alignment is a 50 m straight grade at 10% due East. Three cross-sections are defined — at 0 m, 25 m, and 50 m — and the geometry engine interpolates linearly between them. The cross-section is a retaining wall with footing; the stem height varies from 2.0 m at the start, to 3.0 m at the midpoint, and back to 1.5 m at the end. The footing width also varies: 2.0 m at the start and end, widening to 2.5 m at the midpoint, while the toe and wall thickness remain constant throughout. See §10.5 for a discussion of the `Axis` direction and its geometric consequences.
+
+### 10.6.9 IfcSectionedSolidHorizontal — Single Superelevation
+
+*This example is planned but not yet authored. It will demonstrate `IfcSectionedSolidHorizontal` with a rotating cross-section expressing single superelevation via `IfcDerivedProfileDef`. The entire cross-section rotates uniformly at each defined position along the directrix, with the rotation angle varying between positions to represent a superelevation transition.*
+
+### 10.6.10 IfcSectionedSolidHorizontal — Multiple Independent Superelevations
+
+*This example is planned but not yet authored. It will demonstrate `IfcSectionedSolidHorizontal` where different parts of the cross-section rotate independently — such as a divided highway where left and right carriageways carry different cross-slopes. Each cross-section is a distinct profile instance; tagged points in `IfcCartesianPointList2D.TagList` and their corresponding guide curves control the independent rotation of each feature.*
+
+### 10.6.11 IfcSectionedSolidHorizontal — Stringlines (Same BasisCurve as Directrix)
+
+*This example is planned but not yet authored. It will demonstrate `IfcSectionedSolidHorizontal` with guide curves whose `BasisCurve` is the same curve as the solid `Directrix`. Tags are scoped to the shared basis curve. As discussed in §10.5, this approach produces results geometrically equivalent to the template approach since both rely on linear interpolation along the directrix.*
+
+### 10.6.12 IfcSectionedSolidHorizontal — Stringlines (Independent BasisCurve)
+
+*This example is planned but not yet authored. It will demonstrate `IfcSectionedSolidHorizontal` with guide curves whose `BasisCurve` is independent of the solid `Directrix`. This is the configuration that enables genuinely non-linear cross-section point trajectories. Tags must be globally unique across the model, and the specification gaps discussed in §10.5 apply.*
