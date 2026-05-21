@@ -1,3 +1,4 @@
+**todo - need to discuss gradient curve end point and how it is redundant with sero length segment and must have the same placement. test vs to see if it catches discrepency between end point snd zero length segment. check ifcopenshell implementation to see if the endpoint is provided**
 # Chapter 3 - Vertical Alignments
 
 ## 3.0 Introduction
