@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-20
+# Date: 2026-05-21
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSurface with a branching cross-section topology, where the
@@ -75,6 +75,7 @@ segment1 = file.createIfcAlignmentVerticalSegment(
 end = ifcopenshell.api.alignment.create_layout_segment(file,vlayout,segment1)
 
 curve = ifcopenshell.api.alignment.get_curve(alignment)
+ifcopenshell.api.alignment.update_end_point(file, curve)
 
 road = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(),Name="Road1")
 ifcopenshell.api.aggregate.assign_object(file,relating_object=site,products=[road,])

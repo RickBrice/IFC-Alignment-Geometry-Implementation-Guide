@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-20
+# Date: 2026-05-21
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates the edge case where IfcOffsetCurveByDistances.BasisCurve and
@@ -53,6 +53,7 @@ ifcopenshell.api.alignment.create_layout_segment(file, vlayout_1,
 )
 
 curve_1 = ifcopenshell.api.alignment.get_curve(alignment_1)
+ifcopenshell.api.alignment.update_end_point(file, curve_1)
 
 # --- Reference-Line: 200-ft straight line offset 10 ft north (used as IfcPointByDistanceExpression.BasisCurve) ---
 alignment_2 = ifcopenshell.api.alignment.create(file, "Reference-Line", include_vertical=True, start_station=10000.)
@@ -82,6 +83,7 @@ ifcopenshell.api.alignment.create_layout_segment(file, vlayout_2,
 )
 
 curve_2 = ifcopenshell.api.alignment.get_curve(alignment_2)
+ifcopenshell.api.alignment.update_end_point(file, curve_2)
 
 # OffsetValues reference curve_2 (Reference-Line).
 # IfcOffsetCurveByDistances.BasisCurve will be reassigned to curve_1 (E-Line) below.

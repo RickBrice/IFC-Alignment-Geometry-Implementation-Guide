@@ -1,17 +1,20 @@
 """Generate 3D alignment reference coordinate CSV files.
 
-For each IFC file in testset/3D/, evaluates the 3D alignment curve at
-50-project-unit intervals and writes a CSV alongside the IFC file.
+For each IFC file in testset/RealWorldAlignments/, evaluates the 3D alignment
+curve and writes a CSV alongside the IFC file.
 
 The evaluated curve is IfcSegmentedReferenceCurve when a cant layout is
 present, otherwise IfcGradientCurve.
 
-ifcopenshell's function-step settings control the sample spacing:
+Default sampling (files without IfcLinearPlacement entities):
   function-step-type  = 1  (step-param is the minimum number of steps)
   function-step-param = 100  (100 intervals → 101 evenly-spaced evaluation points)
+  evaluation_points() on the evaluator returns the sample distances.
 
-evaluation_points() on the evaluator returns the list of sample distances
-in metres; each is passed to evaluate() to obtain the 4x4 placement matrix.
+Linear-placement sampling (files with more than one IfcLinearPlacement):
+  The CSV is evaluated only at the distances encoded in the
+  IfcPointByDistanceExpression of each IfcLinearPlacement entity.
+  Duplicate distances are deduplicated before evaluation.
 
 Columns (all length values in project units; directions are dimensionless):
   DistAlong   — distance along the curve from the start
@@ -64,6 +67,25 @@ def get_3d_curve(alignment):
     return align_api.get_layout_curve(v_layout)
 
 
+def _linear_placement_distances_m(ifc, unit_scale):
+    """Return sorted, deduplicated SI distances from all IfcLinearPlacement entities."""
+    distances = set()
+    for lp in ifc.by_type('IfcLinearPlacement'):
+        try:
+            pde = lp.RelativePlacement.Location
+            distances.add(pde.DistanceAlong.wrappedValue * unit_scale)
+        except AttributeError:
+            continue
+    return sorted(distances)
+
+
+# Files whose CSV should be evaluated only at IfcLinearPlacement distances
+# rather than the default 101-point uniform sampling.
+LINEAR_PLACEMENT_FILES = {
+    'FHWA_Alignment_with_Linear_Placement',
+}
+
+
 def process_file(src: Path):
     ifc = ifcopenshell.open(str(src))
     unit_scale = ifcopenshell.util.unit.calculate_unit_scale(ifc)
@@ -83,7 +105,10 @@ def process_file(src: Path):
     fi = ifcopenshell_wrapper.map_shape(s, curve.wrapped_data)
     ev = ifcopenshell_wrapper.function_item_evaluator(s, fi)
 
-    pts = ev.evaluation_points()
+    if src.stem in LINEAR_PLACEMENT_FILES:
+        pts = _linear_placement_distances_m(ifc, unit_scale)
+    else:
+        pts = ev.evaluation_points()
 
     rows = []
     for d_m in pts:

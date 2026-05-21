@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-20
+# Date: 2026-05-21
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcOffsetCurveByDistances with a 3D basis curve. Offset1 uses the
@@ -61,6 +61,7 @@ ifcopenshell.api.alignment.create_layout_segment(file, vlayout,
 )
 
 gradient_curve = ifcopenshell.api.alignment.get_curve(alignment)
+ifcopenshell.api.alignment.update_end_point(file, gradient_curve)
 composite_curve = gradient_curve.BaseCurve
 
 offsets = [

@@ -2,11 +2,7 @@
 
 ## 1.0 Introduction
 
-IFC 4.3 ADD 2 finalized the adoption of alignments for infrastructure works.
-Since the concept of alignment is relatively new to IFC, few details and
-examples are provided in the available literature. This guide aims to
-document the relevant concepts and mathematics a software
-developer might need to implement alignment-based geometry.
+IFC4x3 ADD2, published as ISO 16739-1:2024, is the current IFC standard and includes full support for infrastructure alignment geometry. Despite the standard's publication, software adoption has lagged — not because the standard is new, but because implementation guidance has been scarce. This guide addresses that gap by documenting the relevant concepts and mathematics a software developer needs to implement alignment-based geometry.
 
 If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673), Chapters 1 - 5 and Appendix B. 
 

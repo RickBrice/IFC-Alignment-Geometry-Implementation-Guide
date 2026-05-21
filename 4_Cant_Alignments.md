@@ -1,4 +1,3 @@
-**todo - test VS to see if it catches discrepancy between EndPoint and zero-length segment. Check IfcOpenShell implementation to see if EndPoint is provided.**
 # Chapter 4 - Cant Alignments
 
 ## 4.0 Introduction
@@ -28,9 +27,9 @@ This chapter covers:
 - The cant segment types in Table 4.0-1 and the geometric curve types that represent them.
 - Parametric equations and geometry mapping examples for the curve types in Table 4.0-1.
 - An algorithm for composing cant, horizontal, and vertical matrices to produce a full 3D placement frame.
-- An implementation checklist in Section 4.12.
+- An implementation checklist in Section 4.13.
 
-## 4.1 General
+## 4.1 Fundamentals
 
 Each `IfcAlignmentCantSegment` is parameterized by distance along the horizontal alignment. The key semantic attributes are `StartDistAlong`, `SegmentLength` (the horizontal length of the cant segment), `StartCantLeft`, `EndCantLeft`, `StartCantRight`, and `EndCantRight`. From these, the deviating elevation $D_s$ at the start and $D_e$ at the end are derived as the averages of their respective left and right rail values (Section 4.1.3). Each cant curve segment uses `IfcAxis2Placement3D` for its placement, in contrast to the 2D placements used for horizontal and vertical segments, because cant carries an out-of-plane cross-slope rotation.
 
@@ -236,6 +235,7 @@ $$M_{3Dcant} = M' +
 
 Column 4 of the final matrix $M_{3Dcant}$ is the full 3D position of the track centerline. Column 3 is the cross-slope direction, encoding the railhead superelevation at that point.
 
+Numerical examples of Steps 1–4 are given in Sections 4.3 through 4.9. A complete worked example including Step 5 is in Section 4.10.
 
 ## 4.3 Constant Cant
 

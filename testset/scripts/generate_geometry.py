@@ -25,6 +25,12 @@ def process_file(src: Path):
     alignment = ifc.by_type('IfcAlignment')[0]
 
     align_api.create_representation(ifc, alignment)
+    curve = align_api.get_curve(alignment)
+    if curve.is_a('IfcSegmentedReferenceCurve'):
+        align_api.update_end_point(ifc, curve.BaseCurve)
+        align_api.update_end_point(ifc, curve)
+    elif curve.is_a('IfcGradientCurve'):
+        align_api.update_end_point(ifc, curve)
     #align_api.util.print_composite_curve(align_api.get_basis_curve(alignment))
 
     ifc.write(str(dest))

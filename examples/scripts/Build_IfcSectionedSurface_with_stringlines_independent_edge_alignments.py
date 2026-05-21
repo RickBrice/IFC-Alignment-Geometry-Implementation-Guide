@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-20
+# Date: 2026-05-21
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSurface where edge stringlines are defined from independent
@@ -126,6 +126,9 @@ ifcopenshell.api.alignment.create_layout_segment(file,vlayout,vsegment1)
 basis_curve = ifcopenshell.api.alignment.get_curve(alignment)
 left_curve = ifcopenshell.api.alignment.get_curve(left_alignment)
 right_curve = ifcopenshell.api.alignment.get_curve(right_alignment)
+ifcopenshell.api.alignment.update_end_point(file, basis_curve)
+ifcopenshell.api.alignment.update_end_point(file, left_curve)
+ifcopenshell.api.alignment.update_end_point(file, right_curve)
 
 road = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(),Name="Road1")
 ifcopenshell.api.aggregate.assign_object(file,relating_object=site,products=[road,])

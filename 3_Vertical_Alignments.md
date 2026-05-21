@@ -1,4 +1,3 @@
-**todo - test VS to see if it catches discrepancy between EndPoint and zero-length segment. Check IfcOpenShell implementation to see if EndPoint is provided.**
 # Chapter 3 - Vertical Alignments
 
 ## 3.0 Introduction
@@ -23,7 +22,7 @@ This chapter covers:
 - The combined 3D evaluation that produces position, tangent, cross-track, and up-axis vectors from the `IfcGradientCurve`.
 - Known limitation: vertical clothoid curves are not addressed in this guide.
 
-## 3.1 General
+## 3.1 Conventions
 
 Each vertical segment is parameterized by arc-length $s$ along its parent curve, where $s = 0$ at the start of the parent curve. The key semantic attributes are `IfcAlignmentVerticalSegment.StartDistAlong` (horizontal distance from the alignment start to the segment start), `HorizontalLength` (the horizontal projection of the segment), `StartHeight` (elevation at the segment start), and `StartGradient` and `EndGradient` (decimal slopes; e.g., $0.005 = 0.5\%$).
 
@@ -110,6 +109,8 @@ Multiplying out, the columns of $M_{3D}$ are:
 - **Column 2** (Y / cross-track): $(-dy_h,\ dx_h,\ 0)$ — the horizontal normal direction, unchanged from $M_h$.
 - **Column 3** (Axis / up): $(-dx_h \cdot dy_v,\ -dy_h \cdot dy_v,\ dx_v)$ — orthogonal to both the 3D tangent and the cross-track direction.
 - **Column 4** (Location): $(x_h,\ y_h,\ z)$ — the full 3D position.
+
+Numerical examples of Steps 1–3 are given in Sections 3.3 through 3.6. A complete worked example including Step 4 is in Section 3.7.
 
 ## 3.3 Constant Gradient
 

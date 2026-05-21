@@ -249,6 +249,20 @@ feet.
 | Project unit | International foot |
 | 3D curve type | `IfcGradientCurve` |
 
+#### FHWA Bridge Geometry Manual — Linear Placement Variant
+
+A second variant of the FHWA alignment is provided to support validation of `IfcLinearPlacement` evaluation. It carries the same horizontal and vertical geometry as the base case and adds 124 `IfcReferent` objects, one at every 100 ft station from 100+00 to 223+00, each with a populated `CartesianPosition` fallback. Linear placement is discussed in [Chapter 8](8_LinearPlacement.md).
+
+| | |
+|---|---|
+| IFC file | `testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.ifc` |
+| Reference coordinates | `testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.csv` |
+| Alignment name | E-Line |
+| Project unit | International foot |
+| 3D curve type | `IfcGradientCurve` |
+
+The reference CSV uses the same 13-column format as the other real-world alignment files (Section 12.5.2), but contains 124 rows rather than 101 — one row per `IfcLinearPlacement`, evaluated at the corresponding station distance rather than at uniform intervals. An implementation validates its linear placement support by reading each placement's `DistanceAlong`, evaluating the 3D gradient curve at that distance, and comparing the result against the matching row in the CSV.
+
 #### BPaimio–Kupittaa
 
 The second case is alignment `001` from the BPaimio–Kupittaa railway line in Finland.

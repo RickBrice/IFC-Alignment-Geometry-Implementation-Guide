@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-20
+# Date: 2026-05-21
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSolidHorizontal swept along a complete 3D alignment comprising:
@@ -103,12 +103,12 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=railway, products
 # Cross-section profile — trapezoid, counter-clockwise winding.
 # Indices are 1-based; the closing 1 at the end makes the polycurve closed.
 #
-#   (-28, 0.5) -------- (28, 0.5)
+#   (-29.5, 0.5) -------- (29.5, 0.5)
 #      /                        \
 #  (-30, 0) -------------- (30, 0)
 #
 point_list = file.createIfcCartesianPointList2D(
-    CoordList=[(-30., 0.), (30., 0.), (28., 0.5), (-28., 0.5)]
+    CoordList=[(-30., 0.), (30., 0.), (29.5, 0.5), (-29.5, 0.5)]
 )
 poly_curve = file.createIfcIndexedPolyCurve(
     Points=point_list,
@@ -118,6 +118,8 @@ profile = file.createIfcArbitraryClosedProfileDef(ProfileType="AREA", OuterCurve
 
 # Directrix is IfcSegmentedReferenceCurve — horizontal + vertical + cant combined.
 directrix = ifcopenshell.api.alignment.get_curve(alignment)
+ifcopenshell.api.alignment.update_end_point(file, directrix.BaseCurve)
+ifcopenshell.api.alignment.update_end_point(file, directrix)
 
 pos_start = file.createIfcAxis2PlacementLinear(
     Location=file.createIfcPointByDistanceExpression(

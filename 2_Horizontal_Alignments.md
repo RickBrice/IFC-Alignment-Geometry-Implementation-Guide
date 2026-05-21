@@ -26,7 +26,7 @@ This chapter covers:
 - Parametric equations and geometry mapping examples for all nine curve types in Table 2.0-1.
 - The zero-length closing segment required at the end of every `IfcCompositeCurve`.
 
-## 2.1 General
+## 2.1 Conventions
 
 Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from `IfcAlignmentHorizontalSegment.StartRadius` and `EndRadius`; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). The segment length $L$ is `IfcAlignmentHorizontalSegment.SegmentLength`. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the `RefDirection` of the curve at $s$.
 

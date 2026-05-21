@@ -31,13 +31,11 @@ In IFC, stringlines are represented as `IfcOffsetCurveByDistances` instances. Th
 The tag mechanism differs between the two entities:
 
 - For `IfcSectionedSurface`, tags are carried by `IfcOpenCrossProfileDef.Tags` — a list of $N+1$ labels, one per vertex of the open profile. Each vertex can be independently associated with a guide curve.
-- For `IfcSectionedSolidHorizontal`, tags are carried by `IfcCartesianPointList2D.TagList` — one label per coordinate in the point list. Any point in the closed profile can be tagged.
+- For `IfcSectionedSolidHorizontal`, tags are carried by `IfcCartesianPointList2D.TagList` — one label per coordinate in the point list. Closed profiles are typically `IfcArbitraryClosedProfileDef` whose `OuterCurve` is an `IfcIndexedPolyCurve` referencing an `IfcCartesianPointList2D`; the `TagList` on that point list provides a label for each profile vertex. Any point in the closed profile can be tagged. See §10.4 for the full profile structure.
 
-**todo - clarify what uses the pointlist2d, polylines?**
+In both cases, the intended behavior is that the geometry at a tagged cross-section point follows the corresponding guide curve — allowing, for example, a widening with a curved edge taper to be defined by sections only at the start and end of the transition, with the guide curve carrying the taper geometry between them. The IFC specification does not state this explicitly. Several related questions — whether tagged points follow guide curves or are linearly interpolated between sections, what `BasisCurve` a guide curve is required or permitted to use, and what happens when a guide curve and an authored section disagree — are all specification gaps discussed in §10.5.
 
-In both cases, the geometry of the surface or solid at a tagged point follows the corresponding guide curve rather than relying on linear interpolation between the authored section positions. A widening with a curved edge taper can be represented exactly with sections only at the start and end of the transition — the guide curve carries the taper geometry between them.
-
-The stringline approach is not an alternative to the template approach but an augmentation of it. Cross-sections are always required; guide curves control interpolation between them. In the limiting case with infinitely dense sections, both approaches produce the same geometry. In practice, stringlines allow compact models with few sections and geometrically exact results where section-only interpolation would require dense section spacing to achieve acceptable approximation. **todo - this last sentence seems redundant**
+The stringline approach is not an alternative to the template approach but an augmentation of it. Cross-sections are always required; guide curves control interpolation between them.
 
 ## 10.3 IfcSectionedSurface
 
@@ -78,14 +76,10 @@ Although the IFC specification does not state this explicitly, the `Slope` and `
 The tag mechanism serves both breaklines and stringlines simultaneously. A tag on a profile vertex identifies that vertex's correspondence across sections with different topology and, when a matching `IfcOffsetCurveByDistances` guide curve exists, controls the vertex's trajectory between sections. The two functions — topological correspondence and geometric guidance — share the same tag infrastructure.
 
 ### 10.3.2 Stringlines
-**todo - a lot of this seems redundant wih 10.2**
+
 Within `IfcSectionedSurface`, stringlines are implemented through the `Tags` attribute of `IfcOpenCrossProfileDef`. This attribute holds a list of $N+1$ labels — one per vertex of the open profile, where $N$ is the number of segments. An `IfcOffsetCurveByDistances` guide curve whose `Tag` matches one of these vertex labels takes control of that vertex's trajectory along the surface. Where a guide curve governs a vertex, the vertex position at any distance along the directrix is read from the guide curve rather than interpolated from the authored cross-section positions.
 
 The `OffsetPoint` attribute of `IfcOpenCrossProfileDef` positions the first tagged vertex in the directrix's local coordinate system. Subsequent vertices are derived from there by accumulating the segment `Widths` and `Slopes`. All tagged vertices participate in the matching process independently: a surface can have some vertices guided by offset curves and others governed by linear interpolation between authored sections.
-
-Because guide curves carry the intermediate geometry, very few authored cross-sections are needed in practice. A widening surface that spans 200 m of alignment can be fully described by two cross-sections — one at the start, one at the end — with the edge guide curves encoding the widening trajectory between them. The same surface described purely by template interpolation would require progressively denser section spacing to approximate the same edge path.
-
-For a guide curve to be well-defined relative to the surface, its `BasisCurve` must be the same curve as the surface `Directrix`. The `OffsetLateral` and `OffsetVertical` values in the guide curve's `IfcPointByDistanceExpression` entries position the tagged vertex laterally and vertically from the directrix at each defined distance, and those values are linearly interpolated between explicitly defined points. When a guide curve's `BasisCurve` differs from the surface `Directrix`, the distance parameterization is inconsistent and the tag-matching interpolation is undefined — a specification gap discussed further in §10.5. **todo - review carefully, this doesnt seem right**
 
 ## 10.4 IfcSectionedSolidHorizontal
 
@@ -99,9 +93,9 @@ For a guide curve to be well-defined relative to the surface, its `BasisCurve` m
 
 *Table 10.4-1 — IfcSectionedSolidHorizontal attributes*
 
-As with `IfcSectionedSurface`, the solid is generated by sweeping only between the defined `CrossSectionPositions`. It does not extend to the head or tail of the `Directrix` (**todo - reference discussion below about error in ifc spec figure**. The `CrossSections` and `CrossSectionPositions` lists must be equal in length, and the position expressions must not use longitudinal offsets.
+As with `IfcSectionedSurface`, the solid is generated by sweeping only between the defined `CrossSectionPositions`. It does not extend to the head or tail of the `Directrix` (see §10.5 "Extent Along the Directrix"). The `CrossSections` and `CrossSectionPositions` lists must be equal in length, and the position expressions must not use longitudinal offsets.
 
-Cross-sections are typically `IfcArbitraryClosedProfileDef` profiles. The profile outline is defined as an `IfcIndexedPolyCurve` referencing an `IfcCartesianPointList2D`. Profile points are listed in counter-clockwise order when viewed from the direction the profile normal points. The `IfcCartesianPointList2D.TagList` attribute assigns a label to each point in the coordinate list, enabling the stringline mechanism of Section 10.2.
+Cross-sections are typically `IfcArbitraryClosedProfileDef` profiles. The profile outline is defined as an `IfcIndexedPolyCurve` referencing an `IfcCartesianPointList2D`. Profile points are listed in counter-clockwise order when viewed from the direction the profile normal points. The `IfcCartesianPointList2D.TagList` attribute assigns a label to each point in the coordinate list, enabling the stringline mechanism of Section 10.2. The same two guide curve authoring approaches available for `IfcSectionedSurface` apply equally here: guide curves whose `BasisCurve` is the same curve as the solid `Directrix` are scoped to that directrix and their tags need only be unique within that scope; guide curves with an independent `BasisCurve` require globally unique tags across the model. The trade-offs between these approaches are discussed through `IfcSectionedSurface` examples in §10.6.4 and §10.6.5, but the analysis applies without change to `IfcSectionedSolidHorizontal`.
 
 For a note on a documentation error in the profile orientation specification for this entity, see Section 10.5.
 
@@ -117,15 +111,15 @@ Cross-section rotation accommodates superelevation — the banking of a road or 
 
 ## 10.5 Specification Gaps and Implementation Notes
 
-### BasisCurve of Guide Curves Must Equal the Directrix
+### Guide Curve BasisCurve and Tag Scoping
 
-The specification does not require the `BasisCurve` of an `IfcOffsetCurveByDistances` guide curve to be the same curve as the `Directrix` of the surface or solid it serves. This constraint is nevertheless geometrically necessary. `CrossSectionPositions` are parameterized along the `Directrix` — each position is a distance along that curve. A guide curve must share the same distance parameterization for tag-matching interpolation to be well-defined. A guide curve relative to a different basis curve carries a different parameterization, making the correspondence between section distances and guide curve positions undefined.
+The IFC specification does not require or restrict the `BasisCurve` of an `IfcOffsetCurveByDistances` guide curve to be the same curve as the `Directrix` of the surface or solid it serves. This silence permits two distinct approaches with different implications for tag scoping and geometric capability.
 
-The intended interpretation is that guide curves are always `IfcOffsetCurveByDistances` instances whose `BasisCurve` is the same curve as the surface or solid `Directrix`. This interpretation also provides a natural scoping mechanism for tag matching: in a model with multiple surfaces each having their own directrix, only guide curves sharing the same `BasisCurve` as a given surface's `Directrix` are candidates for that surface's tag matching. Global tag uniqueness across the entire model is therefore not required — only uniqueness within the set of guide curves sharing a common basis curve with the surface or solid.
+**Same BasisCurve as the Directrix.** When a guide curve's `BasisCurve` is the same curve as the `Directrix`, the guide curve's offsets are expressed in the same distance parameterization as the `CrossSectionPositions`. This provides a natural tag scoping boundary: only guide curves sharing that `BasisCurve` are candidates for the surface or solid's tag matching, and tags need only be unique within that scope. However, `IfcOffsetCurveByDistances` interpolates lateral offsets linearly between its defined `IfcPointByDistanceExpression` entries. Because the guide curve and the cross-section template share the same linear-along-the-directrix model, this approach produces results geometrically equivalent to placing cross-sections at the guide curve's defined distances — no geometric advantage over the pure template approach is gained.
 
-### Tag Uniqueness Within Scope
+**Independent BasisCurve.** When a guide curve's `BasisCurve` is an independent curve — a circular arc, a spline, or another alignment — the guide curve carries geometric shape not constrained to be linear relative to the `Directrix` distance parameter. This is the configuration closest to the industry concept of a stringline: an edge path defined by its own geometry rather than by linearly interpolated offsets from a centerline. Because an independent `BasisCurve` has its own distance parameterization, there is no shared axis along which to scope tag matching; tags must be treated as globally unique across the entire model to avoid ambiguity. The trade-offs of this approach are illustrated in §10.6.5.
 
-The IFC specification does not state that tags must be unique within the scope of a given surface or solid. Uniqueness is nevertheless a necessary precondition for the tag-matching mechanism to function. If three `IfcOffsetCurveByDistances` guide curves all carry `Tag = "A"` and three cross-section vertices all carry `Tag = "A"`, there is no defined rule for which guide curve governs which vertex. Implementers authoring models with guide curves should treat tag uniqueness as a required constraint within each surface or solid. Validators currently have no machine-verifiable rule to enforce this, which is a gap in the formal rules.
+The IFC specification does not state that tags must be unique within any particular scope, and validators currently have no machine-verifiable rule to enforce either uniqueness constraint. Without clarity on the `BasisCurve` requirement and tag scoping rules, differing interpretations across implementations will produce incompatible results and undermine the ability to reliably exchange stringline-based geometry.
 
 ### Extent Along the Directrix
 
@@ -136,6 +130,26 @@ Guide curve extent follows the opposite rule. The `IfcOffsetCurveByDistances` sp
 ### Disagreement Between Section Endpoint and Guide Curve
 
 When a cross-section endpoint is authored at a specific position and a guide curve with a matching tag passes through a different position at that same distance along the directrix, the specification provides no guidance on which governs. Implementers should treat the authored section positions as exact and design guide curves to be consistent with them at all defined section positions. The behavior of a geometry kernel when a section endpoint and its guide curve disagree is implementation-defined.
+
+### Cross-Section Orientation: Default Axis Direction
+
+Each `IfcAxis2PlacementLinear` entry in `CrossSectionPositions` defines the local coordinate system at which its corresponding cross-section is placed. The `Axis` attribute specifies the local "up" direction — the Z-axis of that coordinate system — which determines how the cross-section is oriented in 3D space. As discussed in §8.3.2, the default value of `Axis` when the attribute is omitted is not unambiguously defined in the IFC schema.
+
+**Historical context.** During early development of `IfcSectionedSolidHorizontal` under IFC 4.3, the `Axis` direction at each cross-section position was envisioned as always vertical — `(0, 0, 1)` in global coordinates. As the standard evolved through RC1–RC4 and ADD1, this assumption was replaced with an author-controlled `IfcAxis2PlacementLinear` allowing `Axis` to be specified explicitly per cross-section position. The resolved specification permits both interpretations, but the default when `Axis` is omitted remains undefined (see §8.3.2).
+
+**Geometric consequence.** On a flat (zero-grade) alignment the two interpretations produce identical results. On a graded alignment they diverge:
+
+- **Axis = (0, 0, 1).** The cross-section "up" direction is always global vertical. Cross-section faces are plumb — their planes are perpendicular to the horizontal projection of the directrix, not to the 3D curve tangent. For infrastructure design this is the natural interpretation: walls are vertical, widths are measured horizontally, and the resulting shape matches traditional plan-and-profile intent.
+
+- **Axis perpendicular to the 3D tangent.** The cross-section "up" direction tilts with the grade, remaining in the vertical plane containing the 3D tangent. Cross-section faces are truly perpendicular to the 3D curve. On a graded alignment the faces lean forward or backward relative to the direction of travel, producing a different solid with different volume and cross-sectional area at any given distance. This interpretation yields the same solid that `IfcExtrudedAreaSolid` would produce for the same profile swept along the same path.
+
+Figure 10.5-1 shows a solid swept along a graded directrix with `Axis = (0, 0, 1)` — cross-section faces are plumb. Figure 10.5-2 shows the same solid with `Axis` perpendicular to the 3D tangent — faces tilt with the grade.
+
+*[Figure 10.5-1 — IfcSectionedSolidHorizontal on graded alignment with Axis = (0,0,1): cross-section faces are plumb.]*
+
+*[Figure 10.5-2 — IfcSectionedSolidHorizontal on graded alignment with Axis perpendicular to 3D tangent: cross-section faces tilt with the grade.]*
+
+**Recommendation.** Authors should always supply `Axis` explicitly in every `IfcAxis2PlacementLinear` entry within `CrossSectionPositions`. For infrastructure design, `Axis = (0, 0, 1)` is the appropriate choice and matches the original design intent of `IfcSectionedSolidHorizontal`. Relying on the default invites geometrically inconsistent results across implementations.
 
 ### Profile Orientation Documentation Error
 
@@ -177,15 +191,15 @@ Note that `Main-Line` cannot itself serve as the guide curve for the centerline 
 
 ### 10.6.4 Stringlines — Guide Curves as Alignments
 
-The file [`IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc`](examples/IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc) contains the same geometry as v1 but wraps each guide curve as an `IfcAlignment` instance — `A-line`, `B-line`, and `C-line` — aggregated under the project. The `Tag` is set on the `IfcOffsetCurveByDistances` carried by each alignment's shape representation. This structure satisfies the [IFC105](https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html) rooted-entity requirement and eliminates the validation service warning from v1.
+The file [`IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc`](examples/IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc) contains the same geometry as §10.6.3 but wraps each guide curve as an `IfcAlignment` instance — `A-line`, `B-line`, and `C-line` — aggregated under the project. The `Tag` is set on the `IfcOffsetCurveByDistances` carried by each alignment's shape representation. This structure satisfies the [IFC105](https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html) rooted-entity requirement and eliminates the validation service warning.
 
-Because all three guide curves in this example (and in v1) share the same `BasisCurve` as the surface `Directrix`, tag matching is scoped to that shared basis curve. Tags `"A"`, `"B"`, and `"C"` need only be unique within the set of guide curves on `Main-Line` — they do not need to be globally unique across the model. The IFC specification does not state this scoping rule explicitly, but it follows from the interpretation discussed in §10.5.
+Because all three guide curves in this example share the same `BasisCurve` as the surface `Directrix`, tag matching is scoped to that shared basis curve. Tags `"A"`, `"B"`, and `"C"` need only be unique within the set of guide curves on `Main-Line` — they do not need to be globally unique across the model. The IFC specification does not state this scoping rule explicitly, but it follows from the interpretation discussed in §10.5.
 
 ### 10.6.5 Stringlines — Independent Edge Alignments
 
 The file [`IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc`](examples/IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc) takes a different approach: the edge stringlines are derived from independent `IfcAlignment` instances whose geometry is circular arcs, rather than parametric offsets from the centerline. `Main-Line` is a 200 m straight alignment. `Left_Edge` and `Right_Edge` are 150 m circular arcs (radius 300 m) starting at ±30 m from the centerline. The guide curves for tags A and C are zero-offset curves from these arc alignments; the guide curve for tag B is a zero-offset from `Main-Line`. As previously discussed, the alignments themselves cannot carry tags, so zero-offset `IfcOffsetCurveByDistances` instances are used.
 
-Because the guide curves for tags A and C have a different `BasisCurve` than the surface `Directrix`, the basis-curve scoping rule from §10.5 no longer provides a natural disambiguation boundary. There is no shared parameterization to define which guide curves belong to which surface, so tags must be treated as globally unique across the entire model to avoid ambiguity. The IFC specification is silent on this distinction — it neither requires global uniqueness nor defines when surface-scoped uniqueness is sufficient.
+Because the guide curves for tags A and C have a different `BasisCurve` than the surface `Directrix`, the basis-curve scoping rule from §10.5 no longer provides a natural disambiguation boundary. There is no shared parameterization to define which guide curves belong to which surface or solid, so tags must be treated as globally unique across the entire model to avoid ambiguity. The IFC specification is silent on this distinction — it neither requires global uniqueness nor defines when surface-scoped uniqueness is sufficient.
 
 This configuration is the most conceptually faithful to the idea of stringlines — each edge path is an independent geometric entity — but it exposes two further specification gaps. First, `Left_Edge` and `Right_Edge` are 150 m long while the surface directrix is 200 m long. The guide curves' parameterization ends before the surface does, and the IFC specification's implicit extension rule (the last offset value continues to the end of the basis curve) does not resolve the inconsistency because the guide curves' basis curves are different from the surface directrix. Second, the cross-section at distance 200 m authors a width of 60 m each side, but the circular arc guide curves would position the edge vertices at a different lateral distance at that station. The specification does not state which governs — the authored section or the guide curve.
 
