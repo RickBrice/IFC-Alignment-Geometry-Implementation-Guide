@@ -36,6 +36,7 @@ Outstanding items across the guide, organized by chapter.
 20. Author example model and build script for §10.6.11 — `IfcSectionedSolidHorizontal` with stringlines whose `BasisCurve` matches the solid `Directrix`.
 21. Author example model and build script for §10.6.12 — `IfcSectionedSolidHorizontal` with stringlines using an independent `BasisCurve`.
 23. Author example model and build script for `IfcSectionedSurface` using an `IfcSegmentedReferenceCurve` as the `Directrix`, so the cross-section profile rotates with cant. Verify that IfcOpenShell correctly banks the surface sections.
+24. Figure 10.5-2 - this figure represents default Axis. add another figure of same model where different assumption about default Axis was made. 
 
 ## IfcOpenShell Implementation Issues
 
