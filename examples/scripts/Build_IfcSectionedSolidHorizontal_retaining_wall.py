@@ -5,7 +5,7 @@
 # Demonstrates IfcSectionedSolidHorizontal with a transforming cross-section: a retaining
 # wall profile whose stem height and footing width vary along a 50 m straight grade at
 # 10% due East. Two variants are produced to illustrate the effect of the Axis direction
-# in IfcAxis2PlacementLinear (see §10.5 and §10.6.8 of the guide):
+# in IfcAxis2PlacementLinear (see §10.5 and §10.6.2.3 of the guide):
 #   - implicit_axis: Axis omitted (implementation-defined default)
 #   - explicit_axis: Axis = (0,0,1) supplied explicitly (plumb cross-sections)
 

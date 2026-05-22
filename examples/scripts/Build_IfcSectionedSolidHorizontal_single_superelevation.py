@@ -3,11 +3,11 @@
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSolidHorizontal with single superelevation expressed via
-# IfcDerivedProfileDef. The trapezoidal ballast-bed profile from §10.6.7 is the parent
+# IfcDerivedProfileDef. The trapezoidal ballast-bed profile from §10.6.2.1 is the parent
 # profile; each cross-section position wraps it in an IfcDerivedProfileDef whose 2D
 # transformation operator rotates the profile about the track centerline by the
 # superelevation angle at that station. The alignment is a 50 m straight, due East,
-# at zero grade with no cant. See §10.6.9 of the guide.
+# at zero grade with no cant. See §10.6.2.4 of the guide.
 
 import math
 import os
@@ -85,7 +85,7 @@ railway_part = file.createIfcRailwayPart(
 )
 ifcopenshell.api.aggregate.assign_object(file, relating_object=railway, products=[railway_part])
 
-# Base cross-section profile — same trapezoid as §10.6.7, counter-clockwise winding.
+# Base cross-section profile — same trapezoid as §10.6.2.1, counter-clockwise winding.
 #
 #   (-29.5, 0.5) -------- (29.5, 0.5)
 #      /                        \

@@ -5,7 +5,7 @@
 # Demonstrates the minimal definition of IfcSectionedSolidHorizontal: a uniform trapezoidal
 # cross-section swept along a 3D alignment comprising a Bloss horizontal transition, flat
 # vertical grade, and Bloss cant segment. No profile rotation, superelevation, or guide
-# curves are used. See §10.6.7 of the guide.
+# curves are used. See §10.6.2.1 of the guide.
 
 import os
 import ifcopenshell

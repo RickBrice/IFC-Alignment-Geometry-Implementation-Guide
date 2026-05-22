@@ -141,14 +141,14 @@ is a raw semantic definition or a generated geometry file.
 #### Horizontal and cant
 
 ```
-Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
+Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
 ```
 
 Examples:
-- `Horizontal_Clothoid_100.0_inf_300_1_Meter.ifc` — Clothoid entry spiral, R = ∞ → 300 m
-- `Horizontal_BlossCurve_100.0_-300_-1000_1_Meter.ifc` — Bloss arc-to-arc, R = −300 → −1000 m
-- `Cant_BlossCurve_100.0_-300_-1000_1_Meter.ifc` — Bloss cant arc-to-arc, R = −300 → −1000 m
+- `Horizontal_Clothoid_100.0_inf_300_Meter.ifc` — Clothoid entry spiral, R = ∞ → 300 m
+- `Horizontal_BlossCurve_100.0_-300_-1000_Meter.ifc` — Bloss arc-to-arc, R = −300 → −1000 m
+- `Cant_BlossCurve_100.0_-300_-1000_Meter.ifc` — Bloss cant arc-to-arc, R = −300 → −1000 m
 
 `inf` and `-inf` denote infinite radius (straight tangent). Positive radii curve left,
 negative radii curve right.
@@ -156,11 +156,11 @@ negative radii curve right.
 #### Vertical
 
 ```
-Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.ifc
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
 ```
 
 Example:
-- `Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_1_Meter.ifc` — parabolic crest, start grade
+- `Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_Meter.ifc` — parabolic crest, start grade
   +0.5 %, end grade −1.0 %, starting at elevation 10.0 m.
 
 ### Geometry IFC files (`Alignment-geometry-testset/`)
@@ -169,9 +169,9 @@ Geometry files carry a `Generated_` prefix in addition to the alignment type pre
 making it unambiguous which files were produced by the pipeline versus hand-authored.
 
 ```
-Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.ifc
-Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
+Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
 ```
 
 ### Reference CSV files (`Alignment-reference-testset/`)
@@ -180,9 +180,9 @@ CSV files use the same name as the corresponding semantic IFC file, with the `.i
 extension replaced by `.csv`:
 
 ```
-Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.csv
-Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.csv
-Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.csv
+Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.csv
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
 ```
 
 ## CSV columns

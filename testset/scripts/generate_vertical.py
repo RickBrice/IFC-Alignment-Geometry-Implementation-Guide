@@ -27,7 +27,7 @@ H0 = cases.START_HEIGHT
 def make_file(v_type, start_g, end_g, start_label, end_label, unit_system):
     scale  = common.UNIT_SYSTEMS[unit_system]
     folder = common.CURVE_FOLDER[v_type]
-    filename = f"Vertical_{folder}_{L:.1f}_{H0:.1f}_{start_label}_{end_label}_1_{unit_system}.ifc"
+    filename = f"Vertical_{folder}_{L:.1f}_{H0:.1f}_{start_label}_{end_label}_{unit_system}.ifc"
     ifc, alignment = common.setup(filename[:-4], include_vertical=True,
                                   unit_system=unit_system)
     h_layout = align_api.get_horizontal_layout(alignment)

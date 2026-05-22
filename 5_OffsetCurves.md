@@ -24,7 +24,7 @@ The `IfcOffsetCurveByDistances.OffsetValues` are of type `IfcPointByDistanceExpr
 
 The `IfcOffsetCurveByDistances` geometry is derived by interpolating the `OffsetValues`.
 
-![](images/OffsetCurves.png)
+![](images/Figure_5.0-1_Offset_Curves.png)
 
 *Figure 5.0-1 Offset curves*
 
@@ -113,7 +113,7 @@ Three example models illustrate `IfcOffsetCurveByDistances` in progressively mor
 
 The file [`IfcOffsetCurveByDistances_2D.ifc`](examples/IfcOffsetCurveByDistances_2D.ifc) contains a basis alignment and two offset alignments. The basis curve is an `IfcCompositeCurve` — a horizontal-only curve with no elevation component.
 
-**Validation.** Both offset alignments in this model fail the validation rule `IfcShapeRepresentation.CorrectItemsForType`. The `IfcShapeRepresentation` for each offset alignment uses `RepresentationType = "Curve3D"`, which requires its items to be 3D curves. The `IfcOffsetCurveByDistances` entities here are 2D because their `BasisCurve` is an `IfcCompositeCurve` — a planar horizontal curve with no elevation component. The `IfcAlignment` specification states that `IfcOffsetCurveByDistances` may represent either a 2D or 3D alignment curve, but the `CorrectItemsForType` rule is applied at the shape representation level and does not recognise this exception. The conflict between the `IfcAlignment` statement and the shape representation rule is unresolved in IFC4x3.
+**Validation.** Both offset alignments in this model fail the validation rule `IfcShapeRepresentation.CorrectItemsForType`. The `IfcShapeRepresentation` for each offset alignment uses `RepresentationType = "Curve3D"`, which requires its items to be 3D curves. The `IfcOffsetCurveByDistances` entities here are 2D because their `BasisCurve` is an `IfcCompositeCurve` — a planar horizontal curve with no elevation component. The `IfcAlignment` specification states that `IfcOffsetCurveByDistances` may represent either a 2D or 3D alignment curve, but the `CorrectItemsForType` rule is applied at the shape representation level and does not recognise this exception. The conflict between the `IfcAlignment` statement and the shape representation rule is unresolved in IFC4x3. It is anticipated that the next version of the buildingSMART Validation Service will not flag this as an error.
 
 ### 5.5.2 Three-Dimensional Basis Curve
 
@@ -121,7 +121,7 @@ The file [`IfcOffsetCurveByDistances_3D.ifc`](examples/IfcOffsetCurveByDistances
 
 **Offset1** references the `IfcGradientCurve` as the `BasisCurve` in both the `IfcOffsetCurveByDistances` and all `IfcPointByDistanceExpression` offset values. Because `IfcGradientCurve` is a 3D curve, the resulting offset curve is 3D. Offset1 satisfies `IfcShapeRepresentation.CorrectItemsForType`.
 
-**Offset2** references `IfcGradientCurve.BaseCurve` — the underlying `IfcCompositeCurve` — as the `BasisCurve` for its offset values. `IfcCompositeCurve` is a 2D horizontal curve, so the resulting offset curve is 2D regardless of whether the parent alignment has a vertical component. Offset2 fails `IfcShapeRepresentation.CorrectItemsForType` for the same reason as the 2D example.
+**Offset2** references `IfcGradientCurve.BaseCurve` — the underlying `IfcCompositeCurve` — as the `BasisCurve` for its offset values. `IfcCompositeCurve` is a 2D horizontal curve, so the resulting offset curve is 2D regardless of whether the parent alignment has a vertical component. Offset2 fails `IfcShapeRepresentation.CorrectItemsForType` for the same reason as the 2D example. It is anticipated that the next version of the buildingSMART Validation Serivce will not flag this as an error.
 
 The key finding is that the dimensionality of an `IfcOffsetCurveByDistances` is determined by which curve object is referenced as its `BasisCurve` — not by the dimensionality of the alignment that owns it. Referencing an `IfcGradientCurve` produces a 3D offset curve; referencing its constituent `IfcCompositeCurve` produces a 2D one.
 

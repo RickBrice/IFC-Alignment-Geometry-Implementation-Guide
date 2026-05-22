@@ -115,7 +115,7 @@ geometric definition is described with the following example.
 Given a horizontal alignment segment is a line segment starting at point
 (500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. 
 
-![](images/tangent_segment.svg)
+![](images/Figure_2.3.2-1_Tangent_Segment.svg)
 
 *Figure 2.3.2-1 Tangent segment*
 
@@ -131,7 +131,7 @@ different ways and is generally not important, as will be shown in the
 example below. `IfcLine` is an infinitely long line that passes through a
 specified point at some direction in the X-Y plane. A valid, but unnecessarily complex parent curve is shown in Figure 2.3.2-2. The `IfcLine` passes through point (1000,-800) and is directed at 135° from the x-axis. The `IfcCurveSegment` trim starts 10 m from (1000,-800) and the trimmed segment has a length of 1956.796 m.
 
-![](images/Figure_2.3_IfcLine_arbitrary_placement.svg)
+![](images/Figure_2.3.2-2_IfcLine_Arbitrary_Placement.svg)
 
 *Figure 2.3.2-2 IfcLine at arbitrary placement*
 
@@ -139,7 +139,7 @@ Figure 2.3.2-2 represents a valid parent curve definition and implementations mu
 
 In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.
 
-![](images/ifcline_parent_curve.svg)
+![](images/Figure_2.3.2-3_IfcLine_Parent_Curve.svg)
 
 *Figure 2.3.2-3 IfcLine parent curve at origin*
 
@@ -315,7 +315,7 @@ The parent curve can be defined as follows:
 This is a circle centered at point (0,300) with the local X-axis aligned
 with the negative global Y-axis as shown in Figure 2.4.2-1.
 
-![](images/IfcCircle_Parent_Curve_Trimming.svg)
+![](images/Figure_2.4.2-1_IfcCircle_Parent_Curve_Trimming.svg)
 
 *Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve*
 
@@ -460,9 +460,9 @@ $$\frac{1}{300} = \frac{- 207.0196678}{\left| - {207.0196678}^{3} \right|}s$$
 
 $$s = -142.8571429$$
 
-Figure 2.5.2-1 shows the parent curve clothoid with the segment having $\kappa_s = \frac{1}{300}$ and $\kappa_e = \frac{1}{1000}$ highlighted. This is the segment that `IfcCurveSegment` must trim from the parent curve. The negative clothoid constant results in the parent curve in quadrants 2 and 4. The curvature is positive in quadrant 2. For this reason, the `SegmentStart` attribute is negative. From ths starting point, the trimming progresses to a larger radius, which is towards the origin. For this reason `SegmentLength` is a positive value. If the trimming were to progress to a smaller radius, `SegmentLength` would be a negative value. The `SegmentStart` and `SegmentLength` attributes can be positive and negative values in any combination. This is true for all parent curve types.
+Figure 2.5.2-1 shows the parent curve clothoid with the segment having $\kappa_s = \frac{1}{300}$ and $\kappa_e = \frac{1}{1000}$ highlighted. This is the segment that `IfcCurveSegment` must trim from the parent curve. The negative clothoid constant results in the parent curve in quadrants 2 and 4. The curvature is positive in quadrant 2. For this reason, the `SegmentStart` attribute is negative. From this starting point, the trimming progresses to a larger radius, which is towards the origin. For this reason `SegmentLength` is a positive value. If the trimming were to progress to a smaller radius, `SegmentLength` would be a negative value. The `SegmentStart` and `SegmentLength` attributes can be positive and negative values in any combination. This is true for all parent curve types.
 
-![](images/IfcClothoid.svg)
+![](images/Figure_2.5.2-1_IfcClothoid_Parent_Curve.svg)
 
 *Figure 2.5.2-1 - `IfcCurveSegment` trimmed from an `IfcClothoid` parent curve*
 
@@ -597,8 +597,8 @@ the coordinate point and curve tangent angle is generally defined by
 parametric equations where the parameter is the distance along the
 curve. A cubic curve is represented with the `IfcPolynomialCurve` parent
 curve type. When `IfcPolynomialCurve` is used as a cubic transition curve,
-the $x$ coefficients are \[0,1\] and the $y$ coefficients are
-\[0,0,0, $A_{3}$\] resulting in a function of the form
+the $x$ coefficients are $[0,1]$ and the $y$ coefficients are
+$[0,0,0, A_{3}]$ resulting in a function of the form
 $y(x) = A_{3}x^{3}$. See [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html).
 
 The distance along a curve is defined by
@@ -655,27 +655,25 @@ The geometric representation is
 >
 > When $u$ is parametrized as a Length measure, as required by [IfcCurveSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcCurveSegment.htm), the parametric terms of the polynomial equation are:
 >
-> $x(u) = \sum\limits_{i=0}^{l} a_i u^i $
+> $$x(u) = \sum\limits_{i=0}^{l} a_i u^i$$
 >
-> $y(u) = \sum\limits_{j=0}^{m} b_j u^j $
+> $$y(u) = \sum\limits_{j=0}^{m} b_j u^j$$
 >
-> $z(u) = \sum\limits_{k=0}^{n} c_k u^k $
+> $$z(u) = \sum\limits_{k=0}^{n} c_k u^k$$
 >
 > For $x$, $y$, and $z$ to have values in $Length$ measure, the implicit unit of measure of the coefficients must be:
 >
 > $Length^{(1-i)}$ for $a_i$
->
 > $Length^{(1-j)}$ for $b_j$
->
 > $Length^{(1-k)}$ for $c_k$
 >
 > When $u$ is parametrized as a scalar, as required by [IfcPolynomialCurve](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcPolynomialCurve.htm), the parametric terms of the polynomial equation are:
 >
-> $x(u) = L\sum\limits_{i=0}^{l} a_i u^i $
+> $$x(u) = L\sum\limits_{i=0}^{l} a_i u^i$$
 >
-> $y(u) = L\sum\limits_{j=0}^{m} b_j u^j $
+> $$y(u) = L\sum\limits_{j=0}^{m} b_j u^j$$
 >
-> $z(u) = L\sum\limits_{k=0}^{n} c_k u^k $
+> $$z(u) = L\sum\limits_{k=0}^{n} c_k u^k$$
 >
 > The parameter $u$ and the coefficients are scalar so they must be multiplied with the curve length $L$ to result in values of Length.
 >
@@ -860,7 +858,7 @@ $$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}
 
 Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.
 
-![](images/Helmert_Parent_Curves.svg)
+![](images/Figure_2.7.2-1_Helmert_Parent_Curves.svg)
 
 *Figure 2.7.2-1 First and second half of parent curves, without placement adjustments*
 
@@ -893,7 +891,7 @@ $$dy_p = \sin(\theta_p) = \sin(0.055555555) = 0.055527$$
 
 Figure 2.7.2-2 shows the same first and second half parent curves, with the origin of the second half curve translated $(x_p,y_p)$ and rotated so that the curve tangent is $(dx_p,dy_p)$
 
-![](images/Helmert_Parent_Curves_Placed.svg)
+![](images/Figure_2.7.2-2_Helmert_Parent_Curves_Placed.svg)
 
 *Figure 2.7.2-2 - First and second half parent curves with second half curve positioned*
 
@@ -936,7 +934,7 @@ The geometric representation of the second half
 
 Figure 2.7.2-3 shows the trimmed and positioned first and second half parent curves resulting in the full Helmert transition curve.
 
-![](images/Helmert_Curve_Segments.svg)
+![](images/Figure_2.7.2-3_Helmert_Curve_Segments.svg)
 
 *Figure 2.7.2-3 - Final Helmert transition curve*
 
@@ -1574,7 +1572,7 @@ The specification imposes no constraint on which curve type backs the zero-lengt
 
 ### 2.12.1 Semantic Closing Segment
 
-The `StartPoint` and `StartDirection` of the semantic segment are taken from the end state of the preceding segment, and `SegmentLength` is set to zero. One implenentation strategy is to map the preceding semantic segment definition to its geometric representation as described in this chapter, as well as in Chapters 3 and 4, and evaluate it at its end point.
+The `StartPoint` and `StartDirection` of the semantic segment are taken from the end state of the preceding segment, and `SegmentLength` is set to zero. One implementation strategy is to map the preceding semantic segment definition to its geometric representation as described in this chapter, as well as in Chapters 3 and 4, and evaluate it at its end point.
 
 ~~~
 // Last non-zero length segment

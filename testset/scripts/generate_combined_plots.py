@@ -55,13 +55,13 @@ def read_csv(path: Path, *cols):
 
 def find_horizontal_csv(cant_csv: Path) -> Path:
     parts = cant_csv.stem.split('_')
-    # stem: Cant_{CurveType}_{Length}_{StartR}_{EndR}_1_{Unit}
+    # stem: Cant_{CurveType}_{Length}_{StartR}_{EndR}_{Unit}
     cant_type  = parts[1]          # e.g. BlossCurve
     length     = parts[2]          # e.g. 100.0
     start_r    = parts[3]          # e.g. inf or -300
     end_r      = parts[4]          # e.g. 300 or -inf
     horiz_type = CANT_TO_HORIZ[cant_type]
-    stem = f'Horizontal_{horiz_type}_{length}_{start_r}_{end_r}_1_Meter'
+    stem = f'Horizontal_{horiz_type}_{length}_{start_r}_{end_r}_Meter'
     return CSV_ROOT / 'HorizontalAlignment' / horiz_type / f'{stem}.csv'
 
 

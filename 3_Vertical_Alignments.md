@@ -404,7 +404,7 @@ $x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
 
 Compute the chord length, $c$ between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the right triangle shown. Once the point on the parent curve is known, a chord distance between the start of the trim and this point can be computed (see inset chord line detail). From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
 
-![](images/vertical_circular_arc_diagram.svg)
+![](images/Figure_3.4.3-1_Vertical_Circular_Arc.svg)
 
 *Figure 3.4.3-1 — Geometry of a vertical circular arc. The chord $c$ connects two points on the arc. The right triangle simplifies locating points on the arc. The inset highlights the distinction between the straight chord and the curved arc.*
 
@@ -424,7 +424,7 @@ Compute the chord length from the trim start to the point
 
 $$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-29.933926737614911 - 10)^2} = 58.275552077461235\ m$$
 
-Angle subtented by the trimmed segment
+Angle subtended by the trimmed segment
 
 $$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{58.275552077461235}{2 \cdot 384.773458895502}\right) = 0.15159931828379261$$
 
@@ -482,9 +482,10 @@ $$M_v = \begin{bmatrix}
 Vertical clothoid transition curves are not addressed in this guide. The available reference implementation ([bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry)) produces degenerate results for this case — the generated IFC files have zero-length vertical alignments and a clothoid constant of zero, making them unsuitable as reference material. Until a correct reference or authoritative worked example is available, the geometric mapping for `IfcClothoid` in a vertical context remains undocumented here.
 An example of a file generated from the reference implementation is [https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__VerticalAlignment_Clothoid_100.0_10.0_0.5_0.0_1_Meter.ifc).
 
-The mapping from the sementic curve definition to the gemoetric defintion is shown in this IFC coding.
+The mapping from the semantic curve definition to the geometric definition is shown in this IFC coding.
+
 ~~~
-// Semantic defintion
+// Semantic definition
 #41 = IFCALIGNMENTVERTICAL('1FNFyDAJeHwv87wDZHIYI1', $, $, $, $, #89, $);
 #42 = IFCALIGNMENTSEGMENT('1FNFyHAJeHwuDtwDZHIYI2', #3, $, $, $, #72, #75, #44);
 #43 = IFCRELNESTS('4CGecNrjCHwxOSbERtTLTf', $, $, $, #41, (#42));
@@ -513,7 +514,7 @@ End radius = end radius of curvature
 Set equal to horizontal length, adjust curve length until computed value
 is equal to the specified horizontal length. Numerically solve 
 
-![](images/image11.png)
+![](images/Figure_3.5-1_Vertical_Clothoid.png)
 
 *Figure 3.5-1 Vertical clothoid*
 -->
@@ -577,7 +578,7 @@ It is easiest to place the parent curve at the origin and orient it with the glo
 >
 > $A_2 = Length^{-1}$
 >
-> The coefficients of `IfcPolynomialCurve` expect real numbers without explictit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Chapter 2 - Horizontal Alignments](./2_Horizontal_Alignments.md). Implicit units of measure are required for the polynomial coefficients.
+> The coefficients of `IfcPolynomialCurve` expect real numbers without explicit unit of measure. This is a problem with the IFC Specification. See the discussion of `IfcAlignmentHorizontalSegment` and `IfcPolynomialCurve` for Cubic Transition Curve in [Chapter 2 - Horizontal Alignments](./2_Horizontal_Alignments.md). Implicit units of measure are required for the polynomial coefficients.
 
 The polynomial curve is trimmed using `IfcCurveSegment.SegmentStart` and `IfcCurveSegment.SegmentLength`. These parameters are measured along the length of the curve. The horizontal projection of the segment length, from `IfcAlignmentVerticalSegment.HorizontalLength` is $h_l = 1600$. `SegmentLength` will be slightly longer because it is the distance along the curve.
 

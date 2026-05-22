@@ -26,7 +26,7 @@ L = cases.SEGMENT_LENGTH
 def make_file(curve_type, start_r, end_r, start_label, end_label, unit_system):
     scale  = common.UNIT_SYSTEMS[unit_system]
     folder = common.CURVE_FOLDER[curve_type]
-    filename = f"Horizontal_{folder}_{L:.1f}_{start_label}_{end_label}_1_{unit_system}.ifc"
+    filename = f"Horizontal_{folder}_{L:.1f}_{start_label}_{end_label}_{unit_system}.ifc"
     ifc, alignment = common.setup(filename[:-4], unit_system=unit_system)
     h_layout = align_api.get_horizontal_layout(alignment)
     common.add_h_segment(ifc, h_layout, start_r * scale, end_r * scale, L * scale, curve_type)
@@ -38,7 +38,7 @@ def make_viennesebend_file(case, unit_system):
     """VienneseBend requires cant parameters for geometry; include all three layouts."""
     scale = common.UNIT_SYSTEMS[unit_system]
     h_sr, h_er, h_sl, h_el, scl, ecl, scr, ecr = case
-    filename = f"Horizontal_VienneseBend_{L:.1f}_{h_sl}_{h_el}_1_{unit_system}.ifc"
+    filename = f"Horizontal_VienneseBend_{L:.1f}_{h_sl}_{h_el}_{unit_system}.ifc"
     ifc, alignment = common.setup(filename[:-4], include_vertical=True, include_cant=True,
                                   unit_system=unit_system)
     h_layout = align_api.get_horizontal_layout(alignment)

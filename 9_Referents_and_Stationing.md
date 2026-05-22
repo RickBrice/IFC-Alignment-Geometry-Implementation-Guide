@@ -113,7 +113,7 @@ $$\text{DistanceAlong} = \text{referent\_distance} + \frac{S - \text{segment\_st
 
 For simple alignments with no equations, this reduces to the familiar $\text{DistanceAlong} = S - \text{starting\_station}$.
 
-![](images/stationing_diagram.svg)
+![](images/Figure_9.3.4-1_Stationing_Diagram.svg)
 
 *Figure 9.3.4-1 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation.*
 
@@ -203,7 +203,7 @@ The IFC specification does not resolve this clearly. Two patterns are seen in pr
 
 **Recommendation:** Use Pattern B — separate nests. This is the pattern illustrated in the existing Figure 9.4.2-1 and is more robust for software implementations. The layout nest and the referent nest are independent, and each can be processed without concern for the content of the other.
 
-![](images/ifc_alignment_relnests_erd.svg)
+![](images/Figure_9.4.2-1_Alignment_RelNests_ERD.svg)
 
 *Figure 9.4.2-1 — Two `IfcRelNests` relationships: one for alignment layout sub-objects (horizontal, vertical, cant) and one for `IfcReferent` instances.*
 
@@ -234,7 +234,7 @@ The relationship between an `IfcReferent` and the object whose position it annot
 
 *Example:* A bridge pier (`IfcBridgePart.PIER`) is geometrically placed at `DistanceAlong = 14235.75`. An `IfcReferent` with `PredefinedType = STATION` and `Pset_Stationing.Station = 14235.75` (relative to the starting station) is connected to the pier via `IfcRelPositions`. The pier’s station label is now Sta. 142+35.75. The pier’s geometry is unchanged. This is shown in Figure 9.5.2-1.
 
-![](images/ifc_referent_entity_relationship.svg)
+![](images/Figure_9.5.2-1_Referent_Entity_Relationship.svg)
 
 *Figure 9.5.2-1 — Object graph showing an `IfcBridgePart.PIER` with its own `IfcLinearPlacement`, an `IfcReferent` (STATION type) with `Pset_Stationing`, and the `IfcRelPositions` link between them.*
 

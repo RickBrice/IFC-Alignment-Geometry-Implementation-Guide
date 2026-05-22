@@ -2,9 +2,9 @@
 
 ## A
 
-**accuracy** — 5.4, 5.4.1, 11.0  
+**accuracy** — 5.2, 11.0  
 **arc length** — 2.2, 3.2, 4.2, 5.4.1, 5.5  
-**arc length, offset curve** — 5.5  
+**arc length, offset curve** — 5.2  
 **asymmetric parabolic arc** — A.4.4  
 **Axis (coordinate vector)** — 4.1.2, 8.3.1
 
@@ -54,6 +54,7 @@
 
 ## D
 
+**default Axis direction** — 8.3.2, 10.5  
 **deviating elevation** — 4.0, 4.1.2, Notation  
 **directrix** — 10.3, 10.4, 10.5  
 **`DistanceAlong`** — 8.2.1, 8.2.2, 9.3.4  
@@ -65,8 +66,10 @@
 **EnrichIfc4x3** — 4.11  
 **Euler spiral** — *see* Clothoid  
 **example models**  
-&emsp;offset curves — 5.6  
-&emsp;linear placement — 8.8
+&emsp;offset curves — 5.5  
+&emsp;linear placement — 8.8  
+&emsp;sectioned surfaces — 10.6.1  
+&emsp;sectioned solids — 10.6.2
 
 ## F
 
@@ -90,7 +93,7 @@
 
 ## I
 
-**IFC105 validation rule** — 5.2  
+**IFC105 validation rule** — 5.1  
 **`IfcAlignment`** — 1.0, 1.4, 1.5, 5.2, 7.1  
 **`IfcAlignmentCant`** — 1.3, 4.0  
 **`IfcAlignmentHorizontal`** — 1.1, 2.0, 2.1  
@@ -108,15 +111,15 @@
 &emsp;horizontal — 2.3, 2.3.1  
 &emsp;vertical — 3.3, 3.3.1  
 **`IfcLinearPlacement`** — 8.2, 8.6  
-**`IfcOffsetCurveByDistances`** — 5.0, 5.2, 5.4, 5.6, 5.7, 5.8, 8.6  
+**`IfcOffsetCurveByDistances`** — 5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 8.6  
 **`IfcPointByDistanceExpression`** — 5.0, 8.2  
 **`IfcPolyline`** — 6.1  
 **`IfcPolynomialCurve`** — 2.6, 2.7, 2.8, 2.9, 2.10, 2.11  
 **`IfcReferent`** — 9.1, 9.4  
 **`IfcRelNests`** — 9.4.1  
 **`IfcRelPositions`** — 9.5.2  
-**`IfcSectionedSolidHorizontal`** — 10.4, 10.4.1  
-**`IfcSectionedSurface`** — 10.3, 10.3.1  
+**`IfcSectionedSolidHorizontal`** — 10.4, 10.4.1, 10.6.2  
+**`IfcSectionedSurface`** — 10.3, 10.3.1, 10.3.2, 10.6.1  
 **`IfcSegmentedReferenceCurve`** — 1.5.1, 4.0, 4.2  
 **implementation checklist**  
 &emsp;horizontal — 2.13  
@@ -125,7 +128,7 @@
 &emsp;referents and stationing — 9.6  
 **implementation questions** — 7.2  
 **infinite radius** — A.3.6  
-**interpolation, offset values** — 5.7  
+**interpolation, offset values** — 5.3  
 **ISO 19148** — 8.7
 
 ## L
@@ -157,7 +160,7 @@
 
 **offset curves** — 5.0–5.8  
 **offset sign convention** — 5.1  
-**`OffsetLateral`** — 5.4.1, 8.6.2  
+**`OffsetLateral`** — 5.2, 8.6.2  
 **`OffsetLongitudinal`** — 8.4.2  
 **overlap equation** — 9.3.3
 
@@ -170,27 +173,29 @@
 **precision** — 11.0  
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5  
-**`Pset_Stationing`** — 5.3, 9.2.2  
+**`Pset_Stationing`** — 9.2.2  
 **PVI (point of vertical intersection)** — A.4.2
 
 ## R
 
 **radius sign convention** — 2.1, A.3.5  
 **real-world alignments (testset)** — 12.3.4  
-**reference coordinates** — 12.2.4, 12.5  
+**reference coordinates** — 12.2.4, 12.4  
 **referent ordering** — 9.4.3  
+**retaining wall** — 10.6.2.3  
 **RefDirection** — 4.1.2, 8.3.1  
 **rotation point** — A.5.4
 
 ## S
 
-**sectioned surfaces and solids** — 10.0–10.5  
+**sectioned surfaces and solids** — 10.0–10.6  
+**specification gaps** — 10.5  
 **segment mapping** — 1.6, 2.3.2, 2.4.2, 2.5.2, 2.6.2, 2.7.2, 2.8.2, 2.9.2, 2.10.2, 2.11.2  
 **semantic definition** — 1.4, 2.1  
 **semantic vs. geometric** — 1.4, 1.5, 9.5  
 **sign convention**  
 &emsp;curvature — 2.1  
-&emsp;offset — 5.1  
+&emsp;offset — 5.0  
 &emsp;radius (LandXML) — A.3.5  
 **Sine transition curve**  
 &emsp;horizontal — 2.10, 2.10.1–2.10.3  
@@ -200,21 +205,20 @@
 **start station** — 9.2.1, A.6.1  
 **station equations** — 9.3, A.6.2  
 **stationing** — 9.2, 9.3, A.6  
-&emsp;on offset alignments — 5.3  
-**stringlines** — 10.2  
+**stringlines** — 10.2, 10.3.2  
 **superelevation** — *see* cant
 
 ## T
 
-**Tag attribute** — 5.8, 10.3  
+**Tag attribute** — 5.4, 10.3  
 **tangent direction** — 4.1.2  
-**testset** — 12.0–12.6  
-&emsp;file naming — 12.4  
+**testset** — 12.0–12.5  
+&emsp;file naming — 12.2  
 &emsp;horizontal test cases — 12.3.1  
 &emsp;vertical test cases — 12.3.2  
 &emsp;cant test cases — 12.3.3  
 &emsp;real-world cases — 12.3.4  
-&emsp;validation guidance — 12.6  
+&emsp;validation guidance — 12.5  
 **tolerance** — 11.0  
 **transition curves** — 2.5–2.11  
 &emsp;*see also individual curve types*  
@@ -227,7 +231,7 @@
 
 ## V
 
-**validation** — 5.2, 12.6  
+**validation** — 5.1, 12.5  
 **vertical alignment** — 1.2, 3.0–3.8  
 **Viennese Bend (VienneseBend)**  
 &emsp;horizontal — 2.11, 2.11.1–2.11.3  

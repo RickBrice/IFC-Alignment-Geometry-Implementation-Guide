@@ -17,7 +17,7 @@ The primary declaration mechanism is `IfcCurveSegment.Transition`, which specifi
 
 Figure 11.0-1 illustrates the various transition types. 
 
-![IfcTransitionCode](images/ifctransitioncode.gif)
+![IfcTransitionCode](images/Figure_11.0-1_IfcTransitionCode.gif)
 
 *Figure 11.0-1 - Illustration of segment transition types*
 

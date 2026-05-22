@@ -8,4 +8,6 @@ My entry point was a practical one: I set out to add alignment geometry support 
 
 That experience is what motivated this guide. I have spent my career building tools that make complex engineering knowledge accessible and actionable — from prestressed concrete design software to recommended practices for girder stability. This document is written in that same spirit: to capture what I have learned about IFC 4x3 alignment geometry and provide practical guidance for developers implementing it in their own applications. I hope it saves others the painful hours of confusion I experienced, because in the end, IFC is about interoperability. We all need a shared understanding of infrastructure alignment concepts and geometry to successfully exchange information.
 
+Some sections of this guide were drafted with the assistance of an AI writing tool. All technical content — the mathematics, the IFC schema interpretations, and the implementation guidance — has been reviewed and verified by the author. The responsibility for accuracy rests with me.
+
 Richard Brice, PE

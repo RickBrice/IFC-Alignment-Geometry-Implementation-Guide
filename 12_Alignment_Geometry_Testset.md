@@ -26,8 +26,7 @@ testset/
 ├── Alignment-semantic-testset/    # Semantic IFC files (no geometry)
 ├── Alignment-geometry-testset/    # IFC files with geometric representations
 ├── Alignment-reference-testset/   # Reference coordinates sampled at 1 m intervals
-├── Alignment-plots/               # SVG plots for visual inspection
-└── RealWorldAlignments/           # Real-world IFC files with 3D reference coordinates
+└── Alignment-plots/               # SVG plots for visual inspection
 ```
 
 All four folders share the same internal hierarchy: alignment type then curve type subfolder.
@@ -69,6 +68,33 @@ evaluation? They also serve as inputs for testing geometric representation gener
 an implementation can construct its own geometry IFC files from the semantic definitions
 and benchmark the result against the reference geometry files in `Alignment-geometry-testset/`.
 
+**File naming.** Each filename is prefixed with the alignment type — `Horizontal`, `Vertical`, or `Cant` — so the alignment type is unambiguous without inspecting the file or its folder path. All numeric tokens in the filename (length, radii) use meter-based values regardless of unit system, so the same filename prefix identifies the same physical alignment across all three unit variants.
+
+**Horizontal and cant:**
+
+```
+Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+```
+
+The radius tokens use `inf` and `-inf` for infinite radius (straight tangent). Positive radii denote left curves; negative radii denote right curves.
+
+Examples:
+- `Horizontal_Clothoid_100.0_inf_300_Meter.ifc` — Clothoid entry spiral, R = ∞ → +300 m, SI units
+- `Horizontal_Clothoid_100.0_inf_300_SurveyFoot.ifc` — same alignment, US survey feet
+- `Horizontal_HelmertCurve_100.0_-300_-1000_Meter.ifc` — Helmert arc-to-arc, R = −300 → −1000 m
+- `Cant_BlossCurve_100.0_-inf_-300_Meter.ifc` — Bloss cant entry spiral, right curve
+
+**Vertical:**
+
+```
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+```
+
+Examples:
+- `Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_Meter.ifc` — parabolic crest, +0.5 % to −1.0 %, starting at elevation 10.0 m
+- `Vertical_ConstantGradient_100.0_10.0_-0.5_-0.5_Meter.ifc` — constant descent at −0.5 %
+
 ### 12.2.3 Geometry IFC Files
 
 The geometry IFC files extend the semantic files with `IfcCurveSegment`-based geometric
@@ -83,16 +109,24 @@ semantic to geometric alignment definitions — specifically, whether the
 alignment curve at any point along its length, making them the input for coordinate
 comparison against the reference values in `Alignment-reference-testset/`.
 
+**File naming.** Geometry files carry the same name as their semantic counterpart with `Generated_` prepended, distinguishing machine-generated files from the hand-authored semantic definitions:
+
+```
+Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+```
+
 ### 12.2.4 Reference Coordinates
 
 The reference coordinate files are CSV tables of coordinates sampled at every 1 m of
 horizontal distance along each alignment, from 0.0 m to 100.0 m inclusive (101 rows per
 file). Their purpose is to provide concrete values that any implementation can compare
-its output against, independent of the IFC files. The CSV file format and column
-definitions are described in Section 12.5.
+its output against, independent of the IFC files. The file format and column
+definitions are described in §12.4.
 
 The following excerpt shows the first five rows of
-`HorizontalAlignment/BlossCurve/Horizontal_BlossCurve_100.0_300_1000_1_Meter.csv` — a Bloss
+`HorizontalAlignment/BlossCurve/Horizontal_BlossCurve_100.0_300_1000_Meter.csv` — a Bloss
 arc-to-arc transition from R = +300 m to R = +1000 m:
 
 ```
@@ -109,6 +143,14 @@ At the start of the segment the position is at the origin, the tangent points du
 Y coordinate and `RefDir_dy` both increase as the alignment curves away from the
 initial straight.
 
+**File naming.** Reference CSV files use the same name as the corresponding semantic IFC file with the `.ifc` extension replaced by `.csv`:
+
+```
+Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.csv
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+```
+
 ### 12.2.5 Plots
 
 The `Alignment-plots/` folder contains plots for visual inspection, organized into
@@ -122,9 +164,9 @@ Figure 12.2.5-1 shows a representative example: a Helmert arc-to-arc transition 
 R = +300 m to R = +1000 m. The upper panel shows the horizontal plan view; the lower
 panel shows the corresponding cant profile.
 
-![Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)](testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_1_Meter.svg)
+![Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)](testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_Meter.svg)
 
-**Figure 12.2.5-1** — Combined horizontal and cant plot for `Cant_HelmertCurve_100.0_300_1000_1_Meter`.
+**Figure 12.2.5-1** — Combined horizontal and cant plot for `Cant_HelmertCurve_100.0_300_1000_Meter`.
 
 ---
 
@@ -261,7 +303,7 @@ A second variant of the FHWA alignment is provided to support validation of `Ifc
 | Project unit | International foot |
 | 3D curve type | `IfcGradientCurve` |
 
-The reference CSV uses the same 13-column format as the other real-world alignment files (Section 12.5.2), but contains 124 rows rather than 101 — one row per `IfcLinearPlacement`, evaluated at the corresponding station distance rather than at uniform intervals. An implementation validates its linear placement support by reading each placement's `DistanceAlong`, evaluating the 3D gradient curve at that distance, and comparing the result against the matching row in the CSV.
+The reference CSV uses the same 13-column format as the other real-world alignment files (Section 12.4.2), but contains 124 rows rather than 101 — one row per `IfcLinearPlacement`, evaluated at the corresponding station distance rather than at uniform intervals. An implementation validates its linear placement support by reading each placement's `DistanceAlong`, evaluating the 3D gradient curve at that distance, and comparing the result against the matching row in the CSV.
 
 #### BPaimio–Kupittaa
 
@@ -304,77 +346,11 @@ segments with a rail head distance of 1.0 m.
 
 All three CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
 length. All positions are in project units; direction components are dimensionless. The
-column definitions are given in Section 12.5.2.
+column definitions are given in Section 12.4.2.
 
----
+## 12.4 Reference Coordinates
 
-## 12.4 File Naming
-
-Each filename is prefixed with the alignment type — `Horizontal`, `Vertical`, or `Cant` —
-so the alignment type is unambiguous without inspecting the file or its folder path.
-Geometry IFC files carry an additional `Generated_` prefix to distinguish machine-generated
-files from the hand-authored semantic definitions.
-
-### 12.4.1 Semantic IFC files
-
-**Horizontal and cant:**
-
-```
-Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-```
-
-The radius tokens use `inf` and `-inf` for infinite radius (straight tangent). Positive
-radii denote left curves; negative radii denote right curves.
-
-The `{Unit}` token is one of `Meter`, `SurveyFoot`, or `IntlFoot`. All numeric tokens in
-the filename (length, radii) use the meter-based values regardless of unit system, so
-the same filename prefix identifies the same physical alignment across all three variants.
-
-Examples:
-- `Horizontal_Clothoid_100.0_inf_300_1_Meter.ifc` — Clothoid entry spiral, R = ∞ → +300 m, SI units
-- `Horizontal_Clothoid_100.0_inf_300_1_SurveyFoot.ifc` — same alignment, US survey feet
-- `Horizontal_HelmertCurve_100.0_-300_-1000_1_Meter.ifc` — Helmert arc-to-arc, R = −300 → −1000 m
-- `Cant_BlossCurve_100.0_-inf_-300_1_Meter.ifc` — Bloss cant entry spiral, right curve
-
-**Vertical:**
-
-```
-Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.ifc
-```
-
-Examples:
-- `Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_1_Meter.ifc` — parabolic crest, +0.5 % to −1.0 %,
-  starting at elevation 10.0 m
-- `Vertical_ConstantGradient_100.0_10.0_-0.5_-0.5_1_Meter.ifc` — constant descent at −0.5 %
-
-### 12.4.2 Geometry IFC files
-
-Geometry files carry the same name as their semantic counterpart with `Generated_`
-prepended:
-
-```
-Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.ifc
-Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-```
-
-### 12.4.3 Reference CSV files
-
-Reference CSV files use the same name as the corresponding semantic IFC file with the
-`.ifc` extension replaced by `.csv`:
-
-```
-Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.csv
-Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.csv
-Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.csv
-```
-
----
-
-## 12.5 Reference Coordinates
-
-### 12.5.1 File Format
+### 12.4.1 File Format
 
 Each reference file contains 101 rows plus a header row. The rows are sampled at 1 m
 intervals of horizontal distance (0.0 m to 100.0 m), so `dist_along` values in
@@ -425,7 +401,7 @@ The banked axis (`Axis_dy`, `Axis_dz`) is the cross-track "up" direction after a
 the cant rotation about the forward tangent. For a planar track the X component of
 the axis is always 0.0 and `Axis_dz` approaches 1.0 when cant is zero.
 
-### 12.5.2 3D Alignment Reference Coordinates
+### 12.4.2 3D Alignment Reference Coordinates
 
 The 3D CSV files under `testset/RealWorldAlignments/` are produced by evaluating the combined 3D curve
 (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`) at each sample point. Each
@@ -455,9 +431,9 @@ about the forward tangent and both `Y_dz` and `Axis_dy` become non-zero.
 
 ---
 
-## 12.6 Validation Guidance
+## 12.5 Validation Guidance
 
-### 12.6.1 What to Check
+### 12.5.1 What to Check
 
 The three forms of the testset support three distinct validation activities:
 
@@ -474,7 +450,7 @@ reading a reference geometry file — in either case no numerical evaluation is 
 **Geometric accuracy.** Evaluate a geometry IFC alignment at 1 m intervals and compare
 the resulting coordinates against the reference values. This is the primary numerical test.
 
-### 12.6.2 Comparison Approach
+### 12.5.2 Comparison Approach
 
 Load a geometry IFC file, evaluate the alignment curve at
 $d = 0.0, 1.0, 2.0, \ldots, 100.0$ meters, and compare each computed value against the
@@ -488,7 +464,7 @@ The most useful comparisons are:
 - **Banked axis** (`Axis_dy`, `Axis_dz`, cant only) — the cross-track "up" direction.
   Errors here indicate a problem in the cant rotation logic.
 
-### 12.6.3 Cross-Unit Validation
+### 12.5.3 Cross-Unit Validation
 
 Because the three unit variants encode the same physical alignment, they provide an
 independent check for unit-handling correctness that does not require any external

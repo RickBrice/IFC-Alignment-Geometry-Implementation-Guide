@@ -51,7 +51,12 @@
       "Bash(sort -k2 -hr)",
       "Bash(Copy-Item \"D:\\\\LX2IFC\\\\FTIA_LandXML\\\\BPaimio-Kupittaa_GK23_N2000_2020_patch_3.ifc\" \"D:\\\\IFC-Alignment-Geometry-Implementation-Guide\\\\testset\\\\3D\\\\BPaimio-Kupittaa_GK23_N2000_2020.ifc\")",
       "Bash(Write-Host \"Copied.\")",
-      "Bash(pip install *)"
+      "Bash(pip install *)",
+      "Bash(msiexec /i \"C:\\\\Users\\\\BriceR\\\\Downloads\\\\pandoc-installer.msi\" /qn ALLUSERS=1)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(Sort-Object)",
+      "PowerShell(pip install *)",
+      "PowerShell(python -m pip install python-docx)"
     ]
   }
 }

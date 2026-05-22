@@ -46,7 +46,7 @@ The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference
 
 Figure 8.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.
 
-![](images/alignment_linear_placement_features.svg)
+![](images/Figure_8.1.2-1_Linear_Placement_Features.svg)
 
 *Figure 8.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
@@ -92,37 +92,25 @@ When `Axis` and `RefDirection` are both omitted, the implementation must supply 
 
 ### 8.3.2 Default Axis — An Open Issue
 
-The default value of `Axis` is not unambiguously defined in the IFC schema documentation. A known open issue in the buildingSMART community tracks this ambiguity (see [IFC4.x-IF Issue #125](https://github.com/buildingSMART/IFC4.x-IF/issues/125)).
+The ambiguity originates in how `IfcAxis2PlacementLinear` describes its optional attributes compared to its 3D counterpart. `IfcAxis2Placement3D` is explicit: its specification states that when `Axis` is omitted it defaults to `(0, 0, 1)` and when `RefDirection` is omitted it defaults to `(1, 0, 0)`. No interpretation is required.
+
+`IfcAxis2PlacementLinear` takes a different approach. Its specification states:
+
+> "Relative placement axes (`Axis` and `RefDirection`) are relative to the curve used for linear referencing provided in `IfcPlacement.Location` (`IfcPointByDistanceExpression.BasisCurve`), maintaining the relationship to the tangent of the curve."
+
+This sentence says the axes are *derived from the curve*, not from global coordinates. The natural reading is that `RefDirection` defaults to the curve tangent — which implementations broadly agree on — and that `Axis` defaults to something perpendicular to that tangent in the general upward direction. On a flat alignment those two readings coincide: the upward perpendicular to a horizontal tangent is `(0, 0, 1)`. On a graded alignment they diverge: "perpendicular to the 3D tangent in the upward direction" tilts with the grade and is no longer `(0, 0, 1)`. The specification never resolves what "upward relative to the curve" concretely means, and that silence is the source of the ambiguity. A known open issue in the buildingSMART community tracks it (see [IFC4.x-IF Issue #125](https://github.com/buildingSMART/IFC4.x-IF/issues/125)).
 
 Two interpretations exist in practice:
 
-1. **Axis = global Z = (0, 0, 1).** This is the most common implementation. It produces a coordinate system whose Z-axis is always vertical, regardless of the slope of the alignment. The X-axis (RefDirection) follows the horizontal tangent direction even when the curve has a vertical grade. This is natural for plan-oriented placement and matches traditional station-offset-elevation thinking.
-1. **Axis = perpendicular to RefDirection in the plane containing RefDirection and global Z.** This produces a coordinate system whose Z-axis tilts with the grade of the alignment. The local X-axis is truly tangent to the 3D curve. This is more mathematically rigorous but less intuitive for typical civil engineering use.
+1. **Axis = global Z = (0, 0, 1).** The Z-axis is always vertical regardless of alignment slope. The X-axis follows the horizontal tangent direction even when the curve has a vertical grade. This is natural for plan-oriented placement and matches traditional station-offset-elevation thinking.
+2. **Axis = perpendicular to RefDirection in the plane containing RefDirection and global Z.** The Z-axis tilts with the grade of the alignment. The local X-axis is truly tangent to the 3D curve. This reading follows directly from the curve-relative language in the specification, and produces the same orientation that `IfcExtrudedAreaSolid` would use when sweeping along the same path.
 
-**Recommendation:** Use interpretation 1 (Axis = global Z) unless the application specifically requires the tilted interpretation. When writing files, explicitly supply `Axis = (0, 0, 1)` to remove ambiguity.
+The connection between interpretation 2 and the broader IFC linear referencing model is not incidental. When evaluating a point along a 3D curve such as `IfcGradientCurve` or `IfcSegmentedReferenceCurve`, the resulting coordinate frame at that point is derived from the curve itself — the tangent at the evaluation distance determines the local forward direction, and the normal plane at that point governs the transverse and vertical axes. This is the frame that implementations compute when moving along a 3D alignment, as illustrated in the discussions of vertical and cant alignment geometry in Chapters 3 and 4. The perpendicular-to-3D-tangent interpretation of `Axis` is most consistent with that model: both derive orientation from the same 3D curve tangent, so a placement using interpretation 2 produces a frame congruent with what an implementation computes when evaluating the directrix at the same distance.
 
-### 8.3.3 Step-by-Step Construction of the Default Local CS
+The practical consequence of this ambiguity is graphically illustrated in §10.5 — Figure 10.5-2 shows the same `IfcSectionedSolidHorizontal` model with `Axis` omitted rendered by two viewers that adopted opposite defaults, producing visibly different geometry on a 10% grade.
 
-When `Axis` and `RefDirection` are not provided, the local coordinate system is constructed as follows. Let **T** be the unit tangent vector to the 3D alignment curve at the placement distance, and let **Z_g** = (0, 0, 1) be the global vertical.
+**Recommendation:** `IfcAxis2Placement3D` avoids this problem by stating its defaults explicitly — authors of `IfcAxis2PlacementLinear` should do the same. Always supply `Axis = (0, 0, 1)` explicitly rather than relying on the default. For infrastructure design, interpretation 1 is the appropriate choice and matches traditional plan-and-profile intent.
 
-1. **Set Z** = (0, 0, 1)  *(the Axis direction)*
-1. **Compute RefDirection** = unit tangent **T** to the 3D curve at `DistanceAlong`.  
-   For a horizontal curve (grade = 0), **T** lies in the XY plane.  
-   For a graded curve, **T** has a non-zero Z component.
-1. **Y** = normalize(**Z** × **T**)  *(points to the left of travel)*
-1. **X** = normalize(**Y** × **Z**)  *(points forward, projected onto the horizontal plane)*
-
-The result is a coordinate system whose:
-
-- X-axis points forward along the alignment (horizontal projection of the tangent),
-- Y-axis points to the left (lateral direction in the horizontal plane),
-- Z-axis points upward (global vertical).
-
-This is the classic highway “station-offset” reference frame and is illustrated in Figure 8.3.3-1.
-
-![](images/linear_placement_offsets.svg)
-
-*Figure 8.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.*
 
 ## 8.4 Longitudinal Offset and Unreachable Points
 
@@ -132,7 +120,7 @@ In plane geometry, every point off a smooth curve can be reached by some combina
 
 The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 8.4.1-1.
 
-![](images/pi_unreachable_zone.svg)
+![](images/Figure_8.4.1-1_PI_Unreachable_Zone.svg)
 
 *Figure 8.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 
@@ -243,7 +231,7 @@ In this example:
 - `DistanceAlong = 1435.75` is the geometric distance from the start of `#102`.
 - `OffsetLateral = -5.25` places the point 5.25 m to the right of the horizontal alignment (negative = right of travel).
 - `OffsetVertical` is omitted; the point is placed in the same plane as the horizontal alignment.
-- `Axis` and `RefDirection` are omitted; the default CS is constructed as described in §8.3.3.
+- `Axis` and `RefDirection` are omitted; the resulting orientation is implementation-defined (see §8.3.2).
 
 ## 8.9 Summary and Implementation Checklist
 

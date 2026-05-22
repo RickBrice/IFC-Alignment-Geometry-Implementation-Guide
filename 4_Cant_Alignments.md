@@ -40,17 +40,17 @@ segment start elevation of the next segment. The left section in Figure 4.1.1-1 
 
 When the segment start elevation is the same as the start of the next segment, the deviating elevation along the length of the segment is constant. This occurs when centrifugal forces are constant or zero, in constant radius curvature and straight sections of the railway, respectively.
 
-![](images/IfcSegmentedReferenceCurve.jpg)
+![](images/Figure_4.1.1-1_Cant_Segment_Cross_Section.jpg)
 
 *Figure 4.1.1-1 - cross section and elevation of a cant segment (source: bSI)*
 
-![](images/Cant.svg)
+![](images/Figure_4.1.1-2_Deviating_Elevation.svg)
 
 *Figure 4.1.1-2 - Deviating elevation of rails*
 
 The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction is generally upwards. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, The cross slope angle is measured from the y-axis is $\tfrac{\pi}{2}$.
 
-![](images/CrossSlopeAngle.svg)
+![](images/Figure_4.1.1-3_Rail_Head_Cross_Slope.svg)
 
 *Figure 4.1.1-3 - Rail head cross slope*
 
@@ -759,7 +759,7 @@ $$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22
 
 Figure 4.5.2-1 shows the first and second half parent curves.
 
-![](images/Helmert_Cant_Parent_Curves.svg)
+![](images/Figure_4.5.2-1_Helmert_Cant_Parent_Curves.svg)
 
 *Figure 4.5.2-1 - `IfcSecondOrderPolynomialSpiral` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
 
@@ -1829,7 +1829,7 @@ Cubic Term:
  
  $A_{3} = \tfrac{100\ m}{\sqrt[4]{|-0.16\ m|}}\tfrac{-0.16\ m}{|-0.16\ m|} = -158.113883\ m^{3/4}$
 
-Notice that the polynomial coefficents do not have whole length units (e.g. the units aren't $m$).
+Notice that the polynomial coefficients do not have whole length units (e.g. the units aren't $m$).
 
  The mapped geometric representation is
  ~~~

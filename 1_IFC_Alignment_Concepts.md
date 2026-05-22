@@ -70,7 +70,7 @@ has not yet been computed.
 
 An `IfcAlignment` may be defined with a horizontal layout only, a horizontal and vertical layout, or a full horizontal, vertical, and cant layout. Each layout type is composed through an `IfcRelNests` relationship: `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant` are nested within the `IfcAlignment` as applicable. Each layout is in turn composed of one or more `IfcAlignmentSegment` entities, also through `IfcRelNests`. The `IfcAlignmentSegment` models the segment design parameters in a subtype of `IfcAlignmentParameterSegment`: `IfcAlignmentHorizontalSegment`, `IfcAlignmentVerticalSegment`, or `IfcAlignmentCantSegment`, depending on the layout. The semantic definition model is shown in Figure 1.4-1.
 
-![](images/Figure_1_Semantic_Alignment_Model.svg)
+![](images/Figure_1.4-1_Semantic_Alignment_Model.svg)
 
 *Figure 1.4-1 Semantic alignment model*
 
@@ -163,7 +163,7 @@ Geometrically, the horizontal alignment is defined by an
 `IfcGradientCurve`. The horizontal alignment is the basis curve for the
 vertical alignment.
 
-![](images/Figure_2_Alignment_Geometry_Variants.svg)
+![](images/Figure_1.5.2-1_Alignment_Geometry_Variants.svg)
 
 *Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
 
@@ -181,7 +181,7 @@ alignment. All the horizontal alignment `IfcCurveSegment` objects are then
 combined to create an `IfcCompositeCurve` to complete the plan view
 geometric representation of the horizontal alignment.
 
-![](images/image3.png)
+![](images/Figure_1.5.2-2_Parent_Curves_Placement.png)
 
 *Figure 1.5.2-2 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
 
@@ -232,7 +232,7 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 #778 = IFCCARTESIANPOINT((250.003634293681, 145.312908277025));
 ~~~
 
-![](images/image4.png)
+![](images/Figure_1.5.2-4_GradientCurve_Extents.png)
 
 *Figure 1.5.2-4 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
 

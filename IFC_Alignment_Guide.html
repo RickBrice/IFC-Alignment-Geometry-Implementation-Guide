@@ -503,11 +503,7 @@ a { color: #1a4f8a; }
 <a id="1_IFC_Alignment_Concepts"></a>
 <hh1 id="chapter-1-ifc-alignment-concepts">Chapter 1 - IFC Alignment Concepts</hh1>
 <hh2 id="10-introduction">1.0 Introduction</hh2>
-<p>IFC 4.3 ADD 2 finalized the adoption of alignments for infrastructure works.
-Since the concept of alignment is relatively new to IFC, few details and
-examples are provided in the available literature. This guide aims to
-document the relevant concepts and mathematics a software
-developer might need to implement alignment-based geometry.</p>
+<p>IFC4x3 ADD2, published as ISO 16739-1:2024, is the current IFC standard and includes full support for infrastructure alignment geometry. Despite the standard's publication, software adoption has lagged — not because the standard is new, but because implementation guidance has been scarce. This guide addresses that gap by documenting the relevant concepts and mathematics a software developer needs to implement alignment-based geometry.</p>
 <p>If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), <a href="https://rosap.ntl.bts.gov/view/dot/62673">Bridge Geometry Manual</a>, Chapters 1 - 5 and Appendix B.</p>
 <p>The IFC specification identifies concept templates as the mechanism for
 mapping semantic alignment representations to their geometric
@@ -824,7 +820,7 @@ at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 <li>Parametric equations and geometry mapping examples for all nine curve types in Table 2.0-1.</li>
 <li>The zero-length closing segment required at the end of every <code>IfcCompositeCurve</code>.</li>
 </ul>
-<hh2 id="21-general">2.1 General</hh2>
+<hh2 id="21-conventions">2.1 Conventions</hh2>
 <p>Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from <code>IfcAlignmentHorizontalSegment.StartRadius</code> and <code>EndRadius</code>; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). The segment length $L$ is <code>IfcAlignmentHorizontalSegment.SegmentLength</code>. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the <code>RefDirection</code> of the curve at $s$.</p>
 <p>The $x$ and $y$ coordinates of all horizontal parent curves are defined by the integrals:</p>
 <p>$$x(s) = \int \cos\theta(s)\ ds \qquad y(s) = \int \sin\theta(s)\ ds$$</p>
@@ -1978,7 +1974,7 @@ $$M_{h} =
 <li>The combined 3D evaluation that produces position, tangent, cross-track, and up-axis vectors from the <code>IfcGradientCurve</code>.</li>
 <li>Known limitation: vertical clothoid curves are not addressed in this guide.</li>
 </ul>
-<hh2 id="31-general">3.1 General</hh2>
+<hh2 id="31-conventions">3.1 Conventions</hh2>
 <p>Each vertical segment is parameterized by arc-length $s$ along its parent curve, where $s = 0$ at the start of the parent curve. The key semantic attributes are <code>IfcAlignmentVerticalSegment.StartDistAlong</code> (horizontal distance from the alignment start to the segment start), <code>HorizontalLength</code> (the horizontal projection of the segment), <code>StartHeight</code> (elevation at the segment start), and <code>StartGradient</code> and <code>EndGradient</code> (decimal slopes; e.g., $0.005 = 0.5\%$).</p>
 <p><code>IfcCurveSegment.SegmentLength</code> stores arc-length along the parent curve, not horizontal distance. The evaluator parameter is horizontal distance $\ell$, which must be converted to arc-length $s$ before calling the parent curve equations. For the grades typical in road and railway design ($\leq 5\%$), the difference is small but non-zero.</p>
 <p>The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \arctan(g(\ell))$, where $g(\ell)$ is the gradient. The cosine and sine of $\theta$ form the <code>RefDirection</code> of the vertical curve at that point.</p>
@@ -2041,6 +2037,7 @@ dy_v & 0 & dx_v & z \\
 <li><strong>Column 3</strong> (Axis / up): $(-dx_h \cdot dy_v,\ -dy_h \cdot dy_v,\ dx_v)$ — orthogonal to both the 3D tangent and the cross-track direction.</li>
 <li><strong>Column 4</strong> (Location): $(x_h,\ y_h,\ z)$ — the full 3D position.</li>
 </ul>
+<p>Numerical examples of Steps 1–3 are given in Sections 3.3 through 3.6. A complete worked example including Step 4 is in Section 3.7.</p>
 <hh2 id="33-constant-gradient">3.3 Constant Gradient</hh2>
 <p>A constant gradient is geometrically represented with a segment trimmed from an <code>IfcLine</code> parent curve.</p>
 <hh3 id="331-parent-curve-parametric-equations">3.3.1 Parent Curve Parametric Equations</hh3>
@@ -2470,7 +2467,10 @@ dy_v & 0 & dx_v & z \\
 0.012342809710188737 & 0.0 & 0.999923824622885 & 125.4765625 \\
 0.0 & 0.0 & 0.0 & 1.0
 \end{bmatrix}$$</p>
-<hh2 id="38-summary-and-implementation-checklist">3.8 Summary and Implementation Checklist</hh2>
+<hh2 id="38-zero-length-closing-segment-and-ifcgradientcurveendpoint">3.8 Zero-Length Closing Segment and <code>IfcGradientCurve.EndPoint</code></hh2>
+<p>The zero-length closing segment requirement described in Section 2.12 applies equally to <code>IfcGradientCurve</code>. The final <code>IfcAlignmentVerticalSegment</code> nested within <code>IfcAlignmentVertical</code> must have <code>SegmentLength = 0</code>, and the corresponding geometric counterpart in <code>IfcGradientCurve</code> must be a zero-length <code>IfcCurveSegment</code> placed at the endpoint of the profile with its tangent direction matching the end grade direction.</p>
+<p><code>IfcGradientCurve.EndPoint</code> is an <em>optional</em> <code>IfcCartesianPoint</code> attribute whose purpose overlaps with the zero-length segment: it encodes the 3D endpoint of the gradient curve, providing the same geometric information as the placement of the zero-length <code>IfcCurveSegment</code>. Because <code>EndPoint</code> is optional and the zero-length segment is required by the IFC Concept Templates, the zero-length segment is the primary, normative source of the endpoint geometry. When <code>EndPoint</code> is present, it must be consistent with the placement of the zero-length closing segment — a discrepancy between the two is a data error. Implementations should not rely on <code>EndPoint</code> as a substitute for the zero-length segment, nor assume it will be populated.</p>
+<hh2 id="39-summary-and-implementation-checklist">3.9 Summary and Implementation Checklist</hh2>
 <table>
 <thead>
 <tr>
@@ -2504,6 +2504,11 @@ dy_v & 0 & dx_v & z \\
   <td>5</td>
   <td>When forming $M'_v$ for Step 4, zero the distance-along component and swap rows/columns 2 and 3</td>
   <td>This maps elevation from the vertical plane's row 2 to row 3 of the 3D matrix, placing it on the Z axis where $M_h$ expects it</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td>Include a zero-length <code>IfcCurveSegment</code> at the end of <code>IfcGradientCurve</code>; treat <code>IfcGradientCurve.EndPoint</code> as secondary</td>
+  <td>The zero-length segment is required by the IFC Concept Templates and is the normative endpoint; <code>EndPoint</code> is optional — if present, it must agree with the zero-length segment placement</td>
 </tr>
 </tbody>
 </table>
@@ -2560,9 +2565,9 @@ dy_v & 0 & dx_v & z \\
 <li>The cant segment types in Table 4.0-1 and the geometric curve types that represent them.</li>
 <li>Parametric equations and geometry mapping examples for the curve types in Table 4.0-1.</li>
 <li>An algorithm for composing cant, horizontal, and vertical matrices to produce a full 3D placement frame.</li>
-<li>An implementation checklist in Section 4.12.</li>
+<li>An implementation checklist in Section 4.13.</li>
 </ul>
-<hh2 id="41-general">4.1 General</hh2>
+<hh2 id="41-fundamentals">4.1 Fundamentals</hh2>
 <p>Each <code>IfcAlignmentCantSegment</code> is parameterized by distance along the horizontal alignment. The key semantic attributes are <code>StartDistAlong</code>, <code>SegmentLength</code> (the horizontal length of the cant segment), <code>StartCantLeft</code>, <code>EndCantLeft</code>, <code>StartCantRight</code>, and <code>EndCantRight</code>. From these, the deviating elevation $D_s$ at the start and $D_e$ at the end are derived as the averages of their respective left and right rail values (Section 4.1.3). Each cant curve segment uses <code>IfcAxis2Placement3D</code> for its placement, in contrast to the 2D placements used for horizontal and vertical segments, because cant carries an out-of-plane cross-slope rotation.</p>
 <hh3 id="411-cant-transition">4.1.1 Cant Transition</hh3>
 <p>Cant transitions occur when the segment start elevation differs from the
@@ -2689,6 +2694,7 @@ X.z & Y.z & Z.z & D_{\ell} \\
    0 & 0 & 0 & 0 
    \end{bmatrix}$$</p>
 <p>Column 4 of the final matrix $M_{3Dcant}$ is the full 3D position of the track centerline. Column 3 is the cross-slope direction, encoding the railhead superelevation at that point.</p>
+<p>Numerical examples of Steps 1–4 are given in Sections 4.3 through 4.9. A complete worked example including Step 5 is in Section 4.10.</p>
 <hh2 id="43-constant-cant">4.3 Constant Cant</hh2>
 <p>Cant has a constant deviating elevation and cross-slope angle in rail segments between curves or in the circular portion of curves where the tracks are banked at a constant rate.</p>
 <p>The parent curve is <code>IfcLine</code>. The slope-intercept form of a line is $y = mx + b$, where $m$ is the slope and $b$ is the $y$-intercept. The derivative is $y' = m$, and the second derivative is $y''= 0$.</p>
@@ -3781,7 +3787,10 @@ units of length and are represented by <code>IfcLengthMeasure</code>.</p>
 </tbody>
 </table>
 <p><em>Table 4.11-2 — Comparison of deviating elevation results</em></p>
-<hh2 id="412-summary-and-implementation-checklist">4.12 Summary and Implementation Checklist</hh2>
+<hh2 id="412-zero-length-closing-segment-and-ifcsegmentedreferencecurveendpoint">4.12 Zero-Length Closing Segment and <code>IfcSegmentedReferenceCurve.EndPoint</code></hh2>
+<p>The zero-length closing segment requirement described in Section 2.12 applies equally to <code>IfcSegmentedReferenceCurve</code>. The final <code>IfcAlignmentCantSegment</code> nested within <code>IfcAlignmentCant</code> must have <code>SegmentLength = 0</code>, and the corresponding geometric counterpart in <code>IfcSegmentedReferenceCurve</code> must be a zero-length <code>IfcCurveSegment</code> placed at the endpoint of the cant alignment with its placement matching the end cant state of the preceding segment.</p>
+<p><code>IfcSegmentedReferenceCurve.EndPoint</code> is an <em>optional</em> <code>IfcCartesianPoint</code> attribute whose purpose overlaps with the zero-length segment: it encodes the 3D endpoint of the segmented reference curve, providing the same geometric information as the placement of the zero-length <code>IfcCurveSegment</code>. Because <code>EndPoint</code> is optional and the zero-length segment is required by the IFC Concept Templates, the zero-length segment is the primary, normative source of the endpoint geometry. When <code>EndPoint</code> is present, it must be consistent with the placement of the zero-length closing segment — a discrepancy between the two is a data error. Implementations should not rely on <code>EndPoint</code> as a substitute for the zero-length segment, nor assume it will be populated.</p>
+<hh2 id="413-summary-and-implementation-checklist">4.13 Summary and Implementation Checklist</hh2>
 <table>
 <thead>
 <tr>
@@ -3810,6 +3819,11 @@ units of length and are represented by <code>IfcLengthMeasure</code>.</p>
   <td>4</td>
   <td>Do not mix the EnrichIfc4x3 semantic-to-geometry mapping with the deviating elevation equations from this guide</td>
   <td>EnrichIfc4x3 contains two compensating errors that yield correct results within its own implementation; mixing its coefficient mapping with this guide's deviating elevation equation (or vice versa) breaks the cancellation and produces results off by a factor of $L$ or $1/L$ — see Section 4.11</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>Include a zero-length <code>IfcCurveSegment</code> at the end of <code>IfcSegmentedReferenceCurve</code>; treat <code>IfcSegmentedReferenceCurve.EndPoint</code> as secondary</td>
+  <td>The zero-length segment is required by the IFC Concept Templates and is the normative endpoint; <code>EndPoint</code> is optional — if present, it must agree with the zero-length segment placement</td>
 </tr>
 </tbody>
 </table>
@@ -3887,11 +3901,11 @@ three attributes:</p>
 <p>Three example models illustrate <code>IfcOffsetCurveByDistances</code> in progressively more demanding configurations. The 2D and 3D variants share the same geometry and offset profiles; the difference is whether the basis curve is an <code>IfcCompositeCurve</code> (horizontal only) or an <code>IfcGradientCurve</code> (3D). The split-basis variant tests a configuration the IFC specification does not prohibit but leaves geometrically ambiguous.</p>
 <hh3 id="551-two-dimensional-basis-curve">5.5.1 Two-Dimensional Basis Curve</hh3>
 <p>The file <a href="examples/IfcOffsetCurveByDistances_2D.ifc"><code>IfcOffsetCurveByDistances_2D.ifc</code></a> contains a basis alignment and two offset alignments. The basis curve is an <code>IfcCompositeCurve</code> — a horizontal-only curve with no elevation component.</p>
-<p><strong>Validation.</strong> Both offset alignments in this model fail the validation rule <code>IfcShapeRepresentation.CorrectItemsForType</code>. The <code>IfcShapeRepresentation</code> for each offset alignment uses <code>RepresentationType = &quot;Curve3D&quot;</code>, which requires its items to be 3D curves. The <code>IfcOffsetCurveByDistances</code> entities here are 2D because their <code>BasisCurve</code> is an <code>IfcCompositeCurve</code> — a planar horizontal curve with no elevation component. The <code>IfcAlignment</code> specification states that <code>IfcOffsetCurveByDistances</code> may represent either a 2D or 3D alignment curve, but the <code>CorrectItemsForType</code> rule is applied at the shape representation level and does not recognise this exception. The conflict between the <code>IfcAlignment</code> statement and the shape representation rule is unresolved in IFC4x3.</p>
+<p><strong>Validation.</strong> Both offset alignments in this model fail the validation rule <code>IfcShapeRepresentation.CorrectItemsForType</code>. The <code>IfcShapeRepresentation</code> for each offset alignment uses <code>RepresentationType = &quot;Curve3D&quot;</code>, which requires its items to be 3D curves. The <code>IfcOffsetCurveByDistances</code> entities here are 2D because their <code>BasisCurve</code> is an <code>IfcCompositeCurve</code> — a planar horizontal curve with no elevation component. The <code>IfcAlignment</code> specification states that <code>IfcOffsetCurveByDistances</code> may represent either a 2D or 3D alignment curve, but the <code>CorrectItemsForType</code> rule is applied at the shape representation level and does not recognise this exception. The conflict between the <code>IfcAlignment</code> statement and the shape representation rule is unresolved in IFC4x3. It is antcipated that the next version of the buildingSMART Validation Service will not flag this as an error.</p>
 <hh3 id="552-three-dimensional-basis-curve">5.5.2 Three-Dimensional Basis Curve</hh3>
 <p>The file <a href="examples/IfcOffsetCurveByDistances_3D.ifc"><code>IfcOffsetCurveByDistances_3D.ifc</code></a> contains the same geometry as the 2D example — the same 200-ft circular arc &quot;E-Line&quot; with the same two offset profiles — but with a flat vertical alignment added to &quot;E-Line&quot;. This makes its basis curve an <code>IfcGradientCurve</code>. The two offset alignments are constructed to demonstrate how basis curve choice affects dimensionality and validation outcome.</p>
 <p><strong>Offset1</strong> references the <code>IfcGradientCurve</code> as the <code>BasisCurve</code> in both the <code>IfcOffsetCurveByDistances</code> and all <code>IfcPointByDistanceExpression</code> offset values. Because <code>IfcGradientCurve</code> is a 3D curve, the resulting offset curve is 3D. Offset1 satisfies <code>IfcShapeRepresentation.CorrectItemsForType</code>.</p>
-<p><strong>Offset2</strong> references <code>IfcGradientCurve.BaseCurve</code> — the underlying <code>IfcCompositeCurve</code> — as the <code>BasisCurve</code> for its offset values. <code>IfcCompositeCurve</code> is a 2D horizontal curve, so the resulting offset curve is 2D regardless of whether the parent alignment has a vertical component. Offset2 fails <code>IfcShapeRepresentation.CorrectItemsForType</code> for the same reason as the 2D example.</p>
+<p><strong>Offset2</strong> references <code>IfcGradientCurve.BaseCurve</code> — the underlying <code>IfcCompositeCurve</code> — as the <code>BasisCurve</code> for its offset values. <code>IfcCompositeCurve</code> is a 2D horizontal curve, so the resulting offset curve is 2D regardless of whether the parent alignment has a vertical component. Offset2 fails <code>IfcShapeRepresentation.CorrectItemsForType</code> for the same reason as the 2D example. It is anticipated that the next version of the buildingSMART Validation Serivce will not flag this as an error.</p>
 <p>The key finding is that the dimensionality of an <code>IfcOffsetCurveByDistances</code> is determined by which curve object is referenced as its <code>BasisCurve</code> — not by the dimensionality of the alignment that owns it. Referencing an <code>IfcGradientCurve</code> produces a 3D offset curve; referencing its constituent <code>IfcCompositeCurve</code> produces a 2D one.</p>
 <hh3 id="553-split-basis-curves">5.5.3 Split Basis Curves</hh3>
 <p>The file <a href="examples/IfcOffsetCurveByDistances_split_basis.ifc"><code>IfcOffsetCurveByDistances_split_basis.ifc</code></a> demonstrates the edge case described in §5.0 where <code>IfcOffsetCurveByDistances.BasisCurve</code> and <code>IfcPointByDistanceExpression.BasisCurve</code> reference different curves. The model contains two alignments: &quot;E-Line&quot; (a 200-ft circular arc with a flat vertical profile) and &quot;Reference-Line&quot; (a 200-ft straight line offset 10 ft north, also with a flat vertical profile). Both carry <code>IfcGradientCurve</code> basis curves.</p>
@@ -4244,32 +4258,20 @@ or multi-track configurations.</p>
 <p>The Y-axis is derived as the cross product of <code>Axis</code> × <code>RefDirection</code> (after normalisation).</p>
 <p>When <code>Axis</code> and <code>RefDirection</code> are both omitted, the implementation must supply defaults. This is the most common scenario and is described below.</p>
 <hh3 id="832-default-axis-an-open-issue">8.3.2 Default Axis — An Open Issue</hh3>
-<p>The default value of <code>Axis</code> is not unambiguously defined in the IFC schema documentation. A known open issue in the buildingSMART community tracks this ambiguity (see <a href="https://github.com/buildingSMART/IFC4.x-IF/issues/125">IFC4.x-IF Issue #125</a>).</p>
+<p>The ambiguity originates in how <code>IfcAxis2PlacementLinear</code> describes its optional attributes compared to its 3D counterpart. <code>IfcAxis2Placement3D</code> is explicit: its specification states that when <code>Axis</code> is omitted it defaults to <code>(0, 0, 1)</code> and when <code>RefDirection</code> is omitted it defaults to <code>(1, 0, 0)</code>. No interpretation is required.</p>
+<p><code>IfcAxis2PlacementLinear</code> takes a different approach. Its specification states:</p>
+<blockquote>
+<p>&quot;Relative placement axes (<code>Axis</code> and <code>RefDirection</code>) are relative to the curve used for linear referencing provided in <code>IfcPlacement.Location</code> (<code>IfcPointByDistanceExpression.BasisCurve</code>), maintaining the relationship to the tangent of the curve.&quot;</p>
+</blockquote>
+<p>This sentence says the axes are <em>derived from the curve</em>, not from global coordinates. The natural reading is that <code>RefDirection</code> defaults to the curve tangent — which implementations broadly agree on — and that <code>Axis</code> defaults to something perpendicular to that tangent in the general upward direction. On a flat alignment those two readings coincide: the upward perpendicular to a horizontal tangent is <code>(0, 0, 1)</code>. On a graded alignment they diverge: &quot;perpendicular to the 3D tangent in the upward direction&quot; tilts with the grade and is no longer <code>(0, 0, 1)</code>. The specification never resolves what &quot;upward relative to the curve&quot; concretely means, and that silence is the source of the ambiguity. A known open issue in the buildingSMART community tracks it (see <a href="https://github.com/buildingSMART/IFC4.x-IF/issues/125">IFC4.x-IF Issue #125</a>).</p>
 <p>Two interpretations exist in practice:</p>
 <ol>
-<li><strong>Axis = global Z = (0, 0, 1).</strong> This is the most common implementation. It produces a coordinate system whose Z-axis is always vertical, regardless of the slope of the alignment. The X-axis (RefDirection) follows the horizontal tangent direction even when the curve has a vertical grade. This is natural for plan-oriented placement and matches traditional station-offset-elevation thinking.</li>
-<li><strong>Axis = perpendicular to RefDirection in the plane containing RefDirection and global Z.</strong> This produces a coordinate system whose Z-axis tilts with the grade of the alignment. The local X-axis is truly tangent to the 3D curve. This is more mathematically rigorous but less intuitive for typical civil engineering use.</li>
+<li><strong>Axis = global Z = (0, 0, 1).</strong> The Z-axis is always vertical regardless of alignment slope. The X-axis follows the horizontal tangent direction even when the curve has a vertical grade. This is natural for plan-oriented placement and matches traditional station-offset-elevation thinking.</li>
+<li><strong>Axis = perpendicular to RefDirection in the plane containing RefDirection and global Z.</strong> The Z-axis tilts with the grade of the alignment. The local X-axis is truly tangent to the 3D curve. This reading follows directly from the curve-relative language in the specification, and produces the same orientation that <code>IfcExtrudedAreaSolid</code> would use when sweeping along the same path.</li>
 </ol>
-<p><strong>Recommendation:</strong> Use interpretation 1 (Axis = global Z) unless the application specifically requires the tilted interpretation. When writing files, explicitly supply <code>Axis = (0, 0, 1)</code> to remove ambiguity.</p>
-<hh3 id="833-step-by-step-construction-of-the-default-local-cs">8.3.3 Step-by-Step Construction of the Default Local CS</hh3>
-<p>When <code>Axis</code> and <code>RefDirection</code> are not provided, the local coordinate system is constructed as follows. Let <strong>T</strong> be the unit tangent vector to the 3D alignment curve at the placement distance, and let <strong>Z_g</strong> = (0, 0, 1) be the global vertical.</p>
-<ol>
-<li><strong>Set Z</strong> = (0, 0, 1)  <em>(the Axis direction)</em></li>
-<li><strong>Compute RefDirection</strong> = unit tangent <strong>T</strong> to the 3D curve at <code>DistanceAlong</code>.<br />
-For a horizontal curve (grade = 0), <strong>T</strong> lies in the XY plane.<br />
-For a graded curve, <strong>T</strong> has a non-zero Z component.</li>
-<li><strong>Y</strong> = normalize(<strong>Z</strong> × <strong>T</strong>)  <em>(points to the left of travel)</em></li>
-<li><strong>X</strong> = normalize(<strong>Y</strong> × <strong>Z</strong>)  <em>(points forward, projected onto the horizontal plane)</em></li>
-</ol>
-<p>The result is a coordinate system whose:</p>
-<ul>
-<li>X-axis points forward along the alignment (horizontal projection of the tangent),</li>
-<li>Y-axis points to the left (lateral direction in the horizontal plane),</li>
-<li>Z-axis points upward (global vertical).</li>
-</ul>
-<p>This is the classic highway “station-offset” reference frame and is illustrated in Figure 8.3.3-1.</p>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/linear_placement_offsets.svg" alt="" /></p>
-<p><em>Figure 8.3.3-1 — Diagram showing the local coordinate system axes (X forward, Y left, Z up) at a point on a curved, graded alignment, with annotations for DistanceAlong, OffsetLateral, and OffsetVertical.</em></p>
+<p>The connection between interpretation 2 and the broader IFC linear referencing model is not incidental. When evaluating a point along a 3D curve such as <code>IfcGradientCurve</code> or <code>IfcSegmentedReferenceCurve</code>, the resulting coordinate frame at that point is derived from the curve itself — the tangent at the evaluation distance determines the local forward direction, and the normal plane at that point governs the transverse and vertical axes. This is the frame that implementations compute when moving along a 3D alignment, as illustrated in the discussions of vertical and cant alignment geometry in Chapters 3 and 4. The perpendicular-to-3D-tangent interpretation of <code>Axis</code> is most consistent with that model: both derive orientation from the same 3D curve tangent, so a placement using interpretation 2 produces a frame congruent with what an implementation computes when evaluating the directrix at the same distance.</p>
+<p>The practical consequence of this ambiguity is graphically illustrated in §10.5 — Figure 10.5-2 shows the same <code>IfcSectionedSolidHorizontal</code> model with <code>Axis</code> omitted rendered by two viewers that adopted opposite defaults, producing visibly different geometry on a 10% grade.</p>
+<p><strong>Recommendation:</strong> <code>IfcAxis2Placement3D</code> avoids this problem by stating its defaults explicitly — authors of <code>IfcAxis2PlacementLinear</code> should do the same. Always supply <code>Axis = (0, 0, 1)</code> explicitly rather than relying on the default. For infrastructure design, interpretation 1 is the appropriate choice and matches traditional plan-and-profile intent.</p>
 <hh2 id="84-longitudinal-offset-and-unreachable-points">8.4 Longitudinal Offset and Unreachable Points</hh2>
 <hh3 id="841-what-is-an-unreachable-point">8.4.1 What Is an Unreachable Point?</hh3>
 <p>In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that <strong>cannot be expressed</strong> as a station plus a purely transverse offset.</p>
@@ -4397,7 +4399,7 @@ For a graded curve, <strong>T</strong> has a non-zero Z component.</li>
 <li><code>DistanceAlong = 1435.75</code> is the geometric distance from the start of <code>#102</code>.</li>
 <li><code>OffsetLateral = -5.25</code> places the point 5.25 m to the right of the horizontal alignment (negative = right of travel).</li>
 <li><code>OffsetVertical</code> is omitted; the point is placed in the same plane as the horizontal alignment.</li>
-<li><code>Axis</code> and <code>RefDirection</code> are omitted; the default CS is constructed as described in §8.3.3.</li>
+<li><code>Axis</code> and <code>RefDirection</code> are omitted; the resulting orientation is implementation-defined (see §8.3.2).</li>
 </ul>
 <hh2 id="89-summary-and-implementation-checklist">8.9 Summary and Implementation Checklist</hh2>
 <table>
@@ -4713,18 +4715,11 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 
 <div class="chapter-sep"></div>
 <a id="10_Sectioned_Surfaces_and_Solids"></a>
-<p>todo</p>
-<ul>
-<li>need to create sample models for sectioned solid horizontal that show the various transition supported.</li>
-<li>Add <code>IfcReferent</code> widening event markers to <code>IfcSectionedSurface_with_branching.ifc</code> (§10.6.2), similar to the superelevation event referents in <code>Superelevation.ifc</code>.</li>
-<li>This section needs a lot of validation with models to support the claims</li>
-<li>Need to be clear with the stringline stuff - for the basic stringline where offset curves all use the same directrix, tags are surface unique. If stringlines are used with different basis curves, then tags must be globally unique. This is not clear in the IFC specification.</li>
-</ul>
 <hh1 id="chapter-10-sectioned-surfaces-and-solids">Chapter 10 - Sectioned Surfaces and Solids</hh1>
 <hh2 id="100-introduction">10.0 Introduction</hh2>
 <p>A common approach in roadway design software is template-based modeling: define a cross-section template, apply it at regular intervals along the alignment, and interpolate the geometry between positions. For simple, uniform roadways — constant width, constant cross-slope — this works well. But most roadways are not uniform. They taper in and out; include medians that appear and disappear; require superelevation transitions; and feature traffic islands, widenings, and complex intersection geometry. For these cases, interpolating between evenly-spaced template stamps produces piecewise-linear geometry that can only approximate the intended design.</p>
 <p>Road design software has long addressed this limitation through the concept of <em>strings</em> — continuous three-dimensional threads tracing significant features along the route: the edge of travel path, the shoulder break, the top of curb, the back of curb. Rather than deriving edges from template interpolation, strings define the edges explicitly. The cross-sections through the design are understood as sections through the string model, not the primary definition.</p>
-<p>IFC4x3 introduces two geometry entities specifically for infrastructure: <code>IfcSectionedSurface</code> and <code>IfcSectionedSolidHorizontal</code>. Both define geometry by sweeping cross-sections along a <code>Directrix</code> — typically an alignment curve. <code>IfcSectionedSurface</code> uses open cross-sections to produce a surface; <code>IfcSectionedSolidHorizontal</code> uses closed cross-sections to produce a volumetric solid. Both support two complementary approaches to defining the geometry: template-based (cross-sections at defined distances along the directrix, linearly interpolated between) and stringline-based (guide curves that control where tagged cross-section points travel between sections).</p>
+<p>IFC4x3 introduces two geometry entities specifically for infrastructure: <code>IfcSectionedSurface</code> and <code>IfcSectionedSolidHorizontal</code>. Both define geometry by sweeping cross-sections along a <code>Directrix</code> — typically an alignment curve. <code>IfcSectionedSurface</code> uses open cross-sections to produce a surface; <code>IfcSectionedSolidHorizontal</code> uses closed cross-sections to produce a volumetric solid. Both support two complementary approaches to defining the geometry: template-based (cross-sections at defined distances along the directrix, linearly interpolated between) and stringline-based (guide curves that control where tagged cross-section points travel between sections). The IFC specification leaves several aspects of these entities underspecified — particularly around guide curve behavior, tag scoping, and the interaction between authored sections and guide curves. These gaps are significant enough that consistent implementations cannot be guaranteed without additional guidance; they are identified and discussed in §10.5.</p>
 <hh2 id="101-template-based-approach">10.1 Template-Based Approach</hh2>
 <p>In the template-based approach, cross-sections are defined at discrete distances along the <code>Directrix</code>. The geometry engine interpolates linearly between consecutive cross-section positions to generate the surface or solid. The cross-sections need not be identical — width, slope, and shape can all vary from one distance to the next — but the transition between any two consecutive sections is linear.</p>
 <p>For simple geometry this is entirely adequate. A road with a constant typical section can be fully described by two cross-sections with linear interpolation between them. A superelevation transition with a uniform rotation rate can be captured with sections at each end of the transition. The template approach becomes strained when the geometry between defined sections is not linear — a curved edge taper through a widening, for example — requiring progressively denser section spacing to reduce the approximation error.</p>
@@ -4735,10 +4730,10 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <p>The tag mechanism differs between the two entities:</p>
 <ul>
 <li>For <code>IfcSectionedSurface</code>, tags are carried by <code>IfcOpenCrossProfileDef.Tags</code> — a list of $N+1$ labels, one per vertex of the open profile. Each vertex can be independently associated with a guide curve.</li>
-<li>For <code>IfcSectionedSolidHorizontal</code>, tags are carried by <code>IfcCartesianPointList2D.TagList</code> — one label per coordinate in the point list. Any point in the closed profile can be tagged.</li>
+<li>For <code>IfcSectionedSolidHorizontal</code>, tags are carried by <code>IfcCartesianPointList2D.TagList</code> — one label per coordinate in the point list. Closed profiles are typically <code>IfcArbitraryClosedProfileDef</code> whose <code>OuterCurve</code> is an <code>IfcIndexedPolyCurve</code> referencing an <code>IfcCartesianPointList2D</code>; the <code>TagList</code> on that point list provides a label for each profile vertex. Any point in the closed profile can be tagged. See §10.4 for the full profile structure.</li>
 </ul>
-<p>In both cases, the geometry of the surface or solid at a tagged point follows the corresponding guide curve rather than relying on linear interpolation between the authored section positions. A widening with a curved edge taper can be represented exactly with sections only at the start and end of the transition — the guide curve carries the taper geometry between them.</p>
-<p>The stringline approach is not an alternative to the template approach but an augmentation of it. Cross-sections are always required; guide curves control interpolation between them. In the limiting case with infinitely dense sections, both approaches produce the same geometry. In practice, stringlines allow compact models with few sections and geometrically exact results where section-only interpolation would require dense section spacing to achieve acceptable approximation.</p>
+<p>In both cases, the intended behavior is that the geometry at a tagged cross-section point follows the corresponding guide curve — allowing, for example, a widening with a curved edge taper to be defined by sections only at the start and end of the transition, with the guide curve carrying the taper geometry between them. The IFC specification does not state this explicitly. Several related questions — whether tagged points follow guide curves or are linearly interpolated between sections, what <code>BasisCurve</code> a guide curve is required or permitted to use, and what happens when a guide curve and an authored section disagree — are all specification gaps discussed in §10.5.</p>
+<p>The stringline approach is not an alternative to the template approach but an augmentation of it. Cross-sections are always required; guide curves control interpolation between them.</p>
 <hh2 id="103-ifcsectionedsurface">10.3 IfcSectionedSurface</hh2>
 <p><code>IfcSectionedSurface</code> defines a surface by sweeping open cross-sections along a directrix curve.</p>
 <table>
@@ -4779,13 +4774,11 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <p>Figure 10.3.1-2 shows a sectioned surface inspired by Figure 10.3.1-1 with both a widening and narrowing of the surface.</p>
 <p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.3.1-2_Sectioned_Surface_with_Breaklines.png" alt="" /></p>
 <p><em>Figure 10.3.1-2 — Sectioned surface with breaklines at cross-section topology changes. This figure shows the surface widening and returning to its original width.</em></p>
-<p>Although the IFC specification does not state this explicitly, the <code>Slope</code> and <code>Width</code> of an <code>IfcOpenCrossProfileDef</code> segment must be zero at the distance along the directrix where a breakline initiates or terminates. When a new feature vertex first appears — the start of a widening lane, for example — the cross-section at that distance must include the new tagged vertex with a zero-width segment. In Figure 10.3.1-1, this is why points B and D coincide in the second cross-section: the zero-width segment collapses those tagged vertices to the same position, establishing the breakline origin without introducing lateral extent. Without a zero-width segment at the breakpoint position, the surface has no defined starting position for the new feature and the geometry is ambiguous. The branching example in §10.6.2 illustrates this pattern for a surface where breaklines branch from the main cross-section.</p>
+<p>Although the IFC specification does not state this explicitly, the <code>Slope</code> and <code>Width</code> of an <code>IfcOpenCrossProfileDef</code> segment must be zero at the distance along the directrix where a breakline initiates or terminates. When a new feature vertex first appears — the start of a widening lane, for example — the cross-section at that distance must include the new tagged vertex with a zero-width segment. In Figure 10.3.1-1, this is why points B and D coincide in the second cross-section: the zero-width segment collapses those tagged vertices to the same position, establishing the breakline origin without introducing lateral extent. Without a zero-width segment at the breakpoint position, the surface has no defined starting position for the new feature and the geometry is ambiguous. The branching example in §10.6.1.2 illustrates this pattern for a surface where breaklines branch from the main cross-section.</p>
 <p>The tag mechanism serves both breaklines and stringlines simultaneously. A tag on a profile vertex identifies that vertex's correspondence across sections with different topology and, when a matching <code>IfcOffsetCurveByDistances</code> guide curve exists, controls the vertex's trajectory between sections. The two functions — topological correspondence and geometric guidance — share the same tag infrastructure.</p>
 <hh3 id="1032-stringlines">10.3.2 Stringlines</hh3>
 <p>Within <code>IfcSectionedSurface</code>, stringlines are implemented through the <code>Tags</code> attribute of <code>IfcOpenCrossProfileDef</code>. This attribute holds a list of $N+1$ labels — one per vertex of the open profile, where $N$ is the number of segments. An <code>IfcOffsetCurveByDistances</code> guide curve whose <code>Tag</code> matches one of these vertex labels takes control of that vertex's trajectory along the surface. Where a guide curve governs a vertex, the vertex position at any distance along the directrix is read from the guide curve rather than interpolated from the authored cross-section positions.</p>
 <p>The <code>OffsetPoint</code> attribute of <code>IfcOpenCrossProfileDef</code> positions the first tagged vertex in the directrix's local coordinate system. Subsequent vertices are derived from there by accumulating the segment <code>Widths</code> and <code>Slopes</code>. All tagged vertices participate in the matching process independently: a surface can have some vertices guided by offset curves and others governed by linear interpolation between authored sections.</p>
-<p>Because guide curves carry the intermediate geometry, very few authored cross-sections are needed in practice. A widening surface that spans 200 m of alignment can be fully described by two cross-sections — one at the start, one at the end — with the edge guide curves encoding the widening trajectory between them. The same surface described purely by template interpolation would require progressively denser section spacing to approximate the same edge path.</p>
-<p>For a guide curve to be well-defined relative to the surface, its <code>BasisCurve</code> must be the same curve as the surface <code>Directrix</code>. The <code>OffsetLateral</code> and <code>OffsetVertical</code> values in the guide curve's <code>IfcPointByDistanceExpression</code> entries position the tagged vertex laterally and vertically from the directrix at each defined distance, and those values are linearly interpolated between explicitly defined points. When a guide curve's <code>BasisCurve</code> differs from the surface <code>Directrix</code>, the distance parameterization is inconsistent and the tag-matching interpolation is undefined — a specification gap discussed further in §10.5.</p>
 <hh2 id="104-ifcsectionedsolidhorizontal">10.4 IfcSectionedSolidHorizontal</hh2>
 <p><code>IfcSectionedSolidHorizontal</code> defines a solid by sweeping closed cross-sections along a directrix curve. It follows the same fundamental structure as <code>IfcSectionedSurface</code> but produces a volumetric solid bounded by the swept faces and the cross-section planes at each end.</p>
 <table>
@@ -4815,24 +4808,43 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 </tbody>
 </table>
 <p><em>Table 10.4-1 — IfcSectionedSolidHorizontal attributes</em></p>
-<p>As with <code>IfcSectionedSurface</code>, the solid is generated by sweeping only between the defined <code>CrossSectionPositions</code>. It does not extend to the head or tail of the <code>Directrix</code>. The <code>CrossSections</code> and <code>CrossSectionPositions</code> lists must be equal in length, and the position expressions must not use longitudinal offsets.</p>
-<p>Cross-sections are typically <code>IfcArbitraryClosedProfileDef</code> profiles. The profile outline is defined as an <code>IfcIndexedPolyCurve</code> referencing an <code>IfcCartesianPointList2D</code>. Profile points are listed in counter-clockwise order when viewed from the direction the profile normal points. The <code>IfcCartesianPointList2D.TagList</code> attribute assigns a label to each point in the coordinate list, enabling the stringline mechanism of Section 10.2.</p>
+<p>As with <code>IfcSectionedSurface</code>, the solid is generated by sweeping only between the defined <code>CrossSectionPositions</code>. It does not extend to the head or tail of the <code>Directrix</code> (see §10.5 &quot;Extent Along the Directrix&quot;). The <code>CrossSections</code> and <code>CrossSectionPositions</code> lists must be equal in length, and the position expressions must not use longitudinal offsets.</p>
+<p>Cross-sections are typically <code>IfcArbitraryClosedProfileDef</code> profiles. The profile outline is defined as an <code>IfcIndexedPolyCurve</code> referencing an <code>IfcCartesianPointList2D</code>. Profile points are listed in counter-clockwise order when viewed from the direction the profile normal points. The <code>IfcCartesianPointList2D.TagList</code> attribute assigns a label to each point in the coordinate list, enabling the stringline mechanism of Section 10.2. The same two guide curve authoring approaches available for <code>IfcSectionedSurface</code> apply equally here: guide curves whose <code>BasisCurve</code> is the same curve as the solid <code>Directrix</code> are scoped to that directrix and their tags need only be unique within that scope; guide curves with an independent <code>BasisCurve</code> require globally unique tags across the model. The trade-offs between these approaches are discussed through <code>IfcSectionedSurface</code> examples in §10.6.1.4 and §10.6.1.5, but the analysis applies without change to <code>IfcSectionedSolidHorizontal</code>.</p>
 <p>For a note on a documentation error in the profile orientation specification for this entity, see Section 10.5.</p>
 <hh3 id="1041-rotations">10.4.1 Rotations</hh3>
 <p>Cross-section rotation accommodates superelevation — the banking of a road or rail cross-section along a curve. <code>IfcSectionedSolidHorizontal</code> supports two approaches.</p>
 <p><strong>Single superelevation</strong> applies a uniform rotation to the entire cross-section at each defined position along the directrix. <code>IfcDerivedProfileDef</code> expresses this rotation, with its <code>ParentProfile</code> referencing the base (unrotated) profile. Each entry in <code>CrossSections</code> can reference its own <code>IfcDerivedProfileDef</code> instance with a different rotation angle, allowing the rotation to vary along the directrix while the underlying profile shape remains constant.</p>
 <p><strong>Multiple independent superelevations</strong> apply when different parts of the cross-section rotate independently — for example, a divided highway where left and right carriageways have different cross-slopes, or a cross-section with a varying median shape. In this case each <code>CrossSection</code> is a distinct profile instance. The tagged points in <code>IfcCartesianPointList2D.TagList</code> and their corresponding <code>IfcOffsetCurveByDistances</code> guide curves control where each point travels independently along the route. The guide curves effectively encode the superelevation variation for each tagged feature point without requiring explicit rotation parameters.</p>
 <hh2 id="105-specification-gaps-and-implementation-notes">10.5 Specification Gaps and Implementation Notes</hh2>
-<hh3 id="basiscurve-of-guide-curves-must-equal-the-directrix">BasisCurve of Guide Curves Must Equal the Directrix</hh3>
-<p>The specification does not require the <code>BasisCurve</code> of an <code>IfcOffsetCurveByDistances</code> guide curve to be the same curve as the <code>Directrix</code> of the surface or solid it serves. This constraint is nevertheless geometrically necessary. <code>CrossSectionPositions</code> are parameterized along the <code>Directrix</code> — each position is a distance along that curve. A guide curve must share the same distance parameterization for tag-matching interpolation to be well-defined. A guide curve relative to a different basis curve carries a different parameterization, making the correspondence between section distances and guide curve positions undefined.</p>
-<p>The intended interpretation is that guide curves are always <code>IfcOffsetCurveByDistances</code> instances whose <code>BasisCurve</code> is the same curve as the surface or solid <code>Directrix</code>. This interpretation also provides a natural scoping mechanism for tag matching: in a model with multiple surfaces each having their own directrix, only guide curves sharing the same <code>BasisCurve</code> as a given surface's <code>Directrix</code> are candidates for that surface's tag matching. Global tag uniqueness across the entire model is therefore not required — only uniqueness within the set of guide curves sharing a common basis curve with the surface or solid.</p>
-<hh3 id="tag-uniqueness-within-scope">Tag Uniqueness Within Scope</hh3>
-<p>The IFC specification does not state that tags must be unique within the scope of a given surface or solid. Uniqueness is nevertheless a necessary precondition for the tag-matching mechanism to function. If three <code>IfcOffsetCurveByDistances</code> guide curves all carry <code>Tag = &quot;A&quot;</code> and three cross-section vertices all carry <code>Tag = &quot;A&quot;</code>, there is no defined rule for which guide curve governs which vertex. Implementers authoring models with guide curves should treat tag uniqueness as a required constraint within each surface or solid. Validators currently have no machine-verifiable rule to enforce this, which is a gap in the formal rules.</p>
+<hh3 id="guide-curve-basiscurve-and-tag-scoping">Guide Curve BasisCurve and Tag Scoping</hh3>
+<p>The IFC specification does not require or restrict the <code>BasisCurve</code> of an <code>IfcOffsetCurveByDistances</code> guide curve to be the same curve as the <code>Directrix</code> of the surface or solid it serves. This silence permits two distinct approaches with different implications for tag scoping and geometric capability.</p>
+<p><strong>Same BasisCurve as the Directrix.</strong> When a guide curve's <code>BasisCurve</code> is the same curve as the <code>Directrix</code>, the guide curve's offsets are expressed in the same distance parameterization as the <code>CrossSectionPositions</code>. This provides a natural tag scoping boundary: only guide curves sharing that <code>BasisCurve</code> are candidates for the surface or solid's tag matching, and tags need only be unique within that scope. However, <code>IfcOffsetCurveByDistances</code> interpolates lateral offsets linearly between its defined <code>IfcPointByDistanceExpression</code> entries. Because the guide curve and the cross-section template share the same linear-along-the-directrix model, this approach produces results geometrically equivalent to placing cross-sections at the guide curve's defined distances — no geometric advantage over the pure template approach is gained.</p>
+<p><strong>Independent BasisCurve.</strong> When a guide curve's <code>BasisCurve</code> is an independent curve — a circular arc, a spline, or another alignment — the guide curve carries geometric shape not constrained to be linear relative to the <code>Directrix</code> distance parameter. This is the configuration closest to the industry concept of a stringline: an edge path defined by its own geometry rather than by linearly interpolated offsets from a centerline. Because an independent <code>BasisCurve</code> has its own distance parameterization, there is no shared axis along which to scope tag matching; tags must be treated as globally unique across the entire model to avoid ambiguity. The trade-offs of this approach are illustrated in §10.6.1.5.</p>
+<p>The IFC specification does not state that tags must be unique within any particular scope, and validators currently have no machine-verifiable rule to enforce either uniqueness constraint. Without clarity on the <code>BasisCurve</code> requirement and tag scoping rules, differing interpretations across implementations will produce incompatible results and undermine the ability to reliably exchange stringline-based geometry.</p>
 <hh3 id="extent-along-the-directrix">Extent Along the Directrix</hh3>
 <p><code>IfcSectionedSurface</code> and <code>IfcSectionedSolidHorizontal</code> are bounded by their <code>CrossSectionPositions</code> — geometry is generated by sweeping only between the first and last defined position and does not extend to the head or tail of the <code>Directrix</code>. Figure 8.8.3.35.C in the IFC specification incorrectly depicts the solid extending to the head and tail of the <code>Directrix</code> when <code>CrossSectionPositions</code> are at interior distances, contradicting the specification text. The practical consequence of such extension would be severe: multiple <code>IfcSectionedSolidHorizontal</code> instances modeling sequential prisms along the same alignment — pavement layers, cut sections, fill sections — would each extend to the full alignment endpoints and overlap one another. Implementers should follow the specification text, not the figure.</p>
 <p>Guide curve extent follows the opposite rule. The <code>IfcOffsetCurveByDistances</code> specification states that if the defined offset values do not span the full extent of the basis curve, the offsets implicitly continue with the same value toward the head and tail. For guide curves this means a constant offset stringline — such as the edge of a uniform-width shoulder — can be expressed with a single <code>IfcPointByDistanceExpression</code> without requiring offset values at every cross-section position. The two behaviors are independent: guide curves extend implicitly because they control interpolation <em>within</em> the surface or solid's defined span, not because they extend that span.</p>
 <hh3 id="disagreement-between-section-endpoint-and-guide-curve">Disagreement Between Section Endpoint and Guide Curve</hh3>
 <p>When a cross-section endpoint is authored at a specific position and a guide curve with a matching tag passes through a different position at that same distance along the directrix, the specification provides no guidance on which governs. Implementers should treat the authored section positions as exact and design guide curves to be consistent with them at all defined section positions. The behavior of a geometry kernel when a section endpoint and its guide curve disagree is implementation-defined.</p>
+<hh3 id="cross-section-orientation-default-axis-direction">Cross-Section Orientation: Default Axis Direction</hh3>
+<p>Each <code>IfcAxis2PlacementLinear</code> entry in <code>CrossSectionPositions</code> defines the local coordinate system at which its corresponding cross-section is placed. The <code>Axis</code> attribute specifies the local &quot;up&quot; direction — the Z-axis of that coordinate system — which determines how the cross-section is oriented in 3D space. As discussed in §8.3.2, the default value of <code>Axis</code> when the attribute is omitted is not unambiguously defined in the IFC schema.</p>
+<p><strong>Historical context.</strong> During early development of <code>IfcSectionedSolidHorizontal</code> under IFC 4.3, the <code>Axis</code> direction at each cross-section position was envisioned as always vertical — <code>(0, 0, 1)</code> in global coordinates. As the standard evolved through RC1–RC4 and ADD1, this assumption was replaced with an author-controlled <code>IfcAxis2PlacementLinear</code> allowing <code>Axis</code> to be specified explicitly per cross-section position. The resolved specification permits both interpretations, but the default when <code>Axis</code> is omitted remains undefined (see §8.3.2).</p>
+<p><strong>Geometric consequence.</strong> On a flat (zero-grade) alignment the two interpretations produce identical results. On a graded alignment they diverge:</p>
+<ul>
+<li><p><strong>Axis = (0, 0, 1).</strong> The cross-section &quot;up&quot; direction is always global vertical. Cross-section faces are plumb — their planes are perpendicular to the horizontal projection of the directrix, not to the 3D curve tangent. For infrastructure design this is the natural interpretation: walls are vertical, widths are measured horizontally, and the resulting shape matches traditional plan-and-profile intent.</p>
+</li>
+<li><p><strong>Axis perpendicular to the 3D tangent.</strong> The cross-section &quot;up&quot; direction tilts with the grade, remaining in the vertical plane containing the 3D tangent. Cross-section faces are truly perpendicular to the 3D curve. On a graded alignment the faces lean forward or backward relative to the direction of travel, producing a different solid with different volume and cross-sectional area at any given distance. This interpretation yields the same solid that <code>IfcExtrudedAreaSolid</code> would produce for the same profile swept along the same path.</p>
+</li>
+</ul>
+<p>Both figures show the retaining wall example (§10.6.2.2) swept along a 10% graded directrix. In Figure 10.5-1, <code>Axis</code> is supplied explicitly as <code>(0, 0, 1)</code> at each cross-section position and the end face is plumb. Figure 10.5-2 shows the same scenario with <code>Axis</code> omitted, rendered by two different IFC viewers that have adopted opposite defaults: the upper half uses the perpendicular-to-3D-tangent interpretation; the lower half uses <code>(0, 0, 1)</code>. The divergence is most apparent at the start and end of the wall, where the two viewers produce noticeably different face orientations from an identical input file.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.5-1_Axis_GlobalZ.png" alt="Figure 10.5-1 — Elevation view of IfcSectionedSolidHorizontal on a 10% graded alignment with Axis = (0,0,1): end face is vertical." /></p>
+<p><em>Figure 10.5-1 — Elevation view of <code>IfcSectionedSolidHorizontal</code> on a 10% graded alignment with <code>Axis = (0, 0, 1)</code>: end face is vertical (plumb).</em></p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.5-2_Axis_Tilted.png" alt="Figure 10.5-2 — The same IfcSectionedSolidHorizontal model (retaining wall, 10% grade, Axis omitted) rendered by two IFC viewers: upper half assumes Axis perpendicular to the 3D tangent (inclined end face); lower half assumes Axis = (0,0,1) (plumb end face)." /></p>
+<p><em>Figure 10.5-2 — The same <code>IfcSectionedSolidHorizontal</code> model (retaining wall, 10% grade, <code>Axis</code> omitted) rendered by two IFC viewers: the upper half assumes <code>Axis</code> perpendicular to the 3D tangent (inclined end face); the lower half assumes <code>Axis = (0, 0, 1)</code> (plumb end face).</em></p>
+<p><strong>Practical consequences.</strong> The discrepancy extends beyond geometry. Quantity takeoffs derived from these two solids yield different volumes — the differing end-face angles shift the amount of material at each terminus, and the effect grows with grade steepness. A bill-of-materials or payment verification workflow can produce measurably different results from the same model file depending solely on which viewer performed the calculation.</p>
+<p>Clash detection is similarly affected. The two solids occupy different regions of 3D space: an element near a wall endpoint may show as clear in one viewer and conflicting in another. A clash report's findings become tool-dependent, with nothing in the model file to signal the ambiguity.</p>
+<p>In construction, the disagreement extends to physical work. Formwork geometry, excavation limits, and bearing surface angles at the wall ends all differ between interpretations. A contractor working from one viewer's output and an inspector referencing another's may reach opposite conclusions about what was designed — each correctly reading what their own tool shows.</p>
+<p><strong>Recommendation.</strong> Authors should always supply <code>Axis</code> explicitly in every <code>IfcAxis2PlacementLinear</code> entry within <code>CrossSectionPositions</code>. For infrastructure design, <code>Axis = (0, 0, 1)</code> is the appropriate choice and matches the original design intent of <code>IfcSectionedSolidHorizontal</code>. Relying on the default produces the viewer-dependent results shown in Figure 10.5-2, with downstream consequences for quantities, clash analysis, and construction.</p>
 <hh3 id="profile-orientation-documentation-error">Profile Orientation Documentation Error</hh3>
 <p>The specification for <code>IfcSectionedSolidHorizontal</code> states:</p>
 <blockquote>
@@ -4844,31 +4856,86 @@ Outgoing side:  Sta. 76+00.00  ─────┘──────────�
 <p>As discussed in <a href="#52-offset-curves-and-ifcalignment">§5.2</a>, <code>IfcOffsetCurveByDistances</code> is a resource entity and must be directly associated with a rooted entity to satisfy validation rule <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a>. This requirement has an extra complication in the guide curve context: although a guide curve is geometrically referenced through the surface or solid (itself a rooted entity), the validation service does not trace that indirect path and flags guide curves not directly associated with a rooted entity.</p>
 <p>In practice, each <code>IfcOffsetCurveByDistances</code> guide curve must be assigned as the shape representation of an <code>IfcAlignment</code>. If the model does not already contain an alignment that naturally owns the guide curve, a placeholder alignment must be created for this purpose. Each such placeholder alignment must also have stationing defined, or additional validation warnings will be raised.</p>
 <hh2 id="106-example-models">10.6 Example Models</hh2>
-<p>Six example models illustrate the concepts of this chapter in progressively more complex configurations. The first two demonstrate <code>IfcSectionedSurface</code> without stringlines; the remaining four form a series that explores stringline authoring approaches and their trade-offs.</p>
-<hh3 id="1061-superelevation">10.6.1 Superelevation</hh3>
-<p>The file <a href="examples/Superelevation.ifc"><code>Superelevation.ifc</code></a> is a template-based <code>IfcSectionedSurface</code> illustrating a superelevation transition, shown in Figure 10.3-1. The surface is defined by cross-sections at discrete positions along a <code>Directrix</code>, with linear interpolation between them. No guide curves are used. This is the simplest configuration and produces adequate geometry when the variation between sections is itself linear — which is the case for uniform superelevation rotation. The model also includes <code>IfcReferent</code> instances marking the superelevation events along the alignment.</p>
-<hh3 id="1062-sectioned-surface-with-branching">10.6.2 Sectioned Surface with Branching</hh3>
+<p>Twelve example models illustrate the concepts of this chapter in progressively more complex configurations, organized by entity type.</p>
+<hh3 id="1061-ifcsectionedsurface">10.6.1 IfcSectionedSurface</hh3>
+<hh4 id="10611-minimal-definition">10.6.1.1 Minimal Definition</hh4>
+<p>The file <a href="examples/IfcSectionedSurface.ifc"><code>IfcSectionedSurface.ifc</code></a> is the surface counterpart to <a href="examples/IfcSectionedSolidHorizontal.ifc"><code>IfcSectionedSolidHorizontal.ifc</code></a> (§10.6.2.1). It demonstrates <code>IfcSectionedSurface</code> with an <code>IfcSegmentedReferenceCurve</code> as the <code>Directrix</code>, so the open cross-section profile rotates with cant at each station along the alignment. The alignment geometry is identical to the solid example.</p>
+<p>The alignment comprises three stacked layouts:</p>
+<ul>
+<li><strong>Horizontal</strong>: a 100 m Bloss transition from infinite radius (tangent entry) to a 300 m radius curve curving left.</li>
+<li><strong>Vertical</strong>: a 100 m flat grade at zero gradient.</li>
+<li><strong>Cant</strong>: a 100 m Bloss transition from zero cant to 160 mm of right-rail elevation, consistent with the left-curving horizontal alignment.</li>
+</ul>
+<p>The horizontal and vertical layouts combine into an <code>IfcGradientCurve</code>; adding the cant layout produces an <code>IfcSegmentedReferenceCurve</code>, which serves as the <code>Directrix</code>. The cross-section is a single <code>IfcOpenCrossProfileDef</code> instance shared at both positions: two segments of 29.5 m half-width each, both with zero slope. The same profile instance is placed at distances 0 m and 100 m along the directrix.</p>
+<p>Because the profile slope is zero, the top surface is flat in the profile's local coordinate frame at every station. The banking visible in the rendered model comes entirely from the <code>IfcSegmentedReferenceCurve</code> rotating the profile frame at each station by the cant-derived angle. At the start (distance 0) the cant is zero and the surface is level; by distance 100 m the cant has reached 160 mm and the surface is banked accordingly. The geometry engine interpolates the cant continuously between stations following the Bloss parametric equations — there is no step change.</p>
+<p><strong>Note on IfcOpenShell rendering.</strong> TODO item #22 records that the current IfcOpenShell <code>IfcSectionedSolidHorizontal</code> implementation does not rotate the solid cross-section based on cant. The same limitation applies to <code>IfcSectionedSurface</code>: the rendered surface in IfcOpenShell does not reflect the cant banking. The IFC model itself is correctly structured — the <code>IfcSegmentedReferenceCurve</code> carries the cant — but the geometry kernel does not yet apply the rotation.</p>
+<hh4 id="10612-superelevation">10.6.1.2 Superelevation</hh4>
+<p>The file <a href="examples/IfcSectionedSurface_Superelevation.ifc"><code>IfcSectionedSurface_Superelevation.ifc</code></a> is a template-based <code>IfcSectionedSurface</code> illustrating a superelevation transition, shown in Figure 10.3-1. The surface is defined by cross-sections at discrete positions along a <code>Directrix</code>, with linear interpolation between them. No guide curves are used. This is the simplest configuration and produces adequate geometry when the variation between sections is itself linear — which is the case for uniform superelevation rotation. The model also includes <code>IfcReferent</code> instances marking the superelevation events along the alignment.</p>
+<hh4 id="10613-sectioned-surface-with-branching">10.6.1.3 Sectioned Surface with Branching</hh4>
 <p>The file <a href="examples/IfcSectionedSurface_with_branching.ifc"><code>IfcSectionedSurface_with_branching.ifc</code></a> is shown in Figure 10.3.1-2. It is based on the breakline example given in the <code>IfcSectionedSurface</code> documentation, enhanced to show both a widening and a subsequent narrowing of the section — a median or auxiliary lane that emerges from the main roadway and then returns.</p>
-<hh3 id="1063-stringlines-guide-curves-as-resource-entities">10.6.3 Stringlines — Guide Curves as Resource Entities</hh3>
+<hh4 id="10614-stringlines-guide-curves-as-resource-entities">10.6.1.4 Stringlines — Guide Curves as Resource Entities</hh4>
 <p>The file <a href="examples/IfcSectionedSurface_with_stringlines_as_resource_entities.ifc"><code>IfcSectionedSurface_with_stringlines_as_resource_entities.ifc</code></a> is the baseline stringline example. The directrix is a 200 m straight alignment with a flat vertical profile. The symmetric open profile has two segments and three tagged vertices: <code>A</code> (right edge), <code>B</code> (centerline), and <code>C</code> (left edge), each with a corresponding <code>IfcOffsetCurveByDistances</code> guide curve sharing the same basis curve as the surface directrix.</p>
 <p>Only two cross-sections are authored — one at each end of the surface. The guide curves carry all intermediate geometry. Guide curves A and C define a variable-width surface: both edges begin at ±30 m, widen to ±45 m at the 100 m midpoint, and return to ±30 m at 200 m. Guide curve B holds the centerline at a constant zero offset throughout. Without the guide curves, linear interpolation between the two end sections would produce a uniform 30 m width along the full 200 m — the guide curves are what create the widening.</p>
 <p>Note that <code>Main-Line</code> cannot itself serve as the guide curve for the centerline vertex: <code>IfcAlignment</code> does not have a <code>Tag</code> attribute. Guide curve B is therefore an <code>IfcOffsetCurveByDistances</code> with a zero lateral offset from <code>Main-Line</code>, existing solely to carry the tag <code>&quot;B&quot;</code> on behalf of the alignment.</p>
 <p><strong>Validation note.</strong> The three <code>IfcOffsetCurveByDistances</code> instances in this model are bare resource entities: they are referenced by the surface but not assigned as representations of any rooted entity. The IFC validation service flags this as an <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a> violation. The model is geometrically correct but does not conform to industry best-practice validation rules.</p>
-<hh3 id="1064-stringlines-guide-curves-as-alignments">10.6.4 Stringlines — Guide Curves as Alignments</hh3>
-<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc</code></a> contains the same geometry as v1 but wraps each guide curve as an <code>IfcAlignment</code> instance — <code>A-line</code>, <code>B-line</code>, and <code>C-line</code> — aggregated under the project. The <code>Tag</code> is set on the <code>IfcOffsetCurveByDistances</code> carried by each alignment's shape representation. This structure satisfies the <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a> rooted-entity requirement and eliminates the validation service warning from v1.</p>
-<p>Because all three guide curves in this example (and in v1) share the same <code>BasisCurve</code> as the surface <code>Directrix</code>, tag matching is scoped to that shared basis curve. Tags <code>&quot;A&quot;</code>, <code>&quot;B&quot;</code>, and <code>&quot;C&quot;</code> need only be unique within the set of guide curves on <code>Main-Line</code> — they do not need to be globally unique across the model. The IFC specification does not state this scoping rule explicitly, but it follows from the interpretation discussed in §10.5.</p>
-<hh3 id="1065-stringlines-independent-edge-alignments">10.6.5 Stringlines — Independent Edge Alignments</hh3>
+<hh4 id="10615-stringlines-guide-curves-as-alignments">10.6.1.5 Stringlines — Guide Curves as Alignments</hh4>
+<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc</code></a> contains the same geometry as §10.6.1.3 but wraps each guide curve as an <code>IfcAlignment</code> instance — <code>A-line</code>, <code>B-line</code>, and <code>C-line</code> — aggregated under the project. The <code>Tag</code> is set on the <code>IfcOffsetCurveByDistances</code> carried by each alignment's shape representation. This structure satisfies the <a href="https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html">IFC105</a> rooted-entity requirement and eliminates the validation service warning.</p>
+<p>Because all three guide curves in this example share the same <code>BasisCurve</code> as the surface <code>Directrix</code>, tag matching is scoped to that shared basis curve. Tags <code>&quot;A&quot;</code>, <code>&quot;B&quot;</code>, and <code>&quot;C&quot;</code> need only be unique within the set of guide curves on <code>Main-Line</code> — they do not need to be globally unique across the model. The IFC specification does not state this scoping rule explicitly, but it follows from the interpretation discussed in §10.5.</p>
+<hh4 id="10616-stringlines-independent-edge-alignments">10.6.1.6 Stringlines — Independent Edge Alignments</hh4>
 <p>The file <a href="examples/IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc</code></a> takes a different approach: the edge stringlines are derived from independent <code>IfcAlignment</code> instances whose geometry is circular arcs, rather than parametric offsets from the centerline. <code>Main-Line</code> is a 200 m straight alignment. <code>Left_Edge</code> and <code>Right_Edge</code> are 150 m circular arcs (radius 300 m) starting at ±30 m from the centerline. The guide curves for tags A and C are zero-offset curves from these arc alignments; the guide curve for tag B is a zero-offset from <code>Main-Line</code>. As previously discussed, the alignments themselves cannot carry tags, so zero-offset <code>IfcOffsetCurveByDistances</code> instances are used.</p>
-<p>Because the guide curves for tags A and C have a different <code>BasisCurve</code> than the surface <code>Directrix</code>, the basis-curve scoping rule from §10.5 no longer provides a natural disambiguation boundary. There is no shared parameterization to define which guide curves belong to which surface, so tags must be treated as globally unique across the entire model to avoid ambiguity. The IFC specification is silent on this distinction — it neither requires global uniqueness nor defines when surface-scoped uniqueness is sufficient.</p>
+<p>Because the guide curves for tags A and C have a different <code>BasisCurve</code> than the surface <code>Directrix</code>, the basis-curve scoping rule from §10.5 no longer provides a natural disambiguation boundary. There is no shared parameterization to define which guide curves belong to which surface or solid, so tags must be treated as globally unique across the entire model to avoid ambiguity. The IFC specification is silent on this distinction — it neither requires global uniqueness nor defines when surface-scoped uniqueness is sufficient.</p>
 <p>This configuration is the most conceptually faithful to the idea of stringlines — each edge path is an independent geometric entity — but it exposes two further specification gaps. First, <code>Left_Edge</code> and <code>Right_Edge</code> are 150 m long while the surface directrix is 200 m long. The guide curves' parameterization ends before the surface does, and the IFC specification's implicit extension rule (the last offset value continues to the end of the basis curve) does not resolve the inconsistency because the guide curves' basis curves are different from the surface directrix. Second, the cross-section at distance 200 m authors a width of 60 m each side, but the circular arc guide curves would position the edge vertices at a different lateral distance at that station. The specification does not state which governs — the authored section or the guide curve.</p>
-<hh3 id="1066-stringlines-dense-section-approximation">10.6.6 Stringlines — Dense Section Approximation</hh3>
-<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc"><code>IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc</code></a> reproduces the same edge geometry as v3 — a straight centerline with curved edges defined by 300 m radius arcs — but using the template approach rather than guide curves. Cross-section widths at five evenly-spaced stations are computed analytically from the arc geometry, and the resulting <code>IfcOpenCrossProfileDef</code> instances embed the exact width at each station. The edge alignment instances from v3 are retained in the model to provide a visual reference. Figure 10.6.6-1 shows the resulting surface; the mesh lines mark each cross-section boundary and the curved overall shape reflects the analytically computed widths.</p>
+<hh4 id="10617-stringlines-dense-section-approximation">10.6.1.7 Stringlines — Dense Section Approximation</hh4>
+<p>The file <a href="examples/IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc"><code>IfcSectionedSurface_with_stringlines_dense_section_approximation.ifc</code></a> reproduces the same edge geometry as §10.6.1.5 — a straight centerline with curved edges defined by 300 m radius arcs — but using the template approach rather than guide curves. Cross-section widths at five evenly-spaced stations are computed analytically from the arc geometry, and the resulting <code>IfcOpenCrossProfileDef</code> instances embed the exact width at each station. The edge alignment instances from v3 are retained in the model to provide a visual reference. Figure 10.6.6-1 shows the resulting surface; the mesh lines mark each cross-section boundary and the curved overall shape reflects the analytically computed widths.</p>
 <p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.6.6-1_Dense_Section_Approximation.png" alt="" /></p>
 <p><em>Figure 10.6.6-1 — Sectioned surface with five cross-sections approximating curved edge geometry. Mesh lines mark cross-section boundaries; the edge paths between them are piecewise-linear.</em></p>
 <p>Figure 10.6.6-2 zooms in on the far-right corner of the surface, where the gap between the exact circular arc guide curve (shown in orange) and the piecewise-linear surface edge is most visible. With only five sections, the approximation error is perceptible at the scale of the model.</p>
 <p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_10.6.6-2_Edge_Approximation_Gap.png" alt="" /></p>
 <p><em>Figure 10.6.6-2 — Zoomed view of the far-right corner showing the gap between the piecewise-linear surface edge and the exact circular arc guide curve (orange). The error is largest at the midpoint between cross-sections.</em></p>
-<p>This example illustrates the trade-off between the two approaches. The template approach with dense sections can approximate curved edge geometry to any desired tolerance, but requires explicit computation of profile widths at each station and produces a model with many cross-section instances. The stringline approach of v3 requires only two sections and lets the guide curves carry the geometry exactly — but leaves the specification gaps noted in §10.6.5 unresolved.</p>
+<p>This example illustrates the trade-off between the two approaches. The template approach with dense sections can approximate curved edge geometry to any desired tolerance, but requires explicit computation of profile widths at each station and produces a model with many cross-section instances. The stringline approach of §10.6.1.6 requires only two sections and lets the guide curves carry the geometry exactly — but leaves the specification gaps noted there unresolved.</p>
+<hh3 id="1062-ifcsectionedsolidhorizontal">10.6.2 IfcSectionedSolidHorizontal</hh3>
+<hh4 id="10621-minimal-definition">10.6.2.1 Minimal Definition</hh4>
+<p>The file <a href="examples/IfcSectionedSolidHorizontal.ifc"><code>IfcSectionedSolidHorizontal.ifc</code></a> is the minimal definition of <code>IfcSectionedSolidHorizontal</code>: a uniform, unrotated cross-section placed at two positions along a 3D alignment, with linear interpolation between them. No profile rotation, superelevation, or guide curves are used. This isolates the core solid sweep mechanism from the additional complexity addressed in §10.6.2.2–10.6.2.6.</p>
+<p>The alignment comprises three stacked layouts:</p>
+<ul>
+<li><strong>Horizontal</strong>: a 100 m Bloss transition starting from infinite radius (tangent entry) and transitioning to a 300 m radius curve to the left.</li>
+<li><strong>Vertical</strong>: a 100 m flat grade at zero gradient.</li>
+<li><strong>Cant</strong>: a 100 m Bloss transition from zero cant to 160 mm of right-rail elevation, consistent with the left-curving horizontal alignment.</li>
+</ul>
+<p>The horizontal and vertical layouts combine into an <code>IfcGradientCurve</code>; adding the cant layout produces an <code>IfcSegmentedReferenceCurve</code>, which serves as the <code>Directrix</code> of the solid. The cross-section is a trapezoid defined by four vertices — <code>(-30, 0)</code>, <code>(30, 0)</code>, <code>(29.5, 0.5)</code>, <code>(-29.5, 0.5)</code> — wider at the base than at the top. It is encoded as an <code>IfcArbitraryClosedProfileDef</code> whose <code>OuterCurve</code> is an <code>IfcIndexedPolyCurve</code> with an explicit <code>IfcLineIndex</code> closing the loop back to the first vertex. The same profile is placed at distances 0 and 100 m along the directrix, and the geometry engine interpolates linearly between them.</p>
+<hh4 id="10622-crown-cross-section-with-superelevation">10.6.2.2 Crown Cross-Section with Superelevation</hh4>
+<p>The file <a href="examples/IfcSectionedSolidHorizontal_Superelevation.ifc"><code>IfcSectionedSolidHorizontal_Superelevation.ifc</code></a> is the solid counterpart to <a href="examples/IfcSectionedSurface_Superelevation.ifc"><code>IfcSectionedSurface_Superelevation.ifc</code></a>. It demonstrates <code>IfcSectionedSolidHorizontal</code> with a distinct <code>IfcArbitraryClosedProfileDef</code> at each cross-section position, each directly encoding the cross-slope geometry for that station. The alignment structure, station pattern, and superelevation progression match the surface example; the difference is that the cross-section here is a closed solid profile rather than an open surface profile.</p>
+<p>The alignment is a tangent–arc–tangent sequence: a 600 m leading straight, a 300 m radius circular arc of 585 m arc length, and a 600 m trailing straight, at a constant 0 % grade starting at elevation 30 m. The directrix is an <code>IfcGradientCurve</code>. Start station is 3000 m.</p>
+<p>Each cross-section is a V-shaped pavement slab 60 m wide and 0.5 m thick. The crown point is at the profile origin $(0, 0)$ — the top centerline. From the crown, the road surface slopes to each shoulder at a rate defined by the superelevation state at that station. The soffit is 0.5 m vertically below each top-surface point. There are no beveled edges.</p>
+<p>Six <code>IfcArbitraryClosedProfileDef</code> instances — one per position — directly encode the cross-slope at each station, mirroring the six <code>IfcOpenCrossProfileDef</code> instances in the surface counterpart. Without guide curves, vertex trajectories between stations are linearly interpolated; explicit guide curve control is illustrated in §10.6.2.5 and §10.6.2.6.</p>
+<hh4 id="10623-retaining-wall-with-variable-section">10.6.2.3 Retaining Wall with Variable Section</hh4>
+<p>Two files demonstrate <code>IfcSectionedSolidHorizontal</code> with a cross-section whose shape transforms along the alignment:</p>
+<ul>
+<li><a href="examples/IfcSectionedSolidHorizontal_retaining_wall_explicit_axis.ifc"><code>IfcSectionedSolidHorizontal_retaining_wall_explicit_axis.ifc</code></a> — <code>Axis = (0, 0, 1)</code> supplied explicitly at each <code>CrossSectionPosition</code>; cross-section faces are plumb (Figure 10.5-1).</li>
+<li><a href="examples/IfcSectionedSolidHorizontal_retaining_wall_implicit_axis.ifc"><code>IfcSectionedSolidHorizontal_retaining_wall_implicit_axis.ifc</code></a> — <code>Axis</code> omitted; the resulting orientation is implementation-defined (Figure 10.5-2).</li>
+</ul>
+<p>The alignment is a 50 m straight grade at 10% due East. Three cross-sections are defined — at 0 m, 25 m, and 50 m — and the geometry engine interpolates linearly between them. The cross-section is a retaining wall with footing; the stem height varies from 2.0 m at the start, to 3.0 m at the midpoint, and back to 1.5 m at the end. The footing width also varies: 2.0 m at the start and end, widening to 2.5 m at the midpoint, while the toe and wall thickness remain constant throughout. See §10.5 for a discussion of the <code>Axis</code> direction and its geometric consequences.</p>
+<hh4 id="10624-single-superelevation">10.6.2.4 Single Superelevation</hh4>
+<p>The file <a href="examples/IfcSectionedSolidHorizontal_single_superelevation.ifc"><code>IfcSectionedSolidHorizontal_single_superelevation.ifc</code></a> demonstrates the <code>IfcDerivedProfileDef</code> superelevation approach described in §10.4.1. The cross-slope transitions from flat (0 %) at station 0 m to a 10 % superelevation at station 50 m, with the geometry engine interpolating linearly between the two defined positions.</p>
+<p>The alignment is a 50 m straight line due East at zero grade with no cant. The directrix is therefore an <code>IfcGradientCurve</code> — no <code>IfcSegmentedReferenceCurve</code> is needed because the superelevation is encoded entirely in the profile rotation rather than in the alignment cant.</p>
+<p>The base cross-section is the same trapezoid used in §10.6.2.1: vertices <code>(-30, 0)</code>, <code>(30, 0)</code>, <code>(29.5, 0.5)</code>, <code>(-29.5, 0.5)</code>, encoded as an <code>IfcArbitraryClosedProfileDef</code>. A single instance of this base profile is shared by both cross-section positions; each position wraps it in its own <code>IfcDerivedProfileDef</code> whose <code>IfcCartesianTransformationOperator2D</code> carries the rotation.</p>
+<p>The rotation angle is $\theta = \arctan(e)$, where $e$ is the cross-slope (rise/run): $\theta = 0$ at station 0 m and $\theta \approx 5.71°$ at station 50 m. The geometry engine interpolates the rotation linearly between the two positions.</p>
+<hh4 id="10625-stringlines-guide-curves-as-alignments">10.6.2.5 Stringlines — Guide Curves as Alignments</hh4>
+<p>The file <a href="examples/IfcSectionedSolidHorizontal_with_stringlines_guide_curves_as_alignments.ifc"><code>IfcSectionedSolidHorizontal_with_stringlines_guide_curves_as_alignments.ifc</code></a> is the solid counterpart to <a href="examples/IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc</code></a> (§10.6.1.5). It demonstrates guide curves controlling tagged vertices of an <code>IfcArbitraryClosedProfileDef</code>, replacing the <code>IfcOpenCrossProfileDef.Tags</code> mechanism of the surface with <code>IfcCartesianPointList2D.TagList</code>. The alignment, guide curve alignments, and variable-width parameters are identical to the surface example.</p>
+<p>The directrix is the same 200 m straight alignment (<code>Main-Line</code>) at flat grade. Two cross-section positions are authored — one at each end. Three guide curve alignments (<code>A-line</code>, <code>B-line</code>, <code>C-line</code>) wrap <code>IfcOffsetCurveByDistances</code> instances whose <code>BasisCurve</code> is <code>Main-Line</code>, the same curve as the solid <code>Directrix</code>. The tags <code>&quot;A&quot;</code>, <code>&quot;B&quot;</code>, <code>&quot;C&quot;</code> are set on the offset curves; because all share the same basis curve as the directrix, tag matching is scoped to that parameterization (see §10.5). The guide curve offsets are unchanged from §10.6.1.5: <code>A-line</code> and <code>C-line</code> widen from ±30 m to ±45 m at the 100 m midpoint and return; <code>B-line</code> holds the crown at zero offset throughout.</p>
+<p>The closed cross-section is a V-shaped pavement slab 60 m wide (nominal) and 1 m thick, with a 20 % crown slope. Tags are assigned through <code>IfcCartesianPointList2D.TagList</code>: the three top-surface vertices carry matching guide curve tags (<code>&quot;A&quot;</code>, <code>&quot;B&quot;</code>, <code>&quot;C&quot;</code>), while the three bottom-surface vertices carry non-matching tags (<code>&quot;A_bot&quot;</code>, <code>&quot;B_bot&quot;</code>, <code>&quot;C_bot&quot;</code>) so the soffit falls back to linear interpolation between positions.</p>
+<p><strong>Key difference from the surface counterpart.</strong> In <code>IfcOpenCrossProfileDef</code>, the <code>Tags</code> attribute is a list of vertex labels on the open profile. In <code>IfcArbitraryClosedProfileDef</code>, there is no <code>Tags</code> attribute; vertex labels are carried by <code>IfcCartesianPointList2D.TagList</code>. Both attributes achieve the same match — an offset curve's <code>Tag</code> is compared against the vertex label, and matching vertices are guided. A vertex with a tag that matches no guide curve behaves as an unguided vertex: its position at any distance along the directrix is linearly interpolated between its authored positions at the <code>CrossSectionPositions</code>.</p>
+<hh4 id="10626-stringlines-independent-edge-alignments">10.6.2.6 Stringlines — Independent Edge Alignments</hh4>
+<p>The file <a href="examples/IfcSectionedSolidHorizontal_with_stringlines_independent_edge_alignments.ifc"><code>IfcSectionedSolidHorizontal_with_stringlines_independent_edge_alignments.ifc</code></a> is the solid counterpart to <a href="examples/IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc"><code>IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc</code></a> (§10.6.1.6). It demonstrates <code>IfcSectionedSolidHorizontal</code> where the edge guide curves are derived from independent <code>IfcAlignment</code> instances with circular arc geometry, rather than parametric offsets from the centerline directrix. The overall structure mirrors §10.6.2.5, but the guide curves for tags <code>&quot;A&quot;</code> and <code>&quot;C&quot;</code> have a different <code>BasisCurve</code> than the solid <code>Directrix</code>.</p>
+<p>The directrix is the same 200 m straight <code>Main-Line</code> alignment at flat grade. Two additional alignments define the edge paths:</p>
+<ul>
+<li><code>Left_Edge</code> — a 150 m circular arc with radius 300 m, curving left, starting at $(0,\ +30)$ m from the origin.</li>
+<li><code>Right_Edge</code> — a 150 m circular arc with radius −300 m (curving right), starting at $(0,\ -30)$ m from the origin.</li>
+</ul>
+<p>Both edge alignments carry a constant-grade vertical layout with a start height of $-\frac{1}{2} \times 30 \times 0.2 = -3\ \mathrm{m}$, placing each shoulder 3 m below the crown at the start. As in the surface counterpart, guide curve alignments (<code>A-line</code>, <code>B-line</code>, <code>C-line</code>) are zero-offset <code>IfcOffsetCurveByDistances</code> wrappers: <code>A-line</code> wraps <code>Left_Edge</code>, <code>B-line</code> wraps <code>Main-Line</code>, and <code>C-line</code> wraps <code>Right_Edge</code>. The tags <code>&quot;A&quot;</code>, <code>&quot;B&quot;</code>, <code>&quot;C&quot;</code> are set on the offset curves.</p>
+<p>Because the guide curves for tags <code>&quot;A&quot;</code> and <code>&quot;C&quot;</code> have a <code>BasisCurve</code> independent of the solid <code>Directrix</code>, the basis-curve scoping rule from §10.5 no longer provides a natural disambiguation boundary. Tags must therefore be treated as globally unique across the entire model. The <code>&quot;A_bot&quot;</code>, <code>&quot;B_bot&quot;</code>, and <code>&quot;C_bot&quot;</code> tags on the bottom vertices serve as distinct identifiers that match no guide curve, ensuring the soffit falls back to linear interpolation.</p>
+<p>Two profiles are authored: <code>cs1</code> at distance 0 m (half-width 30 m) and <code>cs2</code> at distance 200 m (half-width 60 m). Tags follow the same <code>IfcCartesianPointList2D.TagList</code> pattern as §10.6.2.5 — top vertices guided, bottom vertices non-matching and linearly interpolated.</p>
+<p>The same two specification gaps documented in §10.6.1.6 apply here. First, <code>Left_Edge</code> and <code>Right_Edge</code> are 150 m long while the solid directrix is 200 m long. The guide curves' parameterization ends before the solid does, and the IFC specification does not define how a guide curve whose basis curve differs from the solid directrix should extend beyond its end. Second, the authored <code>cs2</code> template places the top shoulder vertices at ±60 m, but the circular arc guide curves would position those vertices at a different lateral distance at station 200 m. The specification does not state which governs — the authored section or the guide curve position.</p>
 
 <div class="chapter-sep"></div>
 <a id="11_Precision_and_Tolerance"></a>
@@ -4938,8 +5005,7 @@ for visual inspection, all located under the <code>testset/</code> folder in thi
 ├── Alignment-semantic-testset/    # Semantic IFC files (no geometry)
 ├── Alignment-geometry-testset/    # IFC files with geometric representations
 ├── Alignment-reference-testset/   # Reference coordinates sampled at 1 m intervals
-├── Alignment-plots/               # SVG plots for visual inspection
-└── RealWorldAlignments/           # Real-world IFC files with 3D reference coordinates
+└── Alignment-plots/               # SVG plots for visual inspection
 </code></pre>
 <p>All four folders share the same internal hierarchy: alignment type then curve type subfolder.</p>
 <p><strong>Table 12.2-1 — Curve type subfolders by alignment type</strong></p>
@@ -5009,6 +5075,27 @@ segment type, and display or export the design intent without requiring geometri
 evaluation? They also serve as inputs for testing geometric representation generation —
 an implementation can construct its own geometry IFC files from the semantic definitions
 and benchmark the result against the reference geometry files in <code>Alignment-geometry-testset/</code>.</p>
+<p><strong>File naming.</strong> Each filename is prefixed with the alignment type — <code>Horizontal</code>, <code>Vertical</code>, or <code>Cant</code> — so the alignment type is unambiguous without inspecting the file or its folder path. All numeric tokens in the filename (length, radii) use meter-based values regardless of unit system, so the same filename prefix identifies the same physical alignment across all three unit variants.</p>
+<p><strong>Horizontal and cant:</strong></p>
+<pre><code>Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+</code></pre>
+<p>The radius tokens use <code>inf</code> and <code>-inf</code> for infinite radius (straight tangent). Positive radii denote left curves; negative radii denote right curves.</p>
+<p>Examples:</p>
+<ul>
+<li><code>Horizontal_Clothoid_100.0_inf_300_Meter.ifc</code> — Clothoid entry spiral, R = ∞ → +300 m, SI units</li>
+<li><code>Horizontal_Clothoid_100.0_inf_300_SurveyFoot.ifc</code> — same alignment, US survey feet</li>
+<li><code>Horizontal_HelmertCurve_100.0_-300_-1000_Meter.ifc</code> — Helmert arc-to-arc, R = −300 → −1000 m</li>
+<li><code>Cant_BlossCurve_100.0_-inf_-300_Meter.ifc</code> — Bloss cant entry spiral, right curve</li>
+</ul>
+<p><strong>Vertical:</strong></p>
+<pre><code>Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+</code></pre>
+<p>Examples:</p>
+<ul>
+<li><code>Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_Meter.ifc</code> — parabolic crest, +0.5 % to −1.0 %, starting at elevation 10.0 m</li>
+<li><code>Vertical_ConstantGradient_100.0_10.0_-0.5_-0.5_Meter.ifc</code> — constant descent at −0.5 %</li>
+</ul>
 <hh3 id="1223-geometry-ifc-files">12.2.3 Geometry IFC Files</hh3>
 <p>The geometry IFC files extend the semantic files with <code>IfcCurveSegment</code>-based geometric
 representations attached to each layout curve (<code>IfcCompositeCurve</code>,
@@ -5020,14 +5107,19 @@ semantic to geometric alignment definitions — specifically, whether the
 <code>IfcCurveSegment</code> representations. They also provide everything needed to evaluate the
 alignment curve at any point along its length, making them the input for coordinate
 comparison against the reference values in <code>Alignment-reference-testset/</code>.</p>
+<p><strong>File naming.</strong> Geometry files carry the same name as their semantic counterpart with <code>Generated_</code> prepended, distinguishing machine-generated files from the hand-authored semantic definitions:</p>
+<pre><code>Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+</code></pre>
 <hh3 id="1224-reference-coordinates">12.2.4 Reference Coordinates</hh3>
 <p>The reference coordinate files are CSV tables of coordinates sampled at every 1 m of
 horizontal distance along each alignment, from 0.0 m to 100.0 m inclusive (101 rows per
 file). Their purpose is to provide concrete values that any implementation can compare
-its output against, independent of the IFC files. The CSV file format and column
-definitions are described in Section 12.5.</p>
+its output against, independent of the IFC files. The file format and column
+definitions are described in §12.4.</p>
 <p>The following excerpt shows the first five rows of
-<code>HorizontalAlignment/BlossCurve/Horizontal_BlossCurve_100.0_300_1000_1_Meter.csv</code> — a Bloss
+<code>HorizontalAlignment/BlossCurve/Horizontal_BlossCurve_100.0_300_1000_Meter.csv</code> — a Bloss
 arc-to-arc transition from R = +300 m to R = +1000 m:</p>
 <pre><code>dist_along,X,Y,RefDir_dx,RefDir_dy
 0.000000,0.000000,0.000000,1.000000,0.000000
@@ -5040,6 +5132,11 @@ arc-to-arc transition from R = +300 m to R = +1000 m:</p>
 (<code>RefDir_dx</code> = 1, <code>RefDir_dy</code> = 0), and the curve is already bending left — the
 Y coordinate and <code>RefDir_dy</code> both increase as the alignment curves away from the
 initial straight.</p>
+<p><strong>File naming.</strong> Reference CSV files use the same name as the corresponding semantic IFC file with the <code>.ifc</code> extension replaced by <code>.csv</code>:</p>
+<pre><code>Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.csv
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+</code></pre>
 <hh3 id="1225-plots">12.2.5 Plots</hh3>
 <p>The <code>Alignment-plots/</code> folder contains plots for visual inspection, organized into
 three subfolders that mirror the alignment type structure:</p>
@@ -5051,8 +5148,8 @@ three subfolders that mirror the alignment type structure:</p>
 <p>Figure 12.2.5-1 shows a representative example: a Helmert arc-to-arc transition from
 R = +300 m to R = +1000 m. The upper panel shows the horizontal plan view; the lower
 panel shows the corresponding cant profile.</p>
-<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_1_Meter.svg" alt="Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)" /></p>
-<p><strong>Figure 12.2.5-1</strong> — Combined horizontal and cant plot for <code>Cant_HelmertCurve_100.0_300_1000_1_Meter</code>.</p>
+<p><img src="file:///F:/IFC-Alignment-Geometry-Implementation-Guide/testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_Meter.svg" alt="Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)" /></p>
+<p><strong>Figure 12.2.5-1</strong> — Combined horizontal and cant plot for <code>Cant_HelmertCurve_100.0_300_1000_Meter</code>.</p>
 <hr />
 <hh2 id="123-test-cases">12.3 Test Cases</hh2>
 <p>The test cases are organized by alignment component — horizontal, vertical, and cant —
@@ -5328,6 +5425,39 @@ feet.</p>
 </tr>
 </tbody>
 </table>
+<hh4 id="fhwa-bridge-geometry-manual-linear-placement-variant">FHWA Bridge Geometry Manual — Linear Placement Variant</hh4>
+<p>A second variant of the FHWA alignment is provided to support validation of <code>IfcLinearPlacement</code> evaluation. It carries the same horizontal and vertical geometry as the base case and adds 124 <code>IfcReferent</code> objects, one at every 100 ft station from 100+00 to 223+00, each with a populated <code>CartesianPosition</code> fallback. Linear placement is discussed in <a href="#8_LinearPlacement">Chapter 8</a>.</p>
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>IFC file</td>
+  <td><code>testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.ifc</code></td>
+</tr>
+<tr>
+  <td>Reference coordinates</td>
+  <td><code>testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.csv</code></td>
+</tr>
+<tr>
+  <td>Alignment name</td>
+  <td>E-Line</td>
+</tr>
+<tr>
+  <td>Project unit</td>
+  <td>International foot</td>
+</tr>
+<tr>
+  <td>3D curve type</td>
+  <td><code>IfcGradientCurve</code></td>
+</tr>
+</tbody>
+</table>
+<p>The reference CSV uses the same 13-column format as the other real-world alignment files (Section 12.4.2), but contains 124 rows rather than 101 — one row per <code>IfcLinearPlacement</code>, evaluated at the corresponding station distance rather than at uniform intervals. An implementation validates its linear placement support by reading each placement's <code>DistanceAlong</code>, evaluating the 3D gradient curve at that distance, and comparing the result against the matching row in the CSV.</p>
 <hh4 id="bpaimiokupittaa">BPaimio–Kupittaa</hh4>
 <p>The second case is alignment <code>001</code> from the BPaimio–Kupittaa railway line in Finland.
 The IFC file was provided by the Finnish Transport Infrastructure Agency (Väylävirasto)
@@ -5408,56 +5538,9 @@ segments with a rail head distance of 1.0 m.</p>
 <hh4 id="reference-coordinate-format">Reference coordinate format</hh4>
 <p>All three CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
 length. All positions are in project units; direction components are dimensionless. The
-column definitions are given in Section 12.5.2.</p>
-<hr />
-<hh2 id="124-file-naming">12.4 File Naming</hh2>
-<p>Each filename is prefixed with the alignment type — <code>Horizontal</code>, <code>Vertical</code>, or <code>Cant</code> —
-so the alignment type is unambiguous without inspecting the file or its folder path.
-Geometry IFC files carry an additional <code>Generated_</code> prefix to distinguish machine-generated
-files from the hand-authored semantic definitions.</p>
-<hh3 id="1241-semantic-ifc-files">12.4.1 Semantic IFC files</hh3>
-<p><strong>Horizontal and cant:</strong></p>
-<pre><code>Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-</code></pre>
-<p>The radius tokens use <code>inf</code> and <code>-inf</code> for infinite radius (straight tangent). Positive
-radii denote left curves; negative radii denote right curves.</p>
-<p>The <code>{Unit}</code> token is one of <code>Meter</code>, <code>SurveyFoot</code>, or <code>IntlFoot</code>. All numeric tokens in
-the filename (length, radii) use the meter-based values regardless of unit system, so
-the same filename prefix identifies the same physical alignment across all three variants.</p>
-<p>Examples:</p>
-<ul>
-<li><code>Horizontal_Clothoid_100.0_inf_300_1_Meter.ifc</code> — Clothoid entry spiral, R = ∞ → +300 m, SI units</li>
-<li><code>Horizontal_Clothoid_100.0_inf_300_1_SurveyFoot.ifc</code> — same alignment, US survey feet</li>
-<li><code>Horizontal_HelmertCurve_100.0_-300_-1000_1_Meter.ifc</code> — Helmert arc-to-arc, R = −300 → −1000 m</li>
-<li><code>Cant_BlossCurve_100.0_-inf_-300_1_Meter.ifc</code> — Bloss cant entry spiral, right curve</li>
-</ul>
-<p><strong>Vertical:</strong></p>
-<pre><code>Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.ifc
-</code></pre>
-<p>Examples:</p>
-<ul>
-<li><code>Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_1_Meter.ifc</code> — parabolic crest, +0.5 % to −1.0 %,
-starting at elevation 10.0 m</li>
-<li><code>Vertical_ConstantGradient_100.0_10.0_-0.5_-0.5_1_Meter.ifc</code> — constant descent at −0.5 %</li>
-</ul>
-<hh3 id="1242-geometry-ifc-files">12.4.2 Geometry IFC files</hh3>
-<p>Geometry files carry the same name as their semantic counterpart with <code>Generated_</code>
-prepended:</p>
-<pre><code>Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.ifc
-Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.ifc
-</code></pre>
-<hh3 id="1243-reference-csv-files">12.4.3 Reference CSV files</hh3>
-<p>Reference CSV files use the same name as the corresponding semantic IFC file with the
-<code>.ifc</code> extension replaced by <code>.csv</code>:</p>
-<pre><code>Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.csv
-Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Version}_{Unit}.csv
-Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Version}_{Unit}.csv
-</code></pre>
-<hr />
-<hh2 id="125-reference-coordinates">12.5 Reference Coordinates</hh2>
-<hh3 id="1251-file-format">12.5.1 File Format</hh3>
+column definitions are given in Section 12.4.2.</p>
+<hh2 id="124-reference-coordinates">12.4 Reference Coordinates</hh2>
+<hh3 id="1241-file-format">12.4.1 File Format</hh3>
 <p>Each reference file contains 101 rows plus a header row. The rows are sampled at 1 m
 intervals of horizontal distance (0.0 m to 100.0 m), so <code>dist_along</code> values in
 <code>SurveyFoot</code> and <code>IntlFoot</code> files are not round numbers. All length columns (<code>dist_along</code>,
@@ -5566,7 +5649,7 @@ consistent with the IFC specification for <code>IfcAlignmentVerticalSegment.Hori
 <p>The banked axis (<code>Axis_dy</code>, <code>Axis_dz</code>) is the cross-track &quot;up&quot; direction after applying
 the cant rotation about the forward tangent. For a planar track the X component of
 the axis is always 0.0 and <code>Axis_dz</code> approaches 1.0 when cant is zero.</p>
-<hh3 id="1252-3d-alignment-reference-coordinates">12.5.2 3D Alignment Reference Coordinates</hh3>
+<hh3 id="1242-3d-alignment-reference-coordinates">12.4.2 3D Alignment Reference Coordinates</hh3>
 <p>The 3D CSV files under <code>testset/RealWorldAlignments/</code> are produced by evaluating the combined 3D curve
 (<code>IfcGradientCurve</code> or <code>IfcSegmentedReferenceCurve</code>) at each sample point. Each
 evaluation returns a 4 × 4 placement matrix; the CSV extracts all three orientation
@@ -5638,8 +5721,8 @@ frame at each point. For alignments without cant, <code>Axis</code> is perpendic
 horizontal plane and <code>Y_dz</code> is zero. For railway alignments with cant, <code>Axis</code> is banked
 about the forward tangent and both <code>Y_dz</code> and <code>Axis_dy</code> become non-zero.</p>
 <hr />
-<hh2 id="126-validation-guidance">12.6 Validation Guidance</hh2>
-<hh3 id="1261-what-to-check">12.6.1 What to Check</hh3>
+<hh2 id="125-validation-guidance">12.5 Validation Guidance</hh2>
+<hh3 id="1251-what-to-check">12.5.1 What to Check</hh3>
 <p>The three forms of the testset support three distinct validation activities:</p>
 <p><strong>Semantic round-trip.</strong> Read a semantic IFC file and verify that the
 <code>IfcAlignmentSegment</code> attributes (<code>StartRadiusOfCurvature</code>, <code>EndRadiusOfCurvature</code>,
@@ -5651,7 +5734,7 @@ This applies both when constructing a geometry IFC file from a semantic file and
 reading a reference geometry file — in either case no numerical evaluation is required.</p>
 <p><strong>Geometric accuracy.</strong> Evaluate a geometry IFC alignment at 1 m intervals and compare
 the resulting coordinates against the reference values. This is the primary numerical test.</p>
-<hh3 id="1262-comparison-approach">12.6.2 Comparison Approach</hh3>
+<hh3 id="1252-comparison-approach">12.5.2 Comparison Approach</hh3>
 <p>Load a geometry IFC file, evaluate the alignment curve at
 $d = 0.0, 1.0, 2.0, \ldots, 100.0$ meters, and compare each computed value against the
 corresponding row in the reference file.</p>
@@ -5663,7 +5746,7 @@ coordinate values.</li>
 <li><strong>Banked axis</strong> (<code>Axis_dy</code>, <code>Axis_dz</code>, cant only) — the cross-track &quot;up&quot; direction.
 Errors here indicate a problem in the cant rotation logic.</li>
 </ul>
-<hh3 id="1263-cross-unit-validation">12.6.3 Cross-Unit Validation</hh3>
+<hh3 id="1253-cross-unit-validation">12.5.3 Cross-Unit Validation</hh3>
 <p>Because the three unit variants encode the same physical alignment, they provide an
 independent check for unit-handling correctness that does not require any external
 ground truth. The procedure is:</p>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="-440 -75 700 490" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- Grid lines (subtle) -->
+    <defs>
+      <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+        <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#1c2128" stroke-width="0.5"/>
+      </pattern>
+      <marker id="arrow-blue" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#58a6ff"/>
+      </marker>
+      <marker id="arrow-axis" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#3d444d"/>
+      </marker>
+      <marker id="arrow-orange" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#f0883e"/>
+      </marker>
+      <marker id="dim-arrow-l" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto">
+        <path d="M6,0 L0,3 L6,6 Z" fill="#000000"/>
+      </marker>
+      <marker id="dim-arrow-r" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#000000"/>
+      </marker>
+    </defs>
+
+    <rect x="-440" y="-75" width="620" height="490" fill="url(#grid)"/>
+
+    <!-- Coordinate axes -->
+    <line x1="-420" y1="0" x2="170" y2="0" stroke="#3d444d" stroke-width="1" marker-end="url(#arrow-axis)"/>
+    <line x1="0" y1="415" x2="0" y2="-60" stroke="#3d444d" stroke-width="1" marker-end="url(#arrow-axis)"/>
+
+    <!-- Axis labels -->
+    <text x="163" y="-6" fill="#3d444d" font-size="11" font-family="Courier New">x</text>
+    <text x="5" y="-58" fill="#3d444d" font-size="11" font-family="Courier New">y</text>
+
+    <!-- Tick marks on axes (every 100 units) -->
+    <g stroke="#3d444d" stroke-width="0.5" fill="#3d444d" font-size="9" font-family="Courier New" text-anchor="middle">
+      <!-- x-axis ticks -->
+      <line x1="-400" y1="-3" x2="-400" y2="3"/><text x="-400" y="14" fill="#3d444d">−400</text>
+      <line x1="-300" y1="-3" x2="-300" y2="3"/><text x="-300" y="14" fill="#3d444d">−300</text>
+      <line x1="-200" y1="-3" x2="-200" y2="3"/><text x="-200" y="14" fill="#3d444d">−200</text>
+      <line x1="-100" y1="-3" x2="-100" y2="3"/><text x="-100" y="14" fill="#3d444d">−100</text>
+      <line x1="100"  y1="-3" x2="100"  y2="3"/><text x="100"  y="14" fill="#3d444d">100</text>
+      <!-- y-axis ticks (SVG y flipped) -->
+      <line x1="-3" y1="-344.15" x2="3" y2="-344.15"/>
+      <text x="-18" y="-341" fill="#3d444d" text-anchor="end">344</text>
+      <line x1="-3" y1="-300" x2="3" y2="-300"/><text x="-14" y="-296" fill="#3d444d" text-anchor="end">300</text>
+      <line x1="-3" y1="-200" x2="3" y2="-200"/><text x="-14" y="-196" fill="#3d444d" text-anchor="end">200</text>
+      <line x1="-3" y1="-100" x2="3" y2="-100"/><text x="-14" y="-96"  fill="#3d444d" text-anchor="end">100</text>
+    </g>
+
+    <!--
+      Half circle: center = (-172.076, 344.152) in SVG coords (note: math cy is negative so SVG cy = 344.152)
+      The upper semicircle in math (y >= 0) becomes the UPPER part of the SVG (negative SVG y side = positive math y)
+      Arc goes from right endpoint (0, 0) to left endpoint (-344.144, 0) in math = SVG (0,0) to (-344.144, 0)
+      In SVG: large-arc-flag=1, sweep-flag=0 (counterclockwise in SVG = clockwise in math = upper arc)
+    -->
+
+    <!-- Center ghost circle (dotted full circle for reference) -->
+    <circle cx="-172.076" cy="344.152" r="384.77"
+            fill="none" stroke="#21262d" stroke-width="1" stroke-dasharray="6 4"/>
+
+
+
+
+
+    <!--
+      Radial Line 1: Center → (0,0)
+      Center in SVG: (-172.076, 344.152)
+      Endpoint: (0, 0)
+    -->
+    <line x1="-172.076" y1="344.152" x2="0" y2="0"
+          stroke="#3fb950" stroke-width="2" stroke-linecap="round"/>
+
+
+
+
+    <!-- Radial line 3: from origin (0,0) intersecting circle at arc length 58.33 toward x-axis -->
+    <!-- Angle = 54.749°, endpoint on circle: (50.00, -29.94) in math = SVG (50.00, 29.94) -->
+    <line x1="0" y1="0" x2="49.9973" y2="29.9362"
+          stroke="#a371f7" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Endpoint dot -->
+
+    <!-- Label -->
+
+
+
+
+
+    <!-- Right triangle: hypotenuse = center(-172.076,344.152)→B(49.9973,29.9362) -->
+    <!-- Horizontal leg from center → C=(49.9973,344.152), vertical leg C→B -->
+    <!-- Right angle at C=(49.9973, 344.152) -->
+    <polygon points="-172.076,344.152 49.9973,344.152 49.9973,29.9362"
+             fill="none"
+             stroke="#000000"
+             stroke-width="2"
+             stroke-linejoin="round"/>
+
+    <!-- Right angle marker at C=(49.9973,344.152), square toward triangle interior (left and up) -->
+    <polyline points="37.9973,344.152 37.9973,332.152 49.9973,332.152"
+              fill="none"
+              stroke="#000000"
+              stroke-width="2"
+              stroke-linejoin="round"/>
+
+    <!-- Leg labels -->
+    <text x="-61.039" y="344.152" dy="16"
+          fill="#000000" font-size="13" font-family="Times New Roman" font-style="italic" text-anchor="middle">x &#x2212; C<tspan font-size="10" dy="3">x</tspan></text>
+    <text x="49.9973" y="187.044" dx="10"
+          fill="#000000" font-size="13" font-family="Times New Roman" font-style="italic" dominant-baseline="middle">y &#x2212; C<tspan font-size="10" dy="3">y</tspan></text>
+
+    <!-- Radius label: midpoint of green line from center(-172.076,344.152) to (0,0) -->
+    <text x="-86" y="172" dx="8" dy="0"
+          fill="#3fb950" font-size="13" font-family="Courier New"
+          transform="rotate(-63.435, -86, 172)">R = 384.77</text>
+
+    <!-- Point labels on the arc -->
+    <text x="0" y="0" dx="8" dy="-10"
+          fill="#58a6ff" font-size="13" font-family="Courier New">(0, 0)</text>
+
+    <text x="49.9973" y="29.9362" dx="8" dy="14"
+          fill="#a371f7" font-size="13" font-family="Courier New">(50, &#x2212;29.94)</text>
+
+
+    <!-- Hypotenuse label -->
+    <text x="-61.039" y="187.044" dx="-12" dy="0"
+          fill="#000000" font-size="13" font-family="Courier New" text-anchor="middle"
+          transform="rotate(-54.749, -61.039, 187.044)">R</text>
+
+    <!-- Horizontal dimension line: u=50 in Q1 -->
+    <!-- Leader lines -->
+    <line x1="0" y1="-8" x2="0" y2="-40" stroke="#000000" stroke-width="1" stroke-dasharray="3 2"/>
+    <line x1="50" y1="-8" x2="50" y2="-40" stroke="#000000" stroke-width="1" stroke-dasharray="3 2"/>
+    <!-- Dimension line with arrows -->
+    <line x1="0" y1="-40" x2="50" y2="-40" stroke="#000000" stroke-width="1.5"
+          marker-start="url(#dim-arrow-l)" marker-end="url(#dim-arrow-r)"/>
+    <!-- Label -->
+    <text x="25" y="-46" fill="#000000" font-size="12" font-family="Courier New" text-anchor="middle">&#x2113; = 50</text>
+
+    <!-- Line connecting blue (0,0) and purple (49.9973, 29.9362), labeled c -->
+    <line x1="0" y1="0" x2="49.9973" y2="29.9362"
+          stroke="#000000" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="18" y="26"
+          fill="#000000" font-size="13" font-family="Times New Roman" font-style="italic" text-anchor="middle">c</text>
+
+    <!-- Arc length indicator: 123.8 arc segment from (0,0) to (100, 72.078) -->
+    <path d="M 0 0 A 384.77 384.77 0 0 1 100.0 72.078"
+          fill="none"
+          stroke="#f0883e"
+          stroke-width="7"
+          stroke-linecap="round"
+          opacity="0.8"/>
+
+    <!-- Second radial endpoint on circle -->
+    <circle cx="100.0" cy="72.078" r="5" fill="#f0883e" stroke="#0d1117" stroke-width="1.5"/>
+
+    <!-- Purple point, above orange arc -->
+    <circle cx="49.9973" cy="29.9362" r="5" fill="#a371f7" stroke="#0d1117" stroke-width="1.5"/>
+
+
+    <!-- Label -->
+    <text x="100.0" y="72.078" dx="10" dy="4"
+          fill="#f0883e" font-size="13" font-family="Courier New">(100, &#x2212;72.08)</text>
+
+
+    <!-- ============================================================ -->
+    <!-- INSET: blowup of chord c and arc between blue and purple pts -->
+    <!-- ============================================================ -->
+
+    <!-- Inset background box -->
+    <rect x="-422" y="178" width="172" height="136"
+          fill="#ffffff" stroke="#3d444d" stroke-width="1" rx="4"/>
+
+    <!-- Inset title -->
+    <text x="-336" y="192" fill="#8b949e" font-size="9" font-family="Courier New"
+          text-anchor="middle">chord line detail</text>
+
+    <!-- Chord line (straight, black) matching main figure orientation -->
+    <line x1="-400" y1="200" x2="-275" y2="274.8"
+          stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Exaggerated arc (quadratic bezier, bulging upper-left = above chord) -->
+    <path d="M -400 200 Q -328.2 221.9 -275 274.8"
+          fill="none" stroke="#f0883e" stroke-width="3.5" stroke-linecap="round"/>
+
+    <!-- Blue dot -->
+    <circle cx="-400" cy="200" r="5" fill="#58a6ff" stroke="#0d1117" stroke-width="1.5"/>
+
+    <!-- Purple dot -->
+    <circle cx="-275" cy="274.8" r="5" fill="#a371f7" stroke="#0d1117" stroke-width="1.5"/>
+
+    <!-- c label below chord, aligned with midpoint -->
+    <text x="-342.6" y="246.0"
+          fill="#000000" font-size="13" font-family="Times New Roman" font-style="italic"
+          text-anchor="middle"
+          transform="rotate(30.91, -342.6, 246.0)">c</text>
+
+
+    <!-- Center point -->
+    <circle cx="-172.076" cy="344.152" r="5" fill="#e3b341" stroke="#0d1117" stroke-width="1.5"/>
+
+    <!-- Center label -->
+    <text x="-172.076" y="344.152" dx="-8" dy="20"
+          fill="#f0883e" font-size="12" font-family="Courier New" text-anchor="middle">C(&#x2212;172.08, &#x2212;344.15)</text>
+
+    <!-- Origin point (0,0) -->
+    <circle cx="0" cy="0" r="5" fill="#58a6ff" stroke="#0d1117" stroke-width="1.5"/>
+
+
+
+    <!-- Labels -->
+    <!-- Center label -->
+
+    <!-- Origin label -->
+
+    <!-- Left endpoint label -->
+
+    <!-- Second radial endpoint label -->
+
+    <!-- Arc length label on the highlighted arc -->
+
+    <!-- Radius annotation for line 1 -->
+
+    <!-- Angle annotation: small arc showing the 18.435° between the two radial lines -->
+
+    <!-- Quadrant labels -->
+  </svg>

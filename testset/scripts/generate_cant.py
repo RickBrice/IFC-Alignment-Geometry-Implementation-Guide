@@ -30,7 +30,7 @@ L = cases.SEGMENT_LENGTH
 def make_file(cant_type, h_type, folder_name, case, unit_system):
     scale = common.UNIT_SYSTEMS[unit_system]
     h_sr, h_er, h_sl, h_el, scl, ecl, scr, ecr = case
-    filename = f"Cant_{folder_name}_{L:.1f}_{h_sl}_{h_el}_1_{unit_system}.ifc"
+    filename = f"Cant_{folder_name}_{L:.1f}_{h_sl}_{h_el}_{unit_system}.ifc"
     ifc, alignment = common.setup(filename[:-4], include_vertical=True, include_cant=True,
                                   unit_system=unit_system)
     h_layout = align_api.get_horizontal_layout(alignment)
