@@ -20,7 +20,7 @@ A single offset value indicates a constant offset over the entire length of the 
 
 If the offsets do not span the full length of the curve, the first and last offset are implicitly continued to the head and tail of the basis curve, respectively.
 
-The `IfcOffsetCurveByDistances.OffsetValues` are of type `IfcPointByDistanceExpression`. The `IfcOffsetCurveByDistances.BasisCurve` and `IfcPointByDistanceExpression.BasisCurve` should logically reference the same curve since the offset value is defining an offset from `IfcOffsetCurveByDistances.BasisCurve`. However, this is not an explicitly stated requirement in the IFC specifications.
+The `IfcOffsetCurveByDistances.OffsetValues` are of type `IfcPointByDistanceExpression`. The `IfcOffsetCurveByDistances.BasisCurve` and `IfcPointByDistanceExpression.BasisCurve` should logically reference the same curve since the offset value is defining an offset from `IfcOffsetCurveByDistances.BasisCurve`. However, this is not an explicitly stated requirement in the IFC specifications nor is it enforced by the bSI Validation Service.
 
 The `IfcOffsetCurveByDistances` geometry is derived by interpolating the `OffsetValues`.
 
