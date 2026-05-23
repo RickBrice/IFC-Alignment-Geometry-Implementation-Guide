@@ -13,3 +13,5 @@ Outstanding items across the guide, organized by chapter.
 7. ~~Create a `make_docx.py` script using Pandoc to convert all chapters into a single `.docx`.~~ Done. Script written. Requires Pandoc to be installed (https://pandoc.org/installing.html). First run generates a `reference.docx` style template to customize in Word; subsequent runs produce the final `IFC_Alignment_Guide.docx`. Math converts to OMML automatically — validate rendering quality on first run.
 8. ~~Suggest where I might add a notice that some content in this document was created with the assistance of AI. Also suggest what that notice would say.~~ Done. Added a paragraph at the end of the Foreword (before the signature).
 9. Fix IfcOpenShell `IfcSectionedSolidHorizontal` implementation: cross-section is not rotated based on cant from `IfcSegmentedReferenceCurve`. The minimal example (§10.6.2.1) uses a Bloss cant transition but the rendered solid shows no banking — the profile remains unrotated regardless of the cant value.
+10. state that stringline tag options. are not mutually exclusive. pick one or revise spec to support both
+11. add stringline figures
