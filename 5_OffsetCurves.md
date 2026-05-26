@@ -93,7 +93,11 @@ The IFC specification does not prescribe how offset values are to be interpolate
 * **Linear interpolation between 3D points** — the 3D positions of consecutive offset points are computed and connected by straight line segments. This produces a true piecewise-linear curve in space, but one that drifts away from the basis curve between offset points.
 * **Spline interpolation** — cubic spline, B-spline, Bézier, or NURBS methods applied to either the offset values or the 3D positions, producing smoother curves but with greater implementation complexity.
 
-Different interpolation methods produce materially different geometry from the same `IfcOffsetCurveByDistances` data. Without a formal implementation agreement, two compliant applications may render the same model differently.
+Different interpolation methods produce materially different geometry from the same `IfcOffsetCurveByDistances` data. This is illustrated in Figure 5.3-1 which overlays a spline interpolation onto the linear interpolation from Figure 5.0-1. Without a formal implementation agreement, two compliant applications may render the same model differently.
+
+![](images/Figure_5.3-1_Spline_Interplotation.png)
+
+*Figure 5.3-1 - Comparison of linear and spline interpolation*
 
 The recommended best practice is **linear interpolation of offset values**: interpolate the lateral distance at each chainage position, then apply that distance perpendicular to the basis curve. This method is the most natural given the structure of `IfcOffsetCurveByDistances`, produces predictable geometry, and is the least ambiguous for interchange.
 
