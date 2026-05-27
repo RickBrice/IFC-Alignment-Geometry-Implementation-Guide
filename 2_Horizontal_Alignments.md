@@ -129,7 +129,7 @@ This semantic definition of this segment is:
 The geometric representation is an `IfcLine`. The line can be defined in
 different ways and is generally not important, as will be shown in the
 example below. `IfcLine` is an infinitely long line that passes through a
-specified point at some direction in the X-Y plane. A valid, but unnecessarily complex parent curve is shown in Figure 2.3.2-2. The `IfcLine` passes through point (1000,-800) and is directed at 135° from the x-axis. The `IfcCurveSegment` trim starts 10 m from (1000,-800) and the trimmed segment has a length of 1956.796 m.
+specified point at some direction in the X-Y plane. A valid, but unnecessarily complex parent curve is shown in Figure 2.3.2-2. The `IfcLine` passes through point (1000,-800) and is directed at 135° from the x-axis. The `IfcCurveSegment` trim starts 100 m from (1000,-800) and the trimmed segment has a length of 1956.796 m.
 
 ![](images/Figure_2.3.2-2_IfcLine_Arbitrary_Placement.svg)
 

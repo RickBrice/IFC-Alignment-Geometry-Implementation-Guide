@@ -4,6 +4,10 @@
   <rect width="700" height="640" fill="#f8f7f4"/>
 
   <defs>
+
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#d8d4c8" stroke-width="0.5"/>
+    </pattern>
     <marker id="gArrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
       <path d="M0,0 L0,6 L8,3 z" fill="#1a3a5c"/>
     </marker>
@@ -20,6 +24,8 @@
       <path d="M0,0 L0,6 L8,3 z" fill="#1a7a3c"/>
     </marker>
   </defs>
+
+  <rect width="700" height="640" fill="url(#grid)"/>
 
   <!-- GLOBAL AXES -->
   <line x1="70" y1="560" x2="660" y2="560"
