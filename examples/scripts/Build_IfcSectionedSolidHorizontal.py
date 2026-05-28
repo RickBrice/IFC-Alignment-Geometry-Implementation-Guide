@@ -47,7 +47,9 @@ alignment = ifcopenshell.api.alignment.create(
     start_station=start_station
 )
 
-# Horizontal layout — Bloss transition from infinite radius to 300 m, curving left.
+segment_length = 50.
+
+# Horizontal layout — Bloss transition from infinite radius to 100 m, curving left.
 # StartRadiusOfCurvature = 0 encodes infinite radius (tangent entry).
 # Positive EndRadiusOfCurvature = curve to the left.
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
@@ -55,8 +57,8 @@ h_segment = file.createIfcAlignmentHorizontalSegment(
     StartPoint=file.createIfcCartesianPoint(Coordinates=(0., 0.)),
     StartDirection=0.0,
     StartRadiusOfCurvature=0.0,
-    EndRadiusOfCurvature=300.,
-    SegmentLength=100.,
+    EndRadiusOfCurvature=100.,
+    SegmentLength=segment_length,
     PredefinedType="BLOSSCURVE"
 )
 ifcopenshell.api.alignment.create_layout_segment(file, layout, h_segment)
@@ -65,7 +67,7 @@ ifcopenshell.api.alignment.create_layout_segment(file, layout, h_segment)
 vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
 v_segment = file.createIfcAlignmentVerticalSegment(
     StartDistAlong=0.,
-    HorizontalLength=100.,
+    HorizontalLength=segment_length,
     StartHeight=0.,
     StartGradient=0.,
     EndGradient=0.,
@@ -74,15 +76,17 @@ v_segment = file.createIfcAlignmentVerticalSegment(
 ifcopenshell.api.alignment.create_layout_segment(file, vlayout, v_segment)
 
 # Cant layout — Bloss transition from 0 to 500 mm, right rail elevated.
+# Cant is exaggerated to make the banking effect clearly visible in renderings.
 # For a left-curving alignment the right rail carries the superelevation.
 clayout = ifcopenshell.api.alignment.get_cant_layout(alignment)
+clayout.RailHeadDistance = 1.5
 c_segment = file.createIfcAlignmentCantSegment(
     StartDistAlong=0.,
-    HorizontalLength=100.,
+    HorizontalLength=segment_length,
     StartCantLeft=0.,
     EndCantLeft=0.,
     StartCantRight=0.,
-    EndCantRight=0.16,
+    EndCantRight=0.5,
     PredefinedType="BLOSSCURVE"
 )
 ifcopenshell.api.alignment.create_layout_segment(file, clayout, c_segment)
@@ -99,15 +103,20 @@ railway_part = file.createIfcRailwayPart(
 )
 ifcopenshell.api.aggregate.assign_object(file, relating_object=railway, products=[railway_part])
 
-# Cross-section profile — trapezoid, counter-clockwise winding.
-# Indices are 1-based; the closing 1 at the end makes the polycurve closed.
+# Cross-section profile — trapezoidal ballast bed, counter-clockwise winding.
+# Top width matches the IfcSectionedSurface counterpart (§10.6.1.1): 1.5 m (rail head distance).
+# Base is slightly wider. Indices are 1-based; the closing 1 makes the polycurve closed.
 #
-#   (-29.5, 0.5) -------- (29.5, 0.5)
-#      /                        \
-#  (-30, 0) -------------- (30, 0)
+#   (-0.75, 0.25) ----- (0.75, 0.25)  <- top, rail head distance wide
+#      /                      \
+#  (-0.9, 0) ----------- (0.9, 0)     <- base
 #
+half_top = clayout.RailHeadDistance / 2   # 0.75
+half_base = half_top + 0.15              # 0.90
+thickness = 0.25
+
 point_list = file.createIfcCartesianPointList2D(
-    CoordList=[(-30., 0.), (30., 0.), (29.5, 0.5), (-29.5, 0.5)]
+    CoordList=[(-half_base, 0.), (half_base, 0.), (half_top, thickness), (-half_top, thickness)]
 )
 poly_curve = file.createIfcIndexedPolyCurve(
     Points=point_list,
@@ -128,7 +137,7 @@ pos_start = file.createIfcAxis2PlacementLinear(
 )
 pos_end = file.createIfcAxis2PlacementLinear(
     Location=file.createIfcPointByDistanceExpression(
-        DistanceAlong=file.createIfcLengthMeasure(100.),
+        DistanceAlong=file.createIfcLengthMeasure(segment_length),
         BasisCurve=directrix
     )
 )

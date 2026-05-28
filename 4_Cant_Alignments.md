@@ -40,17 +40,17 @@ segment start elevation of the next segment. The left section in Figure 4.1.1-1 
 
 When the segment start elevation is the same as the start of the next segment, the deviating elevation along the length of the segment is constant. This occurs when centrifugal forces are constant or zero, in constant radius curvature and straight sections of the railway, respectively.
 
-![](images/Figure_4.1.1-1_Cant_Segment_Cross_Section.jpg)
+![Figure 4.1.1-1 — Two-panel bSI diagram. Left panel: railway track cross-section showing the right rail elevated above the left rail; the IfcCurveSegment.Placement.Location y-ordinate marks the deviating elevation at the centreline (half the cant). Right panel: elevation view showing the linear cant transition along the segment, with IfcGradientCurve, IfcSegmentedReferenceCurve, and placement annotations.](images/Figure_4.1.1-1_Cant_Segment_Cross_Section.jpg)
 
 *Figure 4.1.1-1 - cross section and elevation of a cant segment (source: bSI)*
 
-![](images/Figure_4.1.1-2_Deviating_Elevation.svg)
+![Figure 4.1.1-2 — Matplotlib line plot of deviating elevation versus distance for a non-linear cant transition. Two curves show the first half (blue) and second half (orange) of the right-rail deviating elevation profile. The left rail is the rotation pivot and remains at zero.](images/Figure_4.1.1-2_Deviating_Elevation.svg)
 
 *Figure 4.1.1-2 - Deviating elevation of rails*
 
 The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction is generally upwards. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, The cross slope angle is measured from the y-axis is $\tfrac{\pi}{2}$.
 
-![](images/Figure_4.1.1-3_Rail_Head_Cross_Slope.svg)
+![Figure 4.1.1-3 — Matplotlib line plot of the rail head cross slope angle (IfcCurveSegment.Placement.Axis direction, in radians) versus distance along a cant segment. The angle transitions from approximately 1.46 rad at the segment start toward π/2 (≈ 1.57 rad) as the rails reach equal elevation.](images/Figure_4.1.1-3_Rail_Head_Cross_Slope.svg)
 
 *Figure 4.1.1-3 - Rail head cross slope*
 
@@ -759,7 +759,7 @@ $$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22
 
 Figure 4.5.2-1 shows the first and second half parent curves.
 
-![](images/Figure_4.5.2-1_Helmert_Cant_Parent_Curves.svg)
+![Figure 4.5.2-1 — Matplotlib XY plot of two IfcSecondOrderPolynomialSpiral parent curves for a Helmert cant transition, showing the first half (blue) and second half (orange). Dashed lines extend each curve beyond its active range to show the suppressed portion of the full spiral.](images/Figure_4.5.2-1_Helmert_Cant_Parent_Curves.svg)
 
 *Figure 4.5.2-1 - `IfcSecondOrderPolynomialSpiral` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
 

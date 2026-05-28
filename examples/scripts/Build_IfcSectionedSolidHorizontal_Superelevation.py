@@ -218,6 +218,6 @@ pavement = file.createIfcPavement(
 
 ifcopenshell.api.spatial.assign_container(file, relating_structure=road_part, products=[pavement])
 
-output_path = os.path.join(examples_dir, "IfcSectionedSolidHorizontal_Superelevation.ifc")
+output_path = os.path.join(examples_dir, "IfcSectionedSolidHorizontal_superelevation.ifc")
 file.write(output_path)
 print("Done!")

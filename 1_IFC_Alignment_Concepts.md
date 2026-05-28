@@ -70,7 +70,7 @@ has not yet been computed.
 
 An `IfcAlignment` may be defined with a horizontal layout only, a horizontal and vertical layout, or a full horizontal, vertical, and cant layout. Each layout type is composed through an `IfcRelNests` relationship: `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant` are nested within the `IfcAlignment` as applicable. Each layout is in turn composed of one or more `IfcAlignmentSegment` entities, also through `IfcRelNests`. The `IfcAlignmentSegment` models the segment design parameters in a subtype of `IfcAlignmentParameterSegment`: `IfcAlignmentHorizontalSegment`, `IfcAlignmentVerticalSegment`, or `IfcAlignmentCantSegment`, depending on the layout. The semantic definition model is shown in Figure 1.4-1.
 
-![](images/Figure_1.4-1_Semantic_Alignment_Model.svg)
+![Figure 1.4-1 — Entity-relationship diagram: IfcAlignment nests via IfcRelNests to IfcAlignmentHorizontal, IfcAlignmentVertical, and IfcAlignmentCant (cant highlighted in purple). Each layout contains IfcAlignmentSegment instances, which hold subtypes of the abstract IfcAlignmentParameterSegment (IfcAlignmentHorizontalSegment, IfcAlignmentVerticalSegment, IfcAlignmentCantSegment).](images/Figure_1.4-1_Semantic_Alignment_Model.svg)
 
 *Figure 1.4-1 Semantic alignment model*
 
@@ -163,7 +163,7 @@ Geometrically, the horizontal alignment is defined by an
 `IfcGradientCurve`. The horizontal alignment is the basis curve for the
 vertical alignment.
 
-![](images/Figure_1.5.2-1_Alignment_Geometry_Variants.svg)
+![Figure 1.5.2-1 — Three-row diagram contrasting semantic (left) and geometric (right) representations. Row 1 (horizontal-only): IfcAlignment → IfcAlignmentHorizontal maps to IfcCompositeCurve. Row 2 (H+V): adds IfcAlignmentVertical; IfcCompositeCurve feeds IfcGradientCurve via BaseCurve. Row 3 (H+V+C): adds IfcAlignmentCant; IfcGradientCurve feeds IfcSegmentedReferenceCurve as the 3D axis representation.](images/Figure_1.5.2-1_Alignment_Geometry_Variants.svg)
 
 *Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
 
@@ -181,7 +181,7 @@ alignment. All the horizontal alignment `IfcCurveSegment` objects are then
 combined to create an `IfcCompositeCurve` to complete the plan view
 geometric representation of the horizontal alignment.
 
-![](images/Figure_1.5.2-2_Parent_Curves_Placement.png)
+![Figure 1.5.2-2 — Schematic showing two IfcCurveSegment instances trimmed from parent curves. An IfcLine (passing through the origin) yields a red tangent segment with SegmentStart and SegmentLength labeled. An IfcCircle (center Cx,Cy) yields a green arc segment. The two segments combine into an IfcCompositeCurve on the right.](images/Figure_1.5.2-2_Parent_Curves_Placement.png)
 
 *Figure 1.5.2-2 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
 
@@ -232,7 +232,7 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 #778 = IFCCARTESIANPOINT((250.003634293681, 145.312908277025));
 ~~~
 
-![](images/Figure_1.5.2-4_GradientCurve_Extents.png)
+![Figure 1.5.2-4 — Plan-view plot of two closely overlapping horizontal alignment traces (#657 and #770) in easting/northing coordinates, tracing an S-curve. Used to illustrate how an IfcGradientCurve follows the 2D horizontal footprint of an alignment.](images/Figure_1.5.2-4_GradientCurve_Extents.png)
 
 *Figure 1.5.2-4 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
 

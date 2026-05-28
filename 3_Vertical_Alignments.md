@@ -404,7 +404,7 @@ $x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
 
 Compute the chord length, $c$ between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the right triangle shown. Once the point on the parent curve is known, a chord distance between the start of the trim and this point can be computed (see inset chord line detail). From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
 
-![](images/Figure_3.4.3-1_Vertical_Circular_Arc.svg)
+![Figure 3.4.3-1 — Geometric diagram of a vertical circular arc on an x–y profile grid. An IfcCircle (R ≈ 384.77) is drawn with its center above the axis. A green IfcCurveSegment arc runs from x = 0 to x = 50. Dashed radial lines show the right-triangle construction used to locate a point at horizontal distance ℓ; an inset detail distinguishes the straight chord c from the curved arc length.](images/Figure_3.4.3-1_Vertical_Circular_Arc.svg)
 
 *Figure 3.4.3-1 — Geometry of a vertical circular arc. The chord $c$ connects two points on the arc. The right triangle simplifies locating points on the arc. The inset highlights the distinction between the straight chord and the curved arc.*
 
@@ -514,7 +514,7 @@ End radius = end radius of curvature
 Set equal to horizontal length, adjust curve length until computed value
 is equal to the specified horizontal length. Numerically solve 
 
-![](images/Figure_3.5-1_Vertical_Clothoid.png)
+![Figure 3.5-1 — Vertical clothoid geometry diagram. (Image file missing from repository.)](images/Figure_3.5-1_Vertical_Clothoid.png)
 
 *Figure 3.5-1 Vertical clothoid*
 -->

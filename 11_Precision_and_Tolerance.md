@@ -17,7 +17,7 @@ The primary declaration mechanism is `IfcCurveSegment.Transition`, which specifi
 
 Figure 11.0-1 illustrates the various transition types. 
 
-![IfcTransitionCode](images/Figure_11.0-1_IfcTransitionCode.gif)
+![Figure 11.0-1 — Diagram illustrating four IfcTransitionCode values at segment junctions: CONT_SAME_GRADIENT_SAME_CURVATURE (C2-continuous, smooth), CONT_SAME_GRADIENT (C1, tangent-continuous), CONTINUOUS (C0, positional only), and DISCONTINUOUS (gap or kink). Each value is illustrated with a representative curve junction sketch.](images/Figure_11.0-1_IfcTransitionCode.gif)
 
 *Figure 11.0-1 - Illustration of segment transition types*
 

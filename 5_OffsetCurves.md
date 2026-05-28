@@ -24,7 +24,7 @@ The `IfcOffsetCurveByDistances.OffsetValues` are of type `IfcPointByDistanceExpr
 
 The `IfcOffsetCurveByDistances` geometry is derived by interpolating the `OffsetValues`.
 
-![](images/Figure_5.0-1_Offset_Curves.png)
+![Figure 5.0-1 — 3D Blender viewport showing a BasisCurve (orange/yellow curved alignment) flanked by two IfcOffsetCurveByDistances instances rendered in orange: OffsetCurve1 above and OffsetCurve2 below, illustrating positive and negative lateral offsets from the reference alignment.](images/Figure_5.0-1_Offset_Curves.png)
 
 *Figure 5.0-1 Offset curves*
 
@@ -95,7 +95,7 @@ The IFC specification does not prescribe how offset values are to be interpolate
 
 Different interpolation methods produce materially different geometry from the same `IfcOffsetCurveByDistances` data. This is illustrated in Figure 5.3-1 which overlays a spline interpolation onto the linear interpolation from Figure 5.0-1. Without a formal implementation agreement, two compliant applications may render the same model differently.
 
-![](images/Figure_5.3-1_Spline_Interplotation.png)
+![Figure 5.3-1 — 3D Blender viewport showing a BasisCurve (orange/yellow) alongside an offset curve computed via spline interpolation (dashed white/teal), overlaid on the linear interpolation from Figure 5.0-1. The spline produces a smoother offset path between the discrete control points.](images/Figure_5.3-1_Spline_Interplotation.png)
 
 *Figure 5.3-1 - Comparison of linear and spline interpolation*
 

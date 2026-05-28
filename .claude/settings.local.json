@@ -56,7 +56,8 @@
       "Bash(echo \"Exit: $?\")",
       "Bash(Sort-Object)",
       "PowerShell(pip install *)",
-      "PowerShell(python -m pip install python-docx)"
+      "PowerShell(python -m pip install python-docx)",
+      "Bash(Select-Object FullName)"
     ]
   }
 }

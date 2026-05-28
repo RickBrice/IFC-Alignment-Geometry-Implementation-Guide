@@ -115,7 +115,7 @@ geometric definition is described with the following example.
 Given a horizontal alignment segment is a line segment starting at point
 (500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. 
 
-![](images/Figure_2.3.2-1_Tangent_Segment.svg)
+![Figure 2.3.2-1 — Plan-view engineering drawing of a straight tangent segment from P₁ (500, 2500) to P₂ (2140, 1435) bearing S 57° E, with a north arrow at P₁ and a dimension line annotating the total length L = 1956.786 m.](images/Figure_2.3.2-1_Tangent_Segment.svg)
 
 *Figure 2.3.2-1 Tangent segment*
 
@@ -131,7 +131,7 @@ different ways and is generally not important, as will be shown in the
 example below. `IfcLine` is an infinitely long line that passes through a
 specified point at some direction in the X-Y plane. A valid, but unnecessarily complex parent curve is shown in Figure 2.3.2-2. The `IfcLine` passes through point (1000,-800) and is directed at 135° from the x-axis. The `IfcCurveSegment` trim starts 100 m from (1000,-800) and the trimmed segment has a length of 1956.796 m.
 
-![](images/Figure_2.3.2-2_IfcLine_Arbitrary_Placement.svg)
+![Figure 2.3.2-2 — XY coordinate diagram showing an IfcLine (infinite gray dashed, direction 135°) passing through point P(1000, −800). The red IfcCurveSegment is trimmed from the line starting 100 units from P with length 1956.786. Dimension lines annotate segment length and the offset from P.](images/Figure_2.3.2-2_IfcLine_Arbitrary_Placement.svg)
 
 *Figure 2.3.2-2 IfcLine at arbitrary placement*
 
@@ -139,7 +139,7 @@ Figure 2.3.2-2 represents a valid parent curve definition and implementations mu
 
 In practice, it is far easier to define the parent curve passing through point (0,0) and in the direction of the X-axis. The trimming can begin at the origin as shown in Figure 2.3.2-3.
 
-![](images/Figure_2.3.2-3_IfcLine_Parent_Curve.svg)
+![Figure 2.3.2-3 — XY coordinate diagram showing an IfcLine parent curve coincident with the x-axis (gray dashed). The red IfcCurveSegment runs from SegmentStart = 0 to x = 1956.786 m, with a horizontal dimension line above annotating SegmentLength.](images/Figure_2.3.2-3_IfcLine_Parent_Curve.svg)
 
 *Figure 2.3.2-3 IfcLine parent curve at origin*
 
@@ -315,7 +315,7 @@ The parent curve can be defined as follows:
 This is a circle centered at point (0,300) with the local X-axis aligned
 with the negative global Y-axis as shown in Figure 2.4.2-1.
 
-![](images/Figure_2.4.2-1_IfcCircle_Parent_Curve_Trimming.svg)
+![Figure 2.4.2-1 — Geometric diagram of an IfcCircle (R = 300) centered at (0, 300). The green IfcCurveSegment arc is trimmed from s = 0 to s = 100 along the bottom of the circle. Red local axes mark the circle center; dashed radial lines show the arc extent. A legend distinguishes the global IfcCircle, local coordinate frame, and trimmed segment.](images/Figure_2.4.2-1_IfcCircle_Parent_Curve_Trimming.svg)
 
 *Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve*
 
@@ -462,7 +462,7 @@ $$s = -142.8571429$$
 
 Figure 2.5.2-1 shows the parent curve clothoid with the segment having $\kappa_s = \frac{1}{300}$ and $\kappa_e = \frac{1}{1000}$ highlighted. This is the segment that `IfcCurveSegment` must trim from the parent curve. The negative clothoid constant results in the parent curve in quadrants 2 and 4. The curvature is positive in quadrant 2. For this reason, the `SegmentStart` attribute is negative. From this starting point, the trimming progresses to a larger radius, which is towards the origin. For this reason `SegmentLength` is a positive value. If the trimming were to progress to a smaller radius, `SegmentLength` would be a negative value. The `SegmentStart` and `SegmentLength` attributes can be positive and negative values in any combination. This is true for all parent curve types.
 
-![](images/Figure_2.5.2-1_IfcClothoid_Parent_Curve.svg)
+![Figure 2.5.2-1 — Matplotlib XY plot of a full IfcClothoid parent curve (red looping spiral, R = 300, Clothoid Constant ≈ −207) with the blue IfcCurveSegment trimmed from it at Start = −142.857. Axes span roughly ±300 on both X and Y.](images/Figure_2.5.2-1_IfcClothoid_Parent_Curve.svg)
 
 *Figure 2.5.2-1 - `IfcCurveSegment` trimmed from an `IfcClothoid` parent curve*
 
@@ -858,7 +858,7 @@ $$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}
 
 Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.
 
-![](images/Figure_2.7.2-1_Helmert_Parent_Curves.svg)
+![Figure 2.7.2-1 — Matplotlib XY plot (X: 0–100, Y: −2 to 5) of the first-half (blue) and second-half (orange) IfcSecondOrderPolynomialSpiral parent curves for a Helmert transition, each plotted over its active half of the segment.](images/Figure_2.7.2-1_Helmert_Parent_Curves.svg)
 
 *Figure 2.7.2-1 First and second half of parent curves, without placement adjustments*
 
@@ -891,7 +891,7 @@ $$dy_p = \sin(\theta_p) = \sin(0.055555555) = 0.055527$$
 
 Figure 2.7.2-2 shows the same first and second half parent curves, with the origin of the second half curve translated $(x_p,y_p)$ and rotated so that the curve tangent is $(dx_p,dy_p)$
 
-![](images/Figure_2.7.2-2_Helmert_Parent_Curves_Placed.svg)
+![Figure 2.7.2-2 — Matplotlib XY plot of the Helmert parent curves after placement, showing the junction point (xp, yp) ≈ (0.012, −0.694) and tangent direction (dxp, dyp) ≈ (0.998, 0.055) annotated. First half (blue) descends; second half (orange) curves back upward.](images/Figure_2.7.2-2_Helmert_Parent_Curves_Placed.svg)
 
 *Figure 2.7.2-2 - First and second half parent curves with second half curve positioned*
 
@@ -934,7 +934,7 @@ The geometric representation of the second half
 
 Figure 2.7.2-3 shows the trimmed and positioned first and second half parent curves resulting in the full Helmert transition curve.
 
-![](images/Figure_2.7.2-3_Helmert_Curve_Segments.svg)
+![Figure 2.7.2-3 — Matplotlib XY plot (X: 0–100, Y: 0–5) showing the assembled Helmert transition as two joined IfcCurveSegment halves: first half (blue, gradual curve) meeting the second half (orange, steeper curve) at the midpoint.](images/Figure_2.7.2-3_Helmert_Curve_Segments.svg)
 
 *Figure 2.7.2-3 - Final Helmert transition curve*
 

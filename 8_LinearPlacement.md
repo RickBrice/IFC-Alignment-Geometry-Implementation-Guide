@@ -46,7 +46,7 @@ The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference
 
 Figure 8.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.
 
-![](images/Figure_8.1.2-1_Linear_Placement_Features.svg)
+![Figure 8.1.2-1 — Plan view of a curved alignment with two features positioned by linear placement: a bridge pier at Sta. 1+450 offset Lt. 12.500 m left, and a drain inlet at Sta. 1+620 offset Rt. 8.200 m right. Both features are annotated with station, lateral offset, and elevation values.](images/Figure_8.1.2-1_Linear_Placement_Features.svg)
 
 *Figure 8.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
@@ -120,7 +120,7 @@ In plane geometry, every point off a smooth curve can be reached by some combina
 
 The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 8.4.1-1.
 
-![](images/Figure_8.4.1-1_PI_Unreachable_Zone.svg)
+![Figure 8.4.1-1 — Plan view of two alignment tangents meeting at PI. Dashed perpendiculars from PI bound a hatched unreachable zone: any point inside this zone cannot be reached by a DistanceAlong projection onto either tangent alone and requires a non-zero OffsetLongitudinal.](images/Figure_8.4.1-1_PI_Unreachable_Zone.svg)
 
 *Figure 8.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 

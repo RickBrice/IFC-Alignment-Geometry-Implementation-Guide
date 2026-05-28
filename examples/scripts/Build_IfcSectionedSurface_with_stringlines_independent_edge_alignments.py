@@ -171,7 +171,7 @@ cs2 = file.createIfcOpenCrossProfileDef(
         Widths=[2*width,2*width],
         Slopes=[make_angle(-crownslope),make_angle(crownslope)],
         Tags=["A","B","C"],
-        OffsetPoint=file.createIfcCartesianPoint((width,-width*crownslope))
+        OffsetPoint=file.createIfcCartesianPoint((2.*width,-2.*width*crownslope))
     )
 
 op1 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(0.),BasisCurve=basis_curve))

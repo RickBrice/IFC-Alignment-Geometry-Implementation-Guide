@@ -54,7 +54,7 @@ layout; its sole role is to hold the shared horizontal and aggregate the childre
 that require cant also nest an `IfcAlignmentCant` via `IfcRelNests`. Figure 7.1.1-1 shows
 the complete parent/child layout structure.
 
-![Figure 7.1.1-1 — Alignment layout for the reusing-horizontal-layout pattern.](images/Figure_7.1.1-1_Alignment_Layout.svg)
+![Figure 7.1.1-1 — Diagram showing the reusing-horizontal-layout pattern: a parent IfcAlignment contains IfcAlignmentHorizontal, and multiple child IfcAlignment instances each add their own IfcAlignmentVertical and/or IfcAlignmentCant, all sharing the same horizontal layout via IfcRelNests.](images/Figure_7.1.1-1_Alignment_Layout.svg)
 
 *Figure 7.1.1-1 — Alignment layout for the reusing-horizontal-layout pattern.*
 
@@ -68,7 +68,7 @@ cant definition gets its own `IfcSegmentedReferenceCurve` and its own `IfcGradie
 only the `IfcCompositeCurve` at the base of the chain is the shared instance, as shown in
 Figure 7.1.1-2:
 
-![Figure 7.1.1-2 — Geometric chain for child alignments with cant.](images/Figure_7.1.1-2_Geometric_Chain.svg)
+![Figure 7.1.1-2 — Geometric chain for child alignments with cant: each child alignment has its own IfcSegmentedReferenceCurve and IfcGradientCurve; only the IfcCompositeCurve at the base of the chain is the shared instance from the parent alignment.](images/Figure_7.1.1-2_Geometric_Chain.svg)
 
 *Figure 7.1.1-2 — Geometric chain for child alignments with cant. Each child alignment has its own `IfcSegmentedReferenceCurve` and `IfcGradientCurve`; the `IfcCompositeCurve` is the shared instance.*
 
