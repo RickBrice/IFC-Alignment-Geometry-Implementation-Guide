@@ -14,10 +14,9 @@ Subsequent runs:
 
 After opening the output in Word:
     1. Accept the prompt to update fields — the TOC populates automatically.
-    2. Insert a Table of Figures: References > Insert Table of Figures.
-    3. Inspect math equations — Pandoc converts LaTeX to OMML (Word equations).
+    2. Inspect math equations — Pandoc converts LaTeX to OMML (Word equations).
        Complex expressions may need manual correction.
-    4. Export to PDF: File > Export > Create PDF/XPS.
+    3. Export to PDF: File > Export > Create PDF/XPS.
 
 Requirements:
     pandoc    — https://pandoc.org/installing.html
@@ -41,7 +40,7 @@ except ImportError:
     _DOCX_AVAILABLE = False
 
 ROOT = Path(__file__).parent
-OUTPUT_DOCX = ROOT / "IFC_Alignment_Guide.docx"
+OUTPUT_DOCX = ROOT / "IFC_Alignment_Geometry_Implementation_Guide.docx"
 REFERENCE_DOCX = ROOT / "reference.docx"
 
 INKSCAPE = Path("C:/Program Files/Inkscape/bin/inkscape.exe")
@@ -70,29 +69,33 @@ CHAPTERS = [
 # Raw OpenXML TOC field injected into TableOfContents.md during docx preprocessing.
 # Word updates it automatically on first open (w:dirty="true").
 # TableOfContents.md itself is left unchanged so make_pdf.py still renders its static links.
-# TOC field limited to the "ContentStart" bookmark (set at the start of Chapter 1)
-# so Cover, Foreword, and TableOfContents headings are excluded.
+# Front-matter and back-matter headings are assigned Title style in preprocessing so
+# they are not Heading 1 and are therefore excluded from this field automatically.
 _TOC_FIELD = (
     '\n\n```{=openxml}\n'
     '<w:p>'
     '<w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r>'
-    '<w:r><w:instrText xml:space="preserve"> TOC \\b "ContentStart" \\o "1-1" \\h \\z </w:instrText></w:r>'
+    '<w:r><w:instrText xml:space="preserve"> TOC \\t "Heading 1,1" \\h \\z </w:instrText></w:r>'
     '<w:r><w:fldChar w:fldCharType="separate"/></w:r>'
     '<w:r><w:fldChar w:fldCharType="end"/></w:r>'
     '</w:p>\n'
     '```\n'
 )
 
-_BOOKMARK_START = (
-    '\n\n```{=openxml}\n'
-    '<w:p><w:bookmarkStart w:id="100" w:name="ContentStart"/></w:p>\n'
-    '```\n\n'
-)
 
-_BOOKMARK_END = (
+
+# Section break injected before Chapter 1.
+# The w:sectPr ends the front matter section (Cover + Foreword + Notation)
+# and sets its page number format to lowercase Roman (i, ii, iii…).
+# The document-level sectPr (configured in add_page_numbers) governs
+# Chapter 1 onwards with Arabic numbering restarting at 1.
+_FRONT_MATTER_SECTION_BREAK = (
     '\n\n```{=openxml}\n'
-    '<w:p><w:bookmarkEnd w:id="100"/></w:p>\n'
-    '```\n'
+    '<w:p><w:pPr><w:sectPr>'
+    '<w:type w:val="nextPage"/>'
+    '<w:pgNumType w:fmt="lowerRoman" w:start="0"/>'
+    '</w:sectPr></w:pPr></w:p>\n'
+    '```\n\n'
 )
 
 
@@ -177,14 +180,21 @@ def convert_svgs(markdown_texts: list[str], png_dir: Path) -> list[str]:
 
 
 def add_page_numbers(docx_path: Path) -> None:
-    """Add centered arabic page numbers to the footer; suppress on the cover (first page)."""
+    """Add page numbers to the footer:
+    - Cover (first page of first section): suppressed.
+    - Foreword through Notation: lowercase Roman numerals (i, ii, iii…).
+    - Chapter 1 onwards: Arabic numerals restarting at 1.
+    """
     if not _DOCX_AVAILABLE:
         print("  SKIP page numbers: python-docx not installed (pip install python-docx)")
         return
 
     doc = Document(str(docx_path))
-    for section in doc.sections:
-        section.different_first_page_header_footer = True
+    sections = list(doc.sections)
+
+    for idx, section in enumerate(sections):
+        # Suppress the page number on the first page of the first section (the cover).
+        section.different_first_page_header_footer = (idx == 0)
 
         footer = section.footer
         for para in footer.paragraphs:
@@ -204,8 +214,21 @@ def add_page_numbers(docx_path: Path) -> None:
                 el.text = instr
             run._r.append(el)
 
+    # Set the last section (Chapter 1 onwards) to Arabic numbering restarting at 1.
+    last_sectPr = sections[-1]._sectPr
+    for existing in last_sectPr.findall(qn('w:pgNumType')):
+        last_sectPr.remove(existing)
+    pgNumType = OxmlElement('w:pgNumType')
+    pgNumType.set(qn('w:fmt'), 'decimal')
+    pgNumType.set(qn('w:start'), '1')
+    last_sectPr.append(pgNumType)
+
     doc.save(str(docx_path))
-    print("  Page numbers added (suppressed on cover page)")
+    n_sections = len(sections)
+    if n_sections >= 2:
+        print(f"  Page numbers added ({n_sections} sections: Roman for front matter, Arabic from Chapter 1)")
+    else:
+        print("  Page numbers added (single section — section break may not have been recognised)")
 
 
 def main() -> None:
@@ -227,34 +250,89 @@ def main() -> None:
     tmp = Path(tempfile.mkdtemp(prefix="make_docx_"))
     try:
         print("Converting SVG images to PNG...")
-        texts = [p.read_text(encoding="utf-8") for p in chapter_paths]
+        texts = [p.read_text(encoding="utf-8-sig") for p in chapter_paths]
         texts = convert_svgs(texts, tmp)
-
-        # Replace TableOfContents.md static list with a live Word TOC field;
-        # inject bookmarks so Cover/Foreword/TOC headings are excluded from the TOC.
-        for i, path in enumerate(chapter_paths):
-            if path.name == "TableOfContents.md":
-                m = re.match(r'(#[^\n]*\n)', texts[i])
-                texts[i] = (m.group(1) if m else "") + _TOC_FIELD
-                print("  Injected live TOC field")
-            elif path.name == "1_IFC_Alignment_Concepts.md":
-                texts[i] = _BOOKMARK_START + texts[i]
-            elif path.name == "Index.md":
-                texts[i] = texts[i] + _BOOKMARK_END
 
         page_break = '\n\n```{=openxml}\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n'
 
-        # Write preprocessed markdown to temp files
+        # Front/back matter headings use non-Heading-1 styles so the TOC field
+        # (which collects Heading 1 only) excludes them automatically.
+        FRONTMATTER = {"Foreword.md", "Notation.md"}   # → Frontmatter Heading style
+        BACKMATTER  = {"Index.md"}                      # → Title style
+
+        # Replace TableOfContents.md static list with a live Word TOC field.
+        # Apply appropriate styles to front/back matter headings.
+        for i, path in enumerate(chapter_paths):
+            if path.name == "TableOfContents.md":
+                m = re.match(r'^# (.+)$', texts[i], re.MULTILINE)
+                heading_text = m.group(1) if m else "Table of Contents"
+                texts[i] = (
+                    f':::{{custom-style="Frontmatter Heading"}}\n{heading_text}\n:::\n\n'
+                    + _TOC_FIELD
+                )
+                print("  Injected live TOC field")
+            elif path.name in FRONTMATTER:
+                texts[i] = re.sub(
+                    r'^# (.+)$',
+                    lambda m: f':::{{custom-style="Frontmatter Heading"}}\n{m.group(1)}\n:::',
+                    texts[i], flags=re.MULTILINE,
+                )
+            elif path.name in BACKMATTER:
+                texts[i] = re.sub(
+                    r'^# (.+)$',
+                    lambda m: f':::{{custom-style="Title"}}\n{m.group(1)}\n:::',
+                    texts[i], flags=re.MULTILINE,
+                )
+            elif path.name == "Cover.md":
+                # Apply Word styles and image sizing to cover elements.
+                # Done here rather than in the source markdown so Pandoc-specific
+                # syntax doesn't appear as literal text in standard markdown renderers.
+                t = texts[i]
+                # # heading → Title style
+                t = re.sub(
+                    r'^# (.+)$',
+                    lambda m: f':::{{custom-style="Title"}}\n{m.group(1)}\n:::',
+                    t, flags=re.MULTILINE,
+                )
+                # First *...* paragraph → Subtitle style
+                t = re.sub(
+                    r'^\*([^*\n]+)\*[ \t]*$',
+                    lambda m: f':::{{custom-style="Subtitle"}}\n{m.group(1)}\n:::',
+                    t, count=1, flags=re.MULTILINE,
+                )
+                # Remaining *...* paragraphs (description, attribution) → Cover Text style
+                t = re.sub(
+                    r'^\*([^*\n]+)\*[ \t]*$',
+                    lambda m: f':::{{custom-style="Cover Text"}}\n{m.group(1)}\n:::',
+                    t, flags=re.MULTILINE,
+                )
+                # Scale cover image to fit 8.5x11 page with 1in margins
+                t = re.sub(
+                    r'(!\[[^\]]*\]\([^)]+\))(?!\{)',
+                    r'\1{width=6.5in height=6.7in}',
+                    t,
+                )
+                texts[i] = t
+
+        # Write preprocessed markdown to temp files.
+        # Chapter 1 gets a section break (ending the front matter section with Roman
+        # page numbers) instead of a plain page break.
         tmp_files = []
         for i, (path, text) in enumerate(zip(chapter_paths, texts)):
             tmp_md = tmp / f"{i:02d}_{path.name}"
-            tmp_md.write_text((page_break + text) if i > 0 else text, encoding="utf-8")
+            if i == 0:
+                content = text
+            elif path.name == "1_IFC_Alignment_Concepts.md":
+                content = _FRONT_MATTER_SECTION_BREAK + text
+            else:
+                content = page_break + text
+            tmp_md.write_text(content, encoding="utf-8")
             tmp_files.append(str(tmp_md))
 
         cmd = [
             "pandoc",
             *tmp_files,
-            "--from", "markdown+tex_math_dollars+raw_html",
+            "--from", "markdown+tex_math_dollars+raw_html-implicit_figures",
             "--to", "docx",
             f"--reference-doc={REFERENCE_DOCX}",
             f"--resource-path={ROOT}",
@@ -290,9 +368,8 @@ def main() -> None:
     print()
     print("In Word, before exporting to PDF:")
     print("  1. Accept the prompt to update fields — TOC populates automatically")
-    print("  2. Insert Table of Figures (References > Insert Table of Figures)")
-    print("  3. Check math equations for OMML conversion quality")
-    print("  4. File > Export > Create PDF/XPS")
+    print("  2. Check math equations for OMML conversion quality")
+    print("  3. File > Export > Create PDF/XPS")
 
 
 if __name__ == "__main__":
