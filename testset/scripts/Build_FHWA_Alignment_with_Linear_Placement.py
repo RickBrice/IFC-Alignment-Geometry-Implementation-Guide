@@ -6,7 +6,7 @@
 # station (100+00 through 223+00, 124 stations total). Each placement carries a Pset_Stationing
 # property set with the station value and a CartesianPosition fallback computed via
 # ifcopenshell.api.alignment.update_fallback_position.
-# Output: testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.ifc
+# Output: testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.ifc
 import math
 import sys
 from pathlib import Path
@@ -23,7 +23,7 @@ import ifcopenshell.api.spatial
 import ifcopenshell.api.unit
 import ifcopenshell.util.unit
 
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "RealWorldAlignments"
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "real-world-alignments"
 OUTPUT_FILE = "FHWA_Alignment_with_Linear_Placement.ifc"
 
 INTERVAL_FT = 100.0

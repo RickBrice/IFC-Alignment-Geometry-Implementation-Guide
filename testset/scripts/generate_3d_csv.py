@@ -1,6 +1,6 @@
 """Generate 3D alignment reference coordinate CSV files.
 
-For each IFC file in testset/RealWorldAlignments/, evaluates the 3D alignment
+For each IFC file in testset/real-world-alignments/, evaluates the 3D alignment
 curve and writes a CSV alongside the IFC file.
 
 The evaluated curve is IfcSegmentedReferenceCurve when a cant layout is
@@ -36,7 +36,7 @@ from ifcopenshell import ifcopenshell_wrapper
 import ifcopenshell.api.alignment as align_api
 import ifcopenshell.util.unit
 
-IFC_ROOT = Path(__file__).parent.parent / 'RealWorldAlignments'
+IFC_ROOT = Path(__file__).parent.parent / 'real-world-alignments'
 
 # Per-file alignment name overrides.  Maps stem → alignment Name attribute.
 # Files with a single alignment do not need an entry here.

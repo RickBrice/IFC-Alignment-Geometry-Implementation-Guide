@@ -270,7 +270,7 @@ types, and case counts.
 
 ### 12.3.4 Real-World Alignments
 
-Three real-world alignments are provided as 3D test cases under `testset/RealWorldAlignments/`. Unlike the
+Three real-world alignments are provided as 3D test cases under `testset/real-world-alignments/`. Unlike the
 single-component cases in Sections 12.3.1–12.3.3, these exercise the complete evaluation
 pipeline — from combined horizontal, vertical, and (where present) cant layouts — and
 produce full 3D placement matrices at each sample point.
@@ -285,8 +285,8 @@ feet.
 
 | | |
 |---|---|
-| IFC file | `testset/RealWorldAlignments/FHWA_Alignment.ifc` |
-| Reference coordinates | `testset/RealWorldAlignments/FHWA_Alignment.csv` |
+| IFC file | `testset/real-world-alignments/FHWA_Alignment.ifc` |
+| Reference coordinates | `testset/real-world-alignments/FHWA_Alignment.csv` |
 | Alignment name | Unnamed Alignment |
 | Project unit | International foot |
 | 3D curve type | `IfcGradientCurve` |
@@ -297,8 +297,8 @@ A second variant of the FHWA alignment is provided to support validation of `Ifc
 
 | | |
 |---|---|
-| IFC file | `testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.ifc` |
-| Reference coordinates | `testset/RealWorldAlignments/FHWA_Alignment_with_Linear_Placement.csv` |
+| IFC file | `testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.ifc` |
+| Reference coordinates | `testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.csv` |
 | Alignment name | E-Line |
 | Project unit | International foot |
 | 3D curve type | `IfcGradientCurve` |
@@ -316,8 +316,8 @@ complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment is appr
 
 | | |
 |---|---|
-| IFC file | `testset/RealWorldAlignments/BPaimio-Kupittaa_GK23_N2000_2020.ifc` |
-| Reference coordinates | `testset/RealWorldAlignments/BPaimio-Kupittaa_GK23_N2000_2020.csv` |
+| IFC file | `testset/real-world-alignments/BPaimio-Kupittaa_GK23_N2000_2020.ifc` |
+| Reference coordinates | `testset/real-world-alignments/BPaimio-Kupittaa_GK23_N2000_2020.csv` |
 | Alignment name | 001 |
 | Project unit | Meter (ETRS-TM35FIN) |
 | 3D curve type | `IfcSegmentedReferenceCurve` |
@@ -336,8 +336,8 @@ segments with a rail head distance of 1.0 m.
 
 | | |
 |---|---|
-| IFC file | `testset/RealWorldAlignments/Exit_Turnout_Huni_Valley_Station.ifc` |
-| Reference coordinates | `testset/RealWorldAlignments/Exit_Turnout_Huni_Valley_Station.csv` |
+| IFC file | `testset/real-world-alignments/Exit_Turnout_Huni_Valley_Station.ifc` |
+| Reference coordinates | `testset/real-world-alignments/Exit_Turnout_Huni_Valley_Station.csv` |
 | Alignment name | Centerline |
 | Project unit | Meter (LV95) |
 | 3D curve type | `IfcSegmentedReferenceCurve` |
@@ -403,7 +403,7 @@ the axis is always 0.0 and `Axis_dz` approaches 1.0 when cant is zero.
 
 ### 12.4.2 3D Alignment Reference Coordinates
 
-The 3D CSV files under `testset/RealWorldAlignments/` are produced by evaluating the combined 3D curve
+The 3D CSV files under `testset/real-world-alignments/` are produced by evaluating the combined 3D curve
 (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`) at each sample point. Each
 evaluation returns a 4 × 4 placement matrix; the CSV extracts all three orientation
 vectors and the position.

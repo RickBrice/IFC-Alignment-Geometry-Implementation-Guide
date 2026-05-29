@@ -6,7 +6,7 @@
 # Horizontal layout: 7 segments (LINE and CIRCULARARC, ~12,337 ft total).
 # Vertical layout: 9 segments (CONSTANTGRADIENT and PARABOLICARC).
 # Units: international foot. Start station: 100+00.
-# Output: testset/RealWorldAlignments/FHWA_Alignment.ifc
+# Output: testset/real-world-alignments/FHWA_Alignment.ifc
 import math
 import sys
 from pathlib import Path
@@ -23,7 +23,7 @@ import ifcopenshell.api.spatial
 import ifcopenshell.api.unit
 import ifcopenshell.util.unit
 
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "RealWorldAlignments"
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "real-world-alignments"
 OUTPUT_FILE = "FHWA_Alignment.ifc"
 
 
