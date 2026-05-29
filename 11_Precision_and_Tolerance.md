@@ -1,4 +1,4 @@
-# Chapter 11 - Precision and Tolerance
+# Chapter 11 — Precision and Tolerance
 
 ## 11.0 Introduction
 

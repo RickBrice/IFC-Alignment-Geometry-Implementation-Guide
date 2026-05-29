@@ -1,4 +1,4 @@
-# Chapter 3 - Vertical Alignments
+# Chapter 3 — Vertical Alignments
 
 ## 3.0 Introduction
 

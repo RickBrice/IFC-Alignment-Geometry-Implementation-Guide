@@ -1,4 +1,4 @@
-# Chapter 1 - IFC Alignment Concepts
+# Chapter 1 — IFC Alignment Concepts
 
 ## 1.0 Introduction
 

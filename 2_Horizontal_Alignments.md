@@ -1,4 +1,4 @@
-# Chapter 2 - Horizontal Alignments
+# Chapter 2 — Horizontal Alignments
 
 ## 2.0 Introduction
 

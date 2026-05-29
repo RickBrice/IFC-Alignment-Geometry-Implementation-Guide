@@ -1,4 +1,4 @@
-﻿# Chapter 8 - Linear Placement
+# Chapter 8 — Linear Placement
 
 ## 8.0 Introduction
 

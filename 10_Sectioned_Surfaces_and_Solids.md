@@ -1,4 +1,4 @@
-# Chapter 10 - Sectioned Surfaces and Solids
+# Chapter 10 — Sectioned Surfaces and Solids
 
 ## 10.0 Introduction
 

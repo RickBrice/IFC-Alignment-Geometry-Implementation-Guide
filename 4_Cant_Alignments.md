@@ -1,4 +1,4 @@
-# Chapter 4 - Cant Alignments
+# Chapter 4 — Cant Alignments
 
 ## 4.0 Introduction
 

@@ -1,4 +1,4 @@
-﻿# Chapter 9 - IfcReferent and Stationing
+# Chapter 9 — IfcReferent and Stationing
 
 ## 9.0 Introduction
 

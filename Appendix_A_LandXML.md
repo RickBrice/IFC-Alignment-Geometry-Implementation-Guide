@@ -1,4 +1,4 @@
-﻿# Appendix A - LandXML to IFC Conversion
+﻿# Appendix A — LandXML to IFC Conversion
 
 ## A.0 Introduction
 

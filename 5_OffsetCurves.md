@@ -1,4 +1,4 @@
-# Chapter 5 - Offset Curves
+# Chapter 5 — Offset Curves
 
 ## 5.0 Introduction
 
