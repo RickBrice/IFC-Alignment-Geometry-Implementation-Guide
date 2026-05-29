@@ -1,9 +1,17 @@
 # Author: Richard Brice, PE
 # Date: 2026-05-22
-# Temporary script for generating a screenshot of smooth surface edges.
-# Based on Build_IfcSectionedSurface_with_stringlines_dense_section_approximation.py
-# with extremely fine section spacing to show surface edge smoothness when stringlines
-# are defined independently. Outputs to a separate file; the original is unaffected.
+#
+# Headfake model — produces Figure 10.6.1.6-2 in the IFC Alignment Geometry Implementation Guide.
+#
+# This model synthetically illustrates the expected geometry of IfcSectionedSurface with
+# independent edge alignments (§10.6.1.6). Because no IFC viewer is currently known to
+# resolve IfcOffsetCurveByDistances guide curves when rendering a sectioned surface, the
+# correct visual result is approximated here by computing cross-section widths analytically
+# from the circular arc edge geometry at 1 cm spacing (SECTION_SPACING), producing a
+# near-smooth surface edge that represents what a stringline-capable viewer would render.
+#
+# This is NOT a reference implementation of the stringline mechanism. The actual example
+# with correct IFC structure is IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc.
 
 import os
 import math

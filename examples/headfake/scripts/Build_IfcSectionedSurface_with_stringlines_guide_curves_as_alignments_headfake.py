@@ -1,9 +1,16 @@
 # Author: Richard Brice, PE
 # Date: 2026-05-21
-# This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
-# Same variable-width stringline surface as v1, but each offset curve is wrapped as a
-# separate IfcAlignment to satisfy the IFC rooted-entity validation requirement (IFC105).
+# Headfake model — produces Figure 10.6.1.4-1 in the IFC Alignment Geometry Implementation Guide.
+#
+# This model synthetically illustrates the expected geometry of IfcSectionedSurface with
+# guide curve alignments (§10.6.1.5). Because no IFC viewer is currently known to resolve
+# IfcOffsetCurveByDistances guide curves when rendering a sectioned surface, the correct
+# visual result is approximated here by placing three explicit cross-sections — at 0 m,
+# 100 m (peak width), and 200 m — rather than relying on guide curve resolution.
+#
+# This is NOT a reference implementation of the stringline mechanism. The actual example
+# with correct IFC structure is IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc.
 
 import os
 import math
