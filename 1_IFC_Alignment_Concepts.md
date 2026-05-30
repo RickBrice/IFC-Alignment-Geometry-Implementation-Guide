@@ -18,8 +18,8 @@ mathematical equations or parameter mappings. This guide fills that gap. Its cov
 ## 1.1 Horizontal Alignment
 
 A horizontal alignment typically consists of straight lines called
-tangents (or tangent runs) that are connected by curves. The curves are usually circular
-arcs. Easement or transition curves in the form of spirals can be used
+**tangents** (or tangent runs) that are connected by **horizontal curves**. The curves are usually circular
+arcs. Easement or **transition curves** in the form of spirals can be used
 to provide gradual transitions between tangents and circular curves. The
 horizontal alignment is a plan view curvilinear path in a Cartesian
 coordinate system aligned with East and North. Positions along an
@@ -28,11 +28,10 @@ curve, are typically denoted with *stations* (also called *chainage* in British 
 
 ## 1.2 Vertical Alignment
 
-A vertical alignment (often referred to as the vertical profile by civil engineers) consists of straight sections of grade lines
-connected by vertical curves. The vertical curves are typically
+A vertical alignment (often referred to as the vertical profile by civil engineers) consists of straight sections of **grade lines** connected by **vertical curves**. The vertical curves are typically
 parabolas, though sometimes circular arcs or clothoid curves are used. A
 vertical alignment is defined along the curvilinear path of a horizontal
-alignment in a 2D "Distance Along, Elevation" coordinate system. Combined,
+alignment in a 2D "Distance Along Horizontal Alignment, Elevation" coordinate system. Combined,
 the horizontal and vertical alignments define a 3D curve. This
 combination of two 2D curves is sometimes referred to as a 2.5D or 2+1D
 geometry. The IFC specification notes that contemporary alignment design
