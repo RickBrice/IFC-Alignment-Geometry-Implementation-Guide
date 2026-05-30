@@ -236,7 +236,7 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 
 ## 1.6 Reference Implementation and Segment Mapping
 
-Chapter [2.0](2_Horizontal_Alignments.md), [3.0](3_Vertical_Alignments.md), and [4.0](4_Cant_Alignments.md) discuss the mapping of the semantic definition of alignment segments (`IfcAlignmentSegment` subtypes) to their corresponding geometric representation (`IfcCurveSegment.ParentCurve`). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
+Chapters [2](2_Horizontal_Alignments.md), [3](3_Vertical_Alignments.md), and [4](4_Cant_Alignments.md) discuss the mapping of the semantic definition of alignment segments (`IfcAlignmentSegment` subtypes) to their corresponding geometric representation (`IfcCurveSegment.ParentCurve`). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
 [IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
 (github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry).
