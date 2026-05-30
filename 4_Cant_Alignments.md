@@ -344,6 +344,7 @@ $$M_{PCS} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
+
 $D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_{\ell} = 0$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
@@ -587,12 +588,12 @@ $\mathbf{Z}_{\ell} = (0,\ 0.053107436,\ 0.998588804)$
 
 $\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.000798871,\ 0.998588485,\ -0.053107419)$ 
 
-$$M_{PC\ell} = \begin{bmatrix}
+$M_{PC\ell} = \begin{bmatrix}
       0.999999999968 & 7.98858152422898e-06 & 4.27276522453101e-07 &                   50 \\
  -7.999999999744e-06 &    0.998572690528623 &   0.0534095653066376 &                -0.04 \\
                    0 &  -0.0534095653083467 &    0.998572690560578 &                    0 \\
                    0 &                    0 &                    0 &                    1
-\end{bmatrix}$$
+\end{bmatrix}$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
 
