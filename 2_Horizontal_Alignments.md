@@ -360,9 +360,9 @@ Compute point on parent curve at $u = 50$
 
 $$\theta(s) = \frac{s}{R} = \frac{50}{300} $$
 
-$$d_x = \cos(\theta(s)) = \cos(\frac{50}{300}) = 0.98614323$$
+$$d_x = \cos(\theta(s)) = \cos\left(\frac{50}{300}\right) = 0.98614323$$
 
-$$d_y = \sin(\theta(s)) = \sin(\frac{50}{300}) = 0.16589613$$
+$$d_y = \sin(\theta(s)) = \sin\left(\frac{50}{300}\right) = 0.16589613$$
 
 $$x(s) = R\sin\left(\theta(s)\right) = 300\sin\left(\frac{50}{300}\right) = 49.76883981$$
 
