@@ -371,7 +371,7 @@ three unit variants. The columns differ by alignment type.
 
 The segment starts at the origin (0, 0) with a forward tangent pointing due East
 (+X direction). `RefDir_dx` and `RefDir_dy` together form a unit vector; the tangent angle
-$\theta = \arctan(dy / dx)$.
+$\theta = \tan^{-1}(dy / dx)$.
 
 **Vertical alignment** — `VerticalAlignment/**/*.csv`
 

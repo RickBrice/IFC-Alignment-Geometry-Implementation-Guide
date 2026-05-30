@@ -28,7 +28,7 @@ Each vertical segment is parameterized by arc-length $s$ along its parent curve,
 
 `IfcCurveSegment.SegmentLength` stores arc-length along the parent curve, not horizontal distance. The evaluator parameter is horizontal distance $\ell$, which must be converted to arc-length $s$ before calling the parent curve equations. For the grades typical in road and railway design ($\leq 5\%$), the difference is small but non-zero.
 
-The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \arctan(g(\ell))$, where $g(\ell)$ is the gradient. The cosine and sine of $\theta$ form the `RefDirection` of the vertical curve at that point.
+The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \tan^{-1}(g(\ell))$, where $g(\ell)$ is the gradient. The cosine and sine of $\theta$ form the `RefDirection` of the vertical curve at that point.
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
@@ -37,6 +37,7 @@ Vertical segments are evaluated in a two-dimensional "distance along, elevation"
 **Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, z_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
 
 $$M_{CSP} = \begin{bmatrix} 
@@ -47,6 +48,7 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
 
 $M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
@@ -59,6 +61,7 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate and map each point in the vertical plane
+
 For the point at distance along $s$, compute $x(s)$, $y(s)$, and $\theta(\ell)$:
 
 $$M_{PC} = \begin{bmatrix} 
@@ -73,6 +76,7 @@ $$M_v = M_{CSP} M_N M_{PC}$$
 Column 4 of $M_v$ contains the distance along $d$ and elevation $z$ of the evaluated point. Column 1 contains $(dx_v, dy_v) = (\cos\theta_v, \sin\theta_v)$, the grade direction at that point. Step 4 is performed immediately for this point before moving to the next point.
 
 #### Step 4 — Combine with the horizontal alignment point to produce the 3D placement matrix
+
 The vertical result lives in the (distance along, elevation) plane and must be merged with the horizontal alignment to form a 3D position and orientation. The "distance along" axis corresponds to the curve tangent of the horizontal alignment and the vertical $y$ is elevation (Z in 3D).
 
 Evaluate the horizontal placement matrix $M_h$ at distance $d$ along the `IfcCompositeCurve`. This yields the horizontal 2D position $(x_h, y_h)$ and the horizontal alignment tangent direction $(dx_h, dy_h) = (\cos\theta_h, \sin\theta_h)$.
@@ -154,8 +158,8 @@ Define the `IfcLine` as passing through point (0,0)
 
 Place the curve segment at (0,10) with a tangent direction
 
-$$dx = \cos\left( \tan^{- 1}{0.5} \right) = 0.894427191$$
-$$dy = \sin\left( \tan^{- 1}{0.5} \right) = 0.44713595$$
+$$dx = \cos\left( \tan^{-1}(0.5) \right) = 0.894427191$$
+$$dy = \sin\left( \tan^{-1}(0.5) \right) = 0.44713595$$
 
 ~~~
 #77 = IFCAXIS2PLACEMENT2D(#78, #79);
@@ -165,7 +169,7 @@ $$dy = \sin\left( \tan^{- 1}{0.5} \right) = 0.44713595$$
 
 `IfcCurveSegment.SegmentLength` is the length measured along the trimmed
 curve. For a horizontal length of $100\ m$, the length along the curve is
-$100/0.894427190999916 = 111.803398874989\ m$
+$$100/0.894427190999916 = 111.803398874989\ m$$
 
 The curve segment is defined as
 
@@ -178,9 +182,10 @@ The curve segment is defined as
 Compute the vertical placement matrix for the point at horizontal distance $\ell = 50$ m from the start of the curve segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0,\ 10)$, $\theta_p = 0.463647609\ \text{rad}$:
 
-$\cos\theta_p = \cos(0.463647609)=0.894427191 \quad \sin\theta_p = \sin(0.463647609)=0.447213595$
+$$\cos\theta_p = \cos(0.463647609)=0.894427191 \quad \sin\theta_p = \sin(0.463647609)=0.447213595$$
 
 
 $$M_{CSP} = \begin{bmatrix}
@@ -191,9 +196,10 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (1.,\ 0.)$:
 
-$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = tan^{-1}\left(\frac{dy}{dx}\right) = tan^{-1}\left(\frac{0.}{1.}\right) = 0.\ \text{rad}$$
+$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = \tan^{-1}\left(\frac{dy}{dx}\right) = \tan^{-1}\left(\frac{0.}{1.}\right) = 0.\ \text{rad}$$
 
 $$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
@@ -203,6 +209,7 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate and map each point in the vertical plane
+
 The horizontal distance $\ell = 50$ m is not the arc-length parameter. Convert to arc-length $s$ along the `IfcLine`:
 
 $$s = s_0 + \frac{\ell}{dx} = 0 + \frac{50}{0.894427191} = 55.9016994\ \text{m}$$
@@ -283,27 +290,27 @@ Given the following semantic definition of a vertical circular arc, create the g
 
 Determine the tangent slope angle at the start and end of the segment.
 
-$g_{start} = -0.5$
+$$g_{start} = -0.5$$
 
-$\theta_{start} = tan^{-1}(g_{start})$
+$$\theta_{start} = \tan^{-1}(g_{start})$$
 
-$\theta_{start} = tan^{-1}(-0.5) = -0.463648$
+$$\theta_{start} = \tan^{-1}(-0.5) = -0.463648$$
 
-$g_{end} = -1$
+$$g_{end} = -1$$
 
-$\theta_{end} = tan^{-1}(g_{end})$
+$$\theta_{end} = \tan^{-1}(g_{end})$$
 
-$\theta_{end} = tan^{-1}(-1) = -0.785398$
+$$\theta_{end} = \tan^{-1}(-1) = -0.785398$$
 
 Compute the radius of the circle.
 
 `IfcAlignmentVerticalSegment.RadiusOfCurvature` is optional. If provided, it should be consistent with the `HorizontalLength`, `StartGradient` and `EndGradient`, but is not guaranteed. For this reason, the radius is computed from the required  `HorizontalLength`, `StartGradient` and `EndGradient` attributes. Note that in computing the radius, it is taken to be an absolute value because `IfcCircle.Radius` is a `IfcPositiveLengthMeasure`.
 
-$R = \left| \frac{h_l}{\sin(\theta_{start}) - \sin(\theta_{end})}\right|$
+$$R = \left| \frac{h_l}{\sin(\theta_{start}) - \sin(\theta_{end})}\right|$$
 
-$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$
+$$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$$
 
-$R = \left| \frac{328.083989501312}{\sin(-0.785398) - \sin(-0.463648)} \right| = 384.773458895502$
+$$R = \left| \frac{328.083989501312}{\sin(-0.785398) - \sin(-0.463648)} \right| = 384.773458895502$$
 
 Compute the arc-length trimming parameters `SegmentStart` and `SegmentLength`.
 
@@ -311,11 +318,11 @@ For an `IfcCircle` with CCW parametrization and `RefDirection` = (1, 0), the arc
 
 If $\theta_{start} < \theta_{end}$ — sagging curve (lower half of circle):
 
-$$\text{SegmentStart} = R\left(\theta_{start} + \tfrac{3}{2}\pi\right)$$
+$$\text{SegmentStart} = R\left(\theta_{start} + \frac{3}{2}\pi\right)$$
 
 If $\theta_{start} > \theta_{end}$ — cresting curve (upper half of circle):
 
-$$\text{SegmentStart} = R\left(\theta_{start} + \tfrac{1}{2}\pi\right)$$
+$$\text{SegmentStart} = R\left(\theta_{start} + \frac{1}{2}\pi\right)$$
 
 In both cases:
 
@@ -325,9 +332,9 @@ For a cresting curve $\theta_{end} < \theta_{start}$, so `SegmentLength` is nega
 
 For this example (cresting):
 
-$\text{SegmentStart} = R\left(\theta_{start} + \tfrac{\pi}{2}\right) = (384.773458895502)(-0.463647609+ \tfrac{\pi}{2}) = 426.001441657352$
+$$\text{SegmentStart} = R\left(\theta_{start} + \frac{\pi}{2}\right) = (384.773458895502)(-0.463647609+ \frac{\pi}{2}) = 426.001441657352$$
 
-$\text{SegmentLength} = R(\theta_{end} - \theta_{start}) = (384.773458895502)(-0.785398 - (-0.463647609)) = -123.801073716741$
+$$\text{SegmentLength} = R(\theta_{end} - \theta_{start}) = (384.773458895502)(-0.785398 - (-0.463647609)) = -123.801073716741$$
 
 Determine the placement of the trimmed curve
 
@@ -339,9 +346,9 @@ $$C_x = R d_y = 384.773458895502(-0.447213595) = -172.075922$$
 
 $$C_y = -R d_x = -384.773458895502(0.894427191) = -344.151844$$
 
-$dx = \cos(\theta_{start}) = \cos(-0.463647609) = 0.894427191$
+$$dx = \cos(\theta_{start}) = \cos(-0.463647609) = 0.894427191$$
 
-$dy = \sin(\theta_{start}) = \sin(-0.463647609) = -0.447213595$
+$$dy = \sin(\theta_{start}) = \sin(-0.463647609) = -0.447213595$$
 
 The geometric representation is
 
@@ -363,6 +370,7 @@ The geometric representation is
 Compute the vertical placement matrix for the point at horizontal distance $\ell = 50$ m from the start of the curve segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$
 
 $$M_{CSP} = \begin{bmatrix}
@@ -373,16 +381,17 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
-$$\Delta_0 = tan^{-1}\left(\tfrac{-344.151844011225}{-172.075922005613}\right) = 1.1071487177940900$$
+
+$$\Delta_0 = \tan^{-1}\left(\frac{-344.151844011225}{-172.075922005613}\right) = 1.1071487177940900$$
 
 $$x_0 = C_x + R \cos(\Delta_0) = -172.075922 + 384.773458895502\cos(1.1071487177940900) = 0$$
 $$y_0 = C_y + R \sin(\Delta_0) = -344.151844 + 384.773458895502\sin(1.1071487177940900) = 0$$
 
-$$\theta_0 = \Delta_0 - \tfrac{\pi}{2} = -0.463647609$$
+$$\theta_0 = \Delta_0 - \frac{\pi}{2} = -0.463647609$$
 
-$dx_0 =\cos(\theta_0) = 0.89442719099991$
+$$dx_0 =\cos(\theta_0) = 0.89442719099991$$
 
-$dy_0 =\sin(\theta_0) = -0.447213595499958$
+$$dy_0 =\sin(\theta_0) = -0.447213595499958$$
 
 $$M_N = \begin{bmatrix}
 0.89442719099991 & -0.447213595499958 & 0 & 0 \\
@@ -392,15 +401,16 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate and map each point in the vertical plane
+
 Compute the vertical placement matrix for the point at horizontal distance $\ell = 50\ m$ from the start of the curve segment.
 
 The center point of the trimmed circular arc is
 
-$C_x = -172.075922005613,\ C_y = -344.151844011225$
+$$C_x = -172.075922005613,\ C_y = -344.151844011225$$
 
 From Step 2
 
-$x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$
+$$x_0 = 0,\ y_0 = 0,\ \theta_0 = -0.463647609$$
 
 Compute the chord length, $c$ between the start and end of the trimmed segment. This is accomplished by locating the point on the parent curve that corresponds to a horizontal distance of $\ell = 50\ m$. From Figure 3.4.3-1 the point on the parent curve is located using the right triangle shown. Once the point on the parent curve is known, a chord distance between the start of the trim and this point can be computed (see inset chord line detail). From here a sweep angle $\Delta$ is computed and then the tangent direction at the point.
 
@@ -418,7 +428,7 @@ $$R^2 = (x-C_x)^2 + (y-C_y)^2$$
 
 Solving for $y$,
 
-$$y = C_y - \tfrac{L}{\left|L\right|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{\left|-123.801073716741\right|}\sqrt{(384.773458895502)^2 - (50 - (-172.075922005613))^2}=-29.933926737614911$$
+$$y = C_y - \frac{L}{\left|L\right|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \frac{-123.801073716741}{\left|-123.801073716741\right|}\sqrt{(384.773458895502)^2 - (50 - (-172.075922005613))^2}=-29.933926737614911$$
 
 Compute the chord length from the trim start to the point
 
@@ -426,21 +436,21 @@ $$c = \sqrt{(x - x_0)^2 + (y - y_0)^2} = \sqrt{(50-(0))^2 + (-29.933926737614911
 
 Angle subtended by the trimmed segment
 
-$$\Delta = 2\sin^{-1}\left(\tfrac{c}{2R}\right) = 2\sin^{-1}\left(\tfrac{58.275552077461235}{2 \cdot 384.773458895502}\right) = 0.15159931828379261$$
+$$\Delta = 2\sin^{-1}\left(\frac{c}{2R}\right) = 2\sin^{-1}\left(\frac{58.275552077461235}{2 \cdot 384.773458895502}\right) = 0.15159931828379261$$
 
 Arc-length of the trimmed segment = $R\Delta = (384.773458895502)(0.15159931828379261) = 58.331394062255001$
 
 Radial angle at $\ell = 50\ m$
 
-$\Delta_{pc} = \Delta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$
+$$\Delta_{pc} = \Delta_0 - \Delta = 1.1071487177940900 - 0.15159931828379261 = 0.95554939951029738$$
 
 Compute point on trimmed segment at $\ell$.
 
 $$x_{pc} = C_x + R \cos(\Delta_{pc}) = (-172.075922005613) + 384.77345889550202\cos(0.95554939951029738) = 50$$
 $$y_{pc} = C_y + R \sin(\Delta_{pc}) = (-344.15184401122502) + 384.77345889550202\sin(0.95554939951029738) = -29.933926737614570$$
 
-$$dx_{pc} = -\tfrac{L}{\left|L\right|}\sin(\Delta_{pc}) = -\tfrac{-123.801073716741}{\left|-123.801073716741\right|}\sin(0.95554939951029738) = 0.81663095520043849$$
-$$dy_{pc} = \tfrac{L}{\left|L\right|}\cos(\Delta_{pc}) = \tfrac{-123.801073716741}{\left|-123.801073716741\right|}\cos(0.95554939951029738) = -0.57716018834325311$$
+$$dx_{pc} = -\frac{L}{\left|L\right|}\sin(\Delta_{pc}) = -\frac{-123.801073716741}{\left|-123.801073716741\right|}\sin(0.95554939951029738) = 0.81663095520043849$$
+$$dy_{pc} = \frac{L}{\left|L\right|}\cos(\Delta_{pc}) = \frac{-123.801073716741}{\left|-123.801073716741\right|}\cos(0.95554939951029738) = -0.57716018834325311$$
 
 $$M_{PC} = \begin{bmatrix}
 0.81663095520043849 & 0.57716018834325311 & 0 & 50\\
@@ -520,6 +530,7 @@ is equal to the specified horizontal length. Numerically solve
 -->
 
 ## 3.6 Parabolic Arc
+
 The most common transition curve in a vertical profile is a parabola. The geometric representation is `IfcPolynomialCurve`. Mapping of the semantic definition to the geometric definition can be a bit tricky.
 
 ### 3.6.1 Parent Curve Parametric Equations
@@ -553,11 +564,11 @@ The semantic definition is
 Compute the polynomial curve coefficients
 
 
-$A_0 = 121.\ m$
+$$A_0 = 121.\ m$$
 
-$A_1 = 0.0175$
+$$A_1 = 0.0175$$
 
-$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}\ m^{-1}$
+$$A_2 = \frac{-0.01-0.0175}{2\cdot 1600.} = -8.59375 \cdot 10^{-6}\ m^{-1}$$
 
 It is easiest to place the parent curve at the origin and orient it with the global coordinate system. The parent curve is defined as
 
@@ -584,17 +595,17 @@ The polynomial curve is trimmed using `IfcCurveSegment.SegmentStart` and `IfcCur
 
 The distance along a curve is
 
-$s(x) = \int_{}^{}(\sqrt{(y')^{2} + 1}) dx$
+$$s(x) = \int_{}^{}(\sqrt{(y')^{2} + 1}) dx$$
 
 The length along the parabolic curve is then:
 
-$s(x) = \int_{}^{}\sqrt{4A_2^2x^2 + 4A_2A_1x + A_1^2 + 1} dx$
+$$s(x) = \int_{}^{}\sqrt{4A_2^2x^2 + 4A_2A_1x + A_1^2 + 1} dx$$
 
 The solution to this integral is:
 
 <!-- see https://www.integral-table.com, equation #37 -->
 
-$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2ax}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} \ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$
+$$s(x)=\int_{}^{}\left(\sqrt{ax^2 + bx + c}\right) dx = \frac{b+2ax}{4a}\sqrt{ax^2 + bx + c} + \frac{4ac-b^2}{8 a^\frac{3}{2}} \ln\left|2ax + b + 2\sqrt{a(ax^2 + bx + c)}\right|$$
 
 The length along the curve is $L_c = s(h_l) - s(0.0)$.
 
@@ -602,17 +613,17 @@ Let $\quad a = 4A_2^2 \quad b = 4A_2A_1 \quad c = A_1^2 + 1$
 
 Compute the coefficients $a, b, c$, substitute curve length equation and solve. The curve length is
 
-$L_c = 1600.0616641340894$
+$$L_c = 1600.0616641340894$$
 
 The placement of the trimmed curve segment is noteworthy. From the `IfcAlignmentVerticalSegment` attributes, the parabolic segment of the vertical alignment starts at 1200 from the beginning of the horizontal alignment and is at an elevation of 121. The RefDirection vector at the start of the curve is needed as well.
 
 The gradient is $y'(x=0) = 0.0175$
 
-$\theta_p =  tan^{-1}(0.0175) = 0.017498213869856595$
+$$\theta_p =  \tan^{-1}(0.0175) = 0.017498213869856595$$
 
-$dx = \cos(0.017498213869856595) = 0.017497320927833689$
+$$dx = \cos(0.017498213869856595) = 0.017497320927833689$$
 
-$dy = \sin(0.017498213869856595) = 0.99984691016192495$
+$$dy = \sin(0.017498213869856595) = 0.99984691016192495$$
 
 
 The geometric representation is
@@ -632,6 +643,7 @@ The geometric representation is
 Compute the vertical placement matrix for the point at horizontal distance $1500$ m from the start of the alignment. This vertical alignment segments starts at $1200$ from the start of the alignment. The evaluation point is $\ell=1500-1200=300$ from the start of the segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (1200,\ 121)$, $dx_p = 0.99984691016192495$, $dy_p = 0.017497320927833689$
 
 $$M_{CSP} = \begin{bmatrix}
@@ -642,20 +654,22 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.
 
 Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = \begin{bmatrix}I\end{bmatrix}$
 
 #### Step 3 — Evaluate and map each point in the vertical plane
+
 Evaluate the parent curve at $x = 300$
 
-$y(300) = -8.59375 \cdot 10^{-6} 300^2 + 0.0175(300) + 121 = 125.4765625$
+$$y(300) = -8.59375 \cdot 10^{-6} 300^2 + 0.0175(300) + 121 = 125.4765625$$
 
-$y'(300) = 2(-8.59375 \cdot 10^{-6}) 300 + 0.0175 = 0.01234375$
+$$y'(300) = 2(-8.59375 \cdot 10^{-6}) 300 + 0.0175 = 0.01234375$$
 
-$dx = \frac{1}{\sqrt{(0.01234375)^2+1}} = 0.999923825$
+$$dx = \frac{1}{\sqrt{(0.01234375)^2+1}} = 0.999923825$$
 
-$dy = \frac{0.01234375}{\sqrt{(0.01234375)^2+1}} = 0.01234281$
+$$dy = \frac{0.01234375}{\sqrt{(0.01234375)^2+1}} = 0.01234281$$
 
 $$M_{PC} = \begin{bmatrix}
 0.999923825 & -0.01234281 & 0 & 300 \\

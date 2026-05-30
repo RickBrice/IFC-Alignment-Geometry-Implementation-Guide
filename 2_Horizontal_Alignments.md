@@ -36,9 +36,10 @@ $$x(s) = \int \cos\theta(s)\ ds \qquad y(s) = \int \sin\theta(s)\ ds$$
 
 ## 2.2 Curve Segment Evaluation Algorithm
 
-This algorithm evaluates the 2D position and tangent direction of a point on an `IfcCurveSegment` in the alignment coordinate system. Let $s_0$ = `SegmentStart` and $s$ = the arc-length parameter of the point to evaluate, where $s_0 \leq s < s_0 + \texttt{SegmentLength}$.
+This algorithm evaluates the 2D position and tangent direction of a point on an `IfcCurveSegment` in the alignment coordinate system. Let $s_0$ = `SegmentStart` and $s$ = the arc-length parameter of the point to evaluate, where $s_0 \leq s < s_0 + \mathtt{SegmentLength}$.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 $M_{CSP}$ places the trimmed segment into the alignment coordinate system. It is constructed directly from `IfcCurveSegment.Placement`, where $(x_p, y_p)$ is the `Location` and $\theta_p$ is the bearing of the `RefDirection`.
 
 $$M_{CSP} = \begin{bmatrix} 
@@ -49,6 +50,7 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Compute the position $(x_0, y_0)$ and tangent angle $\theta_0$ of the parent curve at $s_0$. This establishes the frame of the parent curve at the point where trimming begins.
 
 $M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
@@ -61,6 +63,7 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate and map each point
+
 For the point at arc-length $s$, compute the parent curve position $(x(s), y(s))$ and tangent angle $\theta(s)$ and form:
 
 $$M_{PC} = \begin{bmatrix} 
@@ -178,6 +181,7 @@ $$dy = \sin{(5.70829654085293)} = -0.54374144087698$$
 $$dx = \cos{(5.70829654085293)} = 0.839252789970355$$
 
 The segment placement is 
+
 ~~~
 #31=IFCCARTESIANPOINT((500.,2500.));
 #49=IFCDIRECTION((0.839252789970355,-0.54374144087698));
@@ -196,6 +200,7 @@ Compute the position matrix for a point 1500 m from the start of the
 curve segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 From the `IfcCurveSegment.Placement`:
 
 $$x = 500, y = 2500$$
@@ -210,16 +215,18 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Evaluate the parent curve at $u = 1500$
 
 $$\lambda(u) = C + \left( \int_{0}^{u}{\cos\left( \theta(t) \right)}dt\ x,\ \int_{0}^{u}{\sin\left( \theta(t) \right)}dt\ y \right)$$
 
-$$\theta(1500) = \arctan\left(\frac{0}{1}\right) = 0$$
+$$\theta(1500) = \tan^{-1}\left(\frac{0}{1}\right) = 0$$
 
 $$x = 0 + \cos(0)\int_{0}^{1500}{dt} = 0 + 1(1500\ m - 0\ m) = 1500\ m$$
 
@@ -338,14 +345,17 @@ Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
-$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$
+
+$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 The trim begins where the local x-axis of the circle intersects the circumference. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Compute point on parent curve at $u = 50$
 
 $$\theta(s) = \frac{s}{R} = \frac{50}{300} $$
@@ -439,7 +449,7 @@ $$R_{s} = 300,\ R_{e} = 1000,\ L = 100$$
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}= \frac{100}{1000} - \frac{100}{300} = -0.23333$$
 
-$$A = \frac{L}{{\left|f\right|}^{\tfrac{1}{2}}}\frac{f}{\left|f\right|} = \frac{100}{{\left|-0.23333\right|}^{\tfrac{1}{2}}}\frac{-0.23333}{\left|-0.23333\right|} = -207.0196678$$
+$$A = \frac{L}{{\left|f\right|}^{\frac{1}{2}}}\frac{f}{\left|f\right|} = \frac{100}{{\left|-0.23333\right|}^{\frac{1}{2}}}\frac{-0.23333}{\left|-0.23333\right|} = -207.0196678$$
 
 Place the parent curve at (0,0) with a tangent direction of (1,0)
 
@@ -487,6 +497,7 @@ Compute the placement matrix for a point 50 m from the start of the
 curve segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix. This is not true in all cases.
@@ -494,6 +505,7 @@ identity matrix. This is not true in all cases.
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Start by computing the point and curve tangent at the start of the parent curve trim.
 
 Recall that the clothoid equations are in terms of a unit parameterization. Compute the parametric position on the curve.
@@ -532,6 +544,7 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate and map each point
+
 Compute point and curve tangent at 50 m from the start,
 
 $$ s = -142.8571428 + 50 = -92.8571428$$
@@ -633,7 +646,7 @@ Compute the polynomial curve coefficients
 
 $$A_{0} = A_{1} = A_{2} = 0$$
 
-$$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L} = \frac{1}{6(300\ m)(100\ m)} - \frac{1}{6(\infty)(100\ m)} = 5.55555 \cdot 10^{- 6}\ m^{- 2}$$
+$$A_{3} = \frac{1}{6R_{e}L} - \frac{1}{6R_{s}L} = \frac{1}{6(300\ m)(100\ m)} - \frac{1}{6(\infty)(100\ m)} = 5.55555 \cdot 10^{-6}\ m^{-2}$$
 
 The geometric representation is
 
@@ -688,6 +701,7 @@ The geometric representation is
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
@@ -695,11 +709,13 @@ identity matrix.
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Compute point and curve tangent at 100 m from the start.
 
 From the `IfcPolynomialCurve` definition, 
@@ -790,15 +806,15 @@ $$a_{01} = \frac{L}{R_{s}},\ A_{01} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 2f,\ A_{21} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{21} = 2f,\ A_{21} = \frac{L}{{\left| a_{2} \right|}^{\frac{1}{3}}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 Second Half
 
 $$a_{02} = -f + \frac{L}{R_{s}},\ A_{02} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
 
-$$a_{12} = 4f,\ A_{12} = \frac{L}{{\left| a_{1} \right|}^{\tfrac{1}{2}}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
+$$a_{12} = 4f,\ A_{12} = \frac{L}{{\left| a_{1} \right|}^{\frac{1}{2}}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
 
-$$a_{22} = -2f,\ A_{22} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{22} = -2f,\ A_{22} = \frac{L}{{\left| a_{2} \right|}^{\frac{1}{3}}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 ### 2.7.2 Semantic Definition to Geometry Mapping
 
@@ -828,7 +844,7 @@ $$a_{01} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
 $$a_{00} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{{\left|0.66667\right|}^{\tfrac{1}{3}}}\frac{0.66667}{\left|0.66667\right|} = 114.4714255\ m$$
+$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{{\left|0.66667\right|}^{\frac{1}{3}}}\frac{0.66667}{\left|0.66667\right|} = 114.4714255\ m$$
 
 
 The geometric representation of the first half is
@@ -852,9 +868,9 @@ Second Half
 
 $$a_{02} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{\left|-0.33333\right|}\frac{-0.33333}{\left|-0.33333\right|} = - 300\ m$$
 
-$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{{\left|1.33333\right|}^{\tfrac{1}{2}}}\frac{1.33333}{\left|1.33333\right|} = 86.602540378\ m$$
+$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{{\left|1.33333\right|}^{\frac{1}{2}}}\frac{1.33333}{\left|1.33333\right|} = 86.602540378\ m$$
 
-$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{{\left|-0.66667\right|}^{\tfrac{1}{3}}}\frac{-0.66667}{\left|-0.66667\right|} = -114.4714255\ m$$
+$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{{\left|-0.66667\right|}^{\frac{1}{3}}}\frac{-0.66667}{\left|-0.66667\right|} = -114.4714255\ m$$
 
 Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.
 
@@ -945,6 +961,7 @@ Compute the curve coordinates at a distance along the curve, $u = 100$ (the end 
 The point falls in the second half ($50 < u \leq 100$). The parent curve parameter is $t = \text{SegmentStart} + (u - 50) = 50 + 50 = 100$.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 The curve segment `Placement` for the second half is at $(x_{join}, y_{join}) = (49.9972,\ 0.347204)$ with direction $\theta_{join} = 0.027778\ \text{rad}$:
 
 $$M_{CSP} = \begin{bmatrix}
@@ -955,6 +972,7 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the second half parent curve at SegmentStart and form the normalization matrix $M_N$
+
 The second half parent curve has `Position` at $(x_p, y_p) = (0.011503,\ -0.694370)$ with direction $\theta_p = 0.055556\ \text{rad}$. This was chosen so that the parent curve at $t = L/2 = 50$ yields $(x_1, y_1, \theta_1) = (49.9972,\ 0.347204,\ 0.027778)$ — the endpoint of the first half.
 
 $M_N$ maps $(x_1, y_1, \theta_1)$ to the origin with the $x$-axis tangent direction:
@@ -974,6 +992,7 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate and map each point
+
 Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying `Position`) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:
 
 $$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$
@@ -1084,10 +1103,10 @@ $$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 $$A_{1} = 0$$
 
 $$a_{2} = 3f = 3(0.33333) = 1$$
-$$A_{2} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{{\left|1\right|}^{\tfrac{1}{3}}}\frac{1}{\left|1\right|} = 100\ m$$
+$$A_{2} = \frac{L}{{\left| a_{2} \right|}^{\frac{1}{3}}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{{\left|1\right|}^{\frac{1}{3}}}\frac{1}{\left|1\right|} = 100\ m$$
 
 $$a_{3} = -2f = -2(0.33333) = -0.66667$$
-$$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\tfrac{1}{4}}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{{\left|-0.66667\right|}^{\tfrac{1}{4}}}\frac{-0.66667}{\left|-0.66667\right|} = -110.668192\ m$$
+$$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\frac{1}{4}}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{{\left|-0.66667\right|}^{\frac{1}{4}}}\frac{-0.66667}{\left|-0.66667\right|} = -110.668192\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1104,6 +1123,7 @@ $$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\tfrac{1}{4}}}\frac{a_{3}}{\left| a_{
 Compute the curve coordinates at a distance along the curve, $u = 50$
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
@@ -1111,11 +1131,13 @@ identity matrix.
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Compute point and curve tangent at 50 m from the start.
 
 $$x = \int_{0}^{50}{\cos{\theta(s)}}\ ds = 49.9962109$$
@@ -1213,6 +1235,7 @@ $$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \fra
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
@@ -1220,11 +1243,13 @@ identity matrix.
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{600}t - \frac{100}{600\pi}\sin\left( \frac{\pi}{100}t \right)$$
@@ -1310,7 +1335,7 @@ $$A_{o} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 
 Linear Term:
 $$a_{1} = f = 0.33333$$
-$$A_{1} = \frac{L}{{\left| a_{1} \right|}^{\tfrac{1}{2}}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{{\left|0.33333\right|}^{\tfrac{1}{2}}}\frac{0.33333}{\left|0.33333\right|} = 173.2050808\ m$$
+$$A_{1} = \frac{L}{{\left| a_{1} \right|}^{\frac{1}{2}}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{{\left|0.33333\right|}^{\frac{1}{2}}}\frac{0.33333}{\left|0.33333\right|} = 173.2050808\ m$$
 
 Sine Term:
 $$a_{2} = -\frac{1}{2\pi}f = -\frac{1}{2\pi}(0.33333) = -0.053051647$$
@@ -1331,6 +1356,7 @@ $$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \fr
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
@@ -1338,11 +1364,13 @@ identity matrix.
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Compute point and curve tangent at 100 m from the start.
 
 $$\theta(t) = \frac{1}{2}\left( \frac{t}{173.2050808} \right)^{2} + \frac{100}{2\pi(1884.955592)}\left( \cos\left( \frac{2\pi}{100}t \right) - 1 \right)$$
@@ -1385,6 +1413,7 @@ $$M_{h} =
 \end{bmatrix}$$
 
 ## 2.11 Viennese Transition Curve
+
 The Viennese Bend is a transition spiral developed for high-speed railway applications. Unlike every other transition curve type in this guide — all of which define horizontal geometry purely from geometric parameters (start radius, end radius, and arc length) — the Viennese Bend incorporates vehicle dynamics: its curvature variation is shaped by the superelevation (cant) transition that accompanies it. The result is a curve that simultaneously satisfies continuity requirements for curvature, cant, and their first derivatives, producing lower lateral jerk experienced by passengers.
 
 `IfcAlignmentHorizontalSegment.GravityCenterLineHeight` is required for `VIENNESEBEND` but is optional for all other horizontal segment types. The associated cant segment (`IfcAlignmentCantSegment` with `PredefinedType = VIENNESEBEND`) must span the same horizontal length.
@@ -1464,37 +1493,37 @@ Quadratic term
 
 $$a_{2} = cf= -0.504$$
 
-$$A_{2} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{{\left| -0.504 \right|}^{\tfrac{1}{3}}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069\ m$$
+$$A_{2} = \frac{L}{{\left| a_{2} \right|}^{\frac{1}{3}}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{{\left| -0.504 \right|}^{\frac{1}{3}}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069\ m$$
 
 Cubic term 
 
 $$a_{3} = -4cf= -4(-0.504) = 2.016$$
 
-$$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\tfrac{1}{4}}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{{\left| 2.016 \right|}^{\tfrac{1}{4}}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813\ m$$
+$$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\frac{1}{4}}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{{\left| 2.016 \right|}^{\frac{1}{4}}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813\ m$$
 
 Quartic term 
 
 $$a_{4} = 5cf + 35f = 5(-0.504) + 35(0.33333) = 9.1466655$$
 
-$$A_{4} = \frac{L}{{\left| a_{4} \right|}^{\tfrac{1}{5}}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{{\left| 9.1466655 \right|}^{\tfrac{1}{5}}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406\ m$$
+$$A_{4} = \frac{L}{{\left| a_{4} \right|}^{\frac{1}{5}}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{{\left| 9.1466655 \right|}^{\frac{1}{5}}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406\ m$$
 
 Quintic term 
 
 $$a_{5} = -2cf - 84f= -2(-0.504) - 84(0.33333) = -26.9919999$$
 
-$$A_{5} = \frac{L}{{\left| a_{5} \right|}^{\tfrac{1}{6}}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{{\left| -26.9919999 \right|}^{\tfrac{1}{6}}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785\ m$$
+$$A_{5} = \frac{L}{{\left| a_{5} \right|}^{\frac{1}{6}}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{{\left| -26.9919999 \right|}^{\frac{1}{6}}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785\ m$$
 
 Sextic term 
 
 $$a_{6} = 70f  = 70(0.33333) = 23.33333333$$
 
-$$A_{6} = \frac{L}{{\left| a_{6} \right|}^{\tfrac{1}{7}}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{{\left| 23.33333333 \right|}^{\tfrac{1}{7}}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134\ m$$
+$$A_{6} = \frac{L}{{\left| a_{6} \right|}^{\frac{1}{7}}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{{\left| 23.33333333 \right|}^{\frac{1}{7}}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134\ m$$
 
 Septic term 
 
 $$a_{7} = -20f = -20(0.33333) = -6.66666666$$
 
-$$A_{7} = \frac{L}{{\left| a_{7} \right|}^{\tfrac{1}{8}}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{{\left| -6.66666666 \right|}^{\tfrac{1}{8}}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838\ m$$
+$$A_{7} = \frac{L}{{\left| a_{7} \right|}^{\frac{1}{8}}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{{\left| -6.66666666 \right|}^{\frac{1}{8}}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838\ m$$
 
 ~~~
 #66 = IFCCURVESEGMENT(.CONTINUOUS., #72, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #75);
@@ -1511,6 +1540,7 @@ $$A_{7} = \frac{L}{{\left| a_{7} \right|}^{\tfrac{1}{8}}}\frac{a_{7}}{\left| a_{
 Compute the curve coordinates at a distance along the curve, $u = 100$
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
@@ -1518,11 +1548,13 @@ identity matrix.
 $$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
 Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
 
 #### Step 3 — Evaluate and map each point
+
 Compute point and curve tangent at 100 m from the start.
 
 $$\theta(s) = \frac{A_{7}}{8\left| A_{7}^{9} \right|} s^{8} + \frac{1}{7 A_{6}^{7}} s^{7} + \frac{A_{5}}{6\left| A_{5}^{7} \right|} s^{6} + \frac{1}{5 A_{4}^{5}} s^{5} + \frac{A_{3}}{4\left| A_{3}^{5} \right|} s^{4} + \frac{1}{3 A_{2}^{3}} s^{3} + \frac{A_{1}}{2\left| A_{1}^{3} \right|} s^{2} + \frac{1}{A_{0}} s $$

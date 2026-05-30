@@ -53,7 +53,7 @@ The LandXML `<CoordGeom>` element contains a sequence of `<Line>`, `<Curve>`, an
 
 LandXML lines and spirals often omit explicit direction attributes (`Dir`, `DirStart`) and rely on the geometry — start/end or start/PI points — to imply direction. `IfcAlignmentHorizontalSegment.StartDirection` is required. When the direction attribute is absent, compute it from the available geometry:
 
-$$\theta = \arctan2(\Delta y, \Delta x)$$
+$$\theta = \operatorname{atan2}(\Delta y, \Delta x)$$
 
 then apply the bearing-to-IFC plane angle conversion from Section A.2.
 
@@ -63,7 +63,7 @@ then apply the bearing-to-IFC plane angle conversion from Section A.2.
 
 Compute the tangent direction from the radial line by rotating 90°:
 
-$$\theta_{tangent} = \arctan2(y_{start} - y_{center},\ x_{start} - x_{center}) + \text{sign} \cdot \frac{\pi}{2}$$
+$$\theta_{tangent} = \operatorname{atan2}(y_{start} - y_{center},\ x_{start} - x_{center}) + \text{sign} \cdot \frac{\pi}{2}$$
 
 where $\text{sign} = +1$ for counter-clockwise (`rot="ccw"`) and $\text{sign} = -1$ for clockwise (`rot="cw"`). The signed radius passed to `IfcAlignmentHorizontalSegment` follows the same sign convention.
 
@@ -98,7 +98,7 @@ The following table maps LandXML `spiType` values to `IfcAlignmentHorizontalSegm
 
 LandXML uses `rot="cw"` / `rot="ccw"` to indicate curve direction. IFC encodes direction in the sign of `StartRadius` and `EndRadius`: a positive value indicates a left turn (counter-clockwise) and a negative value indicates a right turn (clockwise).
 
-$$\text{sign} = \begin{cases} -1 & \text{if } rot = \texttt{cw} \\ +1 & \text{if } rot = \texttt{ccw} \end{cases}$$
+$$\text{sign} = \begin{cases} -1 & \text{if } rot = \mathtt{cw} \\ +1 & \text{if } rot = \mathtt{ccw} \end{cases}$$
 
 Apply this sign to both `StartRadius` and `EndRadius`.
 

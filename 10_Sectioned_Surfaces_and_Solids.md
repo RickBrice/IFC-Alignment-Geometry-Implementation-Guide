@@ -291,7 +291,7 @@ The alignment is a 50 m straight line due East at zero grade with no cant. The d
 
 The base cross-section is the same trapezoid used in §10.6.2.1: vertices `(-30, 0)`, `(30, 0)`, `(29.5, 0.5)`, `(-29.5, 0.5)`, encoded as an `IfcArbitraryClosedProfileDef`. A single instance of this base profile is shared by both cross-section positions; each position wraps it in its own `IfcDerivedProfileDef` whose `IfcCartesianTransformationOperator2D` carries the rotation.
 
-The rotation angle is $\theta = \arctan(e)$, where $e$ is the cross-slope (rise/run): $\theta = 0$ at station 0 m and $\theta \approx 5.71°$ at station 50 m. The geometry engine interpolates the rotation linearly between the two positions.
+The rotation angle is $\theta = \tan^{-1}(e)$, where $e$ is the cross-slope (rise/run): $\theta = 0$ at station 0 m and $\theta \approx 5.71^\circ$ at station 50 m. The geometry engine interpolates the rotation linearly between the two positions.
 
 #### 10.6.2.3 Crown Cross-Section with Superelevation
 
