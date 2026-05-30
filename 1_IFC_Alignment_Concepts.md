@@ -149,11 +149,13 @@ rather than exact parametric curves. They arise in survey-derived alignments and
 planning contexts. Their use, limitations, and incompatibility with the full semantic
 alignment definition are discussed in [Chapter 6](6_Approximate_Alignment_Geometry.md).
 
-`IfcOffsetCurveByDistances` is treated in a dedicated section.
+`IfcOffsetCurveByDistances` is treated in a dedicated section. [todo: link to the right chapter]
+
+[todo: need to say something about represention identifies for offset and polylines]
 
 ### 1.5.2 Understanding Geometric Representation of Alignment
 
-The semantic definition of an alignment and its geometric representation carry overlapping information — both describe segment types, lengths, and radii — but they serve different consumers. The semantic representation encodes design intent in domain vocabulary: a horizontal segment typed as `CLOTHOID` with a `StartRadius` of infinity, an `EndRadius` of 300 m, and a `SegmentLength` of 100 m tells a design application *what* the engineer specified and enables evaluation against standards for minimum radius, design speed, and sight distance. The geometric representation encodes the computed mathematical form: the exact start coordinates, the tangent bearing at each point, and parametric equations that yield position and direction at any arc-length along the curve — the form that a rendering engine, clash-detection tool, or quantity-takeoff calculation requires. Because the two representations serve different consumers, an IFC file may legally contain only the semantic definition, only the geometric representation, or both.
+The semantic definition of an alignment and its geometric representation carry overlapping information — both describe segment types, lengths, and radii — but they serve different consumers. The semantic representation encodes design intent in domain vocabulary: a horizontal segment typed as `CLOTHOID` with a `StartRadius` of infinity, an `EndRadius` of 300 m, and a `SegmentLength` of 100 m tells a design application *what* the engineer specified and enables evaluation against standards for minimum radius, design speed, and sight distance. The geometric representation encodes the computed mathematical form: the exact start coordinates, the tangent bearing at each point, and parametric equations that yield position and direction at any arc-length along the curve — the form that a rendering engine, clash-detection tool, or quantity-takeoff calculation requires. Because the two representations serve different consumers, an IFC file may legally contain only the semantic definition, only the geometric representation, or both. [todo: verify this statement, keeping in mind IFC105 error]
 
 The geometric representation of `IfcAlignment` consists of one or more `IfcShapeRepresentation` instances: a plan-view 2D curve and, where vertical or cant geometry is present, a 3D curve. These are illustrated in Figure 1.5.2-1.
 
