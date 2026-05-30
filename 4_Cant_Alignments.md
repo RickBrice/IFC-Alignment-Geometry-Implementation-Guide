@@ -339,15 +339,15 @@ $$M_{PCS} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
-$D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_\ell = 0$
+$D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_{\ell} = 0$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
 
-$\mathbf{X}_\ell = (1,\ 0,\ 0)$
+$\mathbf{X}_{\ell} = (1,\ 0,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.106667,\ 0.994295)$
+$\mathbf{Z}_{\ell} = (0,\ 0.106667,\ 0.994295)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0,\ 0.994295,\ -0.106667)$
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0,\ 0.994295,\ -0.106667)$
 
 $$M_{PC\ell} = \begin{bmatrix}
         1 &        0 &         0 &        50 \\
@@ -563,17 +563,17 @@ $$M_{PCS} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
-$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_\ell = -0.00079999$
+$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_{\ell} = -0.00079999$
 
 $\phi_e = \cos^{-1}(\tfrac{0.0}{1.5}) = \tfrac{\pi}{2}$ (both rails level at segment end)
 
 $\phi(50\ m) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
-$\mathbf{X}_\ell = (0.999999680,\ -0.000799999744,\ 0)$
+$\mathbf{X}_{\ell} = (0.999999680,\ -0.000799999744,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{Z}_{\ell} = (0,\ 0.053107436,\ 0.998588804)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000798871,\ 0.998588485,\ -0.053107419)$ 
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.000798871,\ 0.998588485,\ -0.053107419)$ 
 
 $$M_{PC\ell} = \begin{bmatrix}
       0.999999999968 & 7.98858152422898e-06 & 4.27276522453101e-07 &                   50 \\
@@ -866,15 +866,15 @@ $dz_y = \cos(1.5574756139049735) = 0.013320318952445506$
 
 $dz_z = \sin(1.5574756139049735) = 0.99991128061593804$
 
-$\mathbf{X}_\ell = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$
+$\mathbf{X}_{\ell} = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.013320318952445506,\ 0.99991128061593804)$
+$\mathbf{Z}_{\ell} = (0,\ 0.013320318952445506,\ 0.99991128061593804)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.00079992876851558200,\ 0.99991096064448182,\ -0.013320314689945486)$
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.00079992876851558200,\ 0.99991096064448182,\ -0.013320314689945486)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (1.0656248341957419e-05,\ 0.013320310427446832,\ 0.99991128061593804)$
+$\mathbf{Axis}_{\ell} = \mathbf{X}_{\ell} \times \mathbf{Y}_{\ell} = (1.0656248341957419e-05,\ 0.013320310427446832,\ 0.99991128061593804)$
 
-$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$
+$\mathbf{RefDir}_{\ell} = \mathbf{Y}_{\ell} \times \mathbf{Axis}_{\ell} = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
     0.999999680000154 &  0.000799928566440938 &  1.06714066139122e-05 &                    25 \\
@@ -1046,19 +1046,19 @@ $D(50\ m) = 0.04\ m$
 
 $D'(50\ m) = (100\ m)^{2}\left( 3\tfrac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \tfrac{2}{(-746.9007911\ m)^{3}}(50\ m) \right) = -0.0012$
 
-$\theta_\ell =\tan^{-1}(-0.0012) = -0.0011999994240005001$
+$\theta_{\ell} =\tan^{-1}(-0.0012) = -0.0011999994240005001$
 
 $\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
-$\mathbf{X}_\ell = (0.9999980,\ -0.0019997,\ 0)$
+$\mathbf{X}_{\ell} = (0.9999980,\ -0.0019997,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{Z}_{\ell} = (0,\ 0.053107436,\ 0.998588804)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001997,\ 0.998587,\ -0.053107)$
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.001997,\ 0.998587,\ -0.053107)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.000106,\ 0.053107,\ 0.998589)$
+$\mathbf{Axis}_{\ell} = \mathbf{X}_{\ell} \times \mathbf{Y}_{\ell} = (0.000106,\ 0.053107,\ 0.998589)$
 
-$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.9999980,\ -0.0019997,\ 0)$
+$\mathbf{RefDir}_{\ell} = \mathbf{Y}_{\ell} \times \mathbf{Axis}_{\ell} = (0.9999980,\ -0.0019997,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
    0.999999280000778 &  0.00119828636590682 & 6.40913860804715e-05 &                   50 \\
@@ -1211,19 +1211,19 @@ $$M_{PCS} = \begin{bmatrix}
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
-$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_\ell = -0.001256636$
+$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_{\ell} = -0.001256636$
 
 $\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
-$\mathbf{X}_\ell = (0.99999921,\ -0.001256636,\ 0)$
+$\mathbf{X}_{\ell} = (0.99999921,\ -0.001256636,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{Z}_{\ell} = (0,\ 0.053107436,\ 0.998588804)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001255,\ 0.998588,\ -0.053107)$
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.001255,\ 0.998588,\ -0.053107)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000667,\ 0.053107,\ 0.998589)$
+$\mathbf{Axis}_{\ell} = \mathbf{X}_{\ell} \times \mathbf{Y}_{\ell} = (0.0000667,\ 0.053107,\ 0.998589)$
 
-$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999921,\ -0.001256636,\ 0)$
+$\mathbf{RefDir}_{\ell} = \mathbf{Y}_{\ell} \times \mathbf{Axis}_{\ell} = (0.99999921,\ -0.001256636,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
    0.999999999921043 & 1.25484345139712e-05 & 6.71164391931997e-07 &                   50 \\
@@ -1388,19 +1388,19 @@ $$M_{PCS} = \begin{bmatrix}
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
-$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_\ell = -0.0016$
+$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_{\ell} = -0.0016$
 
 $\phi(\ell) = 1.463926346 + \left(\tfrac{\tfrac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$
 
-$\mathbf{X}_\ell = (0.99999872,\ -0.0016,\ 0)$
+$\mathbf{X}_{\ell} = (0.99999872,\ -0.0016,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.053107436,\ 0.998588804)$
+$\mathbf{Z}_{\ell} = (0,\ 0.053107436,\ 0.998588804)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.001598,\ 0.998588,\ -0.053107)$
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.001598,\ 0.998588,\ -0.053107)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (0.0000850,\ 0.053107,\ 0.998589)$
+$\mathbf{Axis}_{\ell} = \mathbf{X}_{\ell} \times \mathbf{Y}_{\ell} = (0.0000850,\ 0.053107,\ 0.998589)$
 
-$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.99999872,\ -0.0016,\ 0)$
+$\mathbf{RefDir}_{\ell} = \mathbf{Y}_{\ell} \times \mathbf{Axis}_{\ell} = (0.99999872,\ -0.0016,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
       0.999999999872 & 1.59771630469242e-05 & 8.54553044742128e-07 &                   50 \\
@@ -1606,21 +1606,21 @@ $$M_{PCS} = \begin{bmatrix}
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
-$D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_\ell = -0.00076562$
+$D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_{\ell} = -0.00076562$
 
 $\phi_e = cos^{-1}\left(\tfrac{D_{er} - D_{el}}{D_{rh}}\right) = cos^{-1}\left(\tfrac{0.03 - 0.0}{1.5}\right) = 1.550794993$
 
 $\phi(\ell) = 1.504080178 + \left(\tfrac{1.550799 - 1.504080178}{-0.035}\right)(0.0325 - 0.05) = 1.527439589$
 
-$\mathbf{X}_\ell = (0.999999707,\ -0.00076562,\ 0)$
+$\mathbf{X}_{\ell} = (0.999999707,\ -0.00076562,\ 0)$
 
-$\mathbf{Z}_\ell = (0,\ 0.04327,\ 0.999063)$
+$\mathbf{Z}_{\ell} = (0,\ 0.04327,\ 0.999063)$
 
-$\mathbf{Y}_\ell = \mathbf{Z}_\ell \times \mathbf{X}_\ell = (0.000765,\ 0.999063,\ -0.04327)$
+$\mathbf{Y}_{\ell} = \mathbf{Z}_{\ell} \times \mathbf{X}_{\ell} = (0.000765,\ 0.999063,\ -0.04327)$
 
-$\mathbf{Axis}_\ell = \mathbf{X}_\ell \times \mathbf{Y}_\ell = (3.31e-05,\ 0.04327,\ 0.999063)$
+$\mathbf{Axis}_{\ell} = \mathbf{X}_{\ell} \times \mathbf{Y}_{\ell} = (3.31e-05,\ 0.04327,\ 0.999063)$
 
-$\mathbf{RefDir}_\ell = \mathbf{Y}_\ell \times \mathbf{Axis}_\ell = (0.999999707,\ -0.00076562,\ 0)$
+$\mathbf{RefDir}_{\ell} = \mathbf{Y}_{\ell} \times \mathbf{Axis}_{\ell} = (0.999999707,\ -0.00076562,\ 0)$
 
 $$M_{PC\ell} = \begin{bmatrix}
     0.999999706909309 &  0.000764905208550319 &    3.318611612348e-05 &                    50 \\
