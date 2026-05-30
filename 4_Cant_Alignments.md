@@ -707,6 +707,7 @@ $$a_{21} = 8\Delta D = 8(-0.08\ m) = -0.64\ m$$
 $$A_{21} = \frac{L^{4/3}}{{\left| a_{21} \right|}^{\frac{1}{3}}}\frac{a_{21}}{\left| a_{21} \right|} = \frac{(100\ m)^\frac{4}{3}}{{\left| - 0.64\ m\right|}^{\frac{1}{3}}}\frac{-0.64\ m}{\left|-0.64\ m\right|} = -538.6086725\ m$$
 
 The first half parent curve `IfcSecondOrderPolynomialSpiral` is
+
 ~~~
 #104=IFCCARTESIANPOINT((0.,0.));
 #105=IFCDIRECTION((1.,0.));
@@ -782,6 +783,7 @@ Figure 4.5.2-1 shows the first and second half parent curves.
 *Figure 4.5.2-1 - `IfcSecondOrderPolynomialSpiral` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
 
 The second half parent curve `IfcSecondOrderPolynomialSpiral` is
+
 ~~~
 #113=IFCCARTESIANPOINT((0.,0.));
 #114=IFCDIRECTION((1.,0.));
@@ -812,6 +814,7 @@ $$dy_z = \cos(\phi_s) = \cos(1.517437677) = 0.053333333$$
 $$dz_z = \sin(\phi_s) = \sin(1.517437677) = 0.998576765$$
 
 The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the second half segment.
+
 ~~~
 #117=IFCCARTESIANPOINT((50.,0.04,0.));
 #118=IFCDIRECTION((0.,0.053333333333333337,0.99857676497881498));
