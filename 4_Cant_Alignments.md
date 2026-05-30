@@ -103,7 +103,7 @@ All examples use a railhead distance $D_{rh} = 1.5\ m$.
 
 Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" $(\ell,D(\ell))$ coordinate system in which $\ell$ is the distance measured along the horizontal `IfcCompositeCurve` and $D(\ell)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(s)$, making the local frame inherently three-dimensional.
 
-Let $s_0 = $ `IfcAlignmentCantSegment.StartDistAlong`.
+Let $s_0$ = `IfcAlignmentCantSegment.StartDistAlong`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation).
