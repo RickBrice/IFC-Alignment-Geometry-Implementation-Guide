@@ -1,4 +1,4 @@
-# IFC4x3 Alignment Geometry Implementation Guide
+# IFC Alignment Geometry Implementation Guide
 
 *A developer's guide to IFC4x3 alignment geometry*
 
