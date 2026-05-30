@@ -106,6 +106,7 @@ Cant segments are evaluated in a two-dimensional "distance along, deviating elev
 Let $s_0$ = `IfcAlignmentCantSegment.StartDistAlong`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation).
 
 $\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p$
@@ -124,6 +125,7 @@ X_p.z & Y_p.z & Z_p.z & 0 \\
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start - $M_{PCS}$
+
 Compute the deviating elevation $D_s = D(s_0)$ and the slope angle $\theta_s = \tan^{-1}(D'(s_0))$.
 
 Compute the cross slope
@@ -150,6 +152,7 @@ RefDir_{pcs}.z & Y_{pcs}.z & Axis_{pcs}.z & 0 \\
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate the parent curve at the point under consideration, $\ell$ - $M_{PC\ell}$
+
 This step follows the same calculations as Step 2, except $D$ and $D'$ are evaluated at $\ell$.
 
 The resulting matrix is
@@ -162,6 +165,7 @@ RefDir_{\ell}.z & Y_{\ell}.z & Axis_{\ell}.z & 0 \\
 \end{bmatrix}$$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
+
 The cant frame at $\ell$ is obtained by applying the incremental change in the parent curve — from the trim start to $\ell$ — to the curve segment placement. Because the 4×4 matrices encode both orientation and parameter-space coordinates (distance along, deviating elevation) in column 4, the rotation and translation must be computed separately to prevent the rotation from acting on the position coordinates.
 
 **Rotation**
@@ -195,11 +199,12 @@ R_c & \mathbf{T}_c \\
 Step 5 is performed immediately for this point before moving to the next $\ell$.
 
 #### Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix
+
 The cant result must be combined with the horizontal matrix $M_h$ (evaluated at distance $\ell$ along the `IfcCompositeCurve`) and the vertical matrix $M_v$ (evaluated at the same $\ell$). All three coordinate systems share the distance-along axis, so the positional components of $M_v$ and $M_c$ must be extracted before multiplication and added back afterward to avoid incorrectly rotating the position offsets.
 
-Construct $M^{\prime}_v$ as described in Section 3.2.
+Construct $M^\prime_v$ as described in Section 3.2.
 
-Construct $M^{\prime}_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D_{\ell}$ from row 2 to row 3 in column 4 of $M_c$:
+Construct $M^\prime_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D_{\ell}$ from row 2 to row 3 in column 4 of $M_c$:
 
 $${M'}_c = \begin{bmatrix} 
 X.x & Y.x & Z.x & 0 \\ 
@@ -208,7 +213,7 @@ X.z & Y.z & Z.z & D_{\ell} \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-Extract position vectors from each modified matrix, $M^{\prime}_v,\ M^{\prime}_c$, (setting row 4 to zero), then zero column 4 before multiplying:
+Extract position vectors from each modified matrix, $M^\prime_v,\ M^\prime_c$, (setting row 4 to zero), then zero column 4 before multiplying:
 
 $$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ z \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ D \\ 0 \end{bmatrix}$$
 
@@ -1715,7 +1720,7 @@ $$M_c = \begin{bmatrix}
 
 #### Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix
 
-Construct $M^{\prime}_v$ as described in Section 3.2
+Construct $M^\prime_v$ as described in Section 3.2
 
 $$M'_v =
  \begin{bmatrix}
@@ -1725,7 +1730,7 @@ $$M'_v =
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
-Construct $M^{\prime}_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
+Construct $M^\prime_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
 
 $$M'_c = \begin{bmatrix}
 0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
@@ -1734,7 +1739,7 @@ $$M'_c = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
-Extract position vectors from each modified matrix, $M^{\prime}_v,\ M^{\prime}_c$, (setting row 4 to zero), then zero column 4:
+Extract position vectors from each modified matrix, $M^\prime_v,\ M^\prime_c$, (setting row 4 to zero), then zero column 4:
 
 $$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0.04 \\ 0 \end{bmatrix}$$
 
@@ -1933,6 +1938,6 @@ The zero-length closing segment requirement described in Section 2.12 applies eq
 |---|---|---|
 | 1 | Use `IfcAxis2Placement3D` (not `IfcAxis2Placement2D`) for cant curve segment placements | Cant encodes a cross-slope rotation that a 2D placement cannot represent; the `Axis` vector carries the cross-slope angle $\phi$ at the segment start |
 | 2 | The cross-slope angle $\phi$ is interpolated using deviating elevation as the interpolation parameter, not arc length | The interpolation formula in Section 4.1.3 uses $D(\ell) - D_s$ as the parameter; $\phi$ does not vary linearly with distance along the segment |
-| 3 | When forming $M^{\prime}_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |
+| 3 | When forming $M^\prime_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |
 | 4 | Do not mix the EnrichIfc4x3 semantic-to-geometry mapping with the deviating elevation equations from this guide | EnrichIfc4x3 contains two compensating errors that yield correct results within its own implementation; mixing its coefficient mapping with this guide's deviating elevation equation (or vice versa) breaks the cancellation and produces results off by a factor of $L$ or $1/L$ — see Section 4.11 |
 | 5 | Include a zero-length `IfcCurveSegment` at the end of `IfcSegmentedReferenceCurve`; treat `IfcSegmentedReferenceCurve.EndPoint` as secondary | The zero-length segment is required by the IFC Concept Templates and is the normative endpoint; `EndPoint` is optional — if present, it must agree with the zero-length segment placement |
