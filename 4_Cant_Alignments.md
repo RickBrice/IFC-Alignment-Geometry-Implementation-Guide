@@ -439,9 +439,9 @@ $$\tfrac{D(s)}{L^{2}} = \tfrac{1}{A_{0}} + \tfrac{A_{1}}{\left| A_{1}^{3} \right
 
 $$\tfrac{d}{ds}D(s) = L^{2}\tfrac{A_{1}}{\left| A_{1}^{3} \right|}$$
 
-$$a_{0} = D_{s},\ A_{0} = \tfrac{L^{2/1}}{\sqrt[1]a_{0}}\tfrac{a_0}{\left|a_0\right|},\ A_{0} = \tfrac{L^{2}}{a_{0}}$$
+$$a_{0} = D_{s},\ A_{0} = \tfrac{L^{2/1}}{a_{0}^{1}}\tfrac{a_0}{\left|a_0\right|},\ A_{0} = \tfrac{L^{2}}{a_{0}}$$
 
-$$a_1 = \Delta D,\ A_1 = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\tfrac{a_{1}}{\left| a_{1} \right|}$$
+$$a_1 = \Delta D,\ A_1 = \tfrac{L^{\tfrac{3}{2}}}{{\left| a_{1} \right|}^{\tfrac{1}{2}}}\tfrac{a_{1}}{\left| a_{1} \right|}$$
 
 $A_1$ is the clothoid constant.
 
@@ -469,7 +469,7 @@ $\Delta D = D_e - D_s = 0.0 - 0.08 = -0.08\ m$
 
 $a_0 = D_s = 0.08\ m,\ A_0 = \tfrac{(100\ m)^2}{0.08\ m} = 125000\ m$
 
-$a_{1} = \Delta D = -0.08\ m \quad A_{1} = \tfrac{{(100\ m)}^{\tfrac{3}{2}}}{\sqrt{\left|-0.08\ m\right|}}\tfrac{-0.08\ m}{\left|-0.08\ m\right|} = -3535.533906\ m$
+$a_{1} = \Delta D = -0.08\ m \quad A_{1} = \tfrac{{(100\ m)}^{\tfrac{3}{2}}}{{\left|-0.08\ m\right|}^{\tfrac{1}{2}}}\tfrac{-0.08\ m}{\left|-0.08\ m\right|} = -3535.533906\ m$
 
 The clothoid parent curve is
 
@@ -630,12 +630,12 @@ $A_{01} = \tfrac{L^{2}}{\left| a_{01} \right|}\tfrac{a_{01}}{\left| a_{01} \righ
 Linear Term: 
 
 $a_{11} = 0$,
-$A_{11} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{11} \right|}}\tfrac{a_{11}}{\left| a_{11} \right|} = 0$
+$A_{11} = \tfrac{L^{\tfrac{3}{2}}}{{\left| a_{11} \right|}^{\tfrac{1}{2}}}\tfrac{a_{11}}{\left| a_{11} \right|} = 0$
 
 Quadratic Term:
 
 $a_{21} = 8\Delta D$,
-$A_{21} = \tfrac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\tfrac{a_{21}}{\left| a_{21} \right|}$
+$A_{21} = \tfrac{L^{4\text{/}3}}{{\left| a_{21} \right|}^{\tfrac{1}{3}}}\tfrac{a_{21}}{\left| a_{21} \right|}$
 
 In the second half
 
@@ -647,12 +647,12 @@ $A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{02}}{\left| a_{02} \righ
 Linear Term: 
 
 $a_{12} = 16\Delta D$,
-$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{\left| a_{12} \right|}$
+$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{{\left| a_{12} \right|}^{\tfrac{1}{2}}}\tfrac{a_{12}}{\left| a_{12} \right|}$
 
 Quadratic Term: 
 
 $a_{22} = -8\Delta D$,
-$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22}}{\left| a_{22} \right|}$
+$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{{\left| a_{22} \right|}^{\tfrac{1}{3}}}\tfrac{a_{22}}{\left| a_{22} \right|}$
 
 
 ### 4.5.2 Semantic Definition to Geometry Mapping
@@ -681,13 +681,13 @@ First half:
 
 $$a_{01} = 4D_{s} = 4(0.08\ m) = 0.32\ m$$
 
-$$A_{01} = \tfrac{L^{2}}{\left| a_{01} \right|}\tfrac{a_{01}}{\left| a_{01} \right|} = \tfrac{(100\ m)^{2}}{|0.32\ m|}\tfrac{0.32\ m}{|0.32\ m|} = 31250\ m$$
+$$A_{01} = \tfrac{L^{2}}{\left| a_{01} \right|}\tfrac{a_{01}}{\left| a_{01} \right|} = \tfrac{(100\ m)^{2}}{\left|0.32\ m\right|}\tfrac{0.32\ m}{\left|0.32\ m\right|} = 31250\ m$$
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
 $$a_{21} = 8\Delta D = 8(-0.08\ m) = -0.64\ m$$
 
-$$A_{21} = \tfrac{L^{4\text{/}3}}{\sqrt[3]{\left| a_{21} \right|}}\tfrac{a_{21}}{\left| a_{21} \right|} = \tfrac{(100\ m)^\tfrac{4}{3}}{\sqrt[3]{| - 0.64\ m|}}\tfrac{-0.64\ m}{|-0.64\ m|} = -538.6086725\ m$$
+$$A_{21} = \tfrac{L^{4\text{/}3}}{{\left| a_{21} \right|}^{\tfrac{1}{3}}}\tfrac{a_{21}}{\left| a_{21} \right|} = \tfrac{(100\ m)^\tfrac{4}{3}}{{\left| - 0.64\ m\right|}^{\tfrac{1}{3}}}\tfrac{-0.64\ m}{\left|-0.64\ m\right|} = -538.6086725\ m$$
 
 The first half parent curve `IfcSecondOrderPolynomialSpiral` is
 ~~~
@@ -748,14 +748,14 @@ Second half:
 
 $$a_{02} = -4\Delta D + 4D_{s} = -4(-0.08\ m) + 4(0.08)\ m = 0.64\ m$$
 
-$$A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{01}}{\left| a_{02} \right|} = \tfrac{(100\ m)^{2}}{|0.64\ m|}\tfrac{0.64\ m}{|0.64\ m|} = 15625\ m$$
+$$A_{02} = \tfrac{L^{2}}{\left| a_{02} \right|}\tfrac{a_{01}}{\left| a_{02} \right|} = \tfrac{(100\ m)^{2}}{\left|0.64\ m\right|}\tfrac{0.64\ m}{\left|0.64\ m\right|} = 15625\ m$$
 
 $$a_{12} = 16\Delta D = 16(-0.08\ m) = -1.28\ m$$
-$$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{12} \right|}}\tfrac{a_{12}}{\left| a_{12} \right|} = \tfrac{(100\ m)^{\tfrac{3}{2}}}{\sqrt{|-1.28\ m|}}\tfrac{-1.28\ m}{|-1.28\ m|} = -883.8834765\ m$$
+$$A_{12} = \tfrac{L^{\tfrac{3}{2}}}{{\left| a_{12} \right|}^{\tfrac{1}{2}}}\tfrac{a_{12}}{\left| a_{12} \right|} = \tfrac{(100\ m)^{\tfrac{3}{2}}}{{\left|-1.28\ m\right|}^{\tfrac{1}{2}}}\tfrac{-1.28\ m}{\left|-1.28\ m\right|} = -883.8834765\ m$$
 
 $$a_{22} = -8\Delta D = -8(-0.08\ m) = 0.64\ m$$
 
-$$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{22} \right|}}\tfrac{a_{22}}{\left| a_{22} \right|} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{|0.64\ m|}}\tfrac{0.64\ m}{|0.64\ m|} = 538.6086725\ m$$
+$$A_{22} = \tfrac{L^{\tfrac{4}{3}}}{{\left| a_{22} \right|}^{\tfrac{1}{3}}}\tfrac{a_{22}}{\left| a_{22} \right|} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{{\left|0.64\ m\right|}^{\tfrac{1}{3}}}\tfrac{0.64\ m}{\left|0.64\ m\right|} = 538.6086725\ m$$
 
 Figure 4.5.2-1 shows the first and second half parent curves.
 
@@ -921,7 +921,7 @@ $$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} 
 
 Constant Term
 
-$a_{0} = D_s,\ A_{0} = \tfrac{L^{\tfrac{2}{1}}}{\sqrt[0]{\left|a_0\right|}}\tfrac{a_0}{\left|a_0\right|} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left| a_{0} \right|}$
+$a_{0} = D_s,\ A_{0} = \tfrac{L^{\tfrac{2}{1}}}{{\left|a_0\right|}^{1}}\tfrac{a_0}{\left|a_0\right|} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left| a_{0} \right|}$
 
 Linear Term
 
@@ -929,11 +929,11 @@ $a_1 = 0,\ A_{1}$
 
 Quadratic Term
 
-$a_{2} = 3\Delta D,\ A_{2} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left|a_2\right|}}\tfrac{a_2}{\left|a_2\right|}$
+$a_{2} = 3\Delta D,\ A_{2} = \tfrac{L^{\tfrac{4}{3}}}{{\left|a_2\right|}^{\tfrac{1}{3}}}\tfrac{a_2}{\left|a_2\right|}$
 
 Cubic Term
 
-$a_{3} = -2\Delta D,\ A_{3} = \tfrac{{L}^{\tfrac{5}{4}}}{\sqrt[4]{\left|a_3\right|}}\tfrac{a_3}{\left|a_3\right|}$
+$a_{3} = -2\Delta D,\ A_{3} = \tfrac{{L}^{\tfrac{5}{4}}}{{\left|a_3\right|}^{\tfrac{1}{4}}}\tfrac{a_3}{\left|a_3\right|}$
 
 ### 4.6.2 Semantic Definition to Geometry Mapping
 
@@ -957,11 +957,11 @@ $A_{1} = 0\ m$
 
 Quadratic Term
 
-$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{\left|-0.24\ m\right|}}\left( \tfrac{-0.24\ m}{\left|-0.24\ m\right|} \right) = -746.9007911\ m$
+$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{{\left|-0.24\ m\right|}^{\tfrac{1}{3}}}\left( \tfrac{-0.24\ m}{\left|-0.24\ m\right|} \right) = -746.9007911\ m$
 
 Cubic Term
 
-$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{\left|0.16\ m\right|}}\left( \tfrac{0.16\ m}{\left|0.16\ m\right|} \right) = 500\ m$
+$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{{\left|0.16\ m\right|}^{\tfrac{1}{4}}}\left( \tfrac{0.16\ m}{\left|0.16\ m\right|} \right) = 500\ m$
 
 The parent curve is
 
@@ -1275,7 +1275,7 @@ $$A_0 = L^2\tfrac{1}{a_0}\tfrac{a_0}{\left|a_0\right|} $$
 Linear term: 
 
 $$a_1 = \Delta D$$
-$$A_1 = L^{\tfrac{3}{2}}\tfrac{1}{\sqrt{\left|a_1\right|}}\tfrac{a_1}{\left|a_1\right|} $$
+$$A_1 = L^{\tfrac{3}{2}}\tfrac{1}{{\left|a_1\right|}^{\tfrac{1}{2}}}\tfrac{a_1}{\left|a_1\right|} $$
 
 Sine term: 
 $$a_2 = -\tfrac{1}{2\pi} \Delta D$$
@@ -1301,7 +1301,7 @@ $A_0 = (100\ m)^2\tfrac{1}{0.08\ m}\tfrac{0.08\ m}{\left|0.08\ m\right|} = 12500
 Linear term:
 $a_1 = -0.08\ m$
 
-$A_1 = (100\ m)^{\tfrac{3}{2}} \tfrac{1}{\sqrt{\left|-0.08\ m\right|}}\tfrac{-0.08\ m}{\left|-0.08\ m\right|} = -3535.533906\ m$
+$A_1 = (100\ m)^{\tfrac{3}{2}} \tfrac{1}{{\left|-0.08\ m\right|}^{\tfrac{1}{2}}}\tfrac{-0.08\ m}{\left|-0.08\ m\right|} = -3535.533906\ m$
 
 Sine term:
 $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$
@@ -1455,31 +1455,31 @@ $$a_{0} = D_{1}, A_{0} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left|
 
 Linear Term
 
-$$a_{1} = 0, A_{1} = \tfrac{L^{\tfrac{3}{2}}}{\sqrt{\left| a_{1} \right|}}\tfrac{a_{1}}{\left| a_{1} \right|}$$
+$$a_{1} = 0, A_{1} = \tfrac{L^{\tfrac{3}{2}}}{{\left| a_{1} \right|}^{\tfrac{1}{2}}}\tfrac{a_{1}}{\left| a_{1} \right|}$$
 
 Quadratic Term
 
-$$a_{2} = 0, A_{2} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left| a_{2} \right|}}\tfrac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{2} = 0, A_{2} = \tfrac{L^{\tfrac{4}{3}}}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\tfrac{a_{2}}{\left| a_{2} \right|}$$
 
 Cubic Term
 
-$$a_{3} = 0, A_{3} = \tfrac{L^{\tfrac{5}{4}}}{\sqrt[4]{\left| a_{3} \right|}}\ \tfrac{a_{3}}{\left| a_{3} \right|}$$
+$$a_{3} = 0, A_{3} = \tfrac{L^{\tfrac{5}{4}}}{{\left| a_{3} \right|}^{\tfrac{1}{4}}}\ \tfrac{a_{3}}{\left| a_{3} \right|}$$
 
 Quartic Term
 
-$$a_{4} = 35\Delta D, A_{4} = \tfrac{L^{\tfrac{6}{5}}}{\sqrt[5]{\left| a_{4} \right|}}\ \tfrac{a_{4}}{\left| a_{4} \right|}$$
+$$a_{4} = 35\Delta D, A_{4} = \tfrac{L^{\tfrac{6}{5}}}{{\left| a_{4} \right|}^{\tfrac{1}{5}}}\ \tfrac{a_{4}}{\left| a_{4} \right|}$$
 
 Quintic Term
 
-$$a_{5} = -84\Delta D, A_{5} = \tfrac{L^{\tfrac{7}{6}}}{\sqrt[6]{\left| a_{5} \right|}}\ \tfrac{a_{5}}{\left| a_{5} \right|}$$
+$$a_{5} = -84\Delta D, A_{5} = \tfrac{L^{\tfrac{7}{6}}}{{\left| a_{5} \right|}^{\tfrac{1}{6}}}\ \tfrac{a_{5}}{\left| a_{5} \right|}$$
 
 Sextic Term
 
-$$a_{6} = 70\Delta D, A_{6} = \tfrac{L^{\tfrac{8}{7}}}{\sqrt[7]{\left| a_{6} \right|}}\ \tfrac{a_{6}}{\left| a_{6} \right|}$$
+$$a_{6} = 70\Delta D, A_{6} = \tfrac{L^{\tfrac{8}{7}}}{{\left| a_{6} \right|}^{\tfrac{1}{7}}}\ \tfrac{a_{6}}{\left| a_{6} \right|}$$
 
 Septic Term
 
-$$a_{7} = -20\Delta D, A_{7} = \tfrac{L^{\tfrac{9}{8}}}{\sqrt[8]{\left| a_{7} \right|}}\ \tfrac{a_{7}}{\left| a_{7} \right|}$$
+$$a_{7} = -20\Delta D, A_{7} = \tfrac{L^{\tfrac{9}{8}}}{{\left| a_{7} \right|}^{\tfrac{1}{8}}}\ \tfrac{a_{7}}{\left| a_{7} \right|}$$
 
 ### 4.9.2 Semantic Definition to Geometry Mapping
 
@@ -1514,19 +1514,19 @@ $$a_{3} = 0, A_{3} = 0\ m$$
 
 Quartic Term
 
-$$a_{4} = 35(-0.035\ m) = -1.225\ m, A_{4} = \tfrac{(100\ m)^{\tfrac{6}{5}}}{\sqrt[5]{\left| -1.225\ m \right|}}\ \tfrac{-1.225\ m}{\left| -1.225\ m \right|} = -241.1974890085123\ m$$
+$$a_{4} = 35(-0.035\ m) = -1.225\ m, A_{4} = \tfrac{(100\ m)^{\tfrac{6}{5}}}{{\left| -1.225\ m \right|}^{\tfrac{1}{5}}}\ \tfrac{-1.225\ m}{\left| -1.225\ m \right|} = -241.1974890085123\ m$$
 
 Quintic Term
 
-$$a_{5} = -84(-0.035\ m) = 2.94\ m, A_{5} = \tfrac{(100\ m)^{\tfrac{7}{6}}}{\sqrt[6]{\left| 2.94\ m \right|}}\ \tfrac{2.94\ m}{\left| 2.94\ m \right|} = 180.0012184608678\ m$$
+$$a_{5} = -84(-0.035\ m) = 2.94\ m, A_{5} = \tfrac{(100\ m)^{\tfrac{7}{6}}}{{\left| 2.94\ m \right|}^{\tfrac{1}{6}}}\ \tfrac{2.94\ m}{\left| 2.94\ m \right|} = 180.0012184608678\ m$$
 
 Sextic Term
 
-$$a_{6} = 70(-0.035\ m)=-2.45\ m, A_{6} = \tfrac{(100\ m)^{\tfrac{8}{7}}}{\sqrt[7]{\left| -2.45\ m \right|}}\ \tfrac{-2.45\ m}{\left|-2.45\ m\right|} = -169.87095595653895\ m$$
+$$a_{6} = 70(-0.035\ m)=-2.45\ m, A_{6} = \tfrac{(100\ m)^{\tfrac{8}{7}}}{{\left| -2.45\ m \right|}^{\tfrac{1}{7}}}\ \tfrac{-2.45\ m}{\left|-2.45\ m\right|} = -169.87095595653895\ m$$
 
 Septic Term
 
-$$a_{7} = -20(-0.035\ m) = 0.7\ m, A_{7} = \tfrac{(100\ m)^{\tfrac{9}{8}}}{\sqrt[8]{\left| 0.7\ m \right|}}\ \tfrac{0.7\ m}{\left| 0.7\ m \right|} = 185.93568367635672\ m$$
+$$a_{7} = -20(-0.035\ m) = 0.7\ m, A_{7} = \tfrac{(100\ m)^{\tfrac{9}{8}}}{{\left| 0.7\ m \right|}^{\tfrac{1}{8}}}\ \tfrac{0.7\ m}{\left| 0.7\ m \right|} = 185.93568367635672\ m$$
 
 The parent curve is
 
@@ -1799,11 +1799,11 @@ units of length and are represented by `IfcLengthMeasure`.
 
 The basic form of the coefficient of the $i^{th}$ term is 
 
-$$A_{i} = \tfrac{L^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}\tfrac{a_{i}}{\left| a_{i} \right|}$$
+$$A_{i} = \tfrac{L^{\tfrac{i + 2}{i + 1}}}{{\left| a_{i} \right|}^{\tfrac{1}{(i + 1)}}}\tfrac{a_{i}}{\left| a_{i} \right|}$$
 
 Performing a dimensional analysis with $l$ representing term with length units, we see that the resulting coefficient $A_{i}$ has units of length. 
 
-$$\tfrac{l^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left|l\right|}}\tfrac{l}{\left|l\right|} = \tfrac{l^{\tfrac{i + 2}{i + 1}}}{l^{\tfrac{1}{i + 1}}} = l^{\tfrac{i + 2}{i + 1}}l^{\tfrac{- 1}{(i + 1)}} = l^{\tfrac{i + 1}{i + 1}} = l$$
+$$\tfrac{l^{\tfrac{i + 2}{i + 1}}}{{\left|l\right|}^{\tfrac{1}{(i + 1)}}}\tfrac{l}{\left|l\right|} = \tfrac{l^{\tfrac{i + 2}{i + 1}}}{l^{\tfrac{1}{i + 1}}} = l^{\tfrac{i + 2}{i + 1}}l^{\tfrac{- 1}{(i + 1)}} = l^{\tfrac{i + 1}{i + 1}} = l$$
 
 The error in the EnrichIfc4x3 reference implementation is illustrated by way of an example. Consider the Bloss Curve example [GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc). 
 
@@ -1820,14 +1820,14 @@ Quadratic Term:
 
 $a_{2} = 3\Delta D = 3(0.08\ m) = 0.24\ m$
 
-$A_{2} = \tfrac{(100\ m)}{\sqrt[3]{\left|0.24\ m\right|}}\left( \tfrac{0.24\ m}{\left|0.24\ m\right|} \right) = 160.917897\ m^{2/3}$
+$A_{2} = \tfrac{(100\ m)}{{\left|0.24\ m\right|}^{\tfrac{1}{3}}}\left( \tfrac{0.24\ m}{\left|0.24\ m\right|} \right) = 160.917897\ m^{2/3}$
 
 
 Cubic Term:
 
  $a_{3} = -2\Delta D = -0.016\ m$
  
- $A_{3} = \tfrac{100\ m}{\sqrt[4]{\left|-0.16\ m\right|}}\tfrac{-0.16\ m}{\left|-0.16\ m\right|} = -158.113883\ m^{3/4}$
+ $A_{3} = \tfrac{100\ m}{{\left|-0.16\ m\right|}^{\tfrac{1}{4}}}\tfrac{-0.16\ m}{\left|-0.16\ m\right|} = -158.113883\ m^{3/4}$
 
 Notice that the polynomial coefficients do not have whole length units (e.g. the units aren't $m$).
 
@@ -1840,11 +1840,11 @@ Recalling from Bloss Curve example above,
 
 Quadratic Term
 
-$A_{2} = \tfrac{(100m)^{\tfrac{4}{3}}}{\sqrt[3]{\left|0.24m\right|}}\left( \tfrac{0.24m}{\left|0.24m\right|} \right) = 746.9007911\ m$
+$A_{2} = \tfrac{(100m)^{\tfrac{4}{3}}}{{\left|0.24m\right|}^{\tfrac{1}{3}}}\left( \tfrac{0.24m}{\left|0.24m\right|} \right) = 746.9007911\ m$
 
 Cubic Term
 
-$A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{\left|-0.16\ m\right|}}\left( \tfrac{-0.16\ m}{\left|-0.16\ m\right|} \right) = -500\ m$
+$A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{{\left|-0.16\ m\right|}^{\tfrac{1}{4}}}\left( \tfrac{-0.16\ m}{\left|-0.16\ m\right|} \right) = -500\ m$
 
 The polynomial coefficients have units of length as required by IFC.
 

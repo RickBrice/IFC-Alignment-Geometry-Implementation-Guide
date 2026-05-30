@@ -439,7 +439,7 @@ $$R_{s} = 300,\ R_{e} = 1000,\ L = 100$$
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}= \frac{100}{1000} - \frac{100}{300} = -0.23333$$
 
-$$A = \frac{L}{\sqrt{\left|f\right|}}\frac{f}{\left|f\right|} = \frac{100}{\sqrt{\left|-0.23333\right|}}\frac{-0.23333}{\left|-0.23333\right|} = -207.0196678$$
+$$A = \frac{L}{{\left|f\right|}^{\tfrac{1}{2}}}\frac{f}{\left|f\right|} = \frac{100}{{\left|-0.23333\right|}^{\tfrac{1}{2}}}\frac{-0.23333}{\left|-0.23333\right|} = -207.0196678$$
 
 Place the parent curve at (0,0) with a tangent direction of (1,0)
 
@@ -790,15 +790,15 @@ $$a_{01} = \frac{L}{R_{s}},\ A_{01} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0
 
 $$a_{11} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 2f,\ A_{21} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{21} = 2f,\ A_{21} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 Second Half
 
 $$a_{02} = -f + \frac{L}{R_{s}},\ A_{02} = \frac{L}{\left| a_{0} \right|}\ \frac{a_{0}}{\left| a_{0} \right|}$$
 
-$$a_{12} = 4f,\ A_{12} = \frac{L}{\sqrt{\left| a_{1} \right|}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
+$$a_{12} = 4f,\ A_{12} = \frac{L}{{\left| a_{1} \right|}^{\tfrac{1}{2}}}\ \frac{a_{1}}{\left| a_{1} \right|}$$
 
-$$a_{22} = -2f,\ A_{22} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
+$$a_{22} = -2f,\ A_{22} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\ \frac{a_{2}}{\left| a_{2} \right|}$$
 
 ### 2.7.2 Semantic Definition to Geometry Mapping
 
@@ -828,7 +828,7 @@ $$a_{01} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
 $$a_{00} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{\left|0.66667\right|}}\frac{0.66667}{\left|0.66667\right|} = 114.4714255\ m$$
+$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{{\left|0.66667\right|}^{\tfrac{1}{3}}}\frac{0.66667}{\left|0.66667\right|} = 114.4714255\ m$$
 
 
 The geometric representation of the first half is
@@ -852,9 +852,9 @@ Second Half
 
 $$a_{02} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{\left|-0.33333\right|}\frac{-0.33333}{\left|-0.33333\right|} = - 300\ m$$
 
-$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{\left|1.33333\right|}}\frac{1.33333}{\left|1.33333\right|} = 86.602540378\ m$$
+$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{{\left|1.33333\right|}^{\tfrac{1}{2}}}\frac{1.33333}{\left|1.33333\right|} = 86.602540378\ m$$
 
-$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{\left|-0.66667\right|}}\frac{-0.66667}{\left|-0.66667\right|} = -114.4714255\ m$$
+$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{{\left|-0.66667\right|}^{\tfrac{1}{3}}}\frac{-0.66667}{\left|-0.66667\right|} = -114.4714255\ m$$
 
 Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.
 
@@ -1084,10 +1084,10 @@ $$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 $$A_{1} = 0$$
 
 $$a_{2} = 3f = 3(0.33333) = 1$$
-$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left|1\right|}}\frac{1}{\left|1\right|} = 100\ m$$
+$$A_{2} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{{\left|1\right|}^{\tfrac{1}{3}}}\frac{1}{\left|1\right|} = 100\ m$$
 
 $$a_{3} = -2f = -2(0.33333) = -0.66667$$
-$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{\sqrt[4]{\left|-0.66667\right|}}\frac{-0.66667}{\left|-0.66667\right|} = -110.668192\ m$$
+$$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\tfrac{1}{4}}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{{\left|-0.66667\right|}^{\tfrac{1}{4}}}\frac{-0.66667}{\left|-0.66667\right|} = -110.668192\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1310,7 +1310,7 @@ $$A_{o} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 
 Linear Term:
 $$a_{1} = f = 0.33333$$
-$$A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{\sqrt{\left|0.33333\right|}}\frac{0.33333}{\left|0.33333\right|} = 173.2050808\ m$$
+$$A_{1} = \frac{L}{{\left| a_{1} \right|}^{\tfrac{1}{2}}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{{\left|0.33333\right|}^{\tfrac{1}{2}}}\frac{0.33333}{\left|0.33333\right|} = 173.2050808\ m$$
 
 Sine Term:
 $$a_{2} = -\frac{1}{2\pi}f = -\frac{1}{2\pi}(0.33333) = -0.053051647$$
@@ -1464,37 +1464,37 @@ Quadratic term
 
 $$a_{2} = cf= -0.504$$
 
-$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left| -0.504 \right|}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069\ m$$
+$$A_{2} = \frac{L}{{\left| a_{2} \right|}^{\tfrac{1}{3}}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{{\left| -0.504 \right|}^{\tfrac{1}{3}}}\frac{-0.504}{\left| -0.504 \right|} = -125.6579069\ m$$
 
 Cubic term 
 
 $$a_{3} = -4cf= -4(-0.504) = 2.016$$
 
-$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{\sqrt[4]{\left| 2.016 \right|}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813\ m$$
+$$A_{3} = \frac{L}{{\left| a_{3} \right|}^{\tfrac{1}{4}}}\frac{a_{3}}{\left| a_{3} \right|}= \frac{100}{{\left| 2.016 \right|}^{\tfrac{1}{4}}}\frac{2.016}{\left| 2.016 \right|} = 83.92229813\ m$$
 
 Quartic term 
 
 $$a_{4} = 5cf + 35f = 5(-0.504) + 35(0.33333) = 9.1466655$$
 
-$$A_{4} = \frac{L}{\sqrt[5]{\left| a_{4} \right|}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{\sqrt[5]{\left| 9.1466655 \right|}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406\ m$$
+$$A_{4} = \frac{L}{{\left| a_{4} \right|}^{\tfrac{1}{5}}}\frac{a_{4}}{\left| a_{4} \right|} = \frac{100}{{\left| 9.1466655 \right|}^{\tfrac{1}{5}}}\frac{9.1466655}{\left| 9.1466655 \right|} = 64.231406\ m$$
 
 Quintic term 
 
 $$a_{5} = -2cf - 84f= -2(-0.504) - 84(0.33333) = -26.9919999$$
 
-$$A_{5} = \frac{L}{\sqrt[6]{\left| a_{5} \right|}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{\sqrt[6]{\left| -26.9919999 \right|}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785\ m$$
+$$A_{5} = \frac{L}{{\left| a_{5} \right|}^{\tfrac{1}{6}}}\frac{a_{5}}{\left| a_{5} \right|} = \frac{100}{{\left| -26.9919999 \right|}^{\tfrac{1}{6}}}\frac{-26.9919999}{\left| -26.9919999 \right|} = -57.7378785\ m$$
 
 Sextic term 
 
 $$a_{6} = 70f  = 70(0.33333) = 23.33333333$$
 
-$$A_{6} = \frac{L}{\sqrt[7]{\left| a_{6} \right|}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{\sqrt[7]{\left| 23.33333333 \right|}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134\ m$$
+$$A_{6} = \frac{L}{{\left| a_{6} \right|}^{\tfrac{1}{7}}}\frac{a_{6}}{\left| a_{6} \right|} = \frac{100}{{\left| 23.33333333 \right|}^{\tfrac{1}{7}}}\frac{23.33333333}{\left| 23.33333333 \right|} = 63.76388134\ m$$
 
 Septic term 
 
 $$a_{7} = -20f = -20(0.33333) = -6.66666666$$
 
-$$A_{7} = \frac{L}{\sqrt[8]{\left| a_{7} \right|}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{\sqrt[8]{\left| -6.66666666 \right|}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838\ m$$
+$$A_{7} = \frac{L}{{\left| a_{7} \right|}^{\tfrac{1}{8}}}\frac{a_{7}}{\left| a_{7} \right|} = \frac{100}{{\left| -6.66666666 \right|}^{\tfrac{1}{8}}}\frac{-6.66666666}{\left| -6.66666666 \right|} = -78.8880838\ m$$
 
 ~~~
 #66 = IFCCURVESEGMENT(.CONTINUOUS., #72, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #75);
