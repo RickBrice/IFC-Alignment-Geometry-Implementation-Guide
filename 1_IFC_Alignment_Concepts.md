@@ -197,16 +197,13 @@ its base curve.
 
 `IfcSegmentedReferenceCurve` is also a sub-type of `IfcCompositeCurve`. It
 defines a deviating elevation and rail head cross slope along the base
-curve. The base curve is typically an `IfcGradientCurve`, though the IFC specification would permit it to be any
-`IfcCompositeCurve`. The "distance along"
+curve. The base curve is typically an `IfcGradientCurve`. The "distance along"
 coordinate is along the gradient curve's base curve, which is the horizontal alignment curve.
 
 #### 1.5.2.1 Curve segment geometry
 
 When defining curve segment geometry with an `IfcCurveSegment`, the location and orientation of the
-parent curve are not particularly important. The `IfcCurveSegment.Placement` defines the location of the start point of the trimmed
-curve as well as the orientation of the tangent at the start of the trimmed curve. In the example above, the `IfcLine` parent curve
-starts at (0,0) and progresses in horizontal direction, but the tangent segment of the alignment starts at a specific (X,Y) position and is oriented in a North-East direction. The `IfcCurveSegment.Placement` attribute establishes this position and orientation.
+parent curve are not particularly important. The `IfcCurveSegment.Placement` defines the location of the start point of the trimmed curve as well as the orientation of the tangent at the start of the trimmed curve. In the example above, the `IfcLine` parent curve starts at (0,0) and progresses in horizontal direction, but the tangent segment of the alignment starts at a specific (X,Y) position and is oriented in a North-East direction. The `IfcCurveSegment.Placement` attribute establishes this position and orientation.
 
 #### 1.5.2.2 Vertical and Cant Curve Extents
 
