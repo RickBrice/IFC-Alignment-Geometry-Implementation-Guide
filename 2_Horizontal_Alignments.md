@@ -637,6 +637,7 @@ Consider a horizontal cubic transition curve segment that starts at
 (0,0) with a start direction of 0.0. The radius at the start is infinite
 and the radius at the end is 300. The arc length of the segment is 100.
 The semantic definition is
+
 ~~~
 #28 = IFCCARTESIANPOINT((0., 0.));
 #29 = IFCALIGNMENTHORIZONTALSEGMENT($, $, #28, 0., 0., 300., 100., $,.CUBIC.);
