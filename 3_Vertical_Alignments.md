@@ -627,6 +627,7 @@ $$dy = \sin(0.017498213869856595) = 0.99984691016192495$$
 
 
 The geometric representation is
+
 ~~~
 #291=IFCCARTESIANPOINT((0.,0.));
 #292=IFCDIRECTION((1.,0.));
