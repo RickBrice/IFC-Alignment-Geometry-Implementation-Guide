@@ -299,11 +299,11 @@ Compute the radius of the circle.
 
 `IfcAlignmentVerticalSegment.RadiusOfCurvature` is optional. If provided, it should be consistent with the `HorizontalLength`, `StartGradient` and `EndGradient`, but is not guaranteed. For this reason, the radius is computed from the required  `HorizontalLength`, `StartGradient` and `EndGradient` attributes. Note that in computing the radius, it is taken to be an absolute value because `IfcCircle.Radius` is a `IfcPositiveLengthMeasure`.
 
-$R = \left| \frac{h_l}{\sin(\theta_{start}) - \sin(\theta_{end})}\right |$
+$R = \left| \frac{h_l}{\sin(\theta_{start}) - \sin(\theta_{end})}\right|$
 
 $h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$
 
-$R = \left| \frac{328.083989501312}{\sin(-0.785398) - \sin(-0.463648)} \right | = 384.773458895502$
+$R = \left| \frac{328.083989501312}{\sin(-0.785398) - \sin(-0.463648)} \right| = 384.773458895502$
 
 Compute the arc-length trimming parameters `SegmentStart` and `SegmentLength`.
 
@@ -418,7 +418,7 @@ $$R^2 = (x-C_x)^2 + (y-C_y)^2$$
 
 Solving for $y$,
 
-$$y = C_y - \tfrac{L}{|L|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{|-123.801073716741|}\sqrt{(384.773458895502)^2 - (50 - (-172.075922005613))^2}=-29.933926737614911$$
+$$y = C_y - \tfrac{L}{\left|L\right|}\sqrt{R^2 - (x - C_x)^2 } = -344.151844011225 - \tfrac{-123.801073716741}{\left|-123.801073716741\right|}\sqrt{(384.773458895502)^2 - (50 - (-172.075922005613))^2}=-29.933926737614911$$
 
 Compute the chord length from the trim start to the point
 
@@ -439,8 +439,8 @@ Compute point on trimmed segment at $\ell$.
 $$x_{pc} = C_x + R \cos(\Delta_{pc}) = (-172.075922005613) + 384.77345889550202\cos(0.95554939951029738) = 50$$
 $$y_{pc} = C_y + R \sin(\Delta_{pc}) = (-344.15184401122502) + 384.77345889550202\sin(0.95554939951029738) = -29.933926737614570$$
 
-$$dx_{pc} = -\tfrac{L}{|L|}\sin(\Delta_{pc}) = -\tfrac{-123.801073716741}{|-123.801073716741|}\sin(0.95554939951029738) = 0.81663095520043849$$
-$$dy_{pc} = \tfrac{L}{|L|}\cos(\Delta_{pc}) = \tfrac{-123.801073716741}{|-123.801073716741|}\cos(0.95554939951029738) = -0.57716018834325311$$
+$$dx_{pc} = -\tfrac{L}{\left|L\right|}\sin(\Delta_{pc}) = -\tfrac{-123.801073716741}{\left|-123.801073716741\right|}\sin(0.95554939951029738) = 0.81663095520043849$$
+$$dy_{pc} = \tfrac{L}{\left|L\right|}\cos(\Delta_{pc}) = \tfrac{-123.801073716741}{\left|-123.801073716741\right|}\cos(0.95554939951029738) = -0.57716018834325311$$
 
 $$M_{PC} = \begin{bmatrix}
 0.81663095520043849 & 0.57716018834325311 & 0 & 50\\

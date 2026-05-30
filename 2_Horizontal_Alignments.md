@@ -405,13 +405,13 @@ Source Model:
 
 The curve tangent angle, curvature, and point on the curve are given by the following equations
 
-$$\theta(s) = \frac{\pi}{2}\frac{A}{|A|}s^{2}$$
+$$\theta(s) = \frac{\pi}{2}\frac{A}{\left|A\right|}s^{2}$$
 
 $$\kappa(s) = \frac{A}{\left| A^{3} \right|}s$$
 
-$$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$
+$$x(u) = A\sqrt{\pi}\int_{0}^{u}{\cos{\left( \frac{\pi}{2}\frac{A}{\left|A\right|}t^{2} \right)\ }dt}$$
 
-$$y(u) = A\sqrt{\pi}\int_{0}^{u}{\sin{\left( \frac{\pi}{2}\frac{A}{|A|}t^{2} \right)\ }dt}$$
+$$y(u) = A\sqrt{\pi}\int_{0}^{u}{\sin{\left( \frac{\pi}{2}\frac{A}{\left|A\right|}t^{2} \right)\ }dt}$$
 
 IFC provides a unit parametrization of clothoid curve.
 
@@ -439,7 +439,7 @@ $$R_{s} = 300,\ R_{e} = 1000,\ L = 100$$
 
 $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}}= \frac{100}{1000} - \frac{100}{300} = -0.23333$$
 
-$$A = \frac{L}{\sqrt{|f|}}\frac{f}{|f|} = \frac{100}{\sqrt{| -0.23333|}}\frac{-0.23333}{| -0.23333|} = -207.0196678$$
+$$A = \frac{L}{\sqrt{\left|f\right|}}\frac{f}{\left|f\right|} = \frac{100}{\sqrt{\left|-0.23333\right|}}\frac{-0.23333}{\left|-0.23333\right|} = -207.0196678$$
 
 Place the parent curve at (0,0) with a tangent direction of (1,0)
 
@@ -502,13 +502,13 @@ $$u = \frac{-142.8571428}{\left| - 207.0196678\sqrt{\pi} \right|} = -0.3893278$$
 
 Compute the point on curve tangent direction
 
-$$\theta_0(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.3893278)^{2} = -0.238095237$$
+$$\theta_0(-0.3893278) = \frac{\pi}{2}\frac{-207.0196678}{\left|-207.0196678\right|}(-0.3893278)^{2} = -0.238095237$$
 
 and compute the point on the curve
 
-$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = -142.04941746210602\ m$$
+$$x_0(-0.3893278) = - 207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{\left|-207.0196678\right|}t^{2} \right)\ }dt} = -142.04941746210602\ m$$
 
-$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{| - 207.0196678|}t^{2} \right)\ }dt} = 11.292042785713347\ m$$
+$$y_0(-0.3893278) = -207.0196678\sqrt{\pi}\int_{0}^{-0.3893278}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{\left|-207.0196678\right|}t^{2} \right)\ }dt} = 11.292042785713347\ m$$
 
 $$\cos(-0.238095237) = 0.971788979$$
 
@@ -538,11 +538,11 @@ $$ s = -142.8571428 + 50 = -92.8571428$$
 
 $$u = \frac{-92.8571428}{\left|-207.0196678\sqrt{\pi} \right|} = -0.25306307$$
 
-$$x(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}s^{2} \right)\ }ds} = - 92.763220844871512$$
+$$x(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\cos{\left( \frac{\pi}{2}\frac{-207.0196678}{\left|-207.0196678\right|}s^{2} \right)\ }ds} = - 92.763220844871512$$
 
-$$y(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}s^{2} \right)\ }ds} = 3.1114126254443812$$
+$$y(-0.25306307) = -207.0196678\sqrt{\pi}\int_{0}^{-0.25306307}{\sin{\left( \frac{\pi}{2}\frac{-207.0196678}{\left|-207.0196678\right|}s^{2} \right)\ }ds} = 3.1114126254443812$$
 
-$$\theta(-0.25306307) = \frac{\pi}{2}\frac{-207.0196678}{|-207.0196678|}(-0.25306307)^{2} = -0.100595238$$
+$$\theta(-0.25306307) = \frac{\pi}{2}\frac{-207.0196678}{\left|-207.0196678\right|}(-0.25306307)^{2} = -0.100595238$$
 
 $$dx = \cos(-0.100595238) = 0.994944564$$
 
@@ -712,7 +712,7 @@ $$y(x) = \left( 5.55555 \cdot 10^{-6} m^{-2}\right)x^{3}$$
 
 Find $x$ such that
 
-$$|d - u| = \left| \int_{0}^{x}\left(\sqrt{\left( y'(x) \right)^{2} + 1}\right) dx - u \right| < 10^{-4} \approx 0$$
+$$\left|d - u\right| = \left| \int_{0}^{x}\left(\sqrt{\left( y'(x) \right)^{2} + 1}\right) dx - u \right| < 10^{-4} \approx 0$$
 
 $$y'(x) = 3\left( 5.55555 \cdot 10^{-6} m^{-2}\right)x^{2}$$
 
@@ -828,7 +828,7 @@ $$a_{01} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
 $$a_{00} = 0,\ A_{11} = 0$$
 
-$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{|0.66667|}}\frac{0.66667}{|0.66667|} = 114.4714255\ m$$
+$$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{\sqrt[3]{\left|0.66667\right|}}\frac{0.66667}{\left|0.66667\right|} = 114.4714255\ m$$
 
 
 The geometric representation of the first half is
@@ -850,11 +850,11 @@ The geometric representation of the first half is
 
 Second Half
 
-$$a_{02} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{| -0.33333|}\frac{-0.33333}{|-0.33333|} = - 300\ m$$
+$$a_{02} = -0.33333 + \frac{100}{\infty} = -0.33333,\ A_{0} = \frac{100\ m}{\left|-0.33333\right|}\frac{-0.33333}{\left|-0.33333\right|} = - 300\ m$$
 
-$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{|1.33333|}}\frac{1.33333}{|1.33333|} = 86.602540378\ m$$
+$$a_{12} = 4(0.33333) = 1.33333,\ A_{1} = \frac{100\ m}{\sqrt{\left|1.33333\right|}}\frac{1.33333}{\left|1.33333\right|} = 86.602540378\ m$$
 
-$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -114.4714255\ m$$
+$$a_{22} = -2(0.33333) = -0.66667,\  A_{2} = \frac{100\ m}{\sqrt[3]{\left|-0.66667\right|}}\frac{-0.66667}{\left|-0.66667\right|} = -114.4714255\ m$$
 
 Figure 2.7.2-1 shows the first and second half parent curves, without any adjustments.
 
@@ -1084,10 +1084,10 @@ $$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 $$A_{1} = 0$$
 
 $$a_{2} = 3f = 3(0.33333) = 1$$
-$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{|1|}}\frac{1}{|1|} = 100\ m$$
+$$A_{2} = \frac{L}{\sqrt[3]{\left| a_{2} \right|}}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\sqrt[3]{\left|1\right|}}\frac{1}{\left|1\right|} = 100\ m$$
 
 $$a_{3} = -2f = -2(0.33333) = -0.66667$$
-$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{\sqrt[4]{| -0.66667|}}\frac{-0.66667}{|-0.66667|} = -110.668192\ m$$
+$$A_{3} = \frac{L}{\sqrt[4]{\left| a_{3} \right|}}\frac{a_{3}}{\left| a_{3} \right|} = \frac{100\ m}{\sqrt[4]{\left|-0.66667\right|}}\frac{-0.66667}{\left|-0.66667\right|} = -110.668192\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1191,12 +1191,12 @@ $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} =
 Constant Term:
 
 $$a_{0} = 0.5f + \frac{L}{R_{s}} = 0.5(0.33333) + \frac{100}{\infty} = 0.16667$$
-$$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}= \frac{100\ m}{|0.16667|}\ \frac{0.16667}{|0.16667|} = 600\ m$$
+$$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}= \frac{100\ m}{\left|0.16667\right|}\ \frac{0.16667}{\left|0.16667\right|} = 600\ m$$
 
 
 Cosine Term:
 $$a_{1} = -0.5f= -0.5(0.33333) = -0.16667$$
-$$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \frac{100}{|-0.16667|}\ \frac{-0.16667}{|-0.16667|} = -600\ m$$
+$$A_{1} = \frac{L}{\left| a_{1} \right|}\frac{a_{1}}{\left| a_{1} \right|}= \frac{100}{\left|-0.16667\right|}\ \frac{-0.16667}{\left|-0.16667\right|} = -600\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);
@@ -1310,11 +1310,11 @@ $$A_{o} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 
 Linear Term:
 $$a_{1} = f = 0.33333$$
-$$A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{\sqrt{|0.33333|}}\frac{0.33333}{|0.33333|} = 173.2050808\ m$$
+$$A_{1} = \frac{L}{\sqrt{\left| a_{1} \right|}}\frac{a_{1}}{\left| a_{1} \right|} = \frac{100}{\sqrt{\left|0.33333\right|}}\frac{0.33333}{\left|0.33333\right|} = 173.2050808\ m$$
 
 Sine Term:
 $$a_{2} = -\frac{1}{2\pi}f = -\frac{1}{2\pi}(0.33333) = -0.053051647$$
-$$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{|-0.053051647|}\frac{-0.053051647}{|-0.053051647|} = -1884.955592\ m$$
+$$A_{2} = \frac{L}{\left| a_{2} \right|}\frac{a_{2}}{\left| a_{2} \right|} = \frac{100}{\left|-0.053051647\right|}\frac{-0.053051647}{\left|-0.053051647\right|} = -1884.955592\ m$$
 
 ~~~
 #36 = IFCCURVESEGMENT(.CONTINUOUS., #42, IFCLENGTHMEASURE(0.), IFCLENGTHMEASURE(100.), #45);

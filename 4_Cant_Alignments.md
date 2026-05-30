@@ -469,7 +469,7 @@ $\Delta D = D_e - D_s = 0.0 - 0.08 = -0.08\ m$
 
 $a_0 = D_s = 0.08\ m,\ A_0 = \tfrac{(100\ m)^2}{0.08\ m} = 125000\ m$
 
-$a_{1} = \Delta D = -0.08\ m \quad A_{1} = \tfrac{{(100\ m)}^{\tfrac{3}{2}}}{\sqrt{|-0.08\ m|}}\tfrac{-0.08\ m}{|-0.08\ m|} = -3535.533906\ m$
+$a_{1} = \Delta D = -0.08\ m \quad A_{1} = \tfrac{{(100\ m)}^{\tfrac{3}{2}}}{\sqrt{\left|-0.08\ m\right|}}\tfrac{-0.08\ m}{\left|-0.08\ m\right|} = -3535.533906\ m$
 
 The clothoid parent curve is
 
@@ -482,7 +482,7 @@ The clothoid parent curve is
 
 The cant segment begins with a deviating elevation of
 
-$$D(0\ m) = (100\ m)^2\left(\tfrac{1}{125000} + \tfrac{-3535.533906}{|-3535.533906|^3}(0\ m)\right) = 0.08\ m$$
+$$D(0\ m) = (100\ m)^2\left(\tfrac{1}{125000} + \tfrac{-3535.533906}{\left|-3535.533906\right|^3}(0\ m)\right) = 0.08\ m$$
 
 The slope at the start of the segment is
 
@@ -921,7 +921,7 @@ $$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} 
 
 Constant Term
 
-$a_{0} = D_s,\ A_{0} = \tfrac{L^{\tfrac{2}{1}}}{\sqrt[0]{|a_0|}}\tfrac{a_0}{|a_0|} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left| a_{0} \right|}$
+$a_{0} = D_s,\ A_{0} = \tfrac{L^{\tfrac{2}{1}}}{\sqrt[0]{\left|a_0\right|}}\tfrac{a_0}{\left|a_0\right|} = \tfrac{L^{2}}{\left| a_{0} \right|}\tfrac{a_{0}}{\left| a_{0} \right|}$
 
 Linear Term
 
@@ -929,11 +929,11 @@ $a_1 = 0,\ A_{1}$
 
 Quadratic Term
 
-$a_{2} = 3\Delta D,\ A_{2} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{|a_2|}}\tfrac{a_2}{|a_2|}$
+$a_{2} = 3\Delta D,\ A_{2} = \tfrac{L^{\tfrac{4}{3}}}{\sqrt[3]{\left|a_2\right|}}\tfrac{a_2}{\left|a_2\right|}$
 
 Cubic Term
 
-$a_{3} = -2\Delta D,\ A_{3} = \tfrac{{L}^{\tfrac{5}{4}}}{\sqrt[4]{|a_3|}}\tfrac{a_3}{|a_3|}$
+$a_{3} = -2\Delta D,\ A_{3} = \tfrac{{L}^{\tfrac{5}{4}}}{\sqrt[4]{\left|a_3\right|}}\tfrac{a_3}{\left|a_3\right|}$
 
 ### 4.6.2 Semantic Definition to Geometry Mapping
 
@@ -957,11 +957,11 @@ $A_{1} = 0\ m$
 
 Quadratic Term
 
-$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{|-0.24\ m|}}\left( \tfrac{-0.24\ m}{|-0.24\ m|} \right) = -746.9007911\ m$
+$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \tfrac{(100\ m)^{\tfrac{4}{3}}}{\sqrt[3]{\left|-0.24\ m\right|}}\left( \tfrac{-0.24\ m}{\left|-0.24\ m\right|} \right) = -746.9007911\ m$
 
 Cubic Term
 
-$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{|0.16\ m|}}\left( \tfrac{0.16\ m}{| 0.16\ m|} \right) = 500\ m$
+$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{\left|0.16\ m\right|}}\left( \tfrac{0.16\ m}{\left|0.16\ m\right|} \right) = 500\ m$
 
 The parent curve is
 
@@ -1107,13 +1107,13 @@ Constant term,
 
 $a_0 = D_s + \tfrac{\Delta D}{2}$
 
-$A_0 = L^{2}\tfrac{1}{a_0}\tfrac{a_0}{|a_0|}$
+$A_0 = L^{2}\tfrac{1}{a_0}\tfrac{a_0}{\left|a_0\right|}$
 
 Cosine term, 
 
 $a_1 = -\tfrac{1}{2} \Delta D$
 
-$A_1 = L^{2}\tfrac{1}{a_1}\tfrac{a_1}{|a_1|}$
+$A_1 = L^{2}\tfrac{1}{a_1}\tfrac{a_1}{\left|a_1\right|}$
 
 ### 4.7.2 Semantic Definition to Geometry Mapping
 
@@ -1129,11 +1129,11 @@ $D_{s} = \tfrac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \tfrac{0 + 0\ m}{2} = 0.\ m,\ \
 
 $a_0 = 0.08\ m + \tfrac{-0.08\ m}{2} = 0.04$
 
-$A_0 = (100\ m)^{2} \tfrac{1}{0.04\ m}\tfrac{0.04\ m}{|0.04\ m|} = 250000\ m$
+$A_0 = (100\ m)^{2} \tfrac{1}{0.04\ m}\tfrac{0.04\ m}{\left|0.04\ m\right|} = 250000\ m$
 
 $a_1 = -\tfrac{1}{2}(-0.08\ m) = -0.04\ m$
 
-$A_1 = (100\ m)^2\tfrac{1}{-0.04\ m}\tfrac{-0.04\ m}{|-0.04\ m|} = 250000\ m$
+$A_1 = (100\ m)^2\tfrac{1}{-0.04\ m}\tfrac{-0.04\ m}{\left|-0.04\ m\right|} = 250000\ m$
 
 The parent curve is
 
@@ -1270,16 +1270,16 @@ $$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{A_{1}}{\left| A_{1} \right|}\left( \tfr
 
 Constant term: 
 $$a_0 = D_s$$
-$$A_0 = L^2\tfrac{1}{a_0}\tfrac{a_0}{|a_0|} $$
+$$A_0 = L^2\tfrac{1}{a_0}\tfrac{a_0}{\left|a_0\right|} $$
 
 Linear term: 
 
 $$a_1 = \Delta D$$
-$$A_1 = L^{\tfrac{3}{2}}\tfrac{1}{\sqrt{|a_1|}}\tfrac{a_1}{|a_1|} $$
+$$A_1 = L^{\tfrac{3}{2}}\tfrac{1}{\sqrt{\left|a_1\right|}}\tfrac{a_1}{\left|a_1\right|} $$
 
 Sine term: 
 $$a_2 = -\tfrac{1}{2\pi} \Delta D$$
-$$A_2 = L^2\tfrac{1}{a_2}\tfrac{a_2}{|a_2|} $$
+$$A_2 = L^2\tfrac{1}{a_2}\tfrac{a_2}{\left|a_2\right|} $$
 
 ### 4.8.2 Semantic Definition to Geometry Mapping
 
@@ -1296,17 +1296,17 @@ $D_{s} = \tfrac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \tfrac{0 + 0\ m}{2} = 0.\ m,\ \
 Constant term:
 $a_0 = 0.08\ m$
 
-$A_0 = (100\ m)^2\tfrac{1}{0.08\ m}\tfrac{0.08\ m}{|0.08\ m|} = 125000\ m$
+$A_0 = (100\ m)^2\tfrac{1}{0.08\ m}\tfrac{0.08\ m}{\left|0.08\ m\right|} = 125000\ m$
 
 Linear term:
 $a_1 = -0.08\ m$
 
-$A_1 = (100\ m)^{\tfrac{3}{2}} \tfrac{1}{\sqrt{| -0.08\ m|}}\tfrac{-0.08\ m}{| -0.08\ m|} = -3535.533906\ m$
+$A_1 = (100\ m)^{\tfrac{3}{2}} \tfrac{1}{\sqrt{\left|-0.08\ m\right|}}\tfrac{-0.08\ m}{\left|-0.08\ m\right|} = -3535.533906\ m$
 
 Sine term:
 $a_2 = -\tfrac{1}{2\pi} (0.08\ m) = -0.0127324\ m$
 
-$A_2 = (100\ m)^2\tfrac{1}{-0.0127324\ m}\tfrac{-0.0127324\ m}{|-0.0127324\ m|} = 785398.1634\ m$
+$A_2 = (100\ m)^2\tfrac{1}{-0.0127324\ m}\tfrac{-0.0127324\ m}{\left|-0.0127324\ m\right|} = 785398.1634\ m$
 
 The parent curve is
 
@@ -1317,7 +1317,7 @@ The parent curve is
 #99=IFCSINESPIRAL(#98,785398.16339744814,-3535.533905932738,125000.);
 ~~~
 
-$$D(0\ m) = (100\ m)^{2}\left(\tfrac{1}{125000\ m} + \left( \tfrac{-3535.533906\ m}{| -3535.533906\ m|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \tfrac{1}{785398.1634\ m}\sin\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
+$$D(0\ m) = (100\ m)^{2}\left(\tfrac{1}{125000\ m} + \left( \tfrac{-3535.533906\ m}{\left|-3535.533906\ m\right|} \right)\left( \tfrac{1}{-3535.533906\ m} \right)^{2}(0\ m) + \tfrac{1}{785398.1634\ m}\sin\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.08\ m$$
 
 $$D'(0\ m) = (100\ m)^{2}\left( \tfrac{-3535.533906}{\left| -3535.533906 \right|}\left( \tfrac{1}{-3535.533906} \right)^{2} + \tfrac{2\pi}{(100\ m)(785398.1634\ m)}\cos\left( 2\pi\tfrac{0\ m}{100\ m} \right) \right) = 0.$$
 
@@ -1443,9 +1443,9 @@ A Viennese Bend transition in cant is represented with an `IfcSeventhOrderPolyno
 
 The deviating elevation and its rate of change are given by the following equations.
 
-$$\tfrac{D(s)}{L^{2}} = \tfrac{A_7}{|A_7^9|}s^7 + \tfrac{1}{A_6^7}s^6 + \tfrac{A_5}{|A_5^7|}s^5 + \tfrac{1}{A_4^5}s^4 + \tfrac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \tfrac{1}{A_{2}^{3}}s^{2} + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|}s + \tfrac{1}{A_{0}}$$
+$$\tfrac{D(s)}{L^{2}} = \tfrac{A_7}{\left|A_7^9\right|}s^7 + \tfrac{1}{A_6^7}s^6 + \tfrac{A_5}{\left|A_5^7\right|}s^5 + \tfrac{1}{A_4^5}s^4 + \tfrac{A_{3}}{\left| A_{3}^{5} \right|}s^{3} + \tfrac{1}{A_{2}^{3}}s^{2} + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|}s + \tfrac{1}{A_{0}}$$
 
-$$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{7A_7}{|A_7^9|}s^6 + \tfrac{6}{A_6^7}s^5 + \tfrac{5A_5}{|A_5^7|}s^4 + \tfrac{4}{A_4^5}s^3 + \tfrac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \tfrac{2}{A_{2}^{3}}s + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
+$$\tfrac{d}{ds}D(s) = L^{2}\left( \tfrac{7A_7}{\left|A_7^9\right|}s^6 + \tfrac{6}{A_6^7}s^5 + \tfrac{5A_5}{\left|A_5^7\right|}s^4 + \tfrac{4}{A_4^5}s^3 + \tfrac{3A_{3}}{\left| A_{3}^{5} \right|}s^{2} + \tfrac{2}{A_{2}^{3}}s + \tfrac{A_{1}}{2\left| A_{1}^{3} \right|} \right)$$
 
 $$D_s = \tfrac{D_{sl} + D_{sr}}{2},\ D_e = \tfrac{D_{el} + D_{er}}{2},\ \mathrm{\Delta}D = D_e - D_s$$
 
@@ -1536,7 +1536,7 @@ The parent curve is
 #99=IFCSEVENTHORDERPOLYNOMIALSPIRAL(#98,185.93568367635649,-169.87095595653892,180.00121846086768,-241.19748900851218,$,$,$,200000.);
 ~~~
 
-$$D(0\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{|(185.93568367635672\ m)^9|}(0\ m)^7 + \tfrac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \tfrac{180.0012184608678\ m}{|(180.0012184608678\ m)^7|}(0\ m)^5 + \tfrac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \tfrac{1}{200000\ m}\right) = 0.05\ m$$
+$$D(0\ m) = (100\ m)^2 \left(\tfrac{185.93568367635672\ m}{\left|(185.93568367635672\ m)^9\right|}(0\ m)^7 + \tfrac{1}{(-169.87095595653895\ m)^7}(0\ m)^6 + \tfrac{180.0012184608678\ m}{\left|(180.0012184608678\ m)^7\right|}(0\ m)^5 + \tfrac{1}{(-241.1974890085123\ m)^5}(0\ m)^4  + \tfrac{1}{200000\ m}\right) = 0.05\ m$$
 
 $D'(0) = 0,\ \theta_0 = 0$
 
@@ -1803,7 +1803,7 @@ $$A_{i} = \tfrac{L^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left| a_{i} \right|}}
 
 Performing a dimensional analysis with $l$ representing term with length units, we see that the resulting coefficient $A_{i}$ has units of length. 
 
-$$\tfrac{l^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{|l|}}\tfrac{l}{|l|} = \tfrac{l^{\tfrac{i + 2}{i + 1}}}{l^{\tfrac{1}{i + 1}}} = l^{\tfrac{i + 2}{i + 1}}l^{\tfrac{- 1}{(i + 1)}} = l^{\tfrac{i + 1}{i + 1}} = l$$
+$$\tfrac{l^{\tfrac{i + 2}{i + 1}}}{\sqrt[(i + 1)]{\left|l\right|}}\tfrac{l}{\left|l\right|} = \tfrac{l^{\tfrac{i + 2}{i + 1}}}{l^{\tfrac{1}{i + 1}}} = l^{\tfrac{i + 2}{i + 1}}l^{\tfrac{- 1}{(i + 1)}} = l^{\tfrac{i + 1}{i + 1}} = l$$
 
 The error in the EnrichIfc4x3 reference implementation is illustrated by way of an example. Consider the Bloss Curve example [GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc). 
 
@@ -1820,14 +1820,14 @@ Quadratic Term:
 
 $a_{2} = 3\Delta D = 3(0.08\ m) = 0.24\ m$
 
-$A_{2} = \tfrac{(100\ m)}{\sqrt[3]{|0.24\ m|}}\left( \tfrac{0.24\ m}{|0.24\ m|} \right) = 160.917897\ m^{2/3}$
+$A_{2} = \tfrac{(100\ m)}{\sqrt[3]{\left|0.24\ m\right|}}\left( \tfrac{0.24\ m}{\left|0.24\ m\right|} \right) = 160.917897\ m^{2/3}$
 
 
 Cubic Term:
 
  $a_{3} = -2\Delta D = -0.016\ m$
  
- $A_{3} = \tfrac{100\ m}{\sqrt[4]{|-0.16\ m|}}\tfrac{-0.16\ m}{|-0.16\ m|} = -158.113883\ m^{3/4}$
+ $A_{3} = \tfrac{100\ m}{\sqrt[4]{\left|-0.16\ m\right|}}\tfrac{-0.16\ m}{\left|-0.16\ m\right|} = -158.113883\ m^{3/4}$
 
 Notice that the polynomial coefficients do not have whole length units (e.g. the units aren't $m$).
 
@@ -1840,11 +1840,11 @@ Recalling from Bloss Curve example above,
 
 Quadratic Term
 
-$A_{2} = \tfrac{(100m)^{\tfrac{4}{3}}}{\sqrt[3]{|0.24m|}}\left( \tfrac{0.24m}{|0.24m|} \right) = 746.9007911\ m$
+$A_{2} = \tfrac{(100m)^{\tfrac{4}{3}}}{\sqrt[3]{\left|0.24m\right|}}\left( \tfrac{0.24m}{\left|0.24m\right|} \right) = 746.9007911\ m$
 
 Cubic Term
 
-$A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{|-0.16\ m|}}\left( \tfrac{-0.16\ m}{| -0.16\ m|} \right) = -500\ m$
+$A_{3} = \tfrac{{(100\ m)}^{\tfrac{5}{4}}}{\sqrt[4]{\left|-0.16\ m\right|}}\left( \tfrac{-0.16\ m}{\left|-0.16\ m\right|} \right) = -500\ m$
 
 The polynomial coefficients have units of length as required by IFC.
 
@@ -1866,19 +1866,19 @@ Table 4.11-1 compares the third order polynomial terms.
 
 The EnrichIfc4x3 reference implementation computes the correct value for the deviating elevation. This is because there is a compensating error in the implementation. The deviating elevation is computed as
 
-$D(s) = L\left( \tfrac{A_3}{|A_3^5|}s^3 + \tfrac{1}{A_2^3}s^2\right)$
+$D(s) = L\left( \tfrac{A_3}{\left|A_3^5\right|}s^3 + \tfrac{1}{A_2^3}s^2\right)$
 
 Evaluated at $s = 50\ m$
 
-$D(50\ m) = (100\ m)\left( \tfrac{-158.113883\ m^{3/4}}{|(-158.113883\ m^{3/4})^5|}(100\ m)^3 + \tfrac{1}{(160.914897434272\ m^{2/3})^3}(100\ m)^2\right) = (100\ m)(-0.0002+0.0006) = 0.04\ m$
+$D(50\ m) = (100\ m)\left( \tfrac{-158.113883\ m^{3/4}}{\left|(-158.113883\ m^{3/4})^5\right|}(100\ m)^3 + \tfrac{1}{(160.914897434272\ m^{2/3})^3}(100\ m)^2\right) = (100\ m)(-0.0002+0.0006) = 0.04\ m$
 
 The deviating elevation as computed in this guide is
 
-$D(s)= L^2\left( \tfrac{A_3}{|A_3^5|}s^3 + \tfrac{1}{A_2^3}s^2\right)$
+$D(s)= L^2\left( \tfrac{A_3}{\left|A_3^5\right|}s^3 + \tfrac{1}{A_2^3}s^2\right)$
 
 Notice that the first term is $L^2$, not $L$ as in the reference implementation.
 
-$D(50\ m) = (100\ m)^2\left( \tfrac{-500\ m}{|(-500\ m)^5|}(100\ m)^3 + \tfrac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$
+$D(50\ m) = (100\ m)^2\left( \tfrac{-500\ m}{\left|(-500\ m)^5\right|}(100\ m)^3 + \tfrac{1}{(746.90079\ m)^3}(100\ m)^2\right) = (100\ m)^2(-0.000002\ m^{-1} + 0.000006\ m^{-1}) = 0.04\ m$
 
 Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and vice versa. Table 4.11-2 compares the results for all the combinations of the semantic to geometry mapping and deviating elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect proportional (or inversely proportional) to the length of the segment (100 or 1/100 in this example). 
 
