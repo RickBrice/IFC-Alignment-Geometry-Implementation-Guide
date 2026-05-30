@@ -1848,6 +1848,7 @@ $$\frac{l^{\frac{i + 2}{i + 1}}}{{\left|l\right|}^{\frac{1}{(i + 1)}}}\frac{l}{\
 The error in the EnrichIfc4x3 reference implementation is illustrated by way of an example. Consider the Bloss Curve example [GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__CantAlignment_BlossCurve_100.0_1000_300_1_Meter.ifc). 
 
 The semantic definition of the cant transition segment is 
+
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.,0.16,.BLOSSCURVE.);
 ~~~
@@ -1872,6 +1873,7 @@ $$A_{3} = \frac{100\ m}{{\left|-0.16\ m\right|}^{\frac{1}{4}}}\frac{-0.16\ m}{\l
 Notice that the polynomial coefficients do not have whole length units (e.g. the units aren't $m$).
 
  The mapped geometric representation is
+ 
  ~~~
 #127 = IFCTHIRDORDERPOLYNOMIALSPIRAL(#128, -158.113883008419, 160.914897434272, $, $);
  ~~~
@@ -1889,6 +1891,7 @@ $$A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{{\left|-0.16\ m\right|}^{\frac{1}{4}}}
 The polynomial coefficients have units of length as required by IFC.
 
 The resulting geometric representation is
+
 ~~~
 #127=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,-500.,746.900791092861,$,$);
 ~~~
