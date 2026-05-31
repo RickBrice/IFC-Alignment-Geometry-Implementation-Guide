@@ -32,11 +32,15 @@ The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \tan^{-1}(g(\el
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
+[todo - this opening paragraph is repeatitive with section 3.1. simplify]
+
 Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle is $\theta(\ell) = \tan^{-1}(g(\ell))$ where $g(\ell)$ is the gradient.
 
 **Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
+
+[todo - use y_p instead of z_p, this fix goes into all the examples]
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, z_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
 
@@ -48,6 +52,8 @@ $$M_{CSP} = \begin{bmatrix}
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
+
+[todo - use y_0 instead of z_0. this fix goes into all the examples]
 
 Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
 
@@ -579,9 +585,7 @@ It is easiest to place the parent curve at the origin and orient it with the glo
 #294=IFCPOLYNOMIALCURVE(#293,(0.,1.),(121.,0.017500000000000002,-8.5937500000000005E-06),$);
 ~~~
 
-> Note 1: Even though vertical is typically $z$, alignment is 2.5D geometry and the coordinate system of gradient curve is "Distance along Horizontal", "Elevation" which is a 2D curve in the plane of the horizontal curve. When the `IfcGradientCurve` and `IfcCompositeCurve` are combined to get a 3D point, the elevation is then mapped to Z. See example in Section 3.7 below.
-
-> Note 2: The coefficients $A_0$, $A_1$, and $A_2$ must have the following unit of measure, consistent with the project units:
+> Note: The coefficients $A_0$, $A_1$, and $A_2$ must have the following unit of measure, consistent with the project units:
 >
 > $A_0 = Length^1$
 >
