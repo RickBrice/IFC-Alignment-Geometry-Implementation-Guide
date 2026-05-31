@@ -996,7 +996,7 @@ $$M_N = \begin{bmatrix}
 
 #### Step 3 — Evaluate and map each point
 
-Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying `Position`) uses $(A_{0,2},\ A_{1,2},\ A_{2,2}) = (-300,\ 86.6025,\ -114.4714)$:
+Evaluate the second half parent curve at $t = 100$. The raw spiral (before applying `Position`) uses $(A_{02},\ A_{12},\ A_{22}) = (-300,\ 86.6025,\ -114.4714)$:
 
 $$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3\right|}t^2 + \frac{t}{-300}$$
 
