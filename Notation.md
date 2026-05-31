@@ -123,7 +123,3 @@ All matrices are $4 \times 4$ homogeneous transformation matrices. Column 4 carr
 | $M_{3D}$ | Full 3D placement matrix combining horizontal and vertical; $M_{3D} = M_h\,M'_v$ |
 | $M_{3D,cant}$ | Full 3D placement matrix combining horizontal, vertical, and cant; $M_{3D,cant} = M_h\,M''_v\,M''_c$ |
 | $I$ | $4 \times 4$ identity matrix |
-
----
-
-

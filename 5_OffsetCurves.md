@@ -63,7 +63,7 @@ The STEP excerpt above is drawn from the example models [`IfcOffsetCurveByDistan
 
 ## 5.1 Offset Curves and IfcAlignment
 
-In IFC4x3, `IfcOffsetCurveByDistances` is a resource-layer geometric entity and cannot exist independently in a model. Validation rule [IFC105](https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html) requires that every resource entity be reachable from a rooted entity. In practice this means the offset curve must be assigned as the shape representation of an `IfcAlignment` (or another product), and that alignment must be aggregated into the project. Without this, the IFC validation service will report an IFC105 violation.
+In IFC4x3, `IfcOffsetCurveByDistances` is a resource-layer geometric entity and cannot exist independently in a model. Validation rule [IFC105](https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html) [5] requires that every resource entity be reachable from a rooted entity. In practice this means the offset curve must be assigned as the shape representation of an `IfcAlignment` (or another product), and that alignment must be aggregated into the project. Without this, the IFC validation service will report an IFC105 violation.
 
 The consequence is that offset curves in IFC4x3 models are represented as alignments. This is natural: an offset alignment has its own object identity, can carry properties, can support linear placement of objects, and participates in the project's spatial breakdown just like the basis alignment.
 

@@ -12,7 +12,7 @@
 10 [Sectioned Surfaces and Solids](10_Sectioned_Surfaces_and_Solids.md)  
 11 [Precision and Tolerance](11_Precision_and_Tolerance.md)  
 12 [Alignment Geometry Testset](12_Alignment_Geometry_Testset.md)  
-13 References [todo: create a references section]
+13 [References](13_References.md)
 
 ## Appendix
 

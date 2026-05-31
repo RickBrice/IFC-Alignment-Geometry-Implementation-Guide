@@ -1946,7 +1946,7 @@ The zero-length closing segment requirement described in Section 2.12 applies eq
 ## 4.13 Summary and Implementation Checklist
 
 | # | Item | Notes |
-|---|---|---|
+|-----|---------------------------------------------|---------------------------------------------|
 | 1 | Use `IfcAxis2Placement3D` (not `IfcAxis2Placement2D`) for cant curve segment placements | Cant encodes a cross-slope rotation that a 2D placement cannot represent; the `Axis` vector carries the cross-slope angle $\phi$ at the segment start |
 | 2 | The cross-slope angle $\phi$ is interpolated using deviating elevation as the interpolation parameter, not arc length | The interpolation formula in Section 4.1.3 uses $D(\ell) - D_s$ as the parameter; $\phi$ does not vary linearly with distance along the segment |
 | 3 | When forming $M^\prime_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |

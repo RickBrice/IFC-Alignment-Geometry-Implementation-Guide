@@ -32,36 +32,28 @@ The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \tan^{-1}(g(\el
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
-[todo - this opening paragraph is repeatitive with section 3.1. simplify]
-
-Vertical segments are evaluated in a two-dimensional "distance along, elevation" coordinate system. In this system $x(s)$ is the distance measured along the horizontal `IfcCompositeCurve` and $y(s)$ is the elevation. The grade angle is $\theta(\ell) = \tan^{-1}(g(\ell))$ where $g(\ell)$ is the gradient.
-
 **Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
-[todo - use y_p instead of z_p, this fix goes into all the examples]
-
-$M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, z_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
+$M_{CSP}$ is constructed from `IfcCurveSegment.Placement`, where $(d_p, y_p)$ is the `Location` (distance along, elevation) and $\theta_p$ is the grade angle of the `RefDirection`.
 
 $$M_{CSP} = \begin{bmatrix} 
 \cos\theta_p & -\sin\theta_p & 0 & d_p \\
-\sin\theta_p & \cos\theta_p & 0 & z_p \\
+\sin\theta_p & \cos\theta_p & 0 & y_p \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1 
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
-[todo - use y_0 instead of z_0. this fix goes into all the examples]
-
-Compute the distance along $d_0 = x(s_0)$, elevation $z_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
+Compute the distance along $d_0 = x(s_0)$, elevation $y_0 = y(s_0) = \text{IfcAlignmentVerticalSegment.StartHeight}$, and grade angle $\theta_0 = \theta(s_0)$.
 
 $M_N$ simultaneously translates the trim-start point to the origin and rotates so that the tangent at $s_0$ aligns with the positive $x$-direction.
 
 $$M_N = \begin{bmatrix}
-\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - z_0\sin\theta_0 \\
--\sin\theta_0 & \cos\theta_0 & 0 & d_0\sin\theta_0 - z_0\cos\theta_0 \\
+\cos\theta_0 & \sin\theta_0 & 0 & -d_0\cos\theta_0 - y_0\sin\theta_0 \\
+-\sin\theta_0 & \cos\theta_0 & 0 & d_0\sin\theta_0 - y_0\cos\theta_0 \\
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -189,7 +181,7 @@ Compute the vertical placement matrix for the point at horizontal distance $\ell
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
-From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0,\ 10)$, $\theta_p = 0.463647609\ \text{rad}$:
+From `IfcCurveSegment.Placement`: $(d_p,\ y_p) = (0,\ 10)$, $\theta_p = 0.463647609\ \text{rad}$:
 
 $$\cos\theta_p = \cos(0.463647609)=0.894427191 \quad \sin\theta_p = \sin(0.463647609)=0.447213595$$
 
@@ -205,7 +197,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 The trim begins at $s_0 = \text{SegmentStart} = 0$. For the `IfcLine` through the origin with direction $(dx,\ dy) = (1.,\ 0.)$:
 
-$$d_0 = x(0) = 0 \quad z_0 = y(0) = 0 \quad \theta_0 = \tan^{-1}\left(\frac{dy}{dx}\right) = \tan^{-1}\left(\frac{0.}{1.}\right) = 0.\ \text{rad}$$
+$$d_0 = x(0) = 0 \quad y_0 = y(0) = 0 \quad \theta_0 = \tan^{-1}\left(\frac{dy}{dx}\right) = \tan^{-1}\left(\frac{0.}{1.}\right) = 0.\ \text{rad}$$
 
 $$M_N = \begin{bmatrix}
 1 & 0 & 0 & 0 \\
@@ -377,7 +369,7 @@ Compute the vertical placement matrix for the point at horizontal distance $\ell
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
-From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$
+From `IfcCurveSegment.Placement`: $(d_p,\ y_p) = (0.,10.)$, $dx_p = 0.894427190999916,\ dy_p = -0.447213595499958$
 
 $$M_{CSP} = \begin{bmatrix}
 0.894427190999916 & 0.447213595499958 & 0 & 0 \\
@@ -649,7 +641,7 @@ Compute the vertical placement matrix for the point at horizontal distance $1500
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
-From `IfcCurveSegment.Placement`: $(d_p,\ z_p) = (1200,\ 121)$, $dx_p = 0.99984691016192495$, $dy_p = 0.017497320927833689$
+From `IfcCurveSegment.Placement`: $(d_p,\ y_p) = (1200,\ 121)$, $dx_p = 0.99984691016192495$, $dy_p = 0.017497320927833689$
 
 $$M_{CSP} = \begin{bmatrix}
 0.99984691016192495 & -0.017497320927833689 & 0 & 1200 \\
@@ -779,7 +771,7 @@ The zero-length closing segment requirement described in Section 2.12 applies eq
 ## 3.9 Summary and Implementation Checklist
 
 | # | Item | Notes |
-|---|---|---|
+|-----|---------------------------------------------|---------------------------------------------|
 | 1 | `SegmentStart` and `SegmentLength` are arc-length parameters, but vertical segments are evaluated at horizontal distance | Convert horizontal distance $\ell$ to arc-length $s$ using the parent curve geometry before passing to the evaluator; for low grades the difference is small but non-zero |
 | 2 | `SegmentLength` is negative for crest (cresting) circular arc curves | A negative `SegmentLength` indicates the arc is traversed clockwise; use its absolute value for length accumulation and preserve the sign for trim direction |
 | 3 | Do not rely on `IfcAlignmentVerticalSegment.RadiusOfCurvature` | This attribute is optional and may be absent or inconsistent; always compute the radius from `HorizontalLength`, `StartGradient`, and `EndGradient` |

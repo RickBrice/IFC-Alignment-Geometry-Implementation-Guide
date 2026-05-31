@@ -14,8 +14,6 @@ This section covers:
 - How referents are nested to alignments using `IfcRelNests`, including the recommended approach for mixed nesting with alignment layouts.
 - How `IfcReferent` informs the semantic position of other objects via `IfcRelPositions`, without affecting their geometry.
 
------
-
 ## 9.1 What Is a Referent?
 
 `IfcReferent` is a subtype of `IfcPositioningElement`, which is itself a subtype of `IfcProduct`. Like any product, it has an `ObjectPlacement` (typically `IfcLinearPlacement`) that locates it geometrically on an alignment, and it can carry property sets that provide additional semantic information at that location.
@@ -28,8 +26,6 @@ The single attribute `IfcReferent` adds beyond its supertypes is `PredefinedType
 - **Administrative boundaries** (`BOUNDARY`). Locations where a jurisdiction, maintenance zone, or asset ownership boundary crosses the alignment.
 - **Intersection locations** (`INTERSECTION`). Points where another road or route crosses the alignment.
 - **General positioned location** (`POSITION`). A fully described linearly referenced location combining alignment, LRM, and measure value.
-
------
 
 ## 9.2 Stationing: Concept and Practice
 
@@ -52,8 +48,6 @@ Stationing metadata is stored in `Pset_Stationing`, attached to an `IfcReferent`
 |`HasIncreasingStation`|`IfcBoolean`      |Controls the direction of stationing. If `TRUE` (or absent), subsequently nested referents have increasing station values. If `FALSE`, they decrease. Covers reverse-stationing schemes.|
 
 The `Station` value is expressed in the same units as the project length unit (typically meters or feet), **not** in the `ccc+dd.dd` string form. A station of 142+35.75 ft is stored as `14235.75` with feet as the project unit.
-
------
 
 ## 9.3 Station Equations: Gaps and Overlaps
 
@@ -171,8 +165,6 @@ The following pseudo-STEP example shows an alignment with:
 
 Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.00 = 15245.00` — an error of 432.10 ft.
 
------
-
 ## 9.4 Nesting Referents to Alignments
 
 ### 9.4.1 IfcRelNests
@@ -211,8 +203,6 @@ The IFC specification does not resolve this clearly. Two patterns are seen in pr
 
 Referents in `IfcRelNests.RelatedObjects` must be ordered by their geometric position (increasing `DistanceAlong`). This ordering is not enforced by a WHERE rule in the schema but is stated as a requirement in the IFC concept template for [4.1.4.4](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/content.html) and [4.1.4.4.3 Object Nesting](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html) as applied to referents. Implementations that read referent data should not assume the list is sorted and should sort by `DistanceAlong` before processing; implementations that write referent data must produce a sorted list.
 
------
-
 ## 9.5 Semantic vs. Geometric Positioning
 
 ### 9.5.1 The Distinction
@@ -237,8 +227,6 @@ The relationship between an `IfcReferent` and the object whose position it annot
 ![Figure 9.5.2-1 — Entity relationship diagram: IfcBridgePart.PIER and IfcReferent share the same IfcLinearPlacement. Pset_Stationing (Station = 14235.75) attaches to IfcReferent. IfcRelPositions links the IfcReferent to IfcBridgePart, so the pier is located by its station and offset.](images/Figure_9.5.2-1_Referent_Entity_Relationship.svg)
 
 *Figure 9.5.2-1 — Object graph showing an `IfcBridgePart.PIER` with its own `IfcLinearPlacement`, an `IfcReferent` (STATION type) with `Pset_Stationing`, and the `IfcRelPositions` link between them.*
-
------
 
 ## 9.6 Summary and Implementation Checklist
 

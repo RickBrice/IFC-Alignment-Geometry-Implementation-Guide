@@ -697,7 +697,7 @@ The geometric representation is
 >
 > Concept Template [4.2.2.1.5 Cubic Transition Segment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Partial_Templates/Geometry/Curve_Segment_Geometry/Cubic_Transition_Segment/content.html) and [IfcAlignmentHorizontalSegment](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignmentHorizontalSegmentTypeEnum.htm) provide clear direction (not withstanding typographical errors) that `IfcPolynomialCurve` is to be evaluated as $y = CoefficientsY[3]x^3$ which dictates that $CoefficientsY[3]$ must be in units of $Length^{-2}$ and must be encoded in the `IfcPolynomialCurve.CoefficientY` attribute as an `IfcReal`.
 >
-> An official [Implementation Agreement](https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/) does not appear to exist; however, this interpretation is consistent with discussions on [GitHub](https://github.com/buildingSMART/IFC4.x-IF/issues/169).
+> An official [Implementation Agreement](https://standards.buildingsmart.org/documents/Implementation/IFC_Implementation_Agreements/) does not appear to exist; however, this interpretation is consistent with discussions on [GitHub](https://github.com/buildingSMART/IFC4.x-IF/issues/169) [4].
 
 ### 2.6.3 Compute Point on Curve
 
@@ -1646,7 +1646,7 @@ The zero-length `IfcCurveSegment` is placed at the endpoint of the alignment wit
 ## 2.13 Summary and Implementation Checklist
 
 | # | Item | Notes |
-|---|---|---|
+|-----|---------------------------------------------|---------------------------------------------|
 | 1 | Use `IfcLengthMeasure` for `SegmentStart` and `SegmentLength` on every `IfcCurveSegment` | Arc-length parameterization is mandatory per IFC schema Informal Proposition 1; `IfcParameterValue` (unit parameterization) is not valid for alignment geometry |
 | 2 | Handle negative `SegmentStart` and `SegmentLength` | A negative `SegmentStart` locates the trim origin on the opposite side of the parent curve's reference point; a negative `SegmentLength` indicates trimming in the direction of decreasing parameter. Both can occur in any combination. |
 | 3 | For clothoid curves, convert `SegmentStart` from arc-length to unit parameter before evaluating | Compute $u = s / \|A\sqrt{\pi}\|$ where $A$ is the clothoid constant; the Fresnel integrals are defined in terms of $u$, not $s$ |

@@ -3,7 +3,7 @@
 ## 12.1 Background
 
 The test cases in this chapter are inspired by the alignment test sets developed by
-Andreas Pinzenöhler for the buildingSMART Germany chapter's BIM Fit Check competition,
+Andreas Pinzenöhler for the buildingSMART Germany chapter's BIM Fit Check competition [7],
 and by the EnrichIFC4x3 reference implementation developed by Peter Bonsma and published
 in the [IFC-Rail-Unit-Test-Reference-Code](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code)
 repository. Both bodies of work established the principle of pairing semantic IFC files
@@ -13,8 +13,6 @@ The goal of this testset is to give implementors a concrete, mechanically verifi
 check for their alignment geometry code. Each test case is deliberately simple: a single
 100 m segment of one curve type, with known input parameters and published reference
 coordinates sampled at 1 m intervals. Each test case is provided in three unit variants — SI meters, US survey feet, and international feet — making the set a direct check for unit-conversion correctness as well as geometric accuracy.
-
----
 
 ## 12.2 Testset Structure
 
@@ -167,8 +165,6 @@ panel shows the corresponding cant profile.
 ![Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)](testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_Meter.svg)
 
 **Figure 12.2.5-1** — Combined horizontal and cant plot for `Cant_HelmertCurve_100.0_300_1000_Meter`.
-
----
 
 ## 12.3 Test Cases
 
@@ -428,8 +424,6 @@ The three direction vectors (`RefDir`, `Y`, `Axis`) form an orthonormal right-ha
 frame at each point. For alignments without cant, `Axis` is perpendicular to the
 horizontal plane and `Y_dz` is zero. For railway alignments with cant, `Axis` is banked
 about the forward tangent and both `Y_dz` and `Axis_dy` become non-zero.
-
----
 
 ## 12.5 Validation Guidance
 

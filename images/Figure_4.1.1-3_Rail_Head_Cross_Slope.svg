@@ -317,7 +317,7 @@ z
      </g>
     </g>
     <g id="text_7">
-     <!-- distance along, D -->
+     <!-- distance along, s (m) -->
      <g transform="translate(192.500625 335.860562) scale(0.1 -0.1)">
       <defs>
        <path id="DejaVuSans-64" d="M 2906 2969 
@@ -581,44 +581,9 @@ L 750 256
 L 750 794 
 z
 " transform="scale(0.015625)"/>
-       <path id="DejaVuSans-44" d="M 1259 4147 
-L 1259 519 
-L 2022 519 
-Q 2988 519 3436 956 
-Q 3884 1394 3884 2338 
-Q 3884 3275 3436 3711 
-Q 2988 4147 2022 4147 
-L 1259 4147 
-z
-M 628 4666 
-L 1925 4666 
-Q 3281 4666 3915 4102 
-Q 4550 3538 4550 2338 
-Q 4550 1131 3912 565 
-Q 3275 0 1925 0 
-L 628 0 
-L 628 4666 
-z
-" transform="scale(0.015625)"/>
       </defs>
-      <use xlink:href="#DejaVuSans-64"/>
-      <use xlink:href="#DejaVuSans-69" transform="translate(63.476562 0)"/>
-      <use xlink:href="#DejaVuSans-73" transform="translate(91.259766 0)"/>
-      <use xlink:href="#DejaVuSans-74" transform="translate(143.359375 0)"/>
-      <use xlink:href="#DejaVuSans-61" transform="translate(182.568359 0)"/>
-      <use xlink:href="#DejaVuSans-6e" transform="translate(243.847656 0)"/>
-      <use xlink:href="#DejaVuSans-63" transform="translate(307.226562 0)"/>
-      <use xlink:href="#DejaVuSans-65" transform="translate(362.207031 0)"/>
-      <use xlink:href="#DejaVuSans-20" transform="translate(423.730469 0)"/>
-      <use xlink:href="#DejaVuSans-61" transform="translate(455.517578 0)"/>
-      <use xlink:href="#DejaVuSans-6c" transform="translate(516.796875 0)"/>
-      <use xlink:href="#DejaVuSans-6f" transform="translate(544.580078 0)"/>
-      <use xlink:href="#DejaVuSans-6e" transform="translate(605.761719 0)"/>
-      <use xlink:href="#DejaVuSans-67" transform="translate(669.140625 0)"/>
-      <use xlink:href="#DejaVuSans-2c" transform="translate(732.617188 0)"/>
-      <use xlink:href="#DejaVuSans-20" transform="translate(764.404297 0)"/>
-      <use xlink:href="#DejaVuSans-44" transform="translate(796.191406 0)"/>
      </g>
+     <text x="236.16" y="335.860562" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="10">distance along, s (m)</text>
     </g>
    </g>
    <g id="matplotlib.axis_2">
@@ -790,7 +755,7 @@ L 414.72 78.146655
      </g>
     </g>
     <g id="text_14">
-     <!-- cross slope angle -->
+     <!-- cross slope angle (rad) -->
      <g transform="translate(22.254687 217.843625) rotate(-90) scale(0.1 -0.1)">
       <defs>
        <path id="DejaVuSans-72" d="M 2631 2963 
@@ -837,24 +802,8 @@ Q 3116 1113 3116 1747
 z
 " transform="scale(0.015625)"/>
       </defs>
-      <use xlink:href="#DejaVuSans-63"/>
-      <use xlink:href="#DejaVuSans-72" transform="translate(54.980469 0)"/>
-      <use xlink:href="#DejaVuSans-6f" transform="translate(93.84375 0)"/>
-      <use xlink:href="#DejaVuSans-73" transform="translate(155.025391 0)"/>
-      <use xlink:href="#DejaVuSans-73" transform="translate(207.125 0)"/>
-      <use xlink:href="#DejaVuSans-20" transform="translate(259.224609 0)"/>
-      <use xlink:href="#DejaVuSans-73" transform="translate(291.011719 0)"/>
-      <use xlink:href="#DejaVuSans-6c" transform="translate(343.111328 0)"/>
-      <use xlink:href="#DejaVuSans-6f" transform="translate(370.894531 0)"/>
-      <use xlink:href="#DejaVuSans-70" transform="translate(432.076172 0)"/>
-      <use xlink:href="#DejaVuSans-65" transform="translate(495.552734 0)"/>
-      <use xlink:href="#DejaVuSans-20" transform="translate(557.076172 0)"/>
-      <use xlink:href="#DejaVuSans-61" transform="translate(588.863281 0)"/>
-      <use xlink:href="#DejaVuSans-6e" transform="translate(650.142578 0)"/>
-      <use xlink:href="#DejaVuSans-67" transform="translate(713.521484 0)"/>
-      <use xlink:href="#DejaVuSans-6c" transform="translate(776.998047 0)"/>
-      <use xlink:href="#DejaVuSans-65" transform="translate(804.78125 0)"/>
      </g>
+     <text x="0" y="0" transform="translate(22.254687 174.528) rotate(-90)" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="10">cross slope angle (rad)</text>
     </g>
    </g>
    <g id="line2d_25">

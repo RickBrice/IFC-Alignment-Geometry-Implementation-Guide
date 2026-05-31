@@ -62,6 +62,7 @@ CHAPTERS = [
     "10_Sectioned_Surfaces_and_Solids.md",
     "11_Precision_and_Tolerance.md",
     "12_Alignment_Geometry_Testset.md",
+    "13_References.md",
     "Appendix_A_LandXML.md",
     "Index.md",
 ]
@@ -179,6 +180,36 @@ def convert_svgs(markdown_texts: list[str], png_dir: Path) -> list[str]:
     return updated
 
 
+def resize_tall_images(docx_path: Path, target_width_in: float, target_height_in: float,
+                       threshold_in: float = 8.5) -> None:
+    """Resize any inline images taller than threshold_in to target_width_in × target_height_in.
+
+    Uses python-docx to set cx/cy directly in EMU, bypassing Pandoc attribute handling.
+    1 inch = 914400 EMU.
+    """
+    if not _DOCX_AVAILABLE:
+        print("  SKIP image resize: python-docx not installed (pip install python-docx)")
+        return
+
+    THRESHOLD = int(threshold_in  * 914400)
+    TARGET_W  = int(target_width_in  * 914400)
+    TARGET_H  = int(target_height_in * 914400)
+
+    doc = Document(str(docx_path))
+    resized = 0
+    for shape in doc.inline_shapes:
+        if shape.height is not None and shape.height > THRESHOLD:
+            shape.width  = TARGET_W
+            shape.height = TARGET_H
+            resized += 1
+
+    if resized:
+        doc.save(str(docx_path))
+        print(f"  Resized {resized} oversized image(s) to {target_width_in}\"×{target_height_in}\"")
+    else:
+        print(f"  No images taller than {threshold_in}\" found")
+
+
 def add_page_numbers(docx_path: Path) -> None:
     """Add page numbers to the footer:
     - Cover (first page of first section): suppressed.
@@ -283,6 +314,12 @@ def main() -> None:
                     lambda m: f':::{{custom-style="Title"}}\n{m.group(1)}\n:::',
                     texts[i], flags=re.MULTILINE,
                 )
+            elif path.name == "12_Alignment_Geometry_Testset.md":
+                texts[i] = re.sub(
+                    r'(!\[[^\]]*\]\([^)]*Cant_HelmertCurve_100\.0_300_1000_Meter[^)]*\))(?!\{)',
+                    r'\1{width=6.5in height=8in}',
+                    texts[i],
+                )
             elif path.name == "Cover.md":
                 # Apply Word styles and image sizing to cover elements.
                 # Done here rather than in the source markdown so Pandoc-specific
@@ -362,6 +399,9 @@ def main() -> None:
 
     print("Adding page numbers...")
     add_page_numbers(OUTPUT_DOCX)
+
+    print("Resizing oversized figures...")
+    resize_tall_images(OUTPUT_DOCX, target_width_in=6.5, target_height_in=8.0)
 
     size_mb = OUTPUT_DOCX.stat().st_size / 1_048_576
     print(f"\nOutput: {OUTPUT_DOCX}  ({size_mb:.1f} MB)")

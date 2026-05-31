@@ -223,3 +223,13 @@ LandXML `<StaEquation>` records station breaks where the back station and ahead 
 |`staInternal`    |Continuous internal station (no breaks)     |
 
 *Table A.6.2-1 — LandXML station equation attributes*
+
+Map each `<StaEquation>` to an `IfcReferent` as follows:
+
+- `staBack` → `Pset_Stationing.IncomingStation` (the station value on the incoming side of the break)
+- `staAhead` → `Pset_Stationing.Station` (the station value on the outgoing side)
+- `staInternal` → the `DistanceAlong` value in `IfcPointByDistanceExpression` for the referent's `IfcLinearPlacement`
+
+`staInternal` is the continuous internal distance along the alignment with no station breaks. It is therefore the correct value to use as `DistanceAlong` — it maps directly to arc-length along the horizontal curve without any equation adjustment. If `staInternal` is absent, compute `DistanceAlong` by walking the equation list as described in Section A.4.6.
+
+The resulting `IfcReferent` instances, including the starting station referent from A.6.1, are nested under the `IfcAlignment` via a dedicated `IfcRelNests` relationship in order of increasing `DistanceAlong`. See [Chapter 9](9_Referents_and_Stationing.md) for the complete `IfcReferent` structure, the nesting requirements, and the algorithm for converting station labels to `DistanceAlong` when equations are present.

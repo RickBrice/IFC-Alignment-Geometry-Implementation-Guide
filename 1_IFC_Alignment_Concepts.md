@@ -2,9 +2,9 @@
 
 ## 1.0 Introduction
 
-IFC4x3 ADD2, published as ISO 16739-1:2024, is the current IFC standard and includes full support for infrastructure alignment geometry. Despite the standard's publication, software adoption has lagged — not because the standard is new, but because implementation guidance has been scarce. This guide addresses that gap by documenting the relevant concepts and mathematics a software developer needs to implement alignment-based geometry.
+IFC4x3 ADD2, published as ISO 16739-1:2024 [1], is the current IFC standard and includes full support for infrastructure alignment geometry. Despite the standard's publication, software adoption has lagged — not because the standard is new, but because implementation guidance has been scarce. This guide addresses that gap by documenting the relevant concepts and mathematics a software developer needs to implement alignment-based geometry.
 
-If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673), Chapters 1 - 5 and Appendix B. 
+If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673) [2], Chapters 1 - 5 and Appendix B. 
 
 The IFC specification identifies concept templates as the mechanism for
 mapping semantic alignment representations to their geometric
@@ -13,7 +13,7 @@ project, alignment layout nesting, and the four alignment geometry
 variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
 provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The *partial* concept templates that
 cover individual curve segment geometry types, however, are sparse: they show class relationships but provide no
-mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Chapters 2–4); offset curves (Chapter 5); approximate polyline representations (Chapter 6); alignments that share a common horizontal layout (Chapter 7); linear placement of objects along an alignment (Chapter 8); referents and stationing, including station equations (Chapter 9); alignment-based physical geometry — sectioned surfaces and solids (Chapter 10); precision and tolerance guidance (Chapter 11); and examples and validation data (Chapter 12). LandXML-to-IFC conversion is covered in [Appendix A](Appendix_A_LandXML.md). This guide assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.
+mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Chapters 2–4); offset curves (Chapter 5); approximate polyline representations (Chapter 6); alignments that share a common horizontal layout (Chapter 7); linear placement of objects along an alignment (Chapter 8); referents and stationing, including station equations (Chapter 9); alignment-based physical geometry — sectioned surfaces and solids (Chapter 10); precision and tolerance guidance (Chapter 11); examples and validation data (Chapter 12); and references (Chapter 13). LandXML-to-IFC conversion is covered in [Appendix A](Appendix_A_LandXML.md). This guide assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.
 
 ## 1.1 Horizontal Alignment
 
@@ -147,15 +147,13 @@ defined by `IfcCurveSegment`. The mathematical computations for
 `IfcPolyline` and `IfcIndexedPolyCurve` produce approximate, discrete geometry
 rather than exact parametric curves. They arise in survey-derived alignments and early
 planning contexts. Their use, limitations, and incompatibility with the full semantic
-alignment definition are discussed in [Chapter 6](6_Approximate_Alignment_Geometry.md).
+alignment definition are discussed in [Chapter 6](6_Approximate_Alignment_Geometry.md). The IFC specification does not indicate the proper `RepresentationIdentifier` or `RepresentationType`; by analogy with the parametric curve variants, `'Axis'` with either `'Curve2D'` or `'Curve3D'` is appropriate.
 
-`IfcOffsetCurveByDistances` is treated in a dedicated section. [todo: link to the right chapter]
-
-[todo: need to say something about represention identifies for offset and polylines]
+`IfcOffsetCurveByDistances` is treated in [Chapter 5](5_OffsetCurves.md). Again, the representation identifier and representation type are not indicated in the specification. The most logical choice is to match the `BasisCurve`.
 
 ### 1.5.2 Understanding Geometric Representation of Alignment
 
-The semantic definition of an alignment and its geometric representation carry overlapping information — both describe segment types, lengths, and radii — but they serve different consumers. The semantic representation encodes design intent in domain vocabulary: a horizontal segment typed as `CLOTHOID` with a `StartRadius` of infinity, an `EndRadius` of 300 m, and a `SegmentLength` of 100 m tells a design application *what* the engineer specified and enables evaluation against standards for minimum radius, design speed, and sight distance. The geometric representation encodes the computed mathematical form: the exact start coordinates, the tangent bearing at each point, and parametric equations that yield position and direction at any arc-length along the curve — the form that a rendering engine, clash-detection tool, or quantity-takeoff calculation requires. Because the two representations serve different consumers, an IFC file may legally contain only the semantic definition, only the geometric representation, or both. [todo: verify this statement, keeping in mind IFC105 error]
+The semantic definition of an alignment and its geometric representation carry overlapping information — both describe segment types, lengths, and radii — but they serve different consumers. The semantic representation encodes design intent in domain vocabulary: a horizontal segment typed as `CLOTHOID` with a `StartRadius` of infinity, an `EndRadius` of 300 m, and a `SegmentLength` of 100 m tells a design application *what* the engineer specified and enables evaluation against standards for minimum radius, design speed, and sight distance. The geometric representation encodes the computed mathematical form: the exact start coordinates, the tangent bearing at each point, and parametric equations that yield position and direction at any arc-length along the curve — the form that a rendering engine, clash-detection tool, or quantity-takeoff calculation requires.
 
 The geometric representation of `IfcAlignment` consists of one or more `IfcShapeRepresentation` instances: a plan-view 2D curve and, where vertical or cant geometry is present, a 3D curve. These are illustrated in Figure 1.5.2-1.
 
@@ -239,7 +237,7 @@ IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
 Chapters [2](2_Horizontal_Alignments.md), [3](3_Vertical_Alignments.md), and [4](4_Cant_Alignments.md) discuss the mapping of the semantic definition of alignment segments (`IfcAlignmentSegment` subtypes) to their corresponding geometric representation (`IfcCurveSegment.ParentCurve`). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
 [IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
 at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
-(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry).
+(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry) [3].
 
 The cant segment mappings in the EnrichIfc4x3 reference implementation are incorrect. These errors are documented in Chapter 4, which presents corrected formulas and explains why the reference implementation is incorrect.
 
