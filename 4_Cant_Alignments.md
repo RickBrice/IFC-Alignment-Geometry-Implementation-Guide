@@ -48,7 +48,7 @@ When the segment start elevation is the same as the start of the next segment, t
 
 *Figure 4.1.1-2 - Deviating elevation of rails*
 
-The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction is generally upwards. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 as the rotation decreases. When the left and right rails are at the same elevation, The cross slope angle is measured from the y-axis is $\frac{\pi}{2}$.
+The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction is generally upwards. The cross slope angle is measured from the y-axis and orients a vector that is perpendicular to the plane of the railheads. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 rad as the rotation decreases. When the left and right rails are at the same elevation the cross slope angle is $\frac{\pi}{2}$.
 
 ![Figure 4.1.1-3 — Matplotlib line plot of the rail head cross slope angle (IfcCurveSegment.Placement.Axis direction, in radians) versus distance along a cant segment. The angle transitions from approximately 1.46 rad at the segment start toward π/2 (≈ 1.57 rad) as the rails reach equal elevation.](images/Figure_4.1.1-3_Rail_Head_Cross_Slope.svg)
 
