@@ -26,7 +26,7 @@ This chapter covers:
 
 Each vertical segment is parameterized by arc-length $s$ along its parent curve, where $s = 0$ at the start of the parent curve. The key semantic attributes are `IfcAlignmentVerticalSegment.StartDistAlong` (horizontal distance from the alignment start to the segment start), `HorizontalLength` (the horizontal projection of the segment), `StartHeight` (elevation at the segment start), and `StartGradient` and `EndGradient` (decimal slopes; e.g., $0.005 = 0.5\%$).
 
-`IfcCurveSegment.SegmentLength` stores arc-length along the parent curve, not horizontal distance. The evaluator parameter is horizontal distance $\ell$, which must be converted to arc-length $s$ before calling the parent curve equations. For the grades typical in road and railway design ($\leq 5\%$), the difference is small but non-zero.
+`IfcCurveSegment.SegmentLength` stores arc-length along the parent curve, **not** horizontal distance. The evaluator parameter is horizontal distance $\ell$, which must be converted to arc-length $s$ for use in the parent curve equations. For the grades typical in road and railway design ($\leq 5\%$), the difference is small but non-zero.
 
 The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \tan^{-1}(g(\ell))$, where $g(\ell)$ is the gradient. The cosine and sine of $\theta$ form the `RefDirection` of the vertical curve at that point.
 
