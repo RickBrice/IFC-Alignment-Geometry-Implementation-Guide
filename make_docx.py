@@ -308,6 +308,18 @@ def main() -> None:
                     lambda m: f':::{{custom-style="Frontmatter Heading"}}\n{m.group(1)}\n:::',
                     texts[i], flags=re.MULTILINE,
                 )
+                # Demote sub-headings to styled paragraphs so Word does not treat them
+                # as headings and export them as PDF bookmarks.
+                texts[i] = re.sub(
+                    r'^## (.+)$',
+                    lambda m: f'**{m.group(1)}**',
+                    texts[i], flags=re.MULTILINE,
+                )
+                texts[i] = re.sub(
+                    r'^### (.+)$',
+                    lambda m: f'***{m.group(1)}***',
+                    texts[i], flags=re.MULTILINE,
+                )
             elif path.name in BACKMATTER:
                 texts[i] = re.sub(
                     r'^# (.+)$',
