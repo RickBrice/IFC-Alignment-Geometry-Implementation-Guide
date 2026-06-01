@@ -81,7 +81,8 @@ def main():
     csv_files = sorted(CSV_ROOT.rglob('*.csv'))
     # CantAlignment plots are handled by generate_combined_plots.py (two-panel)
     csv_files = [f for f in csv_files
-                 if f.relative_to(CSV_ROOT).parts[0] != 'CantAlignment']
+                 if f.relative_to(CSV_ROOT).parts[0] != 'CantAlignment'
+                 and '3D' not in f.relative_to(CSV_ROOT).parts]
     print(f'Plotting {len(csv_files)} files...')
     skipped = []
     written = []

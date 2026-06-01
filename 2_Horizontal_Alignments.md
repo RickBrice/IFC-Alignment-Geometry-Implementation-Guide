@@ -218,7 +218,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0 = 0$.
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -259,9 +259,7 @@ $$M_h = \begin{bmatrix}
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix} 
-\begin{bmatrix}
-I
-\end{bmatrix} 
+\mathbf{I} 
 \begin{bmatrix}
 1 & 0 & 0 & 1500\\
 0 & 1 & 0 & 0\\
@@ -346,13 +344,13 @@ curve segment.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
 The trim begins where the local x-axis of the circle intersects the circumference. The circle is centered at (0,300) with radius = 300 and the local x-axis is in the direction of the global y-axis. This puts the trim start point at $x_0 = 0, y_0 = 0$ and the tangent direction (1,0) with $\theta_0 = 0$
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -382,12 +380,8 @@ The resulting position matrix is
 
 $$M_h = M_{CSP} M_N M_{PC}$$
 
-$$M_h = \begin{bmatrix}
-I
-\end{bmatrix} 
-\begin{bmatrix}
-I
-\end{bmatrix} 
+$$M_h = \mathbf{I} 
+\mathbf{I} 
 \begin{bmatrix}
 0.98614323 & -0.16589613 & 0 & 49.76883981\\
 0.16589613 & 0.98614323 & 0 & 4.1570305\\
@@ -502,7 +496,7 @@ Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix. This is not true in all cases.
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
@@ -574,7 +568,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}I\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = \mathbf{I}
 \begin{bmatrix}
 0.971788979 & -0.235852028 & 0 & 140.705309648 \\
 0.235852028 & 0.971788979 & 0 & 22.529160405 \\
@@ -709,13 +703,13 @@ Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -768,7 +762,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}I\end{bmatrix} \, \begin{bmatrix}I\end{bmatrix}  
+$$M_{h} = M_{CSP}\ M_N\ M_{PC} = \mathbf{I} \, \mathbf{I}  
 \begin{bmatrix}
 0.986539 & -0.1635219 & 0 & 99.72593255 \\
 0.1635219 & 0.986539 & 0 & 5.5100 \\
@@ -1131,13 +1125,13 @@ Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -1164,7 +1158,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC}= \begin{bmatrix}I\end{bmatrix} \, \begin{bmatrix}I\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC}= \mathbf{I} \, \mathbf{I}
 \begin{bmatrix}
 0.999512 & -0.031245 & 0 & 49.9962109\\
 0.031245 & 0.999512 & 0 & 0.416638875\\
@@ -1243,13 +1237,13 @@ Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -1364,13 +1358,13 @@ Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -1400,7 +1394,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}I\end{bmatrix} \, \begin{bmatrix}I\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = \mathbf{I} \, \mathbf{I}
 \begin{bmatrix}
 0.98614 & -0.16589 & 0 & 99.75698\\
 0.16589 & 0.98614 & 0 & 4.70132\\
@@ -1548,13 +1542,13 @@ Represent `IfcCurveSegment.Placement` in matrix form. In this example, the
 placement is at (0,0) with RefDirection (1,0) which results in an
 identity matrix.
 
-$$M_{CSP} = \begin{bmatrix}I\end{bmatrix}$$
+$$M_{CSP} = \mathbf{I}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start and form the normalization matrix $M_N$
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0, y_0 = 0, \theta_0=0$.
 
-Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \begin{bmatrix}I\end{bmatrix}$.
+Since $x_0 = 0$, $y_0 = 0$, and $\theta_0 = 0$, $M_N = \mathbf{I}$.
 
 #### Step 3 — Evaluate and map each point
 
@@ -1584,7 +1578,7 @@ $$M_{PC} = \begin{bmatrix}
 
 Apply the normalization and curve segment placement to the parent curve point
 
-$$M_{h} = M_{CSP} M_N M_{PC} = \begin{bmatrix}I\end{bmatrix} \, \begin{bmatrix}I\end{bmatrix}
+$$M_{h} = M_{CSP} M_N M_{PC} = \mathbf{I} \, \mathbf{I}
 \begin{bmatrix}
 0.9861432315629198 & -0.16589613269344608 & 0 & 99.76319823871657\\
 0.16589613269344608 & 0.9861432315629198 & 0 & 4.499916129045404\\

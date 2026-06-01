@@ -123,6 +123,14 @@ file). Their purpose is to provide concrete values that any implementation can c
 its output against, independent of the IFC files. The file format and column
 definitions are described in §12.4.
 
+Vertical and cant alignment folders each contain an additional `3D/` subfolder with a
+second set of reference files in the same 13-column format used for real-world
+alignments (§12.4.2). These 3D files are produced by evaluating the combined 3D curve
+(`IfcGradientCurve` for vertical, `IfcSegmentedReferenceCurve` for cant) at the same
+101 sample points. They let an implementor validate the complete evaluation pipeline —
+not just the component-plane output — against controlled, single-component synthetic
+geometry.
+
 The following excerpt shows the first five rows of
 `HorizontalAlignment/BlossCurve/Horizontal_BlossCurve_100.0_300_1000_Meter.csv` — a Bloss
 arc-to-arc transition from R = +300 m to R = +1000 m:
@@ -159,8 +167,8 @@ three subfolders that mirror the alignment type structure:
 - **`CantAlignment/{type}/`** — one two-panel plot per cant file, pairing the cant profile with its matching horizontal plan view.
 
 Figure 12.2.5-1 shows a representative example: a Helmert arc-to-arc transition from
-R = +300 m to R = +1000 m. The upper panel shows the horizontal plan view; the lower
-panel shows the corresponding cant profile.
+R = +300 m to R = +1000 m. The upper panel shows the horizontal plan view; the middle
+panel shows the corresponding cant profile; the lower panel shows the cross-slope direction.
 
 ![Figure 12.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)](testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_Meter.svg)
 
@@ -376,7 +384,7 @@ $\theta = \tan^{-1}(dy / dx)$.
 | `dist_along` | Horizontal distance from the segment start (project units) |
 | `Y` | Elevation (project units) |
 | `RefDir_dx` | X component of the tangent direction ($\cos\theta$) |
-| `RefDir_dy` | Z component of the tangent direction ($\sin\theta$, proportional to grade) |
+| `RefDir_dy` | Y component of the tangent direction ($\sin\theta$, proportional to grade) |
 
 The parameter passed to the evaluator is horizontal distance, not arc length, even
 though `SegmentLength` in the IFC file stores the arc length of the curve. This is
@@ -425,6 +433,36 @@ frame at each point. For alignments without cant, `Axis` is perpendicular to the
 horizontal plane and `Y_dz` is zero. For railway alignments with cant, `Axis` is banked
 about the forward tangent and both `Y_dz` and `Axis_dy` become non-zero.
 
+### 12.4.3 3D Synthetic Testset Coordinates
+
+The `3D/` subfolders under `Alignment-reference-testset/VerticalAlignment/` and
+`…/CantAlignment/` contain combined 3D reference coordinates for each synthetic test
+case. Each file uses the same 13-column header as §12.4.2 and is sampled at the same
+101 points (0–100 m at 1 m intervals in SI metres, reported in project units).
+
+**File naming** follows the same convention as the 2D files, with the `.ifc` extension
+replaced by `.csv`:
+
+```
+VerticalAlignment/{CurveType}/3D/Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.csv
+CantAlignment/{CurveType}/3D/Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+```
+
+**Curve evaluated.** For vertical test cases (which include a straight horizontal
+layout), the evaluated curve is `IfcGradientCurve`. For cant test cases (which include a
+matching horizontal and a flat zero-grade vertical), the evaluated curve is
+`IfcSegmentedReferenceCurve`.
+
+**Interpreting the output.** Because vertical test cases use a straight horizontal
+alignment, the X and Y position columns are collinear with distance along, and curvature
+appears only in the Z (elevation) column and the `RefDir_dz` component. Because cant
+test cases add a flat zero-elevation vertical to the same straight horizontal, Z is
+always 0.0 at position, but the `Axis` and `Y` vectors rotate about the forward tangent
+to reflect the applied cant. This isolation makes the 3D synthetic files a controlled
+integration check: a position error in X or Y points to a horizontal evaluation bug; an
+error in Z or `RefDir_dz` points to a vertical bug; an error in `Axis_dy`/`Axis_dz`
+(with correct position) points to a cant rotation bug.
+
 ## 12.5 Validation Guidance
 
 ### 12.5.1 What to Check
@@ -442,7 +480,10 @@ This applies both when constructing a geometry IFC file from a semantic file and
 reading a reference geometry file — in either case no numerical evaluation is required.
 
 **Geometric accuracy.** Evaluate a geometry IFC alignment at 1 m intervals and compare
-the resulting coordinates against the reference values. This is the primary numerical test.
+the resulting coordinates against the reference values. This is the primary numerical
+test. For vertical and cant cases, compare both the component-plane 2D output (§12.4.1)
+and the full 3D placement matrix output (§12.4.3) to isolate pipeline bugs from
+component evaluation bugs.
 
 ### 12.5.2 Comparison Approach
 

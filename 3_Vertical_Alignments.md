@@ -654,7 +654,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 Because the parent curve is located at (0,0) in the direction (1,0), $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0$.
 
-Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = \begin{bmatrix}I\end{bmatrix}$
+Since $x_0 = 0,\ y_0 = 0,\ \theta_0 = 0,\ M_N = \mathbf{I}$
 
 #### Step 3 — Evaluate and map each point in the vertical plane
 
@@ -683,9 +683,7 @@ $$M_v = M_{CSP}\ M_N\ M_{PC} = \begin{bmatrix}
 0 & 0 & 1 & 0 \\
 0 & 0 & 0 & 1
 \end{bmatrix}
-\begin{bmatrix}
-I
-\end{bmatrix}
+\mathbf{I}
 \begin{bmatrix}
 0.999923825 & -0.01234281 & 0 & 300 \\
 0.01234281 & 0.999923825 & 0 & 125.4765625 \\

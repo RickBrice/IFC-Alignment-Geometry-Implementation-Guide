@@ -35,7 +35,7 @@ def make_file(v_type, start_g, end_g, start_label, end_label, unit_system):
     common.add_h_segment(ifc, h_layout, 0.0, 0.0, L * scale, 'LINE')
     # start_g / end_g are percentage gradients — dimensionless, not scaled
     common.add_v_segment(ifc, v_layout, 0.0, L * scale, H0 * scale,
-                         start_g, end_g, v_type)
+                         start_g / 100.0, end_g / 100.0, v_type)
     dest = common.write_ifc(ifc, OUTPUT_ROOT / folder, filename)
     print(f"  {dest.name}")
 

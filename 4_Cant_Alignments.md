@@ -950,7 +950,7 @@ $$a_{0} = D_s,\ A_{0} = \frac{L^{\frac{2}{1}}}{{\left|a_0\right|}^{1}}\frac{a_0}
 
 Linear Term
 
-$$a_1 = 0,\ A_{1}$$
+$$a_1 = 0,\ A_{1} = 0$$
 
 Quadratic Term
 
@@ -962,19 +962,19 @@ $$a_{3} = -2\Delta D,\ A_{3} = \frac{{L}^{\frac{5}{4}}}{{\left|a_3\right|}^{\fra
 
 ### 4.6.2 Semantic Definition to Geometry Mapping
 
-Consider an alignment segment that has a Bloss transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
+Consider an alignment segment that has a Bloss transition curve towards the left. The cant transitions from zero to $160\ mm$ over $100\ m$.
 
 ~~~
-#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.BLOSSCURVE.);
+#64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.,0.16,.BLOSSCURVE.);
 ~~~
 
 Compute the parent curve parameters
 
-$$D_{s} = \frac{0 + 0.16}{2} = 0.08\ m,\ D_{e} = \frac{0 + 0\ m}{2} = 0.\ m,\ \Delta D = 0.0 - 0.16 = -0.08\ m$$
+$$D_{s} = \frac{0 + 0}{2} = 0.0\ m,\ D_{e} = \frac{0 + 0.16\ m}{2} = 0.08\ m,\ \Delta D = 0.08 - 0.0 = 0.08\ m$$
 
 Constant Term
 
-$$a_{0} = -0.08\ m,\ A_{0} = \frac{(100\ m)^{2}}{\left|-0.08\ m \right|}\frac{-0.08\ m}{\left| -0.08\ m \right|} = 125000\ m$$
+$$a_{0} = 0\ m,\ A_{0} = 0\ m$$
 
 Linear Term
 
@@ -982,11 +982,11 @@ $$A_{1} = 0\ m$$
 
 Quadratic Term
 
-$$a_{2} = 3(-0.08\ m) = -0.24\ m,\ A_{2} = \frac{(100\ m)^{\frac{4}{3}}}{{\left|-0.24\ m\right|}^{\frac{1}{3}}}\left( \frac{-0.24\ m}{\left|-0.24\ m\right|} \right) = -746.9007911\ m$$
+$$a_{2} = 3(0.08\ m) = 0.24\ m,\ A_{2} = \frac{(100\ m)^{\frac{4}{3}}}{{\left|0.24\ m\right|}^{\frac{1}{3}}}\left( \frac{0.24\ m}{\left|0.24\ m\right|} \right) = 746.9007911\ m$$
 
 Cubic Term
 
-$$a_{3} = -2\Delta D = -2(-0.08\ m) = 0.16\ m,\ A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{{\left|0.16\ m\right|}^{\frac{1}{4}}}\left( \frac{0.16\ m}{\left|0.16\ m\right|} \right) = 500\ m$$
+$$a_{3} = -2\Delta D = -2(0.08\ m) = -0.16\ m,\ A_{3} = \frac{{(100\ m)}^{\frac{5}{4}}}{{\left|-0.16\ m\right|}^{\frac{1}{4}}}\left( \frac{-0.16\ m}{\left|-0.16\ m\right|} \right) = -500\ m$$
 
 The parent curve is
 
@@ -994,11 +994,11 @@ The parent curve is
 #96=IFCCARTESIANPOINT((0.,0.));
 #97=IFCDIRECTION((1.,0.));
 #98=IFCAXIS2PLACEMENT2D(#96,#97);
-#99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,500.00000000000006,-746.90079109286057,$,125000.);
+#99=IFCTHIRDORDERPOLYNOMIALSPIRAL(#98,-500.0,746.90079109286057,$,$);
 ~~~
 
 
-$$D_0 = D(0\ m) = (100\ m)^2\left( \frac{500\ m}{\left| (500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(-746.9007911\ m)^{3}}(0\ m)^{2} + \frac{1}{125000\ m} \right) = 0.08\ m$$
+$$D_0 = D(0\ m) = (100\ m)^2\left( \frac{-500\ m}{\left| (-500\ m)^{5} \right|}(0\ m)^{3} + \frac{1}{(746.9007911\ m)^{3}}(0\ m)^{2} + 0\ m\right) = 0.0\ m$$
 
 $$D'(0) = 0,\ \theta_0 = 0$$
 
@@ -1008,17 +1008,17 @@ $$dy_x = \sin(\theta_0) = 0$$
 
 The cross-slope at the start of the segment is
 
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.16 - 0.0}{1.5}\right) = 1.463926346$$
+$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.0 - 0.0}{1.5}\right) = 1.57079633$$
 
 The cross slope orientation is
 
-$$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$$
+$$dy_z = \cos(\phi_s) = \cos(1.57079633) = 0.0$$
 
-$$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
+$$dz_z = \sin(\phi_s) = \sin(1.57079633) = 1.0$$
 
 ~~~
 #100=IFCCARTESIANPOINT((0.,0.08,0.));
-#101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
+#101=IFCDIRECTION((0.,0.0,1.0));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
 #104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
@@ -1032,38 +1032,38 @@ Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of t
 
 $$\mathbf{RefDir}_p = (1,\ 0,\ 0)$$
 
-$$\mathbf{Axis}_p = (0,\ 0.106667,\ 0.994295)$$
+$$\mathbf{Axis}_p = (0,\ 0,\ 1)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.994295,\ -0.1066667)$$
+$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 1,\ 0)$$
 
 $$M_{CSP} = \begin{bmatrix}
-                 1 &                  0 &                  0 &                  0 \\
-                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
-                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
-                 0 &                  0 &                  0 &                  1
+                 1 & 0 & 0 & 0 \\
+                 0 & 1 & 0 & 0.08 \\
+                 0 & 0 & 1 & 0 \\
+                 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 
-$$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$$
+$$s_0 = 0,\ D(0) = 0.0\ m,\ D'(0) = 0,\ \theta_s = 0$$
 
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\frac{{0.16 - 0}}{1.5} \right) = 1.463926346$$
+$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\frac{{0 - 0}}{1.5} \right) = 1.57079633$$
 
 $$\mathbf{X}_s = (1,\ 0,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$$
+$$\mathbf{Z}_s = (0,\ 0,\ 1)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.994295,\ -0.106667)$$
+$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 1,\ 0)$$
 
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295)$$
+$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0,\ 1)$$
 
 $$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
 
 $$M_{PCS} = \begin{bmatrix}
-                 1 &                  0 &                 -0 &                  0 \\
-                 0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
-                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
-                 0 &                  0 &                  0 &                  1
+                 1 & 0 & 0 & 0 \\
+                 0 & 1 & 0 & 0.08 \\
+                 0 & 0 & 1 & 0 \\
+                 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
@@ -1072,27 +1072,29 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 
 $$D(50\ m) = 0.04\ m$$
 
-$$D'(50\ m) = (100\ m)^{2}\left( 3\frac{500\ m}{\left| (500\ m)^{5} \right|}(50\ m)^{2} + \frac{2}{(-746.9007911\ m)^{3}}(50\ m) \right) = -0.0012$$
+$$D'(50\ m) = (100\ m)^{2}\left( 3\frac{-500\ m}{\left| (-500\ m)^{5} \right|}(50\ m)^{2} + \frac{2}{(746.9007911\ m)^{3}}(50\ m) \right) = 0.0012$$
 
-$$\theta_{\ell} =\tan^{-1}(-0.0012) = -0.0011999994240005001$$
+$$\theta_{\ell} =\tan^{-1}(0.0012) = 0.0011999994240005001$$
 
-$$\phi(\ell) = 1.463926346 + \left(\frac{\frac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$$
+$$\phi_e = \cos^{-1}\left(\frac{D_{er} - D_{el}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.16 - 0.0}{1.5}\right) = 1.46392634$$
 
-$$\mathbf{X} _{\ell} = (0.9999980,\ -0.0019997,\ 0)$$
+$$\phi(\ell) = 1.57079633 + \left(\frac{1.46392634 - \frac{\pi}{2}}{0.08}\right)(0.08 - 0.04) = 1.517361336$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.053107436,\ 0.998588804)$$
+$$\mathbf{X} _{\ell} = (0.9999980,\ 0.0012,\ 0)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.001997,\ 0.998587,\ -0.053107)$$
+$$\mathbf{Z} _{\ell} = (0,\ 0.05340957,\ 0.99857269)$$
 
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (0.000106,\ 0.053107,\ 0.998589)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (-0.001997,\ 0.998572,\ -0.0534095)$$
 
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.9999980,\ -0.0019997,\ 0)$$
+$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (0,\ 0.0534095,\ 0.9985727)$$
+
+$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.9999980,\ 0.0012,\ 0)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-   0.999999280000778 &  0.00119828636590682 & 6.40913860804715e-05 &                   50 \\
--0.00119999913600094 &    0.998571971589017 &   0.0534094884003928 &   0.0399999999999999 \\
-                   0 &  -0.0534095268552106 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+   0.99999928 & -0.0012 &                    0 &                   50 \\
+ 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0.04 \\
+                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1                   
 \end{bmatrix}$$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
@@ -1114,10 +1116,10 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-   0.999999280000778 &  0.00119828636590682 & 6.40913860804715e-05 &                   50 \\
--0.00119999913600094 &    0.998571971589017 &   0.0534094884003928 &   0.0399999999999999 \\
-                   0 &  -0.0534095268552106 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+   0.999999280000778 & -0.00119828636590682 & 0 &                   50 \\
+ 0.00119999913600094 &    0.998571971589017 &   0.0534095653100558 &   0.04 \\
+                   0 &  -0.0534095268552103 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1                   
 \end{bmatrix}$$
 
 ## 4.7 Cosine Curve
@@ -1414,8 +1416,8 @@ $$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.9943
 $$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
 
 $$M_{PCS} = \begin{bmatrix}
-                    1 & -3.36880194376639e-21 & -3.61400724161835e-22 &                     0 \\
-  3.3881317890172e-21 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
+                    1 &  0 & 0 &                     0 \\
+                    0 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
                     0 &    -0.106666666666667 &     0.994294836666782 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
@@ -1720,10 +1722,10 @@ $$M_v = \begin{bmatrix}
 From the Bloss cant example in Section 4.6
 
 $$M_c = \begin{bmatrix}
-0.999999280 & 0.00119830570 & 0.0 & 50.0 \\
--0.00119999914 & 0.998588085 & 0.0531073592 & 0.04 \\
-0 & 0 & 0.9985888041 & 0 \\
-0 & 0 & 0 & 1
+   0.99999928 & -0.0012 &                    0 &                   50 \\
+ 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0.04 \\
+                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1                   
 \end{bmatrix}$$
 
 #### Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix
@@ -1741,10 +1743,10 @@ $$M'_v =
 Construct $M^\prime_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
 
 $$M'_c = \begin{bmatrix}
-0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
--0.00119999914 & 0.998588085 & 0.0531073592 & 0 \\
-0 & 0 & 0.9985888041 & 0.04 \\
-0 & 0 & 0 & 1
+   0.99999928 & -0.0012 &                    0 &                   0 \\
+ 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0 \\
+                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0.04 \\
+                   0 &                    0 &                    0 &                    1                   
 \end{bmatrix}$$
 
 Extract position vectors from each modified matrix, $M^\prime_v,\ M^\prime_c$, (setting row 4 to zero), then zero column 4:
@@ -1761,10 +1763,10 @@ $$M''_{v} = \begin{bmatrix}
 \end{bmatrix}$$
 
 $$M''_c = \begin{bmatrix}
-0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
--0.00119999914 & 0.998588085 & 0.0531073592 & 0.0 \\
-0 & 0 & 0.9985888041 & 0 \\
-0 & 0 & 0 & 1
+   0.99999928 & -0.0012 &                    0 &                   0 \\
+ 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0 \\
+                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1                   
 \end{bmatrix}$$
 
 Multiply the three orientation matrices, then add back both position offsets:
@@ -1785,26 +1787,26 @@ $$M' =
 0 & 0 & 0 & 1   
 \end{bmatrix}
 \begin{bmatrix}
-0.999999280 & 0.00119830570 & 0.0 & 0.0 \\
--0.00119999914 & 0.998588085 & 0.0531073592 & 0.0 \\
-0 & 0 & 0.9985888041 & 0 \\
-0 & 0 & 0 & 1
+   0.99999928 & -0.0012 &                    0 &                   0 \\
+ 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0 \\
+                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
+                   0 &                    0 &                    0 &                    1                   
 \end{bmatrix}
 $$
 
 $$M' = \begin{bmatrix}
-0.999473545 & -0.0324443047 & 0 &  49.9962109\\
-0.0324443047 &  0.999473545 & 0 &  0.416638875\\
- 0 & 0 & 1 & 0 \\
- 0 & 0 & 0 & 1
- \end{bmatrix}$$
+0.999474 & -0.0323981 & -0.00167 & 49.9962109 \\
+0.032444 & 0.9980472 & 0.053383 & 0.416638875 \\
+0 & -0.0534095 & 0.998573 & 0 \\
+0 & 0 & 0 & 1 \\
+\end{bmatrix}$$
 
 $$M_{3Dcant} = 
 \begin{bmatrix}
-0.999473545 & -0.0324443047 & 0 &  49.9962109\\
-0.0324443047 &  0.999473545 & 0 & 0.416638875\\
-0 & 0 & 1 & 0\\
-0 & 0 & 0 & 1
+0.999474 & -0.0323981 & -0.00167 & 49.9962109 \\
+0.032444 & 0.9980472 & 0.053383 & 0.416638875 \\
+0 & -0.0534095 & 0.998573 & 0 \\
+0 & 0 & 0 & 1 \\
 \end{bmatrix}
 +
 \begin{bmatrix}
@@ -1824,10 +1826,10 @@ $$
 
 $$M_{3Dcant} = 
 \begin{bmatrix}
-0.999473545 & -0.0324443047 & 0 &  49.9962109\\
-0.0324443047 &  0.999473545 & 0 & 0.416638875\\
-0 & 0 & 1 & 0.04\\
-0 & 0 & 0 & 1
+0.999474 & -0.0323981 & -0.00167 & 49.9962109 \\
+0.032444 & 0.9980472 & 0.053383 & 0.416638875 \\
+0 & -0.0534095 & 0.998573 & 0.04 \\
+0 & 0 & 0 & 1 \\
 \end{bmatrix}
 $$
 

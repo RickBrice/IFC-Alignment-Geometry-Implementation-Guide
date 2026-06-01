@@ -110,7 +110,8 @@ def make_combined_plot(cant_csv: Path, horiz_csv: Path, dest: Path):
 
 
 def main():
-    cant_csvs = sorted((CSV_ROOT / 'CantAlignment').rglob('*.csv'))
+    cant_csvs = sorted(f for f in (CSV_ROOT / 'CantAlignment').rglob('*.csv')
+                       if '3D' not in f.parts)
     print(f'Processing {len(cant_csvs)} cant files...')
     skipped = []
     written = []
