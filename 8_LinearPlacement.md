@@ -109,9 +109,6 @@ The connection between interpretation 2 and the broader IFC linear referencing m
 
 The practical consequence of this ambiguity is graphically illustrated in §10.5 — Figure 10.5-2 shows the same `IfcSectionedSolidHorizontal` model with `Axis` omitted rendered by two viewers that adopted opposite defaults, producing visibly different geometry on a 10% grade.
 
-**Recommendation:** `IfcAxis2Placement3D` avoids this problem by stating its defaults explicitly — authors of `IfcAxis2PlacementLinear` should do the same. Always supply `Axis = (0, 0, 1)` explicitly rather than relying on the default. For infrastructure design, interpretation 1 is the appropriate choice and matches traditional plan-and-profile intent.
-
-
 ## 8.4 Longitudinal Offset and Unreachable Points
 
 ### 8.4.1 What Is an Unreachable Point?
