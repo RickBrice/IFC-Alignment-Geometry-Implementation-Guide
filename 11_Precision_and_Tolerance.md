@@ -39,7 +39,7 @@ Mismatches are inevitable in practice. They are especially common in alignments 
 
 Several reconciliation strategies are possible; the right choice depends on the application's purpose:
 
-- **Accept and evaluate as-is.** Each segment is evaluated from its own stored start point. Gaps and overlaps at joints are ignored. The declared transition code is taken as a statement of design intent rather than a geometric guarantee. This is the most faithful reading of the file and is appropriate for applications whose primary task is geometry display or quantity take-off where sub-metre positional accuracy is sufficient.
+- **Accept and evaluate as-is.** Each segment is evaluated from its own stored start point. Gaps and overlaps at joints are ignored. The declared transition code is taken as a statement of design intent rather than a geometric guarantee. This is the most faithful reading of the file and is appropriate for applications whose primary task is geometry display or quantity take-off where sub-meter positional accuracy is sufficient.
 
 - **Chain forward (snap).** The computed end point of each segment is carried forward as the start point of the next, overriding the stored value. This produces a geometrically continuous chain but subtly distorts the individual segment parameters. It is appropriate when downstream processing requires strict continuity — for example, when constructing a composite curve for clash detection or BIM integration — provided the caller understands the parameters have been adjusted.
 
