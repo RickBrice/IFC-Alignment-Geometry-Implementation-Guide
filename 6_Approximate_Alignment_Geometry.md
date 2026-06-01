@@ -63,7 +63,7 @@ the requirements for the geometric counterpart to a full alignment layout.
 
 While `IfcPolyline` and `IfcIndexedPolyCurve` could each serve as an
 `IfcCurveSegment.ParentCurve`, they cannot produce the required zero-length closing
-segment. A zero-length polyline segment requires two consecutive coincident vertices;
+segment. A zero-length polyline segment requires two coincident vertices;
 `IfcPolyline` WHERE rule WR1 explicitly prohibits this. `IfcIndexedPolyCurve` has no
 equivalent schema-level prohibition, but a coincident point pair produces a degenerate
 segment with an undefined tangent direction. This is unfortunate because an application needing detailed semantic information and only an approximate geometric representation is left with an unsupported use case.
