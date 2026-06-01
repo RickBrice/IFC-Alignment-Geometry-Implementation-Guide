@@ -36,7 +36,7 @@ The stringline approach is not an alternative to the template approach but an au
 `IfcSectionedSurface` defines a surface by sweeping open cross-sections along a directrix curve.
 
 | Attribute | Type | Description |
-|-----------|------|-------------|
+|-------------------------|------------------------------|---------------------------------------------|
 | `Directrix` | `IfcCurve` | The curve along which sections are swept |
 | `CrossSectionPositions` | `LIST [2:?] OF IfcAxis2PlacementLinear` | Positions along the directrix at which sections are placed |
 | `CrossSections` | `LIST [2:?] OF IfcProfileDef` | Open cross-section profiles, one per position |
@@ -96,7 +96,7 @@ With $\hat{u}$ pointing up and $\hat{t}$ in the direction of travel, $\hat{x}$ p
 `IfcSectionedSolidHorizontal` defines a solid by sweeping closed cross-sections along a directrix curve. It follows the same fundamental structure as `IfcSectionedSurface` but produces a volumetric solid bounded by the swept faces and the cross-section planes at each end.
 
 | Attribute | Type | Description |
-|-----------|------|-------------|
+|-------------------------|------------------------------|---------------------------------------------|
 | `Directrix` | `IfcCurve` | The curve along which sections are swept |
 | `CrossSections` | `LIST [2:?] OF IfcProfileDef` | Closed cross-section profiles, one per position |
 | `CrossSectionPositions` | `LIST [2:?] OF IfcAxis2PlacementLinear` | Positions along the directrix at which sections are placed |
@@ -219,7 +219,7 @@ The file [`IfcSectionedSurface_with_stringlines_as_resource_entities.ifc`](examp
 
 Only two cross-sections are authored — one at each end of the surface. The guide curves carry all intermediate geometry. Guide curves A and C define a variable-width surface: both edges begin at ±30 m, widen to ±45 m at the 100 m midpoint, and return to ±30 m at 200 m. Guide curve B holds the centerline at a constant zero offset throughout. Without the guide curves, linear interpolation between the two end sections would produce a uniform 30 m width along the full 200 m — the guide curves are what create the widening.
 
-Note that the alignment (`Main-Line`) cannot itself serve as the guide curve for the centerline vertex: `IfcAlignment` does not have a `Tag` attribute. Guide curve B is therefore an `IfcOffsetCurveByDistances` with a zero lateral offset from the alignment, existing solely to carry the tag `"B"` on behalf of the alignment. Though this may not be required if IFC allows for a mix of guide curves and linear interpolation to define a sectioned surface or solid. This ambiguity is discussed in §10.5.
+> **Note:** The alignment (`Main-Line`) cannot itself serve as the guide curve for the centerline vertex: `IfcAlignment` does not have a `Tag` attribute. Guide curve B is therefore an `IfcOffsetCurveByDistances` with a zero lateral offset from the alignment, existing solely to carry the tag `"B"` on behalf of the alignment. Though this may not be required if IFC allows for a mix of guide curves and linear interpolation to define a sectioned surface or solid. This ambiguity is discussed in §10.5.
 
 Figure 10.6.1.4-1 shows the expected geometry of this example.
 
@@ -227,7 +227,7 @@ Figure 10.6.1.4-1 shows the expected geometry of this example.
 
 *Figure 10.6.1.4-1 — Expected geometry of `IfcSectionedSurface` with stringline guide curves. This rendering has been synthesised to illustrate the correct geometry; no viewer capable of resolving stringline guide curves has been found at the time of writing.*
 
-**Validation note.** The three `IfcOffsetCurveByDistances` instances in this model are bare resource entities: they are referenced by the surface but not assigned as representations of any rooted entity. The IFC validation service flags this as an [IFC105](https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html) violation. The model is geometrically correct but does not conform to industry best-practice validation rules.
+> **Validation note:** The three `IfcOffsetCurveByDistances` instances in this model are bare resource entities: they are referenced by the surface but not assigned as representations of any rooted entity. The IFC validation service flags this as an [IFC105](https://buildingsmart.github.io/ifc-gherkin-rules/branches/main/features/IFC105_Resource-entities-need-to-be-referenced-by-rooted-entity.html) violation. The model is geometrically correct but does not conform to industry best-practice validation rules.
 
 #### 10.6.1.5 Stringlines — Guide Curves as Alignments
 

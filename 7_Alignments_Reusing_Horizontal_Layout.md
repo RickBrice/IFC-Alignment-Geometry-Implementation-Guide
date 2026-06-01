@@ -62,16 +62,6 @@ Only the `IfcAlignmentHorizontal` is shared. Each child alignment owns its
 `IfcAlignmentVertical` and `IfcAlignmentCant` exclusively — those layout entities are
 never shared between children.
 
-At the geometric level, `IfcSegmentedReferenceCurve` adds cant to a gradient curve by
-taking an `IfcGradientCurve` as its own `BaseCurve`. Each child alignment that needs a
-cant definition gets its own `IfcSegmentedReferenceCurve` and its own `IfcGradientCurve`;
-only the `IfcCompositeCurve` at the base of the chain is the shared instance, as shown in
-Figure 7.1.1-2:
-
-![Figure 7.1.1-2 — Geometric chain for child alignments with cant: each child alignment has its own IfcSegmentedReferenceCurve and IfcGradientCurve; only the IfcCompositeCurve at the base of the chain is the shared instance from the parent alignment.](images/Figure_7.1.1-2_Geometric_Chain.svg)
-
-*Figure 7.1.1-2 — Geometric chain for child alignments with cant. Each child alignment has its own `IfcSegmentedReferenceCurve` and `IfcGradientCurve`; the `IfcCompositeCurve` is the shared instance.*
-
 ### 7.1.2 Geometric Representation — Shared BaseCurve
 
 Each child alignment's 3D curve references the horizontal `IfcCompositeCurve` through its
@@ -79,7 +69,17 @@ Each child alignment's 3D curve references the horizontal `IfcCompositeCurve` th
 horizontal curve, and two `IfcGradientCurve` instances can reference the same `BaseCurve`
 entity. The horizontal geometry — typically an `IfcCompositeCurve` composed of
 `IfcCurveSegment` instances — exists in the model exactly once and is referenced by both
-gradient curves. Figure 7.1.1-2 illustrates this shared reference.
+gradient curves. Figure 7.1.2-1 illustrates this shared reference.
+
+At the geometric level, `IfcSegmentedReferenceCurve` adds cant to a gradient curve by
+taking an `IfcGradientCurve` as its own `BaseCurve`. Each child alignment that needs a
+cant definition gets its own `IfcSegmentedReferenceCurve` and its own `IfcGradientCurve`;
+only the `IfcCompositeCurve` at the base of the chain is the shared instance, as shown in
+Figure 7.1.2-1:
+
+![Figure 7.1.2-1 — Geometric chain for child alignments with cant: each child alignment has its own IfcSegmentedReferenceCurve and IfcGradientCurve; only the IfcCompositeCurve at the base of the chain is the shared instance from the parent alignment.](images/Figure_7.1.2-1_Geometric_Chain.svg)
+
+*Figure 7.1.2-1 — Geometric chain for child alignments with cant. Each child alignment has its own `IfcSegmentedReferenceCurve` and `IfcGradientCurve`; the `IfcCompositeCurve` is the shared instance.*
 
 #### Shape Representation Placement
 
@@ -124,7 +124,7 @@ layouts as the designer works — must handle transitions between two different 
 templates:
 
 | Vertical count | Required concept template |
-|---|---|
+|--------------------|--------------------------------------------------------------------------------|
 | 1 | CT 4.1.4.4.1.1 — Alignment Layout – Horizontal, Vertical and Cant |
 | 2 or more | CT 4.1.4.4.1.2 — Alignment Layout – Reusing Horizontal Layout |
 

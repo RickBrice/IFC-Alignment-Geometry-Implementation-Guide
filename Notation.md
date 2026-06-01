@@ -5,7 +5,7 @@
 ### Arc-Length and Distance
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $s$ | Arc-length parameter along the parent curve |
 | $s_0$ | Arc-length at the start of the trim; equals `SegmentStart` |
 | $L$ | Segment length; equals `SegmentLength` |
@@ -17,7 +17,7 @@
 ### Angles
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $\theta(s)$ | Bearing angle at arc-length $s$ in the horizontal plane |
 | $\theta(\ell)$ | Tangent angle at horizontal distance $\ell$; grade angle $\tan^{-1}(g(\ell))$ in the vertical plane; slope of deviating elevation $\tan^{-1}(D'(\ell))$ in the cant plane |
 | $\theta_0$ | Tangent angle at the trim start $s_0$ |
@@ -33,7 +33,7 @@
 ### Curvature and Radius
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $\kappa(s)$ | Curvature at arc-length $s$; $\kappa = 1/R$ |
 | $\kappa_s$ | Curvature at the segment start; $\kappa_s = 1/R_s$ |
 | $\kappa_e$ | Curvature at the segment end; $\kappa_e = 1/R_e$ |
@@ -45,7 +45,7 @@
 ### Grade
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $g(s)$ | Gradient (slope) at arc-length $s$ |
 | $g_s$ | Gradient at the segment start; equals `StartGradient` |
 | $g_e$ | Gradient at the segment end; equals `EndGradient` |
@@ -53,7 +53,7 @@
 ### Position and Elevation
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $x(s),\ y(s)$ | Coordinates of the parent curve at arc-length $s$ |
 | $x_0,\ y_0$ | Parent curve position at the trim start $s_0$ |
 | $x_p,\ y_p$ | Placement location; equals `IfcCurveSegment.Placement.Location` |
@@ -65,7 +65,7 @@
 ### Cant (Deviating Elevation)
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $D(s)$ | Deviating elevation at arc-length $s$; vertical offset of the track centerline from the gradient curve |
 | $D_0$ | Deviating elevation at the trim start; $D_0 = D(s_0)$ |
 | $D_s,\ D_e$ | Deviating elevation at the segment start and end; $D_s = (D_{sl} + D_{sr})/2$ |
@@ -82,7 +82,7 @@
 ### Spiral Curve Coefficients
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $A$ | Clothoid constant |
 | $u$ | Clothoid unit parameterization parameter; $u = s\,/\,\lvert A\sqrt{\pi}\rvert$ |
 | $A_i$ | Dimensional polynomial coefficient (with units) for spiral and parabolic curves |
@@ -94,7 +94,7 @@
 ## Vectors
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $dx,\ dy$ | Horizontal tangent direction components; $dx = \cos\theta$, $dy = \sin\theta$ |
 | $dx_p,\ dy_p$ | Tangent direction components at the placement; $dx_p = \cos\theta_p$, $dy_p = \sin\theta_p$ |
 | $dx_v,\ dy_v$ | Grade direction components from $M_v$; $dx_v = \cos\theta_v$, $dy_v = \sin\theta_v$ |
@@ -109,7 +109,7 @@
 All matrices are $4 \times 4$ homogeneous transformation matrices. Column 4 carries position; columns 1–3 carry the frame orientation.
 
 | Symbol | Definition |
-|--------|------------|
+|--------------------------------------------------|---------------------------------------------------------------------------|
 | $M_{CSP}$ | Curve segment placement matrix; constructed from `IfcCurveSegment.Placement`; maps the trimmed segment into the alignment coordinate system |
 | $M_N$ | Normalization matrix; translates the trim-start point to the origin and rotates the tangent to align with the positive $x$-direction |
 | $M_{PC}$ | Parent curve matrix at the evaluation point; encodes $x(s)$, $y(s)$, and $\theta(s)$ |

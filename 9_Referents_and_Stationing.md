@@ -42,7 +42,7 @@ Stationing is a **display convention**, not a geometric quantity. The geometric 
 Stationing metadata is stored in `Pset_Stationing`, attached to an `IfcReferent` via `IfcRelDefinesByProperties`. The property set has three properties:
 
 |Property              |Type              |Description                                                                                                                                                                             |
-|----------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|--------------------|---------------|-------------------------------------------------------------------|
 |`Station`             |`IfcLengthMeasure`|The station value at this referent’s location. For the first referent, this defines the starting station of the alignment.                                                              |
 |`IncomingStation`     |`IfcLengthMeasure`|Present only at a station equation. The station value on the *incoming* (upstream) side of the break. The `Station` property holds the *outgoing* value immediately after the break.    |
 |`HasIncreasingStation`|`IfcBoolean`      |Controls the direction of stationing. If `TRUE` (or absent), subsequently nested referents have increasing station values. If `FALSE`, they decrease. Covers reverse-stationing schemes.|
@@ -67,11 +67,7 @@ A **gap equation** (also called a *station ahead* or *forward equation*) occurs 
 
 *Example:* The alignment arrives at a point with incoming station 142+35.75. Due to a realignment that shortened the route, the outgoing station is 145+00.00. There is a gap of 264.25 ft. A distance of 14,235.75 ft of geometry corresponds to a label of 145+00, not 142+35.75.
 
-```
-Incoming side:  … Sta. 142+35.75  ─────┐
-                                        │  GAP (264.25 ft of stationing skipped)
-Outgoing side:          Sta. 145+00.00  ┘ ──────────────────────────────────→
-```
+![Figure 9.3.2-1 — Station gap equation: incoming alignment arrives at Sta. 142+35.75, the equation point jumps forward to Sta. 145+00.00, with a GAP annotation showing 264.25 ft of stationing skipped. The outgoing alignment continues to the right with an arrow.](images/Figure_9.3.2-1_Gap_Equation.svg)
 
 *Figure 9.3.2-1 — Station gap equation. Geometry is continuous; station numbers jump forward.*
 
@@ -81,11 +77,7 @@ An **overlap equation** (also called a *station back* or *backward equation*) oc
 
 *Example:* Incoming station 78+42.10, outgoing station 76+00.00. There is an overlap of 242.10 ft. Two different geometric points — one upstream and one downstream of the equation — carry station labels between 76+00 and 78+42.
 
-```
-Incoming side:  Sta. 78+42.10  ─────┐
-                                    │  OVERLAP (242.10 ft of station range used twice)
-Outgoing side:  Sta. 76+00.00  ─────┘───────────────────────────────────→
-```
+![Figure 9.3.3-1 — Station overlap equation: incoming alignment arrives at Sta. 78+42.10, the equation point jumps backward to Sta. 76+00.00, with an OVERLAP annotation showing 242.10 ft of station range used twice. The outgoing alignment continues to the right with an arrow.](images/Figure_9.3.3-1_Overlap_Equation.svg)
 
 *Figure 9.3.3-1 — Station overlap equation. Geometry is continuous; station numbers jump backward.*
 
@@ -97,19 +89,23 @@ The conversion algorithm is:
 
 1. Begin at the alignment start. Set `accumulated_distance = 0`, `current_station = starting_station`.
 1. Process each `IfcReferent` in nesting order. At each referent with a `Pset_Stationing`:
-- Compute the geometric distance from the previous referent to this one (from their `DistanceAlong` values).
-- Add that geometric distance to `accumulated_distance`.
-- If the referent has only `Station` (no `IncomingStation`): update `current_station = Station`. No equation.
-- If the referent has both `IncomingStation` and `Station`: this is an equation. Verify that `current_station + elapsed_distance ≈ IncomingStation`. Then reset `current_station = Station` (the outgoing value).
-1. For a target station label `S`, find the segment where `S` falls between consecutive referents (using the appropriate incoming/outgoing station values at equations), then compute:
+    - Compute `delta`: the difference in `DistanceAlong` between this referent and the previous one.
+    - Add `delta` to `accumulated_distance`.
+    - If the referent has only `Station` (no `IncomingStation`): update `current_station = Station`. No equation.
+    - If the referent has both `IncomingStation` and `Station`: this is an equation. Verify that `current_station + delta ≈ IncomingStation`. Then reset `current_station = Station` (the outgoing value).
+1. For a target station label `S`, find the segment where `S` falls between consecutive referents. Let `D₀` be the `DistanceAlong` of the segment-start referent and `S₀` its outgoing station (`Station`). Then:
 
-$$\text{DistanceAlong} = \text{referent\_distance} + \frac{S - \text{segment\_start\_station}}{\text{segment\_station\_span}} \times \text{segment\_geometry\_length}$$
+$$\text{DistanceAlong} = D_0 + \frac{S - S_0}{\text{segment\_station\_span}} \times \text{segment\_geometry\_length}$$
 
-For simple alignments with no equations, this reduces to the familiar $\text{DistanceAlong} = S - \text{starting\_station}$.
+where `segment_geometry_length` is the difference in `DistanceAlong` between the two bounding referents, and `segment_station_span` is the station range the segment covers — the station at the segment end (using `IncomingStation` if the far referent is an equation, `Station` otherwise) minus `S₀`. For the standard case where stationing advances 1:1 with geometric distance, `segment_station_span = segment_geometry_length` and the formula simplifies to:
+
+$$\text{DistanceAlong} = D_0 + (S - S_0)$$
+
+Figure 9.3.4-1 illustrates how the geometric distance axis and the station label axis diverge when equations are present.
 
 ![Figure 9.3.4-1 — Two-panel diagram. Top: uniform geometric distance axis with five referents R₁–R₅ at 200 m spacing. Bottom: station label axis for the same referents, with a station equation gap at R₃ (red — back station less than forward station) and an overlap at R₄ (green — back station greater than forward station), illustrating how station equations introduce discontinuities in the labeling axis.](images/Figure_9.3.4-1_Stationing_Diagram.svg)
 
-*Figure 9.3.4-1 — Diagram showing a timeline of DistanceAlong (geometric) vs. station label for an alignment with one gap equation and one overlap equation.*
+*Figure 9.3.4-1 — Two-axis diagram comparing DistanceAlong (geometric distance) and station label for an alignment with one gap equation and one overlap equation.*
 
 ### 9.3.5 Example: Starting Station and One Equation
 
@@ -169,19 +165,12 @@ Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.
 
 ### 9.4.1 IfcRelNests
 
-`IfcReferent` instances are connected to their parent `IfcAlignment` through `IfcRelNests`. This relationship has two important properties:
+`IfcReferent` instances are connected to their parent `IfcAlignment` through `IfcRelNests`. This relationship has two key properties:
 
 1. **`RelatingObject`** — the `IfcAlignment` (the parent).
-1. **`RelatedObjects`** — an **ordered list** of objects nested within. The order matters: referents must appear in the list in order of increasing `DistanceAlong` along the alignment.
+1. **`RelatedObjects`** — an ordered list of objects nested within. Referents must appear in the list in order of increasing `DistanceAlong`. This ordering is required by the IFC concept template ([4.1.4.4.3 Object Nesting](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html)) but is not enforced by a schema WHERE rule. Implementations that read referent data should sort by `DistanceAlong` before processing and not assume the list arrives pre-sorted; implementations that write referent data must produce a sorted list.
 
 The first `IfcReferent` in `RelatedObjects` defines the **starting station** of the alignment. Its `Pset_Stationing.Station` value is the station label at `DistanceAlong = 0.0` of the alignment curve. As a best practice, place this referent at `DistanceAlong = 0.0` so that the station origin and the geometric origin of the alignment coincide.
-
-`IfcReferent` is a subtype of `IfcPositioningElement`, which requires an `ObjectPlacement`. The appropriate choice depends on whether the alignment carries a geometric representation:
-
-- **Semantic-only alignment.** Set `IfcReferent.ObjectPlacement` equal to `IfcAlignment.ObjectPlacement`. Without geometric curves, a linear placement cannot be evaluated, so the referent borrows the alignment's own placement.
-- **Alignment with geometry.** Use `IfcLinearPlacement` with an `IfcPointByDistanceExpression.DistanceAlong = 0.0` referencing the alignment's horizontal geometric curve.
-
-Implementations that support both workflows — initially modeling without geometry, then adding a geometric representation later — must update the starting referent's `ObjectPlacement` when geometry is added. Leaving it as a copy of the alignment's placement after geometric curves exist will cause the referent's resolved position to diverge from its geometric intent.
 
 ### 9.4.2 The Mixed-Nesting Problem
 
@@ -199,9 +188,17 @@ The IFC specification does not resolve this clearly. Two patterns are seen in pr
 
 *Figure 9.4.2-1 — Two `IfcRelNests` relationships: one for alignment layout sub-objects (horizontal, vertical, cant) and one for `IfcReferent` instances.*
 
-### 9.4.3 Referent Ordering Requirement
+### 9.4.3 ObjectPlacement for IfcReferent
 
-Referents in `IfcRelNests.RelatedObjects` must be ordered by their geometric position (increasing `DistanceAlong`). This ordering is not enforced by a WHERE rule in the schema but is stated as a requirement in the IFC concept template for [4.1.4.4](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/content.html) and [4.1.4.4.3 Object Nesting](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Object_Composition/Nesting/Object_Nesting/content.html) as applied to referents. Implementations that read referent data should not assume the list is sorted and should sort by `DistanceAlong` before processing; implementations that write referent data must produce a sorted list.
+`IfcReferent` is a subtype of `IfcPositioningElement`, which requires an `ObjectPlacement`. Although the schema permits any subtype of `IfcObjectPlacement`, only `IfcLinearPlacement` is practical for referents on an alignment with geometry. `IfcLocalPlacement` and `IfcGridPlacement` carry no `DistanceAlong` value, so a consumer reading a model that uses these placement types has no reliable basis for ordering referents or performing station-to-distance conversions.
+
+Three cases arise in practice:
+
+**Alignment with geometry.** Use `IfcLinearPlacement` with `IfcPointByDistanceExpression` referencing the alignment's horizontal geometric curve. The `DistanceAlong` value establishes the referent's geometric position and is the basis for ordering.
+
+**Semantic-only alignment.** When the alignment carries no geometric representation, `IfcLinearPlacement` cannot be evaluated — there is no basis curve from which to measure distance. Set `IfcReferent.ObjectPlacement` to the same placement instance as `IfcAlignment.ObjectPlacement`. Implementations that later add a geometric representation must update all referent placements accordingly; retaining the copied alignment placement after geometry is added will cause the referent's resolved position to diverge from its geometric intent.
+
+**`INTERSECTION` referents.** An `IfcReferent` with `PredefinedType = INTERSECTION` marks the point where two or more routes cross. Because the intersection is geometrically meaningful on all of the crossing alignments, the choice of which alignment's curve serves as the `BasisCurve` in `IfcPointByDistanceExpression` is unspecified by the IFC standard. This is an open issue; current practice is to nest the referent under the primary alignment and use its curve, but no normative guidance exists.
 
 ## 9.5 Semantic vs. Geometric Positioning
 
@@ -231,7 +228,7 @@ The relationship between an `IfcReferent` and the object whose position it annot
 ## 9.6 Summary and Implementation Checklist
 
 |# |Item                                                                                                                                                      |Notes                                                                                   |
-|--|----------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+|-----|-----------------------------------------------|------------------------------------------------|
 |1 |Use `IfcReferent` to attach station labels and other semantic location information to alignment positions.                                                |Referents are informational overlays on geometry, not geometry themselves.              |
 |2 |Store the station value in `Pset_Stationing.Station` as a plain `IfcLengthMeasure` in project length units.                                               |Do not store the `ccc+dd.dd` string — compute it from the numeric value when displaying.|
 |3 |Place the first referent at `DistanceAlong = 0.0` and set `Pset_Stationing.Station` to the starting station value.                                        |Commonly a round number like 1000.00 (Sta. 10+00). For semantic-only alignments, `ObjectPlacement` = alignment's placement; for geometric alignments, use `IfcLinearPlacement` at distance 0. Update when adding geometry.|

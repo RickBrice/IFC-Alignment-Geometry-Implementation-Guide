@@ -130,7 +130,7 @@ The `RepresentationIdentifier` and `RepresentationType` values required
 by the IFC concept templates for each alignment geometry variant are listed in Table 1.5.1-1.
 
 | Alignment variant | Curve entity | `RepresentationIdentifier` | `RepresentationType` |
-|---|---|---|---|
+|------------------------------|-----------------------------------|--------------------|---------------|
 | Horizontal only | `IfcCompositeCurve` | `'Axis'` | `'Curve2D'` |
 | Horizontal + Vertical | `IfcCompositeCurve` (plan view) | `'FootPrint'` | `'Curve2D'` |
 | Horizontal + Vertical | `IfcGradientCurve` (3D) | `'Axis'` | `'Curve3D'` |
@@ -246,7 +246,7 @@ The cant segment mappings in the EnrichIfc4x3 reference implementation are incor
 Unless otherwise specified, the following unit conventions apply throughout this guide:
 
 | Quantity | Unit |
-|---|---|
+|------------------------------------------------------------|----------------------------------------|
 | Length, distance, elevation, offset, cant | meter (m) |
 | Spiral and polynomial coefficients ($A$, $A_0$, $A_1$, …) | meter (m) |
 | Curvature ($\kappa = 1/R$) | reciprocal meter (m⁻¹) |

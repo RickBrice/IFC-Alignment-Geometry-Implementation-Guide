@@ -7,7 +7,7 @@ The geometric representation of a horizontal alignment is accomplished with an `
 Table 2.0-1 maps each `IfcAlignmentHorizontalSegment.PredefinedType` to its corresponding parent curve type.
 
 | Business Logic (`IfcAlignmentHorizontalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
-|---|---|
+|-----------------------------------|-------------------------------------------------------------------|
 | LINE | `IfcLine` |
 | CIRCULARARC | `IfcCircle` |
 | CLOTHOID | `IfcClothoid` |
@@ -865,7 +865,7 @@ The geometric representation of the first half is
 #47 = IFCCARTESIANPOINT((0., 0.));
 ~~~
  
- > Note: when a polynomial coefficient is zero, the correspond term is unused and coded as `$` in the IFC entity
+> **Note:** when a polynomial coefficient is zero, the correspond term is unused and coded as `$` in the IFC entity
 
 Second Half
 
@@ -888,7 +888,7 @@ Figure 2.7.2-1 shows the first and second half parent curves, without any adjust
 With this alignment the normalization cancels the offset, and the curve segment `Placement` supplies only the world-space join position.
 
 | Level | Attribute | Purpose |
-|---|---|---|
+|-------------------------|----------------------------------|--------------------------------------------------------------------------------|
 | `IfcSecondOrderPolynomialSpiral.Position` | $(x_p,\ y_p,\ \theta_p)$ | Shift/rotate the raw spiral so its value at $t = L/2$ equals $(x_1, y_1, \theta_1)$ |
 | `IfcCurveSegment.Placement` | World-space join point | Place the normalized second-half curve at the correct position in the composite curve |
 
@@ -1014,7 +1014,7 @@ $$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 99.894
 
 $$\theta_{pos}(100) = \theta_p + \theta_{raw}(100) = 0.055556 + 0.11111 = 0.16\overline{6}\ \text{rad}$$
 
-Note: $\theta_{pos}(100) = \frac{1}{6} = \frac{L}{2R_e} = \frac{100}{2 \times 300}$, confirming the total tangent angle change matches a Clothoid with the same endpoints.
+> **Note:** $\theta_{pos}(100) = \frac{1}{6} = \frac{L}{2R_e} = \frac{100}{2 \times 300}$, confirming the total tangent angle change matches a Clothoid with the same endpoints.
 
 Form $M_{PC}$ from the parent curve point at $t = 100$:
 

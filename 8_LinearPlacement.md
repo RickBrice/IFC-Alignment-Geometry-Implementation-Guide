@@ -28,27 +28,19 @@ Both cases share the same structure: **a distance along a reference curve, plus 
 
 ### 8.1.2 The IFC Object Graph
 
-The IFC classes that implement linear placement form a short chain:
+The IFC classes that implement linear placement form a short chain, shown in Figure 8.1.2-1.
 
-```
-IfcProduct
-  └─ ObjectPlacement: IfcLinearPlacement
-       ├─ PlacementRelTo: (omitted or reference to alignment context)
-       └─ RelativePlacement: IfcAxis2PlacementLinear
-            ├─ Location: IfcPointByDistanceExpression
-            │    ├─ DistanceAlong: IfcLengthMeasure  (or IfcExpressionBasedValue)
-            │    └─ BasisCurve: IfcCurve  (typically the alignment or its composite curve)
-            ├─ Axis: IfcDirection  (optional — "up" direction)
-            └─ RefDirection: IfcDirection  (optional — "forward" direction)
-```
+![Figure 8.1.2-1 — IFC object graph for linear placement: IfcProduct connects via ObjectPlacement to IfcLinearPlacement, which connects via RelativePlacement to IfcAxis2PlacementLinear, which connects via Location to IfcPointByDistanceExpression. Attribute branches show PlacementRelTo (optional) from IfcLinearPlacement; Axis and RefDirection (both optional IfcDirection) from IfcAxis2PlacementLinear; and DistanceAlong (IfcLengthMeasure) and BasisCurve (IfcCurve) from IfcPointByDistanceExpression.](images/Figure_8.1.2-1_IFC_Object_Graph.svg)
+
+*Figure 8.1.2-1 — IFC object graph for linear placement.*
 
 The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference context. When it is **omitted**, the placement is measured from the start of the basis curve defined in `IfcPointByDistanceExpression`. This is the standard case when the basis curve is an alignment defined in the project coordinate system.
 
-Figure 8.1.2-1 schematically represents the linear placement of a bridge pier and a drain inlet.
+Figure 8.1.2-2 schematically represents the linear placement of a bridge pier and a drain inlet.
 
-![Figure 8.1.2-1 — Plan view of a curved alignment with two features positioned by linear placement: a bridge pier at Sta. 1+450 offset Lt. 12.500 m left, and a drain inlet at Sta. 1+620 offset Rt. 8.200 m right. Both features are annotated with station, lateral offset, and elevation values.](images/Figure_8.1.2-1_Linear_Placement_Features.svg)
+![Figure 8.1.2-2 — Plan view of a curved alignment with two features positioned by linear placement: a bridge pier at Sta. 1+450 offset Lt. 12.500 m left, and a drain inlet at Sta. 1+620 offset Rt. 8.200 m right. Both features are annotated with station, lateral offset, and elevation values.](images/Figure_8.1.2-2_Linear_Placement_Features.svg)
 
-*Figure 8.1.2-1 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
+*Figure 8.1.2-2 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
 ## 8.2 IfcLinearPlacement and IfcAxis2PlacementLinear
 
@@ -56,13 +48,13 @@ Figure 8.1.2-1 schematically represents the linear placement of a bridge pier an
 
 `IfcAxis2PlacementLinear.Location` is typed as `IfcPoint` but is constrained by a WHERE rule to be `IfcPointByDistanceExpression`. This class has two key attributes:
 
-|Attribute           |Type                       |Description                                                                                                                                                |
-|--------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-|`DistanceAlong`     |`IfcCurveMeasureSelect`    |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`.               |
-|`BasisCurve`        |`IfcCurve`                 |The curve along which the distance is measured.                                                                                                            |
-|`OffsetLateral`     |`OPTIONAL IfcLengthMeasure`|Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148).                             |
-|`OffsetVertical`    |`OPTIONAL IfcLengthMeasure`|Signed vertical offset. Positive upward.                                                                                                                   |
-|`OffsetLongitudinal`|`OPTIONAL IfcLengthMeasure`|Signed offset along the tangent direction. See §8.4 for uses.                                                                                              |
+|Attribute            |Type                        |Description                                                                                    |
+|---------------------------|------------------------------------|------------------------------------|
+|`DistanceAlong`      |`IfcCurveMeasureSelect`     |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`.    |
+|`BasisCurve`         |`IfcCurve`                  |The curve along which the distance is measured.                                                |
+|`OffsetLateral`      |`OPTIONAL IfcLengthMeasure` |Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148). |
+|`OffsetVertical`     |`OPTIONAL IfcLengthMeasure` |Signed vertical offset. Positive upward.                                                       |
+|`OffsetLongitudinal` |`OPTIONAL IfcLengthMeasure` |Signed offset along the tangent direction. See §8.4 for uses.                                  |
 
 The `BasisCurve` attribute of `IfcPointByDistanceExpression` is the key to understanding which curve the distance is measured along. For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve — that is, along the underlying `IfcCompositeCurve` that represents the plan layout. This is consistent with how stationing is defined in transportation engineering: stationing is a horizontal measure.
 
@@ -82,7 +74,7 @@ When using `IfcPointByDistanceExpression`, supply the **geometric distance**, no
 `IfcAxis2PlacementLinear` defines a local right-handed coordinate system at the placement point. Two optional attributes control its orientation:
 
 |Attribute     |Role in local CS          |Default                              |
-|--------------|--------------------------|-------------------------------------|
+|--------------------|-----------------------------------|---------------------------------------------|
 |`RefDirection`|X-axis (forward direction)|Tangent to the 3D curve at `Location`|
 |`Axis`        |Z-axis (up direction)     |See §8.3.2                           |
 
@@ -132,7 +124,7 @@ The classic example is an **angle point** — the intersection of two tangents i
 
 The resulting point is no longer “on” a perpendicular to the curve at `DistanceAlong`, but it is precisely located in 3D space.
 
-**Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
+> **Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
 
 ## 8.5 Fallback Cartesian Position
 
@@ -171,7 +163,7 @@ Understanding the ISO 19148 model helps implementers correctly interpret `Distan
 **Linear Referencing Method (LRM).** An LRM defines the rules for measuring distance along a linear element. The most common types are:
 
 |LRM Type             |Description                                                  |Highway Example                   |
-|---------------------|-------------------------------------------------------------|----------------------------------|
+|--------------------|--------------------------------------------------|------------------------------|
 |Absolute             |Distance measured continuously from a fixed start point.     |Route mileage from a state border.|
 |Relative             |Distance measured from a nominated referent (not the start). |“0.4 km past interchange 12.”     |
 |Interpolated Position|Location expressed as a fraction between two known referents.|Between mileposts 43 and 44.      |
@@ -190,7 +182,7 @@ The key difference:
 ISO 19148 Annex C lists recognized LRM name aliases. Common examples include:
 
 |Name           |Common Alias|Typical Region       |
-|---------------|------------|---------------------|
+|-----------------------------------|-------------------------|----------------------------------------|
 |milepoint      |milepost, MP|USA, Canada          |
 |kilometer point|KP, PK      |Europe, Latin America|
 |chainage       |ch          |UK, Australia, India |
@@ -233,7 +225,7 @@ In this example:
 ## 8.9 Summary and Implementation Checklist
 
 |#|Item                                                                                              |Notes                                                                                                   |
-|-|--------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+|-----|-----------------------------------------------|------------------------------------------------|
 |1|Use `IfcLinearPlacement` for all infrastructure elements located relative to an alignment.        |Prefer this over `IfcLocalPlacement` with absolute coordinates for alignment-relative objects.          |
 |2|Supply `DistanceAlong` as the geometric arc length from the start of `BasisCurve`.                |Convert station labels to geometric distances first; use `IfcReferent` to record station label metadata.|
 |3|Use signed `OffsetLateral`: positive = left, negative = right.                                    |Consistent with ISO 19148 convention.                                                                   |

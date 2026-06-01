@@ -92,7 +92,7 @@ The following table maps LandXML `spiType` values to `IfcAlignmentHorizontalSegm
 
 *Table A.3.4-1 — LandXML spiType to IFC type mapping*
 
-> **Note on `sineHalfWave`.** The LandXML specification describes the sine half-wavelength spiral as an approximation of a cosine spiral. Mapping it to `COSINECURVE` is therefore reasonable but not exact. Implementations should log a warning when this substitution is made.
+> **Note:** The LandXML specification describes the sine half-wavelength spiral as an approximation of a cosine spiral. Mapping it to `COSINECURVE` is therefore reasonable but not exact. Implementations should log a warning when this substitution is made.
 
 ### A.3.5 Radius Sign Convention
 

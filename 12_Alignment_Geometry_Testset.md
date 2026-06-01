@@ -23,7 +23,7 @@ for visual inspection, all located under the `testset/` folder in this repositor
 testset/
 ├── Alignment-semantic-testset/    # Semantic IFC files (no geometry)
 ├── Alignment-geometry-testset/    # IFC files with geometric representations
-├── Alignment-reference-testset/   # Reference coordinates sampled at 1 m intervals
+├── Alignment-reference-testset/   # Reference coordinate tables
 └── Alignment-plots/               # SVG plots for visual inspection
 ```
 
@@ -32,7 +32,7 @@ All four folders share the same internal hierarchy: alignment type then curve ty
 **Table 12.2-1 — Curve type subfolders by alignment type**
 
 | Alignment type | Curve type subfolders |
-|---|---|
+|-------------------------|-------------------------------------------------------------------------|
 | HorizontalAlignment | Line, CircularArc, Clothoid, BlossCurve, CosineCurve, HelmertCurve, SineCurve, VienneseBend |
 | VerticalAlignment | ConstantGradient, ParabolicArc, CircularArc |
 | CantAlignment | ConstantCant, LinearTransition, BlossCurve, CosineCurve, HelmertCurve, SineCurve, VienneseBend |
@@ -43,7 +43,7 @@ Every test case is provided in three unit variants, identified by the `{Unit}` t
 the end of each filename:
 
 | Token | Unit | Conversion to meters |
-|---|---|---|
+|--------------------|------------------------------|--------------------------------------------------|
 | `Meter` | SI meter | 1.0 (exact) |
 | `SurveyFoot` | US survey foot | 1200 / 3937 ≈ 0.304 800 609 … m |
 | `IntlFoot` | International foot | 0.3048 m (exact) |
@@ -187,7 +187,7 @@ Table 12.3.1-2.
 **Table 12.3.1-1 — Horizontal curve types**
 
 | Curve type | IFC predefined type | Cases |
-|---|---|---|
+|-----------------------------------|---------------------------------------------|-------------------|
 | Line | `LINE` | 1 |
 | Circular arc | `CIRCULARARC` | 4 |
 | Clothoid | `CLOTHOID` | 8 |
@@ -200,7 +200,7 @@ Table 12.3.1-2.
 **Table 12.3.1-2 — Horizontal transition cases (applied to all six transition types)**
 
 | Start radius | End radius | Description |
-|---|---|---|
+|------------------|------------------|----------------------------------------------------------------|
 | ∞ | +300 m | Entry spiral — straight to tight left arc |
 | +300 m | ∞ | Exit spiral — tight left arc to straight |
 | ∞ | −300 m | Entry spiral — straight to tight right arc |
@@ -210,13 +210,13 @@ Table 12.3.1-2.
 | −300 m | −1000 m | Arc-to-arc — tighter to looser (right) |
 | −1000 m | −300 m | Arc-to-arc — looser to tighter (right) |
 
-**Viennese bend note.** The Viennese bend (`VIENNESEBEND`) is unique among horizontal
-transition types: its geometric representation requires cant parameters to be present.
-The VienneseBend files in `HorizontalAlignment/VienneseBend/` therefore include all
-three alignment layouts (horizontal, vertical, and cant), with the same parameter values
-as the corresponding `CantAlignment/VienneseBend/` files. When extracting horizontal
-coordinates, only the horizontal layout is evaluated; the vertical and cant layouts are
-present solely to satisfy the geometry generation requirement.
+> **Viennese bend note:** The Viennese bend (`VIENNESEBEND`) is unique among horizontal
+> transition types: its geometric representation requires cant parameters to be present.
+> The VienneseBend files in `HorizontalAlignment/VienneseBend/` therefore include all
+> three alignment layouts (horizontal, vertical, and cant), with the same parameter values
+> as the corresponding `CantAlignment/VienneseBend/` files. When extracting horizontal
+> coordinates, only the horizontal layout is evaluated; the vertical and cant layouts are
+> present solely to satisfy the geometry generation requirement.
 
 ### 12.3.2 Vertical Alignment
 
@@ -231,12 +231,12 @@ isolating the vertical geometry so results can be verified independently.
 **Table 12.3.2-1 — Vertical curve types**
 
 | Curve type | IFC predefined type | Cases |
-|---|---|---|
+|-----------------------------------|---------------------------------------------|-------------------|
 | Constant gradient | `CONSTANTGRADIENT` | 5 |
 | Parabolic arc | `PARABOLICARC` | 12 |
 | Circular arc | `CIRCULARARC` | 12 |
 
-*Note: clothoid vertical curves are not included. See Chapter 3 for discussion.*
+> **Note:** Clothoid vertical curves are not included. See Chapter 3 for discussion.
 
 The five constant gradient cases cover 0.0 %, ±0.5 %, and ±1.0 % grade. The twelve
 vertical transition cases cover the full range of sag and crest combinations across
@@ -255,7 +255,7 @@ types, and case counts.
 **Table 12.3.3-1 — Cant curve types**
 
 | Cant type | IFC predefined type | Paired horizontal type | Cases | Cant range |
-|---|---|---|---|---|
+|----------------------|---------------------|---------------------|---------|-------------------------|
 | Constant cant | `CONSTANTCANT` | `CIRCULARARC` | 4 | 0.16 m constant |
 | Linear transition | `LINEARTRANSITION` | `CLOTHOID` | 8 | 0.0 ↔ 0.16 m |
 | Bloss curve | `BLOSSCURVE` | `BLOSSCURVE` | 8 | 0.0 ↔ 0.16 m |
@@ -280,7 +280,7 @@ The alignment is approximately 12,337 ft (3,760 m) long and is expressed in inte
 feet.
 
 | | |
-|---|---|
+|-----------------------------|-------------------------------------------------------------------|
 | IFC file | `testset/real-world-alignments/FHWA_Alignment.ifc` |
 | Reference coordinates | `testset/real-world-alignments/FHWA_Alignment.csv` |
 | Alignment name | Unnamed Alignment |
@@ -292,7 +292,7 @@ feet.
 A second variant of the FHWA alignment is provided to support validation of `IfcLinearPlacement` evaluation. It carries the same horizontal and vertical geometry as the base case and adds 124 `IfcReferent` objects, one at every 100 ft station from 100+00 to 223+00, each with a populated `CartesianPosition` fallback. Linear placement is discussed in [Chapter 8](8_LinearPlacement.md).
 
 | | |
-|---|---|
+|-----------------------------|-------------------------------------------------------------------|
 | IFC file | `testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.ifc` |
 | Reference coordinates | `testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.csv` |
 | Alignment name | E-Line |
@@ -311,7 +311,7 @@ complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment is appr
 25.6 km long and is expressed in SI meters with ETRS-TM35FIN coordinates.
 
 | | |
-|---|---|
+|-----------------------------|-------------------------------------------------------------------|
 | IFC file | `testset/real-world-alignments/BPaimio-Kupittaa_GK23_N2000_2020.ifc` |
 | Reference coordinates | `testset/real-world-alignments/BPaimio-Kupittaa_GK23_N2000_2020.csv` |
 | Alignment name | 001 |
@@ -331,7 +331,7 @@ constant-gradient segment; and the cant layout uses linear transitions and const
 segments with a rail head distance of 1.0 m.
 
 | | |
-|---|---|
+|-----------------------------|-------------------------------------------------------------------|
 | IFC file | `testset/real-world-alignments/Exit_Turnout_Huni_Valley_Station.ifc` |
 | Reference coordinates | `testset/real-world-alignments/Exit_Turnout_Huni_Valley_Station.csv` |
 | Alignment name | Centerline |
@@ -358,7 +358,7 @@ three unit variants. The columns differ by alignment type.
 **Horizontal alignment** — `HorizontalAlignment/**/*.csv`
 
 | Column | Description |
-|---|---|
+|--------------------|--------------------------------------------------------------------------------|
 | `dist_along` | Distance along the alignment from the segment start (project units) |
 | `X` | Easting in the alignment plane (project units) |
 | `Y` | Northing in the alignment plane (project units) |
@@ -372,7 +372,7 @@ $\theta = \tan^{-1}(dy / dx)$.
 **Vertical alignment** — `VerticalAlignment/**/*.csv`
 
 | Column | Description |
-|---|---|
+|--------------------|--------------------------------------------------------------------------------|
 | `dist_along` | Horizontal distance from the segment start (project units) |
 | `Y` | Elevation (project units) |
 | `RefDir_dx` | X component of the tangent direction ($\cos\theta$) |
@@ -385,7 +385,7 @@ consistent with the IFC specification for `IfcAlignmentVerticalSegment.Horizonta
 **Cant alignment** — `CantAlignment/**/*.csv`
 
 | Column | Description |
-|---|---|
+|--------------------|--------------------------------------------------------------------------------|
 | `dist_along` | Distance along the horizontal alignment (project units) |
 | `Y` | Track centerline deviating elevation due to cant (project units) |
 | `RefDir_dx` | X component of the forward tangent (`RefDirection`) |
@@ -405,7 +405,7 @@ evaluation returns a 4 × 4 placement matrix; the CSV extracts all three orienta
 vectors and the position.
 
 | Column | Description |
-|---|---|
+|--------------------|--------------------------------------------------------------------------------|
 | `DistAlong` | Distance along the 3D curve from the start (project units) |
 | `X` | X coordinate of the point (project units) |
 | `Y` | Y coordinate of the point (project units) |

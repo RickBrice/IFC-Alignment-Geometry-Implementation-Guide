@@ -20,7 +20,7 @@ A single offset value indicates a constant offset over the entire length of the 
 
 If the offsets do not span the full length of the curve, the first and last offset are implicitly continued to the head and tail of the basis curve, respectively.
 
-The `IfcOffsetCurveByDistances.OffsetValues` are of type `IfcPointByDistanceExpression`. The `IfcOffsetCurveByDistances.BasisCurve` and `IfcPointByDistanceExpression.BasisCurve` should logically reference the same curve since the offset value is defining an offset from `IfcOffsetCurveByDistances.BasisCurve`. However, this is not an explicitly stated requirement in the IFC specifications nor is it enforced by the bSI Validation Service.
+The `IfcOffsetCurveByDistances.OffsetValues` are of type `IfcPointByDistanceExpression`. The `IfcOffsetCurveByDistances.BasisCurve` and `IfcPointByDistanceExpression.BasisCurve` should logically reference the same curve since the offset value is defining an offset from `IfcOffsetCurveByDistances.BasisCurve`. However, this is not an explicitly stated requirement in the IFC specifications nor is it enforced by the bSI Validation Service [8].
 
 The `IfcOffsetCurveByDistances` geometry is derived by interpolating the `OffsetValues`.
 
@@ -57,7 +57,7 @@ The offset begins at +10 at distance 0 and increases linearly to +20 at distance
 
 The right-side offset widens quickly from −10 to −40 over the first 50 distance units along the basis curve, then narrows to −20 at mid-curve, widens again to −30, and finishes at −20. Positive lateral offsets place the offset curve to the left of the basis curve and negative offsets to the right, measured perpendicular to the curve looking in the direction of increasing distance.
 
-Both offset curves share the same basis curve `#20`. Each `IfcPointByDistanceExpression` also references `#20` directly — the logical choice, since each offset value defines a lateral distance from that curve. This is not an explicit requirement in the IFC specification, however, and the validation service does not check it.
+Both offset curves share the same basis curve `#20`. Each `IfcPointByDistanceExpression` also references `#20` directly — the logical choice, since each offset value defines a lateral distance from that curve. The case where these two basis curve references differ is explored in §5.5.3.
 
 The STEP excerpt above is drawn from the example models [`IfcOffsetCurveByDistances_2D.ifc`](examples/IfcOffsetCurveByDistances_2D.ifc) and [`IfcOffsetCurveByDistances_3D.ifc`](examples/IfcOffsetCurveByDistances_3D.ifc), which are discussed further in §5.5.
 
@@ -117,11 +117,11 @@ Three example models illustrate `IfcOffsetCurveByDistances` in progressively mor
 
 The file [`IfcOffsetCurveByDistances_2D.ifc`](examples/IfcOffsetCurveByDistances_2D.ifc) contains a basis alignment and two offset alignments. The basis curve is an `IfcCompositeCurve` — a horizontal-only curve with no elevation component.
 
-**Validation.** Both offset alignments in this model fail the validation rule `IfcShapeRepresentation.CorrectItemsForType`. The `IfcShapeRepresentation` for each offset alignment uses `RepresentationType = "Curve3D"`, which requires its items to be 3D curves. The `IfcOffsetCurveByDistances` entities here are 2D because their `BasisCurve` is an `IfcCompositeCurve` — a planar horizontal curve with no elevation component. The `IfcAlignment` specification states that `IfcOffsetCurveByDistances` may represent either a 2D or 3D alignment curve, but the `CorrectItemsForType` rule is applied at the shape representation level and does not recognise this exception. The conflict between the `IfcAlignment` statement and the shape representation rule is unresolved in IFC4x3. It is anticipated that the next version of the buildingSMART Validation Service will not flag this as an error.
+**Validation.** Both offset alignments in this model fail the validation rule `IfcShapeRepresentation.CorrectItemsForType`. The `IfcShapeRepresentation` for each offset alignment uses `RepresentationType = "Curve3D"`, which requires its items to be 3D curves. The `IfcOffsetCurveByDistances` entities here are 2D because their `BasisCurve` is an `IfcCompositeCurve` — a planar horizontal curve with no elevation component. The `IfcAlignment` specification permits `IfcOffsetCurveByDistances` to represent either a 2D or 3D alignment curve, but the validation service's `CorrectItemsForType` rule does not account for this — it requires `Curve3D` items to be 3D regardless. This is a gap in the validation service, not a conflict in the specification. It is anticipated that the next version of the buildingSMART Validation Service will not flag this as an error.
 
 ### 5.5.2 Three-Dimensional Basis Curve
 
-The file [`IfcOffsetCurveByDistances_3D.ifc`](examples/IfcOffsetCurveByDistances_3D.ifc) contains the same geometry as the 2D example — the same 200-ft circular arc "E-Line" with the same two offset profiles — but with a flat vertical alignment added to "E-Line". This makes its basis curve an `IfcGradientCurve`. The two offset alignments are constructed to demonstrate how basis curve choice affects dimensionality and validation outcome.
+The file [`IfcOffsetCurveByDistances_3D.ifc`](examples/IfcOffsetCurveByDistances_3D.ifc) extends the 2D example by adding a flat vertical alignment to the basis alignment, making its basis curve an `IfcGradientCurve`. The two offset alignments are constructed to demonstrate how basis curve choice affects dimensionality and validation outcome.
 
 **Offset1** references the `IfcGradientCurve` as the `BasisCurve` in both the `IfcOffsetCurveByDistances` and all `IfcPointByDistanceExpression` offset values. Because `IfcGradientCurve` is a 3D curve, the resulting offset curve is 3D. Offset1 satisfies `IfcShapeRepresentation.CorrectItemsForType`.
 
@@ -131,8 +131,8 @@ The key finding is that the dimensionality of an `IfcOffsetCurveByDistances` is 
 
 ### 5.5.3 Split Basis Curves
 
-The file [`IfcOffsetCurveByDistances_split_basis.ifc`](examples/IfcOffsetCurveByDistances_split_basis.ifc) demonstrates the edge case described in §5.0 where `IfcOffsetCurveByDistances.BasisCurve` and `IfcPointByDistanceExpression.BasisCurve` reference different curves. The model contains two alignments: "E-Line" (a 200-ft circular arc with a flat vertical profile) and "Reference-Line" (a 200-ft straight line offset 10 ft north, also with a flat vertical profile). Both carry `IfcGradientCurve` basis curves.
+The file [`IfcOffsetCurveByDistances_split_basis.ifc`](examples/IfcOffsetCurveByDistances_split_basis.ifc) demonstrates the edge case described in §5.0 where `IfcOffsetCurveByDistances.BasisCurve` and `IfcPointByDistanceExpression.BasisCurve` reference different curves. The model contains two basis alignments — a circular arc and a straight line — each with a flat vertical profile and an `IfcGradientCurve` basis curve.
 
-The single offset alignment "Offset1" has its `IfcOffsetCurveByDistances.BasisCurve` set to "E-Line"'s `IfcGradientCurve`. Its `IfcPointByDistanceExpression` offset values reference "Reference-Line"'s `IfcGradientCurve`. The offset value of 5 ft at each end is a distance measured along "Reference-Line," applied as a lateral offset from "E-Line." Because the two curves have different shapes — one a circular arc, the other a straight line — the parameterization of the offset values is inconsistent with the curve to which they are applied.
+The single offset alignment has its `IfcOffsetCurveByDistances.BasisCurve` set to the circular arc's `IfcGradientCurve`, while its `IfcPointByDistanceExpression` offset values reference the straight line's `IfcGradientCurve`. Because the two curves have different shapes, the parameterization of the offset values is inconsistent with the curve to which they are applied.
 
 The IFC specification does not prohibit this configuration, and the model passes all validation service checks. This is itself a gap: the split-basis configuration is semantically ambiguous and should be flagged as either an error or a best-practices violation. A future validation rule requiring that `IfcOffsetCurveByDistances.BasisCurve` and the `BasisCurve` of all its `OffsetValues` reference the same curve object would close this gap without breaking any legitimate use case.

@@ -7,7 +7,7 @@ The geometric representation of a vertical alignment is accomplished with `IfcGr
 Table 3.0-1 maps each `IfcAlignmentVerticalSegment.PredefinedType` to its corresponding parent curve type.
 
 | Business Logic (`IfcAlignmentVerticalSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
-|---------------------------------------------------------------|----------------------------------------------------------|
+|-----------------------------------|-------------------------------------------------------------------|
 | CONSTANTGRADIENT                                              | `IfcLine`                                                |
 | CIRCULARARC                                                   | `IfcCircle`                                              |
 | CLOTHOID                                                      | `IfcClothoid`                                            |
@@ -577,7 +577,7 @@ It is easiest to place the parent curve at the origin and orient it with the glo
 #294=IFCPOLYNOMIALCURVE(#293,(0.,1.),(121.,0.017500000000000002,-8.5937500000000005E-06),$);
 ~~~
 
-> Note: The coefficients $A_0$, $A_1$, and $A_2$ must have the following unit of measure, consistent with the project units:
+> **Note:** The coefficients $A_0$, $A_1$, and $A_2$ must have the following unit of measure, consistent with the project units:
 >
 > $A_0 = Length^1$
 >
@@ -771,7 +771,7 @@ The zero-length closing segment requirement described in Section 2.12 applies eq
 ## 3.9 Summary and Implementation Checklist
 
 | # | Item | Notes |
-|-----|---------------------------------------------|---------------------------------------------|
+|-----|-----------------------------------------------|------------------------------------------------|
 | 1 | `SegmentStart` and `SegmentLength` are arc-length parameters, but vertical segments are evaluated at horizontal distance | Convert horizontal distance $\ell$ to arc-length $s$ using the parent curve geometry before passing to the evaluator; for low grades the difference is small but non-zero |
 | 2 | `SegmentLength` is negative for crest (cresting) circular arc curves | A negative `SegmentLength` indicates the arc is traversed clockwise; use its absolute value for length accumulation and preserve the sign for trim direction |
 | 3 | Do not rely on `IfcAlignmentVerticalSegment.RadiusOfCurvature` | This attribute is optional and may be absent or inconsistent; always compute the radius from `HorizontalLength`, `StartGradient`, and `EndGradient` |

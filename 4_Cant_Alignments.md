@@ -10,17 +10,17 @@ The geometric representation of a cant alignment is accomplished with `IfcSegmen
 
 Table 4.0-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its corresponding parent curve type used in the geometric representation.
 
-  Business Logic (`IfcAlignmentCantSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`)
-  -----------------------------------------|-----------------------------------
-  CONSTANTCANT                             |`IfcLine`
-  LINEARTRANSITION                         |`IfcClothoid`
-  HELMERTCURVE                             |`IfcSecondOrderPolynomialSpiral`
-  BLOSSCURVE                               |`IfcThirdOrderPolynomialSpiral`
-  COSINECURVE                              |`IfcCosineSpiral`
-  SINECURVE                                |`IfcSineSpiral`
-  VIENNESEBEND                             |`IfcSeventhOrderPolynomialSpiral`
+| Business Logic (`IfcAlignmentCantSegment.PredefinedType`) | Geometric Representation (`IfcCurveSegment.ParentCurve`) |
+|-----------------------------------|-------------------------------------------------------------------|
+| `CONSTANTCANT` | `IfcLine` |
+| `LINEARTRANSITION` | `IfcClothoid` |
+| `HELMERTCURVE` | `IfcSecondOrderPolynomialSpiral` |
+| `BLOSSCURVE` | `IfcThirdOrderPolynomialSpiral` |
+| `COSINECURVE` | `IfcCosineSpiral` |
+| `SINECURVE` | `IfcSineSpiral` |
+| `VIENNESEBEND` | `IfcSeventhOrderPolynomialSpiral` |
 
-  *Table 4.0-1 — Mapping of business logic to geometric representation for cant alignment*
+*Table 4.0-1 — Mapping of business logic to geometric representation for cant alignment*
 
 This chapter covers:
 
@@ -717,7 +717,7 @@ The first half parent curve `IfcSecondOrderPolynomialSpiral` is
 
 Determine the first half placement and trimming.
 
-Note that the length of the first half curve is $L_1 =50\ m$, half the length of the full Helmert transition.
+> **Note:** The length of the first half curve is $L_1 = 50\ m$, half the length of the full Helmert transition.
 
 The spiral coefficients $A_{01}$ and $A_{21}$ are computed from the **full** transition
 length $L = 100\ m$. The evaluation formula, by contrast, multiplies by the curve segment
@@ -1902,7 +1902,7 @@ The resulting geometric representation is
 Table 4.11-1 compares the third order polynomial terms.
 
 | Polynomial Term | EnrichIfc4x3 | This Guide |
-|---|---|---|
+|-------------------------|-------------------------------------|--------------------------------------|
 | Constant | $0.0$ (unitless) | $0\ m$|
 | Linear | $0\ m^{1/2}$ | $0\ m$|
 | Quadratic | $160.91789\ m^{2/3}$| $746.90078\ m$|
@@ -1929,7 +1929,7 @@ $$D(50\ m) = (100\ m)^2\left( \frac{-500\ m}{\left|(-500\ m)^5\right|}(100\ m)^3
 Both approaches give the same result, however, a serious problem emerges if the EnrichIfc4x3 semantic to geometry mapping is mixed with the deviating elevation equation from this guide and vice versa. Table 4.11-2 compares the results for all the combinations of the semantic to geometry mapping and deviating elevation computations for the Bloss curve evaluated at $s=50\ m$. The deviating elevation can be incorrect proportional (or inversely proportional) to the length of the segment (100 or 1/100 in this example). 
 
 | Mapping | $D(s)$ Equation | $D(50\ m)$ |
-|---|---|---|
+|-----------------------------|---------------------------------------------|-------------------------|
 | EnrichIfc4x3 | EnrichIfc4x3 | $0.04\ m$ |
 | This Guide | This Guide | $0.04\ m$ |
 | EnrichIfc4x3 | This Guide | $4.0\ m$ |
@@ -1946,7 +1946,7 @@ The zero-length closing segment requirement described in Section 2.12 applies eq
 ## 4.13 Summary and Implementation Checklist
 
 | # | Item | Notes |
-|-----|---------------------------------------------|---------------------------------------------|
+|-----|-----------------------------------------------|------------------------------------------------|
 | 1 | Use `IfcAxis2Placement3D` (not `IfcAxis2Placement2D`) for cant curve segment placements | Cant encodes a cross-slope rotation that a 2D placement cannot represent; the `Axis` vector carries the cross-slope angle $\phi$ at the segment start |
 | 2 | The cross-slope angle $\phi$ is interpolated using deviating elevation as the interpolation parameter, not arc length | The interpolation formula in Section 4.1.3 uses $D(\ell) - D_s$ as the parameter; $\phi$ does not vary linearly with distance along the segment |
 | 3 | When forming $M^\prime_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |
