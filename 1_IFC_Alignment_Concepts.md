@@ -83,7 +83,7 @@ representation is provided, then its corresponding last segment must
 also be zero length. For a continuous composition of segments, the end
 of one segment is at the same location as the start of the next segment.
 The zero-length segment is intended to provide the end point of the last
-segment.
+segment. See §2.12 for full implementation details.
 
 **Aggregation to project.** `IfcAlignment` is a mandatory participant
 in the IFC spatial structure. Every alignment must be aggregated to
@@ -185,10 +185,10 @@ geometric representation of the horizontal alignment.
 *Figure 1.5.2-2 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
 
 A similar process is used to create the vertical alignment.
-`IfcCurveSegment` trim geometry from parent curves and combine end to start to
+`IfcCurveSegment` instances trim geometry from parent curves and combine end to start to
 create an `IfcGradientCurve`. `IfcGradientCurve` is a sub-type of
 `IfcCompositeCurve` with the additional attribute `BaseCurve`. The segments
-of the gradient curve are positions in a 2-dimensional plane in a
+of the gradient curve are placed in a 2-dimensional plane in a
 "distance along the horizontal alignment, elevation" coordinate system.
 The `IfcGradientCurve` uses the horizontal alignment `IfcCompositeCurve` as
 its base curve.
@@ -208,7 +208,7 @@ parent curve are not particularly important. The `IfcCurveSegment.Placement` def
 For `IfcGradientCurve` and `IfcSegmentedReferenceCurve` the segments do not
 need to start or end at the same location of their base curve. These
 curves can be shorter or longer than the horizontal alignment. This is illustrated
-in Figure 1.5.2-4 where the blue curve is the full horizontal curve and the
+in Figure 1.5.2.2-1 where the blue curve is the full horizontal curve and the
 orange curve is the portion of the horizontal curve coinciding with the
 vertical curve. The `IfcGradientCurve` (#770) has the `IfcCompositeCurve`
 (#657) as its base curve. The placement of the first `IfcCurveSegment`
@@ -222,15 +222,15 @@ alignment that do not overlap with the vertical or cant curves.
 ~~~
 #657=IFCCOMPOSITECURVE((#658,#671,#684,#697,#710,#723,#736,#749,#762),.F.)
 #770=IFCGRADIENTCURVE((#771,#784,#796,#809,#821,#834,#846,#859,#871),.F.,#657,#887)
-#771 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #777, FCNONNEGATIVELENGTHMEASURE(0.),
-IFCNONNEGATIVELENGTHMEASURE(40.0002408172751), #780);
+#771 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #777, IFCLENGTHMEASURE(0.),
+IFCLENGTHMEASURE(40.0002408172751), #780);
 #777 = IFCAXIS2PLACEMENT2D(#778, #779);
 #778 = IFCCARTESIANPOINT((250.003634293681, 145.312908277025));
 ~~~
 
-![Figure 1.5.2-4 — Plan-view plot of two closely overlapping horizontal alignment traces (#657 and #770) in easting/northing coordinates, tracing an S-curve. Used to illustrate how an IfcGradientCurve follows the 2D horizontal footprint of an alignment.](images/Figure_1.5.2-4_GradientCurve_Extents.png)
+![Figure 1.5.2.2-1 — Plan-view plot of two closely overlapping horizontal alignment traces (#657 and #770) in easting/northing coordinates, tracing an S-curve. Used to illustrate how an IfcGradientCurve follows the 2D horizontal footprint of an alignment.](images/Figure_1.5.2.2-1_GradientCurve_Extents.png)
 
-*Figure 1.5.2-4 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
+*Figure 1.5.2.2-1 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
 
 ## 1.6 Reference Implementation and Segment Mapping
 

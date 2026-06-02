@@ -97,7 +97,7 @@ Different interpolation methods produce materially different geometry from the s
 
 ![Figure 5.3-1 — 3D Blender viewport showing a BasisCurve (orange/yellow) alongside an offset curve computed via spline interpolation (dashed white/teal), overlaid on the linear interpolation from Figure 5.0-1. The spline produces a smoother offset path between the discrete control points.](images/Figure_5.3-1_Spline_Interplotation.png)
 
-*Figure 5.3-1 - Comparison of linear and spline interpolation*
+*Figure 5.3-1 — Comparison of linear and spline interpolation*
 
 The recommended best practice is **linear interpolation of offset values**: interpolate the lateral distance at each chainage position, then apply that distance perpendicular to the basis curve. This method is the most natural given the structure of `IfcOffsetCurveByDistances`, produces predictable geometry, and is the least ambiguous for interchange.
 

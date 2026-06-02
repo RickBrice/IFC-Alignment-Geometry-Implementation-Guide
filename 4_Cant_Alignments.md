@@ -6,7 +6,7 @@ Cant (also called superelevation) is the transverse inclination of a railway tra
 
 Cant is measured as a length — the height difference between railheads — rather than as an angle. The conversion between the two depends on track gauge. `IfcAlignmentCant.RailHeadDistance` supplies the center-to-center distance between railheads, which is the lever arm for this conversion.
 
-The geometric representation of a cant alignment is accomplished with `IfcSegmentedReferenceCurve`. As a subtype of `IfcCompositeCurve`, it is an end-to-start collection of `IfcCurveSegment` segments. Its `BasisCurve` is typically an `IfcGradientCurve`, which supplies the combined horizontal and vertical geometry to which the cant offsets are applied to produce the full 3D track centerline.
+The geometric representation of a cant alignment is accomplished with `IfcSegmentedReferenceCurve`. As a subtype of `IfcCompositeCurve`, it is an end-to-start collection of `IfcCurveSegment` segments. Its `BaseCurve` is typically an `IfcGradientCurve`, which supplies the combined horizontal and vertical geometry to which the cant offsets are applied to produce the full 3D track centerline.
 
 Table 4.0-1 maps each `IfcAlignmentCantSegment.PredefinedType` to its corresponding parent curve type used in the geometric representation.
 
@@ -42,17 +42,17 @@ When the segment start elevation is the same as the start of the next segment, t
 
 ![Figure 4.1.1-1 — Two-panel bSI diagram. Left panel: railway track cross-section showing the right rail elevated above the left rail; the IfcCurveSegment.Placement.Location y-ordinate marks the deviating elevation at the centreline (half the cant). Right panel: elevation view showing the linear cant transition along the segment, with IfcGradientCurve, IfcSegmentedReferenceCurve, and placement annotations.](images/Figure_4.1.1-1_Cant_Segment_Cross_Section.jpg)
 
-*Figure 4.1.1-1 - cross section and elevation of a cant segment (source: bSI)*
+*Figure 4.1.1-1 — cross section and elevation of a cant segment (source: bSI)*
 
 ![Figure 4.1.1-2 — Matplotlib line plot of deviating elevation versus distance for a non-linear cant transition. Two curves show the first half (blue) and second half (orange) of the right-rail deviating elevation profile. The left rail is the rotation pivot and remains at zero.](images/Figure_4.1.1-2_Deviating_Elevation.svg)
 
-*Figure 4.1.1-2 - Deviating elevation of rails*
+*Figure 4.1.1-2 — Deviating elevation of rails*
 
 The railhead cross slope angle is defined by the `IfcCurveSegment.Placement.Axis` attribute. The `Axis` direction is generally upwards. The cross slope angle is measured from the y-axis and orients a vector that is perpendicular to the plane of the railheads. Figure 4.1.1-3 shows the cross slope angle for the transitions in Figure 4.1.1-2. The direction perpendicular to the plane of the railhead is about 1.46 rad at the start of the segment and increases to about 1.57 rad as the rotation decreases. When the left and right rails are at the same elevation the cross slope angle is $\frac{\pi}{2}$.
 
 ![Figure 4.1.1-3 — Matplotlib line plot of the rail head cross slope angle (IfcCurveSegment.Placement.Axis direction, in radians) versus distance along a cant segment. The angle transitions from approximately 1.46 rad at the segment start toward π/2 (≈ 1.57 rad) as the rails reach equal elevation.](images/Figure_4.1.1-3_Rail_Head_Cross_Slope.svg)
 
-*Figure 4.1.1-3 - Rail head cross slope*
+*Figure 4.1.1-3 — Rail head cross slope*
 
 ### 4.1.2 Coordinate System
 
@@ -104,7 +104,7 @@ All examples use a railhead distance $D_{rh} = 1.5\ m$.
 
 Cant segments are evaluated in a two-dimensional "distance along, deviating elevation" $(\ell,D(\ell))$ coordinate system in which $\ell$ is the distance measured along the horizontal `IfcCompositeCurve` and $D(\ell)$ is the deviating elevation: the vertical offset applied to the track centerline to accommodate the cross slope. Unlike horizontal and vertical segments, each cant point also carries a cross slope angle $\phi(\ell)$, making the local frame inherently three-dimensional.
 
-Let $s_0$ = `IfcAlignmentCantSegment.StartDistAlong`.
+Let $s_0$ = `IfcCurveSegment.SegmentStart`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
@@ -766,7 +766,7 @@ Second half:
 
 $$a_{02} = -4\Delta D + 4D_{s} = -4(-0.08\ m) + 4(0.08)\ m = 0.64\ m$$
 
-$$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{01}}{\left| a_{02} \right|} = \frac{(100\ m)^{2}}{\left|0.64\ m\right|}\frac{0.64\ m}{\left|0.64\ m\right|} = 15625\ m$$
+$$A_{02} = \frac{L^{2}}{\left| a_{02} \right|}\frac{a_{02}}{\left| a_{02} \right|} = \frac{(100\ m)^{2}}{\left|0.64\ m\right|}\frac{0.64\ m}{\left|0.64\ m\right|} = 15625\ m$$
 
 $$a_{12} = 16\Delta D = 16(-0.08\ m) = -1.28\ m$$
 
@@ -780,7 +780,7 @@ Figure 4.5.2-1 shows the first and second half parent curves.
 
 ![Figure 4.5.2-1 — Matplotlib XY plot of two IfcSecondOrderPolynomialSpiral parent curves for a Helmert cant transition, showing the first half (blue) and second half (orange). Dashed lines extend each curve beyond its active range to show the suppressed portion of the full spiral.](images/Figure_4.5.2-1_Helmert_Cant_Parent_Curves.svg)
 
-*Figure 4.5.2-1 - `IfcSecondOrderPolynomialSpiral` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
+*Figure 4.5.2-1 — `IfcSecondOrderPolynomialSpiral` parent curves. The dashed lines represent the projection of the parent curve over the full length of the semantic segment.*
 
 The second half parent curve `IfcSecondOrderPolynomialSpiral` is
 
@@ -1148,7 +1148,7 @@ $$A_1 = L^{2}\frac{1}{a_1}\frac{a_1}{\left|a_1\right|}$$
 
 ### 4.7.2 Semantic Definition to Geometry Mapping
 
-Consider and alignment segment that has a Cosine transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
+Consider an alignment segment that has a Cosine transition curve towards the left. The start cant is $160\ mm$ and transitions to zero over $100\ m$.
 
 ~~~
 #64=IFCALIGNMENTCANTSEGMENT($,$,0.,100.,0.,0.,0.16,0.,.COSINECURVE.);
@@ -1490,7 +1490,7 @@ $$D_s = \frac{D_{sl} + D_{sr}}{2},\ D_e = \frac{D_{el} + D_{er}}{2},\ \Delta D =
 
 Constant Term
 
-$$a_{0} = D_{1}, A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
+$$a_{0} = D_{s}, A_{0} = \frac{L^{2}}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|}$$
 
 Linear Term
 
@@ -1650,7 +1650,7 @@ $M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orien
 
 $$D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_{\ell} = -0.00076562$$
 
-$$\phi_e = cos^{-1}\left(\frac{D_{er} - D_{el}}{D_{rh}}\right) = cos^{-1}\left(\frac{0.03 - 0.0}{1.5}\right) = 1.550794993$$
+$$\phi_e = \cos^{-1}\left(\frac{D_{er} - D_{el}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.03 - 0.0}{1.5}\right) = 1.550794993$$
 
 $$\phi(\ell) = 1.504080178 + \left(\frac{1.550799 - 1.504080178}{-0.035}\right)(0.0325 - 0.05) = 1.527439589$$
 
@@ -1943,7 +1943,7 @@ Both approaches give the same result, however, a serious problem emerges if the 
 
 The zero-length closing segment requirement described in Section 2.12 applies equally to `IfcSegmentedReferenceCurve`. The final `IfcAlignmentCantSegment` nested within `IfcAlignmentCant` must have `SegmentLength = 0`, and the corresponding geometric counterpart in `IfcSegmentedReferenceCurve` must be a zero-length `IfcCurveSegment` placed at the endpoint of the cant alignment with its placement matching the end cant state of the preceding segment.
 
-`IfcSegmentedReferenceCurve.EndPoint` is an *optional* `IfcCartesianPoint` attribute whose purpose overlaps with the zero-length segment: it encodes the 3D endpoint of the segmented reference curve, providing the same geometric information as the placement of the zero-length `IfcCurveSegment`. Because `EndPoint` is optional and the zero-length segment is required by the IFC Concept Templates, the zero-length segment is the primary, normative source of the endpoint geometry. When `EndPoint` is present, it must be consistent with the placement of the zero-length closing segment — a discrepancy between the two is a data error. Implementations should not rely on `EndPoint` as a substitute for the zero-length segment, nor assume it will be populated.
+The same guidance regarding `EndPoint` described in §3.8 applies to `IfcSegmentedReferenceCurve.EndPoint`: it is optional, secondary to the zero-length segment, and must be consistent with the zero-length segment placement when present.
 
 ## 4.13 Summary and Implementation Checklist
 

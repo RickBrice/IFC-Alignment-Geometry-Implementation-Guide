@@ -122,7 +122,7 @@ Given a horizontal alignment segment is a line segment starting at point
 
 *Figure 2.3.2-1 Tangent segment*
 
-This semantic definition of this segment is:
+The semantic definition of this segment is:
 
 ~~~
 #31=IFCCARTESIANPOINT((500.,2500.));
@@ -167,7 +167,7 @@ is 0.0 in this case.
 ends relative to `SegmentStart`. This is the length of the curve we want
 to trim. The `SegmentLength` attribute is 1956.785654 for this example.
 
-The `SegmentStart` and `SegmentLength` attributes trims a portion of the
+The `SegmentStart` and `SegmentLength` attributes trim a portion of the
 `IfcLine` parent curve, which is oriented in the direction (1,0) with
 origin at (0,0). 
 
@@ -322,7 +322,7 @@ with the negative global Y-axis as shown in Figure 2.4.2-1.
 
 ![Figure 2.4.2-1 — Geometric diagram of an IfcCircle (R = 300) centered at (0, 300). The green IfcCurveSegment arc is trimmed from s = 0 to s = 100 along the bottom of the circle. Red local axes mark the circle center; dashed radial lines show the arc extent. A legend distinguishes the global IfcCircle, local coordinate frame, and trimmed segment.](images/Figure_2.4.2-1_IfcCircle_Parent_Curve_Trimming.svg)
 
-*Figure 2.4.2-1 - Curve segment trimmed from an IfcCircle parent curve*
+*Figure 2.4.2-1 — Curve segment trimmed from an IfcCircle parent curve*
 
 The parent curve is placed such that a trim starting at 0.0 is at
 (0,0) and the tangent is in the direction (1,0).
@@ -468,7 +468,7 @@ Figure 2.5.2-1 shows the parent curve clothoid with the segment having $\kappa_s
 
 ![Figure 2.5.2-1 — Matplotlib XY plot of a full IfcClothoid parent curve (red looping spiral, R = 300, Clothoid Constant ≈ −207) with the blue IfcCurveSegment trimmed from it at Start = −142.857. Axes span roughly ±300 on both X and Y.](images/Figure_2.5.2-1_IfcClothoid_Parent_Curve.svg)
 
-*Figure 2.5.2-1 - `IfcCurveSegment` trimmed from an `IfcClothoid` parent curve*
+*Figure 2.5.2-1 — `IfcCurveSegment` trimmed from an `IfcClothoid` parent curve*
 
 Place the curve segment at (0,0) with the tangent in the direction
 (1,0).
@@ -747,9 +747,9 @@ $$y'(99.72593255\ m) = 3\left( 5.55555 \cdot 10^{-6} m^{-2}\right)(99.72593255\ 
 
 Normalizing the tangent vector
 
-$$dx = \frac{1}{\sqrt{1^{2} + {0.615753}^{2}}} = 0.986539$$
+$$dx = \frac{1}{\sqrt{1^{2} + {0.165753}^{2}}} = 0.986539$$
 
-$$dy = \frac{0.165753}{\sqrt{1^{2} + {0.615753}^{2}}} = 0.1635219$$
+$$dy = \frac{0.165753}{\sqrt{1^{2} + {0.165753}^{2}}} = 0.1635219$$
 
 The resulting matrix is
 
@@ -839,7 +839,7 @@ First Half
 
 $$a_{01} = \frac{100}{\infty} = 0,\ A_{0} = 0$$
 
-$$a_{00} = 0,\ A_{11} = 0$$
+$$a_{11} = 0,\ A_{11} = 0$$
 
 $$a_{21} = 2(0.33333) = 0.66667,\ A_{2} = \frac{100\ m}{{\left|0.66667\right|}^{\frac{1}{3}}}\frac{0.66667}{\left|0.66667\right|} = 114.4714255\ m$$
 
@@ -906,7 +906,7 @@ Figure 2.7.2-2 shows the same first and second half parent curves, with the orig
 
 ![Figure 2.7.2-2 — Matplotlib XY plot of the Helmert parent curves after placement, showing the junction point (xp, yp) ≈ (0.012, −0.694) and tangent direction (dxp, dyp) ≈ (0.998, 0.055) annotated. First half (blue) descends; second half (orange) curves back upward.](images/Figure_2.7.2-2_Helmert_Parent_Curves_Placed.svg)
 
-*Figure 2.7.2-2 - First and second half parent curves with second half curve positioned*
+*Figure 2.7.2-2 — First and second half parent curves with second half curve positioned*
 
 **Finding the curve segment Placement**
 
@@ -949,7 +949,7 @@ Figure 2.7.2-3 shows the trimmed and positioned first and second half parent cur
 
 ![Figure 2.7.2-3 — Matplotlib XY plot (X: 0–100, Y: 0–5) showing the assembled Helmert transition as two joined IfcCurveSegment halves: first half (blue, gradual curve) meeting the second half (orange, steeper curve) at the midpoint.](images/Figure_2.7.2-3_Helmert_Curve_Segments.svg)
 
-*Figure 2.7.2-3 - Final Helmert transition curve*
+*Figure 2.7.2-3 — Final Helmert transition curve*
 
 ### 2.7.3 Compute Point on Curve
 
@@ -1019,7 +1019,7 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix} = 
 \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 99.8942272\\
+0.98615 & -0.16590 & 0 & 99.7517\\
 0.16590 & 0.98615 & 0 & 4.8510\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
@@ -1042,7 +1042,7 @@ $$M_h = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 99.8942272\\
+0.98615 & -0.16590 & 0 & 99.7517\\
 0.16590 & 0.98615 & 0 & 4.8510\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
@@ -1328,7 +1328,7 @@ $$f = \frac{L}{R_{e}} - \frac{L}{R_{s}} = \frac{100}{300} - \frac{100}{\infty} =
 
 Constant Term:
 $$a_{0} = \frac{L}{R_{s}} = \frac{100}{\infty} = 0$$
-$$A_{o} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
+$$A_{0} = \frac{L}{\left| a_{0} \right|}\frac{a_{0}}{\left| a_{0} \right|} = 0$$
 
 Linear Term:
 $$a_{1} = f = 0.33333$$
@@ -1421,7 +1421,7 @@ The IFC geometric type is `IfcSeventhOrderPolynomialSpiral`.
 Source Model: https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/blob/master/alignment_testset/IFC-WithGeneratedGeometry/GENERATED__HorizontalAlignment_VienneseBend_100.0_inf_300_1_Meter.ifc
 -->
 
-### 2.11.1 Parent Curve Parametric Equations ###
+### 2.11.1 Parent Curve Parametric Equations
 
 The curve tangent angle and curvature are given by the following equations
 

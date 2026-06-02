@@ -32,7 +32,7 @@ The grade angle at horizontal distance $\ell$ is $\theta(\ell) = \tan^{-1}(g(\el
 
 ## 3.2 Curve Segment Evaluation Algorithm
 
-**Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcAlignmentVerticalSegment.StartDistAlong`.
+**Steps 1–3** follow the identical procedure described in Section 2.2 for horizontal segments, substituting distance along for the horizontal $x$-coordinate and elevation for the horizontal $y$-coordinate. Let $s_0$ = `IfcCurveSegment.SegmentStart`.
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
@@ -308,7 +308,7 @@ $$R = \left| \frac{h_l}{\sin(\theta_{start}) - \sin(\theta_{end})}\right|$$
 
 $$h_l = \text{IfcAlignmentVerticalSegment.HorizontalLength} =  100.$$
 
-$$R = \left| \frac{328.083989501312}{\sin(-0.785398) - \sin(-0.463648)} \right| = 384.773458895502$$
+$$R = \left| \frac{100}{\sin(-0.785398) - \sin(-0.463648)} \right| = 384.773458895502$$
 
 Compute the arc-length trimming parameters `SegmentStart` and `SegmentLength`.
 
