@@ -81,25 +81,21 @@ An **overlap equation** (also called a *station back* or *backward equation*) oc
 
 *Figure 9.3.3-1 — Station overlap equation. Geometry is continuous; station numbers jump backward.*
 
-### 9.3.4 Effect on DistanceAlong Conversion
+### 9.3.4 Effect on `DistanceAlong` Conversion
 
 The presence of station equations means that **you cannot convert a station label to `DistanceAlong` by simple subtraction of the starting station**. You must account for every equation encountered between the alignment start and the point of interest.
 
 The conversion algorithm is:
 
-1. Begin at the alignment start. Set `accumulated_distance = 0`, `current_station = starting_station`.
-1. Process each `IfcReferent` in nesting order. At each referent with a `Pset_Stationing`:
-    - Compute `delta`: the difference in `DistanceAlong` between this referent and the previous one.
-    - Add `delta` to `accumulated_distance`.
-    - If the referent has only `Station` (no `IncomingStation`): update `current_station = Station`. No equation.
-    - If the referent has both `IncomingStation` and `Station`: this is an equation. Verify that `current_station + delta ≈ IncomingStation`. Then reset `current_station = Station` (the outgoing value).
-1. For a target station label `S`, find the segment where `S` falls between consecutive referents. Let `D₀` be the `DistanceAlong` of the segment-start referent and `S₀` its outgoing station (`Station`). Then:
+1. Sort all referents on the alignment by `DistanceAlong`. For each referent record two values:
+    - $D_i$: the `DistanceAlong` read directly from its `IfcLinearPlacement`
+    - $S_i$: the outgoing station — `Pset_Stationing.Station`
+1. *(Optional validation)* For any referent that also carries `IncomingStation`, verify that $S_{i-1} + (D_i - D_{i-1}) \approx \text{IncomingStation}$. This confirms that the station count in the preceding segment matches the geometry.
+1. To convert a target station $S$ to `DistanceAlong`, find the last referent $i$ such that $S_i \leq S$. Then:
 
-$$\text{DistanceAlong} = D_0 + \frac{S - S_0}{\text{segment\_station\_span}} \times \text{segment\_geometry\_length}$$
+$$\text{DistanceAlong} = D_i + (S - S_i)$$
 
-where `segment_geometry_length` is the difference in `DistanceAlong` between the two bounding referents, and `segment_station_span` is the station range the segment covers — the station at the segment end (using `IncomingStation` if the far referent is an equation, `Station` otherwise) minus `S₀`. For the standard case where stationing advances 1:1 with geometric distance, `segment_station_span = segment_geometry_length` and the formula simplifies to:
-
-$$\text{DistanceAlong} = D_0 + (S - S_0)$$
+Before applying the formula, check whether the station overshoots the next referent: if a next referent exists and $S - S_i > D_{i+1} - D_i$, the station falls inside a gap — it was skipped by a forward equation — and `DistanceAlong` is undefined.
 
 Figure 9.3.4-1 illustrates how the geometric distance axis and the station label axis diverge when equations are present.
 
@@ -107,59 +103,61 @@ Figure 9.3.4-1 illustrates how the geometric distance axis and the station label
 
 *Figure 9.3.4-1 — Two-axis diagram comparing DistanceAlong (geometric distance) and station label for an alignment with one gap equation and one overlap equation.*
 
-### 9.3.5 Example: Starting Station and One Equation
+### 9.3.5 Example: `DistanceAlong` Conversion with Gap and Overlap Equations
 
-The following pseudo-STEP example shows an alignment with:
+The table below reflects the alignment shown in Figure 9.3.4-1: five referents at 200 m intervals, a gap equation at R3, and an overlap equation at R4.
 
-- Starting station = 10+00.00 (1000.00 ft)
-- A gap equation at geometric distance 5432.10: incoming Sta. 154+32.10, outgoing Sta. 160+00.00 (gap = 567.90 ft)
+| Referent | $D_i$ (m) | $S_i$ outgoing | `IncomingStation` | Note |
+|----------|-----------|----------------|-------------------|------|
+| R1 | 0 | 1000.00 (Sta. 10+00) | — | Starting station |
+| R2 | 200 | 1200.00 (Sta. 12+00) | — | |
+| R3 | 400 | 1700.00 (Sta. 17+00) | 1400.00 (Sta. 14+00) | Gap = 300 |
+| R4 | 600 | 1850.00 (Sta. 18+50) | 1900.00 (Sta. 19+00) | Overlap = 50 |
+| R5 | 800 | 2050.00 (Sta. 20+50) | — | |
 
-```
-/* Alignment */
-#10 = IFCALIGNMENT(guid, $, 'Route 15 Mainline', ...);
+**Between R2 and R3 — Sta. 13+00 (1300.00):**
 
-/* === LAYOUT NEST === */
-#11 = IFCALIGNMENTHORIZONTAL(guid, ...);
-#12 = IFCRELNESTS(guid, $, $, $, #10, (#11));
+Last $i$ where $S_i \leq 1300$: R2 ($S_2 = 1200$, $D_2 = 200$).
 
-/* Horizontal geometry composite curve */
-#20 = IFCCOMPOSITECURVE(...);
+$$\text{DistanceAlong} = 200 + (1300 - 1200) = 300$$
 
-/* === REFERENT NEST === */
+**Between R3 and R4 — Sta. 18+00 (1800.00):**
 
-/* Ref 1: Starting station = Sta. 10+00.00 = 1000.00 ft from project datum */
-#30 = IFCPOINTBYDISTANCEEXPRESSION(0.0, $, $, $, #20);
-#31 = IFCAXIS2PLACEMENTLINEAR(#30, $, $);
-#32 = IFCLINEARPLACEMENT($, #31);
-#33 = IFCREFERENT(guid, $, 'Start Station', $, $, #32, $, .STATION.);
-#34 = IFCPROPERTYSINGLEVALUE('Station', $, IFCLENGTHMEASURE(1000.00), $);
-#35 = IFCPROPERTYSET(guid, $, 'Pset_Stationing', $, (#34));
-#36 = IFCRELDEFINESBYPROPERTIES(guid, $, $, $, (#33), #35);
+Last $i$ where $S_i \leq 1800$: R3 ($S_3 = 1700$, $D_3 = 400$).
 
-/* Ref 2: Gap equation at geometric distance 5432.10 */
-/*        IncomingStation = Sta. 154+32.10 = 15432.10 ft */
-/*        Station (outgoing) = Sta. 160+00.00 = 16000.00 ft */
-#50 = IFCPOINTBYDISTANCEEXPRESSION(5432.10, $, $, $, #20);
-#51 = IFCAXIS2PLACEMENTLINEAR(#50, $, $);
-#52 = IFCLINEARPLACEMENT($, #51);
-#53 = IFCREFERENT(guid, $, 'Sta. Eq.', $, $, #52, $, .STATION.);
-#54 = IFCPROPERTYSINGLEVALUE('IncomingStation', $, IFCLENGTHMEASURE(15432.10), $);
-#55 = IFCPROPERTYSINGLEVALUE('Station', $, IFCLENGTHMEASURE(16000.00), $);
-#56 = IFCPROPERTYSET(guid, $, 'Pset_Stationing', $, (#54, #55));
-#57 = IFCRELDEFINESBYPROPERTIES(guid, $, $, $, (#53), #56);
+$$\text{DistanceAlong} = 400 + (1800 - 1700) = 500$$
 
-/* IfcRelNests for referents */
-#60 = IFCRELNESTS(guid, $, $, $, #10, (#33, #53));
-```
+**Between R4 and R5 — Sta. 19+25 (1925.00):**
 
-**Conversion check:** To find the `DistanceAlong` for a feature at Sta. 162+45.00 (16245.00 ft):
+Last $i$ where $S_i \leq 1925$: R4 ($S_4 = 1850$, $D_4 = 600$).
 
-1. Start: geometric distance 0 = Sta. 1000.00.
-1. Equation referent at geometric distance 5432.10: incoming 15432.10, outgoing 16000.00 (gap of 567.90).
-1. Target Sta. 16245.00 > 16000.00 (outgoing), so it falls after the equation.
-1. `DistanceAlong = 5432.10 + (16245.00 - 16000.00) = 5432.10 + 245.00 = 5677.10`
+$$\text{DistanceAlong} = 600 + (1925 - 1850) = 675$$
 
-Without accounting for the gap, a naive subtraction would give `16245.00 - 1000.00 = 15245.00` — an error of 432.10 ft.
+Without accounting for the equations, naive subtraction gives $1925 - 1000 = 925$ — an error of 250 m. The error is the net station inflation introduced by the two equations: the gap at R3 added 300 station units with no corresponding geometry, and the overlap at R4 recovered 50, leaving a net surplus of $300 - 50 = 250$ station units.
+
+**Gap check — Sta. 15+00 (1500.00):**
+
+- R1: $S_1 = 1000 \leq 1500$ ✓
+- R2: $S_2 = 1200 \leq 1500$ ✓
+- R3: $S_3 = 1700 > 1500$ ✗
+
+Last is R2 ($D_2 = 200$, $S_2 = 1200$). Before computing, check whether the station overshoots the next referent: $S - S_2 = 1500 - 1200 = 300$, but the geometric span to R3 is only $D_3 - D_2 = 400 - 200 = 200$. Since $300 > 200$, Sta. 15+00 falls inside the gap — it was skipped by the forward equation at R3 and `DistanceAlong` is undefined. Any station between Sta. 14+00 and Sta. 16+99 produces the same result.
+
+Implementations must handle this case gracefully — returning an error, `null`, or a domain-specific sentinel value rather than silently producing a geometrically meaningless `DistanceAlong`.
+
+**Overlap ambiguity — Sta. 18+75 (1875.00):**
+
+The overlap zone spans Sta. 18+50 (1850) to Sta. 19+00 (1900) — the range of station values that appear on both the incoming segment (R3→R4) and the outgoing segment (R4→R5). Station 18+75 falls inside this zone and resolves to two distinct geometric points:
+
+*As a point in the R3→R4 segment* (before the equation): last $i$ where $S_i \leq 1875$ ignoring R4 gives R3 ($S_3 = 1700$, $D_3 = 400$):
+
+$$\text{DistanceAlong} = 400 + (1875 - 1700) = 575$$
+
+*As a point in the R4→R5 segment* (after the equation): the algorithm as defined returns R4 ($S_4 = 1850$, $D_4 = 600$):
+
+$$\text{DistanceAlong} = 600 + (1875 - 1850) = 625$$
+
+Both answers are geometrically valid. The algorithm as defined in §9.3.4 always returns the post-equation result (625 m here), silently discarding the pre-equation match. Implementations that need to resolve ambiguous overlap stations must detect the overlap zone — any $S$ where $S_i^{\text{outgoing}} \leq S \leq S_i^{\text{incoming}}$ at an overlap equation referent — and either return both candidate distances or apply project-specific rules to select one.
 
 ## 9.4 Nesting Referents to Alignments
 
