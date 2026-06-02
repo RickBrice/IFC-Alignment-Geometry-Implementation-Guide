@@ -68,7 +68,7 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 
 - Mathematical equations use LaTeX syntax rendered by GitHub Markdown (fenced with `$$` for display math, `$...$` for inline).
 - Figures reference files in `images/` using relative markdown links. Both PNG and SVG files exist in `images/`; SVGs are used for technical line-art diagrams.
-- IFC attribute names are written in `code style` (e.g., `StartRadius`, `EndRadius`, `SegmentLength`).
+- IFC attribute names are written in `code style` (e.g., `StartRadiusOfCurvature`, `EndRadiusOfCurvature`, `SegmentLength`).
 - Positive curvature convention: curves to the left (from the perspective of a traveler moving in the direction of increasing chainage).
 - The guide distinguishes **semantic** alignment (business/design intent, `IfcAlignmentSegment` subtypes) from **geometric** alignment (mathematical curve representation, `IfcCurveSegment`).
 - Tables and Figures are numbered using the section number and a sequence number. An example is Figure 3.2.1-3 is the third figure in section 3.2.1.

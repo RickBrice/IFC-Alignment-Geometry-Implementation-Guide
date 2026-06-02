@@ -38,8 +38,8 @@
 | $\kappa_s$ | Curvature at the segment start; $\kappa_s = 1/R_s$ |
 | $\kappa_e$ | Curvature at the segment end; $\kappa_e = 1/R_e$ |
 | $R$ | Radius of curvature |
-| $R_s$ | Radius at the segment start; equals `StartRadius` |
-| $R_e$ | Radius at the segment end; equals `EndRadius` |
+| $R_s$ | Radius at the segment start; equals `StartRadiusOfCurvature` |
+| $R_e$ | Radius at the segment end; equals `EndRadiusOfCurvature` |
 | $f$ | Cumulative change in curvature over the segment; $f = L(1/R_e - 1/R_s)$ |
 
 ### Grade

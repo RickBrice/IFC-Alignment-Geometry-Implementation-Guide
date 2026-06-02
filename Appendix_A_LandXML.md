@@ -96,15 +96,15 @@ The following table maps LandXML `spiType` values to `IfcAlignmentHorizontalSegm
 
 ### A.3.5 Radius Sign Convention
 
-LandXML uses `rot="cw"` / `rot="ccw"` to indicate curve direction. IFC encodes direction in the sign of `StartRadius` and `EndRadius`: a positive value indicates a left turn (counter-clockwise) and a negative value indicates a right turn (clockwise).
+LandXML uses `rot="cw"` / `rot="ccw"` to indicate curve direction. IFC encodes direction in the sign of `StartRadiusOfCurvature` and `EndRadiusOfCurvature`: a positive value indicates a left turn (counter-clockwise) and a negative value indicates a right turn (clockwise).
 
 $$\text{sign} = \begin{cases} -1 & \text{if } rot = \mathtt{cw} \\ +1 & \text{if } rot = \mathtt{ccw} \end{cases}$$
 
-Apply this sign to both `StartRadius` and `EndRadius`.
+Apply this sign to both `StartRadiusOfCurvature` and `EndRadiusOfCurvature`.
 
 ### A.3.6 Infinite Radius
 
-LandXML represents an infinite start or end radius by omitting the attribute or by supplying the value `INF`. IFC uses `0.0` in `IfcAlignmentHorizontalSegment.StartRadius` or `EndRadius` to indicate an infinite radius. Substitute `0.0` whenever the LandXML value is absent or is `INF`.
+LandXML represents an infinite start or end radius by omitting the attribute or by supplying the value `INF`. IFC uses `0.0` in `IfcAlignmentHorizontalSegment.StartRadius` or `EndRadiusOfCurvature` to indicate an infinite radius. Substitute `0.0` whenever the LandXML value is absent or is `INF`.
 
 ## A.4 Vertical Alignment
 

@@ -28,7 +28,7 @@ This chapter covers:
 
 ## 2.1 Conventions
 
-Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from `IfcAlignmentHorizontalSegment.StartRadius` and `EndRadius`; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). The segment length $L$ is `IfcAlignmentHorizontalSegment.SegmentLength`. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the `RefDirection` of the curve at $s$.
+Each curve is parameterized by arc-length $s$, where $s = 0$ at the start of the parent curve. The start and end radii $R_s$ and $R_e$ are taken from `IfcAlignmentHorizontalSegment.StartRadiusOfCurvature` and `EndRadiusOfCurvature`; a value of zero indicates infinite radius (zero curvature, i.e. a straight line). Radii follow a positive-left sign convention: a positive value indicates curvature to the left of the direction of travel; a negative value indicates curvature to the right. The segment length $L$ is `IfcAlignmentHorizontalSegment.SegmentLength`. The tangent angle $\theta(s)$ is measured from the positive $x$-axis; its cosine and sine form the `RefDirection` of the curve at $s$.
 
 The $x$ and $y$ coordinates of all horizontal parent curves are defined by the integrals:
 
@@ -1648,4 +1648,4 @@ The zero-length `IfcCurveSegment` is placed at the endpoint of the alignment wit
 | 5 | Treat `IfcPolynomialCurve` coefficients as having implicit units of $\text{Length}^{(1-i)}$ | For a cubic curve, `CoefficientsY[3]` has implicit units of $m^{-2}$; evaluate as $y = b_3 x^3$ where $x$ is a length. Do not multiply by curve length $L$ as you would for a unit-parameterized polynomial. |
 | 6 | Viennese Bend horizontal geometry requires `GravityCenterLineHeight` and a paired cant segment | `IfcAlignmentHorizontalSegment.GravityCenterLineHeight` is mandatory for `VIENNESEBEND`; the associated `IfcAlignmentCantSegment` with `PredefinedType = VIENNESEBEND` must span the same horizontal length, and its cant values enter the curvature formula via the cant factor $cf$ |
 | 7 | Do not assume the parent curve is centered at the origin or aligned with the x-axis | The three-step algorithm ($M_{CSP}$, $M_N$, $M_{PC}$) handles arbitrary parent curve placement; `SegmentStart` locates where trimming begins regardless of the parent curve's own position and orientation |
-| 8 | Apply the positive-left sign convention for radii | Positive `StartRadius` / `EndRadius` indicates a curve to the left of the direction of travel; negative indicates a curve to the right; zero indicates infinite radius (straight tangent) |
+| 8 | Apply the positive-left sign convention for radii | Positive `StartRadiusOfCurvature` / `EndRadiusOfCurvature` indicates a curve to the left of the direction of travel; negative indicates a curve to the right; zero indicates infinite radius (straight tangent) |
