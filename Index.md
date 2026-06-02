@@ -58,7 +58,7 @@
 **deviating elevation** — 4.0, 4.1.2, Notation  
 **directrix** — 10.3, 10.4, 10.5  
 **`DistanceAlong`** — 8.2.1, 8.2.2, 9.3.4  
-**`DistanceAlong`, station conversion** — 8.2.2, 9.3.4, A.4.6
+**`DistanceAlong`, station conversion** — 8.2.2, 9.3.4, 9.3.5, A.4.6
 
 ## E
 
@@ -79,6 +79,7 @@
 ## G
 
 **gap equation** — 9.3.2  
+**gap, station undefined** — 9.3.4, 9.3.5  
 **geometric representation** — 1.5, 2.1  
 **grade** — 3.3, Notation  
 **guide curve** — 10.2, 10.3, 10.5
@@ -123,7 +124,8 @@
 **`IfcSegmentedReferenceCurve`** — 1.5.1, 4.0, 4.2  
 **implementation checklist**  
 &emsp;horizontal — 2.13  
-&emsp;vertical — 3.8  
+&emsp;vertical — 3.9  
+&emsp;cant — 4.13  
 &emsp;linear placement — 8.9  
 &emsp;referents and stationing — 9.6  
 **implementation questions** — 7.2  
@@ -162,7 +164,8 @@
 **offset sign convention** — 5.1  
 **`OffsetLateral`** — 5.2, 8.6.2  
 **`OffsetLongitudinal`** — 8.4.2  
-**overlap equation** — 9.3.3
+**overlap equation** — 9.3.3  
+**overlap, station ambiguity** — 9.3.5
 
 ## P
 
@@ -181,7 +184,8 @@
 **radius sign convention** — 2.1, A.3.5  
 **real-world alignments (testset)** — 12.3.4  
 **reference coordinates** — 12.2.4, 12.4  
-**referent ordering** — 9.4.3  
+**referent ordering** — 9.4.1  
+**referent placement (`ObjectPlacement`)** — 9.4.3  
 **retaining wall** — 10.6.2.3  
 **RefDirection** — 4.1.2, 8.3.1  
 **rotation point** — A.5.4
