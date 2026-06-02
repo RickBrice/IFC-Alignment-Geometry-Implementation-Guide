@@ -18,16 +18,20 @@ The guide is organized as numbered markdown chapters at the repository root:
 | `2_Horizontal_Alignments.md` | Parametric equations for all horizontal curve types | Complete (longest, ~1,300 lines) |
 | `3_Vertical_Alignments.md` | Vertical alignment: grade lines, parabolic & circular arcs | Complete |
 | `4_Cant_Alignments.md` | Rail superelevation via IfcSegmentedReferenceCurve | Complete |
-| `5_OffsetCurves.md` | Offset curve definitions | Partial |
-| `6_Approximate_Alignment_Geometry.md` | IfcPolyline and IfcIndexedPolyCurve — survey/early-planning representations | Partial |
-| `7_Alignments_Reusing_Horizontal_Layout.md` | Multiple alignments sharing a common horizontal layout | Partial |
-| `8_LinearPlacement.md` | Linear placement concepts | Partial |
-| `9_Referents_and_Stationing.md` | Referents and stationing | Partial |
-| `10_Sectioned_Surfaces_and_Solids.md` | Sectioned surfaces and solids (IfcSectionedSurface, IfcSectionedSolidHorizontal) | Partial |
-| `11_Precision_and_Tolerance.md` | Precision and tolerance guidance | Partial |
-| `12_Alignment_Geometry_Testset.md` | Alignment geometry testset | Partial |
-| `13_References.md` | References | Partial |
-| `Appendix_A_LandXML.md` | LandXML-to-IFC conversion (Appendix A) | Partial |
+| `5_OffsetCurves.md` | Offset curve definitions | Complete |
+| `6_Approximate_Alignment_Geometry.md` | IfcPolyline and IfcIndexedPolyCurve — survey/early-planning representations | Complete |
+| `7_Alignments_Reusing_Horizontal_Layout.md` | Multiple alignments sharing a common horizontal layout | Complete |
+| `8_LinearPlacement.md` | Linear placement concepts | Complete |
+| `9_Referents_and_Stationing.md` | Referents and stationing | Complete |
+| `10_Sectioned_Surfaces_and_Solids.md` | Sectioned surfaces and solids (IfcSectionedSurface, IfcSectionedSolidHorizontal) | Complete |
+| `11_Precision_and_Tolerance.md` | Precision and tolerance guidance | Complete |
+| `12_Alignment_Geometry_Testset.md` | Alignment geometry testset | Complete |
+| `13_References.md` | References | Complete |
+| `Appendix_A_LandXML.md` | LandXML-to-IFC conversion (Appendix A) | Complete |
+
+### Figures
+
+`figures/` contains hand-edited IFC source files used as input to figure generation scripts. `figures/scripts/` contains the Python scripts that read those IFC files and write SVG output to `images/`. These IFC files have been manually adjusted to produce specific visual results and are not general-purpose alignment examples.
 
 ### Examples
 
@@ -77,10 +81,7 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 
 Two naming schemes exist in `images/`:
 - Older chapters use generic names: `image1.png`, `image2.1.png`, etc.
-- Newer/in-progress chapters use descriptive names: `Figure_9.1_Superelevation_Transition.png`. Prefer this style for new figures.
+- Newer chapters use descriptive names: `Figure_9.1_Superelevation_Transition.png`. Prefer this style for new figures.
 
 Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own `images/` folder for testset plot images — these are separate from the root `images/` directory.
 
-### Draft outline notes
-
-Partial and stub chapters often begin with a plain-text `outline:` block (before the first heading) listing content still to be written. Preserve these notes when editing; remove a note only once its corresponding content has been written.
