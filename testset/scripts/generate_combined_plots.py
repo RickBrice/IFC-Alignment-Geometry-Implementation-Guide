@@ -61,7 +61,8 @@ def find_horizontal_csv(cant_csv: Path) -> Path:
     start_r    = parts[3]          # e.g. inf or -300
     end_r      = parts[4]          # e.g. 300 or -inf
     horiz_type = CANT_TO_HORIZ[cant_type]
-    stem = f'Horizontal_{horiz_type}_{length}_{start_r}_{end_r}_Meter'
+    unit = parts[-1]
+    stem = f'Horizontal_{horiz_type}_{length}_{start_r}_{end_r}_{unit}'
     return CSV_ROOT / 'HorizontalAlignment' / horiz_type / f'{stem}.csv'
 
 
@@ -80,8 +81,8 @@ def make_combined_plot(cant_csv: Path, horiz_csv: Path, dest: Path):
     fig, (ax_h, ax_c, ax_p) = plt.subplots(3, 1, figsize=(8, 14))
     try:
         ax_h.plot(horiz_x, horiz_y, linewidth=1.5)
-        ax_h.set_xlabel('X (m)')
-        ax_h.set_ylabel('Y (m)')
+        ax_h.set_xlabel(f'X ({unit})')
+        ax_h.set_ylabel(f'Y ({unit})')
         ax_h.set_title(f'Horizontal — {horiz_type}\n{horiz_csv.stem}', fontsize=8)
         ax_h.set_aspect('equal', adjustable='datalim')
         ax_h.grid(True, linestyle='--', alpha=0.5)
