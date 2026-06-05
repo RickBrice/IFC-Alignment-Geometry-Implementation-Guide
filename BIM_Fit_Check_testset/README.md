@@ -1,6 +1,6 @@
 # Examples
 
-Collection of alignment related example files
+This is the testset developed by Andreas Pinzenohler for the bS-Germany BIM Fit Check competition
 
 ## Atomic testset
 
