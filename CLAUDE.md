@@ -85,3 +85,10 @@ Two naming schemes exist in `images/`:
 
 Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own `images/` folder for testset plot images — these are separate from the root `images/` directory.
 
+## TO DO List
+
+The following of a list of things to address for the next version of this document.
+
+- Is it a discrpenecy between IfcSectionedSolidHorizontal and IfcSectionedSurface that IfcSectionedSolidHorizontal.CrossSectionPositions.Location is an IfcPointByDistanceExpression and the NoLongiutindalOffsets formal proposition forbids longitudinal offsets wherease IfcSectionedSurface.CrossSectionPositions.Location is also an IfcPointByDistanceExpression and the NoOffsets formal proposition forbits longitudinal, laterial, and vertical offsets. Why are the formal propositions different?
+
+- 8.9.3.28 - There is a statement that the placement of IfcCurveSegment through IfcAxis2PlacementLinear, the positioning curve (Placement.Location.BasisCurve does not necessarily correspond with the ParentCurve. This statement needs to be analyzed, broken down, and examples provided.
