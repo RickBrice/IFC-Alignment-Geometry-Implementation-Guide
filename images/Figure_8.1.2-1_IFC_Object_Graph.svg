@@ -1,6 +1,6 @@
-<svg width="780" height="450" viewBox="0 0 780 450" xmlns="http://www.w3.org/2000/svg" role="img">
+<svg width="780" height="600" viewBox="0 0 780 600" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>IFC object graph for linear placement</title>
-  <desc>IfcProduct connects via ObjectPlacement to IfcLinearPlacement, which connects via RelativePlacement to IfcAxis2PlacementLinear, which connects via Location to IfcPointByDistanceExpression. IfcLinearPlacement has an optional PlacementRelTo attribute. IfcAxis2PlacementLinear has optional Axis and RefDirection attributes of type IfcDirection. IfcPointByDistanceExpression has DistanceAlong of type IfcLengthMeasure and BasisCurve of type IfcCurve.</desc>
+  <desc>IfcProduct connects via ObjectPlacement to IfcLinearPlacement, which connects via RelativePlacement to IfcAxis2PlacementLinear, which connects via Location to IfcPointByDistanceExpression. IfcLinearPlacement has an optional PlacementRelTo attribute. IfcAxis2PlacementLinear has optional Axis and RefDirection attributes of type IfcDirection. IfcPointByDistanceExpression has DistanceAlong of type IfcLengthMeasure; optional OffsetLateral, OffsetVertical, and OffsetLongitudinal of type IfcLengthMeasure; and BasisCurve of type IfcCurve.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -95,12 +95,16 @@
     <text class="ts" x="620" y="286" text-anchor="middle" dominant-baseline="central">OPTIONAL IfcDirection</text>
   </g>
 
-  <!-- DistanceAlong and BasisCurve — from IfcPointByDistanceExpression -->
-  <!-- Spine from right edge of IfcPointByDistanceExpression to junction, then branch -->
+  <!-- ═══ IfcPointByDistanceExpression attributes ═══ -->
+  <!-- Spine: from right edge of IfcPointByDistanceExpression to vertical bus, then down to BasisCurve level -->
   <path d="M360 344 L430 344" fill="none" stroke="#888" stroke-width="1"/>
-  <path d="M430 344 L430 398" fill="none" stroke="#888" stroke-width="1"/>
+  <path d="M430 344 L430 560" fill="none" stroke="#888" stroke-width="1"/>
+  <!-- Branches to each attribute box -->
   <path d="M430 344 L520 344" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
   <path d="M430 398 L520 398" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M430 452 L520 452" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M430 506 L520 506" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <path d="M430 560 L520 560" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
 
   <!-- DistanceAlong box -->
   <g class="c-amber">
@@ -109,11 +113,32 @@
     <text class="ts" x="620" y="358" text-anchor="middle" dominant-baseline="central">IfcLengthMeasure</text>
   </g>
 
+  <!-- OffsetLateral box -->
+  <g class="c-gray">
+    <rect x="520" y="376" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="620" y="394" text-anchor="middle" dominant-baseline="central">OffsetLateral</text>
+    <text class="ts" x="620" y="412" text-anchor="middle" dominant-baseline="central">OPTIONAL IfcLengthMeasure</text>
+  </g>
+
+  <!-- OffsetVertical box -->
+  <g class="c-gray">
+    <rect x="520" y="430" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="620" y="448" text-anchor="middle" dominant-baseline="central">OffsetVertical</text>
+    <text class="ts" x="620" y="466" text-anchor="middle" dominant-baseline="central">OPTIONAL IfcLengthMeasure</text>
+  </g>
+
+  <!-- OffsetLongitudinal box -->
+  <g class="c-gray">
+    <rect x="520" y="484" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="620" y="502" text-anchor="middle" dominant-baseline="central">OffsetLongitudinal</text>
+    <text class="ts" x="620" y="520" text-anchor="middle" dominant-baseline="central">OPTIONAL IfcLengthMeasure</text>
+  </g>
+
   <!-- BasisCurve box -->
   <g class="c-amber">
-    <rect x="520" y="376" width="200" height="44" rx="8" stroke-width="0.5"/>
-    <text class="th" x="620" y="394" text-anchor="middle" dominant-baseline="central">BasisCurve</text>
-    <text class="ts" x="620" y="412" text-anchor="middle" dominant-baseline="central">IfcCurve</text>
+    <rect x="520" y="538" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="620" y="556" text-anchor="middle" dominant-baseline="central">BasisCurve</text>
+    <text class="ts" x="620" y="574" text-anchor="middle" dominant-baseline="central">IfcCurve</text>
   </g>
 
 </svg>

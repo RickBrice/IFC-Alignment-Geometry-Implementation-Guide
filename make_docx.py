@@ -48,6 +48,7 @@ INKSCAPE = Path("C:/Program Files/Inkscape/bin/inkscape.exe")
 CHAPTERS = [
     "Cover.md",
     "Foreword.md",
+    "RevisionLog.md",
     "TableOfContents.md",
     "Notation.md",
     "1_IFC_Alignment_Concepts.md",
@@ -288,7 +289,7 @@ def main() -> None:
 
         # Front/back matter headings use non-Heading-1 styles so the TOC field
         # (which collects Heading 1 only) excludes them automatically.
-        FRONTMATTER = {"Foreword.md", "Notation.md"}   # → Frontmatter Heading style
+        FRONTMATTER = {"Foreword.md", "RevisionLog.md", "Notation.md"}   # → Frontmatter Heading style
         BACKMATTER  = {"Index.md"}                      # → Title style
 
         # Replace TableOfContents.md static list with a live Word TOC field.

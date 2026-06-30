@@ -5,6 +5,7 @@
 **accuracy** — 5.2, 11.0  
 **arc length** — 2.2, 3.2, 4.2, 5.4.1, 5.5  
 **arc length, offset curve** — 5.2  
+**angle point** — 8.2.1.4.1  
 **asymmetric parabolic arc** — A.4.4  
 **Axis (coordinate vector)** — 4.1.2, 8.3.1
 
@@ -22,6 +23,7 @@
 **cant alignment** — 1.3, 4.0–4.12  
 **cant coordinate system** — 4.1.2  
 **cant transition** — 4.1.1, 4.1.3  
+**`CartesianPosition`** — 8.4  
 **chainage** — *see* `DistanceAlong`  
 **circular arc**  
 &emsp;horizontal — 2.4, 2.4.1–2.4.3  
@@ -67,13 +69,13 @@
 **Euler spiral** — *see* Clothoid  
 **example models**  
 &emsp;offset curves — 5.5  
-&emsp;linear placement — 8.8  
+&emsp;linear placement — 8.7  
 &emsp;sectioned surfaces — 10.6.1  
 &emsp;sectioned solids — 10.6.2
 
 ## F
 
-**fallback Cartesian position** — 8.5  
+**fallback Cartesian position** — 8.4  
 **Fresnel integrals** — 2.5.1
 
 ## G
@@ -106,13 +108,13 @@
 &emsp;vertical — 3.4, 3.4.1  
 **`IfcCompositeCurve`** — 1.5, 1.5.1, 2.1  
 **`IfcCurveSegment`** — 1.5, 1.5.2  
-**`IfcGradientCurve`** — 1.5.1, 3.7  
+**`IfcGradientCurve`** — 1.5.1, 3.7, 8.3.3  
 **`IfcIndexedPolyCurve`** — 6.1  
 **`IfcLine`**  
 &emsp;horizontal — 2.3, 2.3.1  
 &emsp;vertical — 3.3, 3.3.1  
-**`IfcLinearPlacement`** — 8.2, 8.6  
-**`IfcOffsetCurveByDistances`** — 5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 8.6  
+**`IfcLinearPlacement`** — 8.2, 8.5  
+**`IfcOffsetCurveByDistances`** — 5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 8.5  
 **`IfcPointByDistanceExpression`** — 5.0, 8.2  
 **`IfcPolyline`** — 6.1  
 **`IfcPolynomialCurve`** — 2.6, 2.7, 2.8, 2.9, 2.10, 2.11  
@@ -126,12 +128,12 @@
 &emsp;horizontal — 2.13  
 &emsp;vertical — 3.9  
 &emsp;cant — 4.13  
-&emsp;linear placement — 8.9  
+&emsp;linear placement — 8.8  
 &emsp;referents and stationing — 9.6  
 **implementation questions** — 7.2  
 **infinite radius** — A.3.6  
 **interpolation, offset values** — 5.3  
-**ISO 19148** — 8.7
+**ISO 19148** — 8.6
 
 ## L
 
@@ -141,8 +143,8 @@
 &emsp;cant mapping — A.5  
 &emsp;stationing — A.6  
 **lane striping** — 5.0  
-**linear placement** — 8.0–8.9  
-**linear referencing** — 8.7  
+**linear placement** — 8.0–8.8  
+**linear referencing** — 8.6  
 **linear transition (cant)** — 4.4, 4.4.1–4.4.3  
 **live model management** — 7.3
 
@@ -162,8 +164,9 @@
 
 **offset curves** — 5.0–5.8  
 **offset sign convention** — 5.1  
-**`OffsetLateral`** — 5.2, 8.6.2  
-**`OffsetLongitudinal`** — 8.4.2  
+**`OffsetLateral`** — 5.2, 8.2.1.2, 8.5.2  
+**`OffsetLongitudinal`** — 8.2.1.4, 8.2.1.4.2  
+**`OffsetVertical`** — 8.2.1.3  
 **overlap equation** — 9.3.3  
 **overlap, station ambiguity** — 9.3.5
 
@@ -173,9 +176,11 @@
 &emsp;LandXML — A.4.3, A.4.4  
 **parent curve** — 1.5.2, 2.1  
 **parent/child structure** — 7.1.1  
+**`PlacementRelTo`** — 8.1.2, 8.3.3  
 **precision** — 11.0  
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5  
+**`Pset_LinearReferencingMethod`** — 8.6.2, 8.6.3, 8.6.4  
 **`Pset_Stationing`** — 9.2.2  
 **PVI (point of vertical intersection)** — A.4.2
 
@@ -231,7 +236,7 @@
 ## U
 
 **units of measure** — 1.7, 12.2.1, A.2  
-**unreachable points** — 8.4, 8.4.1
+**unreachable points** — 8.2.1.4, 8.2.1.4.1
 
 ## V
 
