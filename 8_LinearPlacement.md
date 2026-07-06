@@ -44,47 +44,41 @@ Figure 8.1.2-2 schematically represents the linear placement of a bridge pier an
 
 ## 8.2 IfcLinearPlacement and IfcAxis2PlacementLinear
 
-### 8.2.1 Distance Along the Directrix
+`IfcAxis2PlacementLinear.Location` is typed as `IfcPoint` but is constrained by a WHERE rule to be `IfcPointByDistanceExpression`.
 
-`IfcAxis2PlacementLinear.Location` is typed as `IfcPoint` but is constrained by a WHERE rule to be `IfcPointByDistanceExpression`. This class has five key attributes:
+### 8.2.1 Distance Along the Basis Curve
+
+ `IfcPointByDistanceExpression` class has five key attributes:
 
 |Attribute            |Type                        |Description                                                                                    |
 |---------------------------|------------------------------------|------------------------------------|
-|`BasisCurve`         |`IfcCurve`                  |The curve along which the distance is measured. See §8.2.1.1.                                           |
-|`DistanceAlong`      |`IfcCurveMeasureSelect`     |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`.  See §8.2.1.1.  |
-|`OffsetLateral`      |`OPTIONAL IfcLengthMeasure` |Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148). See §8.2.1.2. |
-|`OffsetVertical`     |`OPTIONAL IfcLengthMeasure` |Signed vertical offset. Positive upward.  See §8.2.1.3.                                                      |
-|`OffsetLongitudinal` |`OPTIONAL IfcLengthMeasure` |Signed offset along the tangent direction. See §8.2.1.4 for uses.                              |
+|`BasisCurve`         |`IfcCurve`                  |The curve along which the distance is measured.                                                         |
+|`DistanceAlong`      |`IfcCurveMeasureSelect`     |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`.              |
+|`OffsetLateral`      |`OPTIONAL IfcLengthMeasure` |Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148). |
+|`OffsetVertical`     |`OPTIONAL IfcLengthMeasure` |Signed vertical offset. Positive upward.                                                                 |
+|`OffsetLongitudinal` |`OPTIONAL IfcLengthMeasure` |Signed offset along the tangent direction. See §8.2.1.1 for uses.                                        |
 
-#### 8.2.1.1 Basis Curve
+For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve — that is, along the underlying `IfcCompositeCurve` that represents the plan layout. This is consistent with how stationing is defined in transportation engineering: stationing is a horizontal measure.
 
-The `BasisCurve` attribute of `IfcPointByDistanceExpression` is the key to understanding which curve the distance is measured along. For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve — that is, along the underlying `IfcCompositeCurve` that represents the plan layout. This is consistent with how stationing is defined in transportation engineering: stationing is a horizontal measure.
+The `OffsetLateral`, `OffsetVertical` and `OffsetLongitudinal` are measured in the local coordinate system at the point on the curve as shown in Figure 8.2.1-1.
 
-#### 8.2.1.2 Lateral Offset
+![](images/Figure_8.2.1-1_ifcpointbydisanceexpression_offsets.svg)
 
-The `OffsetLateral` attribute of `IfcPointByDistanceExpression` is measured in plan view as shown in Figure 8.1.2-2.
+*Figure 8.2.1-1 — IfcPointByDistanceExpression offsets*
 
-#### 8.2.1.3 Vertical Offset
+#### 8.2.1.1 Longitudinal Offset and Unreachable Points
 
-The `OffsetVertical` attribute of `IfcPointByDistanceExpression` is measured in the "distance along - elevation" plane perpendicular to the gradient of the curve as shown in Figure 8.2.1.3-1.
-
-![Figure 8.2.1.3-1 — Elevation view of an alignment profile showing the OffsetVertical in the positive sense](images/Figure_8.2.1.3-1_OffsetVertical.svg)
-
-*Figure 8.2.1.3-1 — Elevation view of an alignment profile showing the OffsetVertical in the positive sense.*
-
-#### 8.2.1.4 Longitudinal Offset and Unreachable Points
-
-##### 8.2.1.4.1 What Is an Unreachable Point?
+**What Is an Unreachable Point?**
 
 In plane geometry, every point off a smooth curve can be reached by some combination of distance along the curve plus a perpendicular offset. However, certain geometric configurations in horizontal alignment create locations that **cannot be expressed** as a station plus a purely transverse offset.
 
-The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 8.2.1.4.1-1.
+The classic example is an **angle point** — the intersection of two tangents in a horizontal alignment where no curve has been inserted. At an angle point, the curve has a sharp corner. A point located “outside” the angle — beyond the apex — lies in a zone where the perpendicular from the curve never reaches. This is depicted in Figure 8.2.1.1-1.
 
-![Figure 8.2.1.4.1-1 — Plan view of two alignment tangents meeting at PI. Dashed perpendiculars from PI bound a hatched unreachable zone: any point inside this zone cannot be reached by a DistanceAlong projection onto either tangent alone and requires a non-zero OffsetLongitudinal.](images/Figure_8.2.1.4.1-1_PI_Unreachable_Zone.svg)
+![Figure 8.2.1.1-1 — Plan view of two alignment tangents meeting at PI. Dashed perpendiculars from PI bound a hatched unreachable zone: any point inside this zone cannot be reached by a DistanceAlong projection onto either tangent alone and requires a non-zero OffsetLongitudinal.](images/Figure_8.2.1.1-1_PI_Unreachable_Zone.svg)
 
-*Figure 8.2.1.4.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
+*Figure 8.2.1.1-1 — Plan view showing two tangent lines meeting at an angle point (PI). The shaded region outside the angle cannot be reached by a station + lateral offset alone. An object in this region requires a longitudinal offset.*
 
-##### 8.2.1.4.2 Using OffsetLongitudinal
+**Using OffsetLongitudinal**
 
 `IfcPointByDistanceExpression.OffsetLongitudinal` provides the solution. A non-zero `OffsetLongitudinal` moves the placement point along the local X-axis (the forward tangent direction) after the perpendicular offset is applied. The procedure is:
 

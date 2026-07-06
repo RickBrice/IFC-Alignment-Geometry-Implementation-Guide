@@ -5,7 +5,7 @@
 **accuracy** — 5.2, 11.0  
 **arc length** — 2.2, 3.2, 4.2, 5.4.1, 5.5  
 **arc length, offset curve** — 5.2  
-**angle point** — 8.2.1.4.1  
+**angle point** — 8.2.1.1  
 **asymmetric parabolic arc** — A.4.4  
 **Axis (coordinate vector)** — 4.1.2, 8.3.1
 
@@ -164,9 +164,9 @@
 
 **offset curves** — 5.0–5.8  
 **offset sign convention** — 5.1  
-**`OffsetLateral`** — 5.2, 8.2.1.2, 8.5.2  
-**`OffsetLongitudinal`** — 8.2.1.4, 8.2.1.4.2  
-**`OffsetVertical`** — 8.2.1.3  
+**`OffsetLateral`** — 5.2, 8.2.1, 8.5.2  
+**`OffsetLongitudinal`** — 8.2.1.1  
+**`OffsetVertical`** — 8.2.1  
 **overlap equation** — 9.3.3  
 **overlap, station ambiguity** — 9.3.5
 
@@ -236,7 +236,7 @@
 ## U
 
 **units of measure** — 1.7, 12.2.1, A.2  
-**unreachable points** — 8.2.1.4, 8.2.1.4.1
+**unreachable points** — 8.2.1.1
 
 ## V
 
