@@ -1,6 +1,6 @@
 <svg width="680" height="500" viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>Curved alignment in plan with bridge pier and drain inlet positioned by station and lateral offset</title>
-  <desc>A curved horizontal alignment arc runs across the figure. A bridge pier is placed to the left of the alignment at a given station with a lateral offset labelled Lt. A drain inlet is placed to the right at a different station with a lateral offset labelled Rt. Both features are annotated with station values and elevations.</desc>
+  <desc>A curved horizontal alignment arc runs across the figure. A bridge pier is placed to the left of the alignment at a given station with a lateral offset labelled Lt. A drain inlet is placed to the right at a later station with a lateral offset labelled Rt. The pier is annotated with station and lateral offset; the drain inlet is also annotated with its grate elevation.</desc>
 
   <defs>
     <style>
@@ -30,12 +30,12 @@
         stroke="#73726c" stroke-width="1.5" stroke-linecap="round"/>
 
   <!-- Station label -->
-  <text class="ts" x="200" y="348" fill="#73726c">Sta. 1+450.000</text>
+  <text class="ts" x="200" y="348" fill="#73726c">Sta. 142+35.75</text>
 
   <!-- Offset arrow Lt. -->
   <line x1="192" y1="331" x2="158" y2="283"
         stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrowsm)" stroke-linecap="round"/>
-  <text class="ts" x="168" y="302" fill="#185FA5" text-anchor="end">Lt. 12.500 m</text>
+  <text class="ts" x="168" y="302" fill="#185FA5" text-anchor="end">Lt. 12.50 ft</text>
 
   <!-- Bridge pier symbol -->
   <rect x="139" y="267" width="24" height="14" rx="1"
@@ -43,9 +43,8 @@
   <line x1="139" y1="267" x2="163" y2="281" stroke="#ffffff" stroke-width="0.8"/>
   <line x1="163" y1="267" x2="139" y2="281" stroke="#ffffff" stroke-width="0.8"/>
 
-  <!-- Pier labels -->
+  <!-- Pier label (no elevation; read separately from a profile view, per Case 1) -->
   <text class="th" x="151" y="258" fill="#3d3d3a" text-anchor="middle">Bridge pier</text>
-  <text class="ts" x="151" y="291" fill="#73726c" text-anchor="middle">Elev. 312.450 m</text>
 
   <!-- ── DRAIN INLET (Rt.) ── -->
   <!-- Station tick at (306,247) -->
@@ -53,12 +52,12 @@
         stroke="#73726c" stroke-width="1.5" stroke-linecap="round"/>
 
   <!-- Station label -->
-  <text class="ts" x="298" y="236" fill="#73726c" text-anchor="end">Sta. 1+620.000</text>
+  <text class="ts" x="298" y="236" fill="#73726c" text-anchor="end">Sta. 198+12.42</text>
 
   <!-- Offset arrow Rt. -->
   <line x1="306" y1="247" x2="331" y2="283"
         stroke="#854F0B" stroke-width="1.5" marker-end="url(#arrowsm)" stroke-linecap="round"/>
-  <text class="ts" x="328" y="262" fill="#854F0B">Rt. 8.200 m</text>
+  <text class="ts" x="328" y="262" fill="#854F0B">Rt. 18.0 ft</text>
 
   <!-- Drain inlet symbol -->
   <circle cx="337" cy="292" r="12" fill="none" stroke="#73726c" stroke-width="1.5"/>
@@ -69,11 +68,7 @@
 
   <!-- Drain labels -->
   <text class="th" x="337" y="316" fill="#3d3d3a" text-anchor="middle">Drain inlet</text>
-  <text class="ts" x="337" y="330" fill="#73726c" text-anchor="middle">Elev. 308.120 m</text>
-
-  <!-- Alignment start/end labels -->
-  <text class="ts" x="52" y="412" fill="#73726c" text-anchor="end">Sta. 1+000</text>
-  <text class="ts" x="568" y="116" fill="#73726c">Sta. 2+100</text>
+  <text class="ts" x="337" y="330" fill="#73726c" text-anchor="middle">Elev. 312.75 ft (NAVD88)</text>
 
   <!-- Legend -->
   <rect x="430" y="340" width="220" height="130" rx="8"
@@ -96,11 +91,11 @@
   <line x1="461" y1="417" x2="461" y2="433" stroke="#73726c" stroke-width="0.8" opacity="0.5"/>
   <text class="ts" x="498" y="429" fill="#3d3d3a">Drain inlet (plan)</text>
 
-  <line x1="446" y1="450" x2="490" y2="450"
+  <line x1="490" y1="450" x2="446" y2="450"
         stroke="#185FA5" stroke-width="1.5" marker-end="url(#arrowsm)"/>
   <text class="ts" x="498" y="454" fill="#3d3d3a">Lt. &#x2014; left offset</text>
 
-  <line x1="490" y1="465" x2="446" y2="465"
+  <line x1="446" y1="465" x2="490" y2="465"
         stroke="#854F0B" stroke-width="1.5" marker-end="url(#arrowsm)"/>
   <text class="ts" x="498" y="469" fill="#3d3d3a">Rt. &#x2014; right offset</text>
 </svg>

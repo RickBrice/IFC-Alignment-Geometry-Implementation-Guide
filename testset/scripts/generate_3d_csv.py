@@ -15,8 +15,15 @@ Default (no flag) — real-world alignments:
     evaluation_points() on the evaluator returns the sample distances.
 
   Linear-placement sampling (files in LINEAR_PLACEMENT_FILES):
-    The CSV is evaluated only at the distances encoded in the
-    IfcPointByDistanceExpression of each IfcLinearPlacement entity.
+    Each IfcLinearPlacement is resolved directly via
+    ifcopenshell.util.placement.get_local_placement(), rather than sampling the
+    bare 3D curve at the placement's DistanceAlong -- this is what actually
+    exercises IfcLinearPlacement evaluation (OffsetVertical, PlacementRelTo,
+    etc.), not just curve evaluation at matching distances.
+
+  Files in CUSTOM_CSV_FILES are skipped entirely -- they have their own
+  dedicated generator script and a non-standard CSV layout that this script's
+  generic writer would otherwise clobber.
 
 --testset flag — synthetic testset (VerticalAlignment and CantAlignment only):
   Reads each IFC file from Alignment-geometry-testset/VerticalAlignment/ and
@@ -50,6 +57,7 @@ import ifcopenshell
 import ifcopenshell.geom
 from ifcopenshell import ifcopenshell_wrapper
 import ifcopenshell.api.alignment as align_api
+import ifcopenshell.util.placement
 import ifcopenshell.util.unit
 
 IFC_ROOT      = Path(__file__).parent.parent / 'real-world-alignments'
@@ -74,6 +82,13 @@ HEADER = [
 # rather than the default uniform sampling.
 LINEAR_PLACEMENT_FILES = {
     'FHWA_Alignment_with_Linear_Placement',
+}
+
+# Files with their own dedicated CSV generator script and a non-standard CSV
+# layout (e.g. long-format with a Variant column). Must NOT be processed here --
+# doing so would silently overwrite the correct CSV with a generic-format one.
+CUSTOM_CSV_FILES = {
+    'FHWA_Alignment_LinearPlacement_VerticalOffset': 'generate_fhwa_verticaloffset_csv.py',
 }
 
 
@@ -123,22 +138,56 @@ def _write_csv(dest: Path, rows: list) -> None:
         writer.writerows(rows)
 
 
-def _linear_placement_distances_m(ifc, unit_scale):
-    """Return sorted, deduplicated SI distances from all IfcLinearPlacement entities."""
-    distances = set()
+def _sorted_linear_placements(ifc, basis_curve):
+    """Return (dist_along, lp) tuples for every IfcLinearPlacement targeting basis_curve,
+    sorted by distance.
+
+    Filtering by BasisCurve excludes placements that reference some other curve, such as
+    the single start-station IfcReferent auto-created by
+    ifcopenshell.api.alignment.create(start_station=...), whose Location.BasisCurve is the
+    2D horizontal composite curve rather than the alignment's 3D curve.
+
+    dist_along is in project units, taken directly from the placement's
+    IfcPointByDistanceExpression -- no unit conversion needed since
+    get_local_placement() below already returns project units.
+    """
+    items = []
     for lp in ifc.by_type('IfcLinearPlacement'):
-        try:
-            pde = lp.RelativePlacement.Location
-            distances.add(pde.DistanceAlong.wrappedValue * unit_scale)
-        except AttributeError:
+        pde = lp.RelativePlacement.Location
+        if not pde.is_a('IfcPointByDistanceExpression'):
             continue
-    return sorted(distances)
+        if pde.BasisCurve != basis_curve:
+            continue
+        items.append((pde.DistanceAlong.wrappedValue, lp))
+    return sorted(items, key=lambda item: item[0])
+
+
+def _fmt(v):
+    """Format to 6 decimal places, snapping values that are zero within floating-point
+    noise (e.g. ~1e-18 from matrix-chain multiplication) to exactly 0.0. Without this,
+    such noise can print as -0.000000 depending on which code path computed the value,
+    producing a spurious diff on regeneration even though nothing meaningful changed."""
+    if abs(v) < 1e-9:
+        v = 0.0
+    return f'{v:.6f}'
+
+
+def _eval_linear_placement_row(lp, dist_along):
+    """Resolve lp's full placement chain (including PlacementRelTo, if any) and
+    return a formatted CSV row."""
+    m = ifcopenshell.util.placement.get_local_placement(lp)
+    return [
+        _fmt(dist_along),
+        _fmt(m[0, 3]), _fmt(m[1, 3]), _fmt(m[2, 3]),
+        _fmt(m[0, 0]), _fmt(m[1, 0]), _fmt(m[2, 0]),
+        _fmt(m[0, 1]), _fmt(m[1, 1]), _fmt(m[2, 1]),
+        _fmt(m[0, 2]), _fmt(m[1, 2]), _fmt(m[2, 2]),
+    ]
 
 
 def process_realworld_file(src: Path):
     """Process a real-world alignment IFC file; write CSV alongside it."""
     ifc = ifcopenshell.open(str(src))
-    unit_scale = ifcopenshell.util.unit.calculate_unit_scale(ifc)
 
     name = ALIGNMENT_NAME.get(src.stem)
     if name is not None:
@@ -146,14 +195,14 @@ def process_realworld_file(src: Path):
     else:
         alignment = ifc.by_type('IfcAlignment')[0]
 
-    ev = _make_evaluator(get_3d_curve(alignment))
-
     if src.stem in LINEAR_PLACEMENT_FILES:
-        pts = _linear_placement_distances_m(ifc, unit_scale)
+        basis_curve = get_3d_curve(alignment)
+        placements = _sorted_linear_placements(ifc, basis_curve)
+        rows = [_eval_linear_placement_row(lp, dist) for dist, lp in placements]
     else:
-        pts = ev.evaluation_points()
-
-    rows = [_eval_row(ev, d_m, unit_scale) for d_m in pts]
+        unit_scale = ifcopenshell.util.unit.calculate_unit_scale(ifc)
+        ev = _make_evaluator(get_3d_curve(alignment))
+        rows = [_eval_row(ev, d_m, unit_scale) for d_m in ev.evaluation_points()]
 
     dest = src.with_suffix('.csv')
     _write_csv(dest, rows)
@@ -225,7 +274,13 @@ def main():
         )
         _run(ifc_files, process_testset_file, 'synthetic testset')
     else:
-        _run(sorted(IFC_ROOT.rglob('*.ifc')), process_realworld_file, 'real-world alignment')
+        ifc_files = sorted(IFC_ROOT.rglob('*.ifc'))
+        for name, script in CUSTOM_CSV_FILES.items():
+            before = len(ifc_files)
+            ifc_files = [f for f in ifc_files if f.stem != name]
+            if len(ifc_files) != before:
+                print(f'  Skipping {name}.ifc (has its own CSV generator: {script})')
+        _run(ifc_files, process_realworld_file, 'real-world alignment')
 
 
 if __name__ == '__main__':

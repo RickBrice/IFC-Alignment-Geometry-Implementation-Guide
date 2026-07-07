@@ -69,7 +69,7 @@
 **Euler spiral** — *see* Clothoid  
 **example models**  
 &emsp;offset curves — 5.5  
-&emsp;linear placement — 8.7  
+&emsp;linear placement — 8.3.3  
 &emsp;sectioned surfaces — 10.6.1  
 &emsp;sectioned solids — 10.6.2
 
@@ -128,7 +128,7 @@
 &emsp;horizontal — 2.13  
 &emsp;vertical — 3.9  
 &emsp;cant — 4.13  
-&emsp;linear placement — 8.8  
+&emsp;linear placement — 8.7  
 &emsp;referents and stationing — 9.6  
 **implementation questions** — 7.2  
 **infinite radius** — A.3.6  
@@ -143,7 +143,7 @@
 &emsp;cant mapping — A.5  
 &emsp;stationing — A.6  
 **lane striping** — 5.0  
-**linear placement** — 8.0–8.8  
+**linear placement** — 8.0–8.7  
 **linear referencing** — 8.6  
 **linear transition (cant)** — 4.4, 4.4.1–4.4.3  
 **live model management** — 7.3

@@ -4,7 +4,7 @@
 
 Most elements in the built environment for infrastructure works are located **relative to an alignment** rather than by absolute coordinates. A bridge pier, a drainage inlet, a light pole, a traffic sign — all are described in traditional engineering plans by where they fall along a road or railway centerline, how far they sit to the left or right of that centerline, and how high above (or below) a reference elevation they stand. This intuitive “station, offset, elevation” system has been the language of civil engineers for over a century.
 
-`IfcLinearPlacement` is the IFC mechanism that formalizes this concept. It places an object relative to a *directrix* — typically an alignment curve — using a distance along the curve combined with optional lateral and vertical offsets.
+`IfcLinearPlacement` is the IFC mechanism that formalizes this concept in accordance with ISO 19148 _Geographic information - Linear referencing_. It places and orients an object relative to a *basis curve* — typically an alignment curve — using an `IfcPointByDistanceExpression` to define the location and `IfcAxis2PlacementLinear` to define the axis directions.
 
 This section covers:
 
@@ -22,7 +22,7 @@ Before examining IFC, it helps to recall how placement is expressed in conventio
 
 **Case 1 — Bridge Pier (2D plan view).** A bridge pier is located in plan by its station along the roadway alignment and its lateral offset from the centerline. A plan note might read “Pier 2 CL: Sta. 142+35.75, 12.50 ft Lt.” The elevation of the pier top is read separately from a profile view. No absolute coordinates are needed; the alignment provides the reference frame.
 
-**Case 2 — Drainage Inlet (3D).** A storm drain inlet is placed at Sta. 98+12.4, offset 18.0 ft right of centerline, with its top grate set at elevation 312.75 ft (NAVD88). Here all three spatial dimensions are given: station gives position along the alignment, lateral offset gives the transverse position, and the elevation fixes the vertical position independently of the alignment profile.
+**Case 2 — Drainage Inlet (3D).** A storm drain inlet is placed at Sta. 198+12.42, offset 18.0 ft right of centerline, with its top grate set at elevation 312.75 ft (NAVD88). Here all three spatial dimensions are given: station gives position along the alignment, lateral offset gives the transverse position, and the elevation fixes the vertical position independently of the alignment profile.
 
 Both cases share the same structure: **a distance along a reference curve, plus offsets from it**. `IfcLinearPlacement` captures exactly this structure.
 
@@ -38,13 +38,18 @@ The `PlacementRelTo` attribute of `IfcLinearPlacement` establishes the reference
 
 Figure 8.1.2-2 schematically represents the linear placement of a bridge pier and a drain inlet.
 
-![Figure 8.1.2-2 — Plan view of a curved alignment with two features positioned by linear placement: a bridge pier at Sta. 1+450 offset Lt. 12.500 m left, and a drain inlet at Sta. 1+620 offset Rt. 8.200 m right. Both features are annotated with station, lateral offset, and elevation values.](images/Figure_8.1.2-2_Linear_Placement_Features.svg)
+![Figure 8.1.2-2 — Plan view of a curved alignment with two features positioned by linear placement: a bridge pier at Sta. 142+35.75 offset Lt. 12.50 ft left, and a drain inlet at Sta. 198+12.42 offset Rt. 18.0 ft right with grate elevation 312.75 ft (NAVD88). The pier is annotated with station and lateral offset only; the drain inlet is annotated with station, lateral offset, and elevation.](images/Figure_8.1.2-2_Linear_Placement_Features.svg)
 
 *Figure 8.1.2-2 — Conceptual diagram showing a plan view of an alignment with a bridge pier placed at a station/offset and a drain inlet placed at station/offset/elevation.*
 
 ## 8.2 IfcLinearPlacement and IfcAxis2PlacementLinear
 
-`IfcAxis2PlacementLinear.Location` is typed as `IfcPoint` but is constrained by a WHERE rule to be `IfcPointByDistanceExpression`.
+`IfcAxis2PlacementLinear` performs two independent jobs:
+
+1. **Location** — fixing a point in space, via `Location` (typed `IfcPoint`, but constrained by a WHERE rule to be `IfcPointByDistanceExpression`). The point is found by walking `DistanceAlong` a `BasisCurve` and then applying up to three offsets (§8.2.1).
+2. **Orientation** — fixing the direction of the placement's local axes, via the optional `Axis` and `RefDirection` attributes (§8.3).
+
+These two jobs are independent. The offsets that determine `Location` are measured in a frame derived directly from the geometry of `BasisCurve` at `DistanceAlong` — not from whatever `Axis`/`RefDirection` values are chosen for orientation. An implementation evaluates `Location` the same way regardless of how, or whether, `Axis` and `RefDirection` are supplied.
 
 ### 8.2.1 Distance Along the Basis Curve
 
@@ -52,19 +57,28 @@ Figure 8.1.2-2 schematically represents the linear placement of a bridge pier an
 
 |Attribute            |Type                        |Description                                                                                    |
 |---------------------------|------------------------------------|------------------------------------|
-|`BasisCurve`         |`IfcCurve`                  |The curve along which the distance is measured.                                                         |
-|`DistanceAlong`      |`IfcCurveMeasureSelect`     |The parametric distance measured along `BasisCurve`. Typically a plain `IfcLengthMeasure`.              |
+|`BasisCurve`         |`IfcCurve`                  |The curve relative to which the point's location is defined. |
+|`DistanceAlong`      |`IfcCurveMeasureSelect`     |The parametric distance measured along the _basis curve_. Typically a plain `IfcLengthMeasure`.              |
 |`OffsetLateral`      |`OPTIONAL IfcLengthMeasure` |Signed lateral offset. Positive to the left of the curve’s forward tangent; negative to the right (consistent with ISO 19148). |
-|`OffsetVertical`     |`OPTIONAL IfcLengthMeasure` |Signed vertical offset. Positive upward.                                                                 |
-|`OffsetLongitudinal` |`OPTIONAL IfcLengthMeasure` |Signed offset along the tangent direction. See §8.2.1.1 for uses.                                        |
+|`OffsetVertical`     |`OPTIONAL IfcLengthMeasure` |Signed vertical offset. Positive upward relative to `BasisCurve`.                                                                 |
+|`OffsetLongitudinal` |`OPTIONAL IfcLengthMeasure` |Signed offset in the tangent direction of the `BasisCurve`. See §8.2.1.1 for uses.                                        |
 
-For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve — that is, along the underlying `IfcCompositeCurve` that represents the plan layout. This is consistent with how stationing is defined in transportation engineering: stationing is a horizontal measure.
+For a full 3D alignment (`IfcGradientCurve` or `IfcSegmentedReferenceCurve`), the `DistanceAlong` is measured along the **horizontal projection** of the 3D curve onto the global XY plane — that is, along the underlying `IfcCompositeCurve` that forms the basis of the 2.5D geometry and represents the plan view curve geometry. This is consistent with how stationing is defined in civil engineering: stationing is a horizontal measure.
 
-The `OffsetLateral`, `OffsetVertical` and `OffsetLongitudinal` are measured in the local coordinate system at the point on the curve as shown in Figure 8.2.1-1.
+> The `IfcPointByDistanceExpression.BasisCurve` attribute is poorly named. This curve is the 3D alignment geometry curve composed from the 2D composite curves defining the 2.5D geometry. A better name for this attribute would be Directrix. This would be consistent with `IfcSectionedSolidHorizontal.Directrix`. The basis curve is the curve that forms the basis of the 2.5D geometry. This is the horizontal projection of `IfcPointByDistanceExpression.BasisCurve` onto a horizontal plane. Basis curve and `IfcPointByDistanceExpression.BasisCurve` are similarly named but have very different definitions. For this reason `IfcPointByDistanceExpression.BasisCurve` (or `BasisCurve`) is used when referring to the 3D curve and _basis curve_ is used when referring to the 2D projection of the 3D curve onto a horizontal plane.
 
-![](images/Figure_8.2.1-1_ifcpointbydisanceexpression_offsets.svg)
+The three offsets are measured relative to a frame derived from `BasisCurve` itself at `DistanceAlong` — not relative to the `Axis`/`RefDirection` of the enclosing `IfcAxis2PlacementLinear` (§8.3). That curve-derived frame, shown in Figure 8.2.1-1, is defined as follows:
 
-*Figure 8.2.1-1 — IfcPointByDistanceExpression offsets*
+- Let **T** be the tangent to `BasisCurve` at `DistanceAlong`, pointing in the direction of increasing distance.
+- **OffsetLateral** is measured perpendicular to **T**, in the horizontal plane (parallel to the global XY plane): positive to the left of **T**, negative to the right (ISO 19148 convention).
+- **OffsetVertical** is measured perpendicular to **T**, within the *vertical plane* (the plane perpendicular to the global XY plane) containing **T**.
+- **OffsetLongitudinal** is measured along **T**, applied last, from the point already displaced by `OffsetLateral` and `OffsetVertical` (see §8.2.1.1).
+
+> **This is not the same as elevation.** `OffsetVertical` is perpendicular to the tangent **T**, not to the global XY plane. When `BasisCurve` is horizontal at that point, the two happen to coincide, and `OffsetVertical` behaves exactly like a change in elevation. But on a graded alignment the tangent is inclined, so "perpendicular to the tangent" points partly sideways and partly up — `OffsetVertical` is *not* a pure elevation change. §8.3.3 works through a numeric example where confusing "perpendicular to the curve" with "vertical (elevation)" produces different placements.
+
+![Figure 8.2.1-1 — Offset directions used by IfcPointByDistanceExpression to locate a point P on an alignment, where T is the tangent to the alignment at P: OffsetLateral measured horizontal and perpendicular to T, OffsetVertical measured in the vertical plane containing T, and OffsetLongitudinal measured along T. The dashed path shows offset point Q constructed by applying OffsetLateral, then OffsetVertical, then OffsetLongitudinal, in that order.](images/Figure_8.2.1-1_ifcpointbydisanceexpression_offsets.svg)
+
+*Figure 8.2.1-1 — Offset directions used by `IfcPointByDistanceExpression` to locate a point P on an alignment, where T is the tangent to the alignment at P: `OffsetLateral` measured horizontal and perpendicular to T, `OffsetVertical` measured in the vertical plane containing T, and `OffsetLongitudinal` measured along T. The dashed path shows offset point Q constructed by applying `OffsetLateral`, then `OffsetVertical`, then `OffsetLongitudinal`, in that order.*
 
 #### 8.2.1.1 Longitudinal Offset and Unreachable Points
 
@@ -80,14 +94,14 @@ The classic example is an **angle point** — the intersection of two tangents i
 
 **Using OffsetLongitudinal**
 
-`IfcPointByDistanceExpression.OffsetLongitudinal` provides the solution. A non-zero `OffsetLongitudinal` moves the placement point along the local X-axis (the forward tangent direction) after the perpendicular offset is applied. The procedure is:
+`IfcPointByDistanceExpression.OffsetLongitudinal` provides the solution. A non-zero `OffsetLongitudinal` moves the placement point along **T** — the same tangent direction used to define the other offsets in §8.2.1 — after the lateral and vertical offsets are applied. The procedure is:
 
-1. Locate the point on the basis curve at `DistanceAlong`.
-1. Apply `OffsetLateral` perpendicular to the curve tangent in the local XY plane.
-1. Apply `OffsetVertical` in the local Z direction.
-1. Apply `OffsetLongitudinal` along the local X direction (the tangent at step 1).
+1. Locate the point on the _basis curve_ at `DistanceAlong`, establish the corresponding point on the `BasisCurve`, and determine tangent **T** at that point.
+1. Apply `OffsetLateral` perpendicular to **T**, in the horizontal plane.
+1. Apply `OffsetVertical` perpendicular to **T**, within the vertical plane containing **T**.
+1. Apply `OffsetLongitudinal` along **T**.
 
-The resulting point is no longer “on” a perpendicular to the curve at `DistanceAlong`, but it is precisely located in 3D space.
+The resulting point is no longer “on” a perpendicular to the _basis curve_ at `DistanceAlong`, but it is precisely located in 3D space.
 
 > **Practical note:** `OffsetLongitudinal` should be used only when necessary. For all ordinary station-offset placements, it should be omitted.
 
@@ -102,9 +116,11 @@ When using `IfcPointByDistanceExpression`, supply the **geometric distance**, no
 
 ## 8.3 The Placement Coordinate System
 
+§8.2 covered the first job of `IfcAxis2PlacementLinear` — fixing `Location` using offsets measured in a frame derived purely from `BasisCurve`'s own geometry. This section covers the second, independent job: establishing the *orientation* of the placement's local axes via `Axis` and `RefDirection`. Nothing here changes how `Location` was computed in §8.2 — location and orientation are established independently, and an implementation must not let one influence the other.
+
 ### 8.3.1 Role of Axis and RefDirection
 
-`IfcAxis2PlacementLinear` defines a local right-handed coordinate system at the placement point. Two optional attributes control its orientation:
+The orientation job of `IfcAxis2PlacementLinear` defines a local right-handed coordinate system at the placement point fixed in §8.2. Two optional attributes control that orientation:
 
 |Attribute     |Role in local CS          |Default                              |
 |--------------------|-----------------------------------|---------------------------------------------|
@@ -123,12 +139,12 @@ The ambiguity originates in how `IfcAxis2PlacementLinear` describes its optional
 
 > "Relative placement axes (`Axis` and `RefDirection`) are relative to the curve used for linear referencing provided in `IfcPlacement.Location` (`IfcPointByDistanceExpression.BasisCurve`), maintaining the relationship to the tangent of the curve."
 
-This sentence says the axes are *derived from the curve*, not from global coordinates. The natural reading is that `RefDirection` defaults to the curve tangent — which implementations broadly agree on — and that `Axis` defaults to something perpendicular to that tangent in the general upward direction. On a flat alignment those two readings coincide: the upward perpendicular to a horizontal tangent is `(0, 0, 1)`. On a graded alignment they diverge: "perpendicular to the 3D tangent in the upward direction" tilts with the grade and is no longer `(0, 0, 1)`. The specification never resolves what "upward relative to the curve" concretely means, and that silence is the source of the ambiguity. A known open issue in the buildingSMART community tracks it (see [IFC4.x-IF Issue #125](https://github.com/buildingSMART/IFC4.x-IF/issues/125)).
+This sentence says the axes are *derived from the curve*, not from global coordinates. The natural reading is that `RefDirection` defaults to the curve tangent — which implementations broadly agree on — and that `Axis` defaults to something perpendicular to that tangent in the general upward direction. On a flat alignment those two readings coincide: the upward perpendicular to a horizontal tangent is `(0, 0, 1)`. On a graded alignment they diverge: "perpendicular to the 3D tangent in the upward direction" tilts with the grade and is no longer `(0, 0, 1)`. The specification never resolves what "upward relative to the curve" concretely means, and that silence is the source of the ambiguity. A known open issue in the buildingSMART community tracks it (see [IFC4.x-IF Issue #125](https://github.com/buildingSMART/IFC4.x-IF/issues/125) and [IFC4.x-development Issue #732](https://github.com/buildingSMART/IFC4.x-development/issues/732)); a proposed resolution has been submitted as [IFC4.x-development Pull Request #1118](https://github.com/buildingSMART/IFC4.x-development/pull/1118) but has not yet been accepted or merged.
 
 Two interpretations exist in practice:
 
 1. **Axis = global Z = (0, 0, 1).** The Z-axis is always vertical regardless of alignment slope. The X-axis follows the horizontal tangent direction even when the curve has a vertical grade. This is natural for plan-oriented placement and matches traditional station-offset-elevation thinking.
-2. **Axis = perpendicular to RefDirection in the plane containing RefDirection and global Z.** The Z-axis tilts with the grade of the alignment. The local X-axis is truly tangent to the 3D curve. This reading follows directly from the curve-relative language in the specification, and produces the same orientation that `IfcExtrudedAreaSolid` would use when sweeping along the same path.
+2. **Axis = perpendicular to the `IfcPointByDistanceExpression.BasisCurve` tangent, in the vertical plane containing that tangent (the plane containing the tangent that is normal to the global XY plane).** The Z-axis tilts with the grade of the alignment. The local X-axis is truly tangent to the 3D curve. This reading follows directly from the curve-relative language in the specification, and produces the same orientation that `IfcExtrudedAreaSolid` would use when sweeping along the same path.
 
 The connection between interpretation 2 and the broader IFC linear referencing model is not incidental. When evaluating a point along a 3D curve such as `IfcGradientCurve` or `IfcSegmentedReferenceCurve`, the resulting coordinate frame at that point is derived from the curve itself — the tangent at the evaluation distance determines the local forward direction, and the normal plane at that point governs the transverse and vertical axes. This is the frame that implementations compute when moving along a 3D alignment, as illustrated in the discussions of vertical and cant alignment geometry in Chapters 3 and 4. The perpendicular-to-3D-tangent interpretation of `Axis` is most consistent with that model: both derive orientation from the same 3D curve tangent, so a placement using interpretation 2 produces a frame congruent with what an implementation computes when evaluating the directrix at the same distance.
 
@@ -136,13 +152,13 @@ The practical consequence of this ambiguity is graphically illustrated in §10.5
 
 ### 8.3.3 Linear Placement Example
 
-This example shows the placement of a sign. The sign is to be located at a `DistanceAlong` of 201.0 m and a lateral offset of 2.0 m. The sign is to be 2.5 m above the alignment and vertical. The expected placement of the sign is at `(201.0, 2.0, 52.75)`.
+This example evaluates an `IfcLinearPlacement` for an object located along an alignment. The object is to be located at a `DistanceAlong` of 201.0 m and a lateral offset of 2.0 m. The object is to be located 2.5 m above the alignment, measured vertically, and is to be oriented vertically. The desired placement of the object is at `(201.0, 2.0, 52.75)`.
 
 The horizontal alignment is straight towards the East. The vertical alignment is a constant gradient at a slope of 0.25 and starts at elevation 0.0.
 
 The gradient parameters for a slope of $0.25$ are $d_x = 0.9701425,\ d_y = 0.2425356$.
 
-One option is to define the sign position relative to the gradient curve using horizontal and vertical offsets. The relevant IFC is:
+One option is to define the object's position relative to the gradient curve using horizontal and vertical offsets. The relevant IFC is:
 
 ~~~
 #5208 = IFCGRADIENTCURVE(/*details omitted*/)
@@ -156,7 +172,7 @@ One option is to define the sign position relative to the gradient curve using h
 #5305 = IFCDIRECTION((0., 0., 1.));
 ~~~
 
-The sign will be oriented vertically because the `IfcAxis2PlacementLinear.Axis` is explicitly defined as `(0,0,1)`. If `IfcAxis2PlacementLinear.Axis` is omitted, the default orientation of the sign may depend on the implementaton as discussed in §8.3.2.
+The object will be oriented vertically because the `IfcAxis2PlacementLinear.Axis` is explicitly defined as `(0,0,1)`. If `IfcAxis2PlacementLinear.Axis` is omitted, the default orientation of the object may depend on the implementation as discussed in §8.3.2.
 
 The point on the gradient curve is:
 
@@ -173,9 +189,9 @@ The resulting placement is:
 $$x + \Delta x = 201.0 - 0.606 = 200.394$$
 $$y + \Delta y = 50.25 + 2.425 = 52.675$$
 
-The sign placement is `(200.394, 2.0, 52.675)`. This is not the expected placement. The sign is not in the correct location because the vertical offset is measured relative to the alignment.
+The object's placement is `(200.394, 2.0, 52.675)`. This is not the desired placement. The object is not in the correct location because `OffsetVertical` is measured perpendicular to the curve's tangent (§8.2.1), not as a pure elevation change — on this 0.25 gradient the two are not the same.
 
-To correct this problem, use an `IfcLinearPlacement.PlacementRelTo` with $z = 2.5$.
+The approach to achieve the desired placement is to use an `IfcLinearPlacement.PlacementRelTo` with $z = 2.5$.
 
 ~~~
 /* Local placement with z = 2.5. Linear placement is relative to this coordinate frame. */
@@ -203,9 +219,11 @@ From before, the point on the gradient curve is:
 
 $$x = 201.0,\quad z = 50.25$$
 
-There is no vertical offset relative to the gradient curve. However, this point is relative to a local placement with $z = 2.5$. The elevation of the sign is $50.25 + 2.5 = 52.75$. 
+There is no vertical offset relative to the gradient curve. However, this point is relative to a local placement with $z = 2.5$. The elevation of the object is $50.25 + 2.5 = 52.75$. 
 
-The sign placement is `(201.0, 2.0, 52.75)` as expected.
+The object's placement is `(201.0, 2.0, 52.75)`.
+
+In this approach, the location of the object relative to the gradient curve is treated as an incremental offset from the origin of the `IfcLinearPlacement.PlacementRelTo` coordinate system.
 
 
 ## 8.4 Fallback Cartesian Position
@@ -278,41 +296,16 @@ Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpressi
 
 See Chapter 9 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
 
-## 8.7 Complete Example
-
-The following example illustrates a point located at distance 1435.75 m along an alignment, offset 5.25 m to the right of centerline.
-
-~~~
-#100 = IFCALIGNMENT(...);
-#101 = IFCALIGNMENTHORIZONTAL(...);
-#102 = IFCCOMPOSITECURVE(...);     /* horizontal geometry */
-
-/* Point on alignment at distance 1435.75 m, 5.25 m right (negative lateral offset) */
-#200 = IFCPOINTBYDISTANCEEXPRESSION(1435.75, -5.25, $, $, #102);
-
-/* Axis2Placement using default Axis and RefDirection */
-#201 = IFCAXIS2PLACEMENTLINEAR(#200, $, $);
-
-/* LinearPlacement — PlacementRelTo omitted → relative to curve start */
-#202 = IFCLINEARPLACEMENT($, #201);
-~~~
-
-In this example:
-
-- `DistanceAlong = 1435.75` is the geometric distance from the start of `#102`.
-- `OffsetLateral = -5.25` places the point 5.25 m to the right of the horizontal alignment (negative = right of travel).
-- `OffsetVertical` is omitted; the point is placed in the same plane as the horizontal alignment.
-- `Axis` and `RefDirection` are omitted; the resulting orientation is implementation-defined (see §8.3.2).
-
-## 8.8 Summary and Implementation Checklist
+## 8.7 Summary and Implementation Checklist
 
 |#|Item                                                                                              |Notes                                                                                                   |
 |-----|-----------------------------------------------|------------------------------------------------|
 |1|Use `IfcLinearPlacement` for all infrastructure elements located relative to an alignment.        |Prefer this over `IfcLocalPlacement` with absolute coordinates for alignment-relative objects.          |
 |2|Supply `DistanceAlong` as the geometric arc length from the start of `BasisCurve`.                |Convert station labels to geometric distances first; use `IfcReferent` to record station label metadata.|
 |3|Use signed `OffsetLateral`: positive = left, negative = right.                                    |Consistent with ISO 19148 convention.                                                                   |
-|4|Set `Axis = (0,0,1)` explicitly to remove ambiguity.                                              |Do not rely on the default; the default is not unambiguously defined in the IFC schema.                 |
-|5|Use `OffsetLongitudinal` only for geometrically unreachable points (e.g., outside an angle point).|For all ordinary placements, omit or set to zero.                                                       |
-|6|Avoid using `IfcOffsetCurveByDistances` as `BasisCurve` for precise placement.                    |Use the parent alignment with `OffsetLateral` instead.                                                  |
-|7|Record the LRM type and units in `Pset_LinearReferencingMethod` on the `IfcAlignment`.            |Required for correct interpretation of `IfcReferent` stationing labels.                                 |
-|8|Provide `CartesianPosition` only when exchanging with applications that lack linear placement support; omit otherwise.|Regenerate it after any alignment geometry change; validate consistency with the buildingSMART Validation Service.|
+|4|Do not assume `OffsetVertical` is a true elevation offset.                                        |`OffsetVertical` is measured perpendicular to the curve's tangent (§8.2.1), which only equals elevation when the alignment is flat at that point. For a true vertical (elevation) offset on a graded alignment, place the object relative to a `PlacementRelTo` frame instead (see the worked example in §8.3.3).|
+|5|Set `Axis = (0,0,1)` explicitly to remove ambiguity.                                              |Do not rely on the default; the default is not unambiguously defined in the IFC schema.                 |
+|6|Use `OffsetLongitudinal` only for geometrically unreachable points (e.g., outside an angle point).|For all ordinary placements, omit or set to zero.                                                       |
+|7|Avoid using `IfcOffsetCurveByDistances` as `BasisCurve` for precise placement.                    |Use the parent alignment with `OffsetLateral` instead.                                                  |
+|8|Record the LRM type and units in `Pset_LinearReferencingMethod` on the `IfcAlignment`.            |Required for correct interpretation of `IfcReferent` stationing labels.                                 |
+|9|Provide `CartesianPosition` only when exchanging with applications that lack linear placement support; omit otherwise.|Regenerate it after any alignment geometry change; validate consistency with the buildingSMART Validation Service.|

@@ -57,7 +57,22 @@
       "Bash(Sort-Object)",
       "PowerShell(pip install *)",
       "PowerShell(python -m pip install python-docx)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Read(//f/IfcOpenShell/_deps/python.3.13.13/tools/Lib/site-packages/ifcopenshell/**)",
+      "Bash(xargs grep -l \"IfcLinearPlacement\\\\|IfcPointByDistanceExpression\\\\|get_local_placement\\\\|OffsetVertical\")",
+      "Bash(where python *)",
+      "Bash(\"F:/IfcOpenShell/_deps/python.3.13.13/tools/python.exe\" --version)",
+      "Bash(python generate_fhwa_verticaloffset_csv.py)",
+      "Bash(rm out.txt)",
+      "Bash(python Build_FHWA_Alignment_LinearPlacement_VerticalOffset.py)",
+      "Bash(PYTHONPATH='F:\\\\IfcOpenShell\\\\src\\\\ifcopenshell-python' python -c ' *)",
+      "Bash(PYTHONPATH=\"F:\\\\IfcOpenShell\\\\src\\\\ifcopenshell-python\" python Build_FHWA_Alignment_LinearPlacement_VerticalOffset.py)",
+      "Bash(PYTHONPATH=\"F:\\\\IfcOpenShell\\\\src\\\\ifcopenshell-python\" python generate_fhwa_verticaloffset_csv.py)",
+      "Read(//f/real-world-alignments/**)",
+      "Bash(md5sum ../real-world-alignments/FHWA_Alignment_with_Linear_Placement.csv)",
+      "Bash(python generate_3d_csv.py)",
+      "Bash(rm -f a.md5 b.md5)",
+      "Bash(pandoc --version)"
     ]
   }
 }
