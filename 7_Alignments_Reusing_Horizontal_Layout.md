@@ -86,7 +86,7 @@ Figure 7.1.2-1:
 Pending resolution of the open questions in §7.2, the following placement convention is
 recommended based on implementation experience:
 
-- The `IfcAlignment` entity carries the `IfcCompositeCurve` as its own
+- The parent `IfcAlignment` entity carries the `IfcCompositeCurve` as its own
   `IfcShapeRepresentation` with `RepresentationIdentifier` = `"FootPrint"` and
   `RepresentationType` = `"Curve2D"`.
 - Each child `IfcAlignment` carries its full 3D curve as its own `IfcShapeRepresentation`
