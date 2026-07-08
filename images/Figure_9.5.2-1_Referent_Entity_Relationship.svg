@@ -1,6 +1,6 @@
-<svg width="680" viewBox="0 0 680 500" xmlns="http://www.w3.org/2000/svg" role="img">
+<svg width="1300" viewBox="0 0 1300 500" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>IFC entity relationship diagram: IfcBridgePart.PIER and IfcReferent sharing an IfcLinearPlacement</title>
-  <desc>IfcBridgePart.PIER (spatial element) and IfcReferent both point to the same IfcLinearPlacement. Pset_Stationing attaches to IfcReferent. IfcRelPositions links IfcReferent to IfcBridgePart semantically.</desc>
+  <desc>IfcBridgePart.PIER (spatial element) and IfcReferent both point to the same IfcLinearPlacement. Pset_Stationing (Station = 24235.75) attaches to IfcReferent. IfcRelPositions links IfcReferent to IfcBridgePart semantically. A second IfcRelPositions links IfcAlignment (as RelatingPositioningElement) to IfcReferent (as RelatedProducts), showing that the referent is itself positioned along the alignment. To the right, a starting-station IfcReferent with Pset_Stationing (Station = 10000.0) is nested under IfcAlignment by IfcRelNests, supplying the offset that turns DistanceAlong = 14235.75 into Sta. 242+35.75. Below IfcRelNests, that starting-station IfcReferent has its own IfcLinearPlacement at DistanceAlong = 0.0.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -48,7 +48,7 @@
   <g class="c-teal">
     <rect x="440" y="30" width="200" height="44" rx="8" stroke-width="0.5" stroke-dasharray="4 3"/>
     <text class="th" x="540" y="50" text-anchor="middle" dominant-baseline="central">Pset_Stationing</text>
-    <text class="ts" x="540" y="66" text-anchor="middle" dominant-baseline="central">Station = 14235.75</text>
+    <text class="ts" x="540" y="66" text-anchor="middle" dominant-baseline="central">Station = 24235.75</text>
   </g>
 
   <!-- ── IfcBridgePart.PIER ── -->
@@ -68,6 +68,74 @@
   <!-- arrow: Pset_Stationing → IfcReferent -->
   <line x1="540" y1="74" x2="540" y2="168" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
   <text class="lbl" x="548" y="126">HasProperties</text>
+
+  <!-- ── IfcAlignment ── -->
+  <g class="c-purple">
+    <rect x="700" y="24" width="200" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="800" y="46" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+    <text class="ts" x="800" y="68" text-anchor="middle" dominant-baseline="central">horizontal / vertical layout</text>
+  </g>
+
+  <!-- ── IfcRelPositions (Alignment → Referent) ── -->
+  <g class="c-gray">
+    <rect x="700" y="176" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="800" y="194" text-anchor="middle" dominant-baseline="central">IfcRelPositions</text>
+    <text class="ts" x="800" y="210" text-anchor="middle" dominant-baseline="central">semantic link only</text>
+  </g>
+
+  <!-- arrow: IfcAlignment → new IfcRelPositions -->
+  <line x1="800" y1="80" x2="800" y2="174" stroke="#534AB7" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="796" y="104" text-anchor="end">RelatingPositioningElement</text>
+
+  <!-- arrow: IfcReferent → new IfcRelPositions -->
+  <line x1="640" y1="198" x2="698" y2="198" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="669" y="164" text-anchor="middle">RelatedProducts</text>
+
+  <text class="lbl" x="800" y="236" text-anchor="middle">Relates the referent to the alignment</text>
+
+  <!-- ── Pset_Stationing (starting station) ── -->
+  <g class="c-teal">
+    <rect x="960" y="30" width="200" height="44" rx="8" stroke-width="0.5" stroke-dasharray="4 3"/>
+    <text class="th" x="1060" y="50" text-anchor="middle" dominant-baseline="central">Pset_Stationing</text>
+    <text class="ts" x="1060" y="66" text-anchor="middle" dominant-baseline="central">Station = 10000.0</text>
+  </g>
+
+  <!-- ── IfcReferent (starting station) ── -->
+  <g class="c-teal">
+    <rect x="960" y="170" width="200" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="1060" y="192" text-anchor="middle" dominant-baseline="central">IfcReferent</text>
+    <text class="ts" x="1060" y="214" text-anchor="middle" dominant-baseline="central">PredefinedType = STATION</text>
+  </g>
+
+  <!-- arrow: Pset_Stationing (starting station) → IfcReferent (starting station) -->
+  <line x1="1060" y1="74" x2="1060" y2="168" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="1068" y="126">HasProperties</text>
+
+  <!-- ── IfcRelNests (Alignment → starting-station Referent) ── -->
+  <g class="c-gray">
+    <rect x="960" y="300" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="1060" y="318" text-anchor="middle" dominant-baseline="central">IfcRelNests</text>
+    <text class="ts" x="1060" y="334" text-anchor="middle" dominant-baseline="central">starting station</text>
+  </g>
+
+  <!-- arrow: IfcAlignment → IfcRelNests -->
+  <path d="M900 52 L940 52 L940 322 L958 322" fill="none" stroke="#534AB7" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="lbl" x="936" y="140" text-anchor="end">RelatingObject</text>
+
+  <!-- arrow: IfcReferent (starting station) → IfcRelNests -->
+  <line x1="1060" y1="226" x2="1060" y2="298" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="1068" y="264">RelatedObjects</text>
+
+  <!-- ── IfcLinearPlacement (starting station) ── -->
+  <g class="c-blue">
+    <rect x="960" y="420" width="200" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="1060" y="442" text-anchor="middle" dominant-baseline="central">IfcLinearPlacement</text>
+    <text class="ts" x="1060" y="464" text-anchor="middle" dominant-baseline="central">DistanceAlong = 0.0</text>
+  </g>
+
+  <!-- arrow: IfcReferent (starting station) → its own IfcLinearPlacement -->
+  <path d="M1160 198 L1180 198 L1180 448 L1162 448" fill="none" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="lbl" x="1186" y="330">ObjectPlacement</text>
 
   <!-- ── Shared IfcLinearPlacement ── -->
   <g class="c-blue">

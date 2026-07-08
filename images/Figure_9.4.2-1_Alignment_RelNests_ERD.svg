@@ -54,11 +54,11 @@
 
   <!-- arrow: IfcAlignment → IfcRelNests #1 -->
   <path d="M290 74 L180 138" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
-  <text class="ts muted" x="210" y="100" text-anchor="middle">RelatingObject</text>
+  <text class="ts muted" x="225" y="100" text-anchor="end">RelatingObject</text>
 
   <!-- arrow: IfcAlignment → IfcRelNests #2 -->
   <path d="M390 74 L500 138" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
-  <text class="ts muted" x="470" y="100" text-anchor="middle">RelatingObject</text>
+  <text class="ts muted" x="450" y="100" text-anchor="start">RelatingObject</text>
 
   <!-- ── IfcAlignmentHorizontal ── -->
   <g class="c-blue">

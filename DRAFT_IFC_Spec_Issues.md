@@ -74,36 +74,40 @@
 
 ## Chapter 9 — Referents and Stationing
 
-20. Whether layout sub-objects and referents should share a single `IfcRelNests` relationship or use separate ones is not resolved; two patterns exist in practice.
+20. The ordering of `IfcReferent` instances within `IfcRelNests.RelatedObjects` (by increasing `DistanceAlong`) is required only by the IFC concept template, not by a schema `WHERE` rule; a model with an unsorted list still validates.
 
-21. For `INTERSECTION` referents, the spec does not define which crossing alignment's curve should serve as the `BasisCurve` in `IfcPointByDistanceExpression`; no normative guidance exists.
+21. Whether layout sub-objects and referents should share a single `IfcRelNests` relationship or use separate ones is not resolved; two patterns exist in practice.
+
+22. The schema does not restrict `IfcReferent.ObjectPlacement` to `IfcLinearPlacement`; `IfcLocalPlacement` and `IfcGridPlacement` are schema-valid alternatives but carry no `DistanceAlong` value, leaving no reliable basis for ordering referents or performing station-to-distance conversions.
+
+23. For `INTERSECTION` referents, the spec does not define which crossing alignment's curve should serve as the `BasisCurve` in `IfcPointByDistanceExpression`; no normative guidance exists.
 
 ---
 
 ## Chapter 10 — Sectioned Surfaces and Solids
 
-22. It is unclear whether all tagged cross-section vertices independently participate in guide-curve matching or whether some may fall back to linear interpolation between authored sections.
+24. It is unclear whether all tagged cross-section vertices independently participate in guide-curve matching or whether some may fall back to linear interpolation between authored sections.
 
-23. The spec does not clarify whether guide curve `BasisCurve`s must match the surface/solid `Directrix`; this affects tag scoping and will produce incompatible results across implementations.
+25. The spec does not clarify whether guide curve `BasisCurve`s must match the surface/solid `Directrix`; this affects tag scoping and will produce incompatible results across implementations.
 
-24. Behavior is undefined when a tagged cross-section vertex has no corresponding guide curve; it is unclear whether the vertex falls back to linear interpolation or whether the model is in error.
+26. Behavior is undefined when a tagged cross-section vertex has no corresponding guide curve; it is unclear whether the vertex falls back to linear interpolation or whether the model is in error.
 
-25. When a cross-section vertex and a guide curve with a matching tag occupy different positions at the same cross-section, the spec does not say which governs.
+27. When a cross-section vertex and a guide curve with a matching tag occupy different positions at the same cross-section, the spec does not say which governs.
 
-26. The default `Axis` direction in `IfcAxis2PlacementLinear` for cross-section positions is undefined (the same ambiguity as §8.3.2); interpretations diverge on graded alignments and are incompatible on canted alignments.
+28. The default `Axis` direction in `IfcAxis2PlacementLinear` for cross-section positions is undefined (the same ambiguity as §8.3.2); interpretations diverge on graded alignments and are incompatible on canted alignments.
 
-27. The `IfcSectionedSolidHorizontal` specification incorrectly states that the profile X axis aligns with `RefDirection`; this contradicts `IfcSectionedSurface` and would produce degenerate geometry if implemented as written.
+29. The `IfcSectionedSolidHorizontal` specification incorrectly states that the profile X axis aligns with `RefDirection`; this contradicts `IfcSectionedSurface` and would produce degenerate geometry if implemented as written.
 
-28. Figure 8.8.3.35.C in the IFC spec incorrectly depicts sectioned solids extending to the directrix head and tail, contradicting the accompanying specification text.
+30. Figure 8.8.3.35.C in the IFC spec incorrectly depicts sectioned solids extending to the directrix head and tail, contradicting the accompanying specification text.
 
-29. Guide curves are geometrically referenced through the surface or solid (itself a rooted entity), but the bSI Validation Service does not trace that path and incorrectly flags them as unassociated.
+31. Guide curves are geometrically referenced through the surface or solid (itself a rooted entity), but the bSI Validation Service does not trace that path and incorrectly flags them as unassociated.
 
-30. When guide curves carry independent `BasisCurve`s whose lengths are mismatched to the directrix and cross-section endpoints, the spec does not define which geometry governs.
+32. When guide curves carry independent `BasisCurve`s whose lengths are mismatched to the directrix and cross-section endpoints, the spec does not define which geometry governs.
 
 ---
 
 ## Chapter 11 — Precision and Tolerance
 
-31. The spec is silent on how implementations should respond when a computed segment endpoint does not match the stored start point of the next segment, even when a `CONTSAMEGRADIENT` or `CONTSAMEGRADIENTSAMECURVATURE` transition is declared.
+33. The spec is silent on how implementations should respond when a computed segment endpoint does not match the stored start point of the next segment, even when a `CONTSAMEGRADIENT` or `CONTSAMEGRADIENTSAMECURVATURE` transition is declared.
 
-32. No implementation agreement exists for how `Pset_Tolerance` and `Pset_Uncertainty` properties should be used; recommended properties carry no normative weight.
+34. No implementation agreement exists for how `Pset_Tolerance` and `Pset_Uncertainty` properties should be used; recommended properties carry no normative weight.
