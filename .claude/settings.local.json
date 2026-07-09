@@ -72,7 +72,9 @@
       "Bash(md5sum ../real-world-alignments/FHWA_Alignment_with_Linear_Placement.csv)",
       "Bash(python generate_3d_csv.py)",
       "Bash(rm -f a.md5 b.md5)",
-      "Bash(pandoc --version)"
+      "Bash(pandoc --version)",
+      "Read(//c/Program Files/Inkscape/bin/**)",
+      "Read(//c/Users/BriceR/AppData/Local/pandoc//**)"
     ]
   }
 }

@@ -59,8 +59,8 @@
 **default Axis direction** — 8.3.2, 10.5  
 **deviating elevation** — 4.0, 4.1.2, Notation  
 **directrix** — 10.3, 10.4, 10.5  
-**`DistanceAlong`** — 8.2.1, 8.2.2, 9.3.4  
-**`DistanceAlong`, station conversion** — 8.2.2, 9.3.4, 9.3.5, A.4.6
+**`DistanceAlong`** — 8.2.1, 8.2.2, 9.2.5  
+**`DistanceAlong`, station conversion** — 8.2.2, 9.2.5, 9.2.6, A.4.6
 
 ## E
 
@@ -80,8 +80,8 @@
 
 ## G
 
-**gap equation** — 9.3.2  
-**gap, station undefined** — 9.3.4, 9.3.5  
+**gap equation** — 9.2.3  
+**gap, station undefined** — 9.2.5, 9.2.6  
 **geometric representation** — 1.5, 2.1  
 **grade** — 3.3, Notation  
 **guide curve** — 10.2, 10.3, 10.5
@@ -118,9 +118,9 @@
 **`IfcPointByDistanceExpression`** — 5.0, 8.2  
 **`IfcPolyline`** — 6.1  
 **`IfcPolynomialCurve`** — 2.6, 2.7, 2.8, 2.9, 2.10, 2.11  
-**`IfcReferent`** — 9.1, 9.4  
-**`IfcRelNests`** — 9.4.1  
-**`IfcRelPositions`** — 9.5.2  
+**`IfcReferent`** — 9.1, 9.3, 9.4, 9.5  
+**`IfcRelNests`** — 9.3.1, 9.3.2  
+**`IfcRelPositions`** — 9.4.2, 9.4.3, 9.5  
 **`IfcSectionedSolidHorizontal`** — 10.4, 10.4.1, 10.6.2  
 **`IfcSectionedSurface`** — 10.3, 10.3.1, 10.3.2, 10.6.1  
 **`IfcSegmentedReferenceCurve`** — 1.5.1, 4.0, 4.2  
@@ -132,6 +132,7 @@
 &emsp;referents and stationing — 9.6  
 **implementation questions** — 7.2  
 **infinite radius** — A.3.6  
+**`INTERSECTION` referent** — 9.5  
 **interpolation, offset values** — 5.3  
 **ISO 19148** — 8.6
 
@@ -154,7 +155,7 @@
 &emsp;horizontal — 2.2  
 &emsp;vertical — 3.2  
 &emsp;cant — 4.2  
-**mixed-nesting problem** — 9.4.2
+**mixed-nesting problem** — 9.3.2
 
 ## N
 
@@ -167,8 +168,8 @@
 **`OffsetLateral`** — 5.2, 8.2.1, 8.5.2  
 **`OffsetLongitudinal`** — 8.2.1.1  
 **`OffsetVertical`** — 8.2.1  
-**overlap equation** — 9.3.3  
-**overlap, station ambiguity** — 9.3.5
+**overlap equation** — 9.2.4  
+**overlap, station ambiguity** — 9.2.6
 
 ## P
 
@@ -178,10 +179,12 @@
 **parent/child structure** — 7.1.1  
 **`PlacementRelTo`** — 8.1.2, 8.3.3  
 **precision** — 11.0  
+**Product Relative Positioning** — 9.4.2  
+**Product Span Positioning** — 9.4.3  
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5  
 **`Pset_LinearReferencingMethod`** — 8.6.2, 8.6.3, 8.6.4  
-**`Pset_Stationing`** — 9.2.2  
+**`Pset_Stationing`** — 9.3.1  
 **PVI (point of vertical intersection)** — A.4.2
 
 ## R
@@ -189,8 +192,8 @@
 **radius sign convention** — 2.1, A.3.5  
 **real-world alignments (testset)** — 12.3.4  
 **reference coordinates** — 12.2.4, 12.4  
-**referent ordering** — 9.4.1  
-**referent placement (`ObjectPlacement`)** — 9.4.3  
+**referent ordering** — 9.3.1  
+**referent placement (`ObjectPlacement`)** — 9.3.3  
 **retaining wall** — 10.6.2.3  
 **RefDirection** — 4.1.2, 8.3.1  
 **rotation point** — A.5.4
@@ -201,7 +204,7 @@
 **specification gaps** — 10.5  
 **segment mapping** — 1.6, 2.3.2, 2.4.2, 2.5.2, 2.6.2, 2.7.2, 2.8.2, 2.9.2, 2.10.2, 2.11.2  
 **semantic definition** — 1.4, 2.1  
-**semantic vs. geometric** — 1.4, 1.5, 9.5  
+**semantic vs. geometric** — 1.4, 1.5, 9.4  
 **sign convention**  
 &emsp;curvature — 2.1  
 &emsp;offset — 5.0  
@@ -212,8 +215,8 @@
 &emsp;testset — 12.3.1, 12.3.3  
 **spiral** — *see* transition curves  
 **start station** — 9.2.1, A.6.1  
-**station equations** — 9.3, A.6.2  
-**stationing** — 9.2, 9.3, A.6  
+**station equations** — 9.2.2–9.2.6, A.6.2  
+**stationing** — 9.2, 9.3.1, A.6  
 **stringlines** — 10.2, 10.3.2  
 **superelevation** — *see* cant
 
