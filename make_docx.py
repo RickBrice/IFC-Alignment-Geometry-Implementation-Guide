@@ -32,7 +32,7 @@ from pathlib import Path
 
 try:
     from docx import Document
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT
     from docx.oxml import OxmlElement
     from docx.oxml.ns import qn
     _DOCX_AVAILABLE = True
@@ -99,6 +99,24 @@ _FRONT_MATTER_SECTION_BREAK = (
     '</w:sectPr></w:pPr></w:p>\n'
     '```\n\n'
 )
+
+
+def get_latest_revision_date(root: Path) -> str:
+    """Return the Date column of the last row in RevisionLog.md's table.
+
+    RevisionLog.md is the single source of truth for the document's revision
+    date; the cover, footer, and docx metadata all pull from here so there is
+    no second date to keep in sync by hand.
+    """
+    log_path = root / "RevisionLog.md"
+    if not log_path.exists():
+        return ""
+    lines = log_path.read_text(encoding="utf-8-sig").splitlines()
+    data_rows = [l for l in lines if l.strip().startswith("|")][2:]  # skip header + separator
+    if not data_rows:
+        return ""
+    cols = [c.strip() for c in data_rows[-1].split("|")]
+    return cols[1] if len(cols) > 1 else ""
 
 
 def check_pandoc() -> str:
@@ -211,8 +229,36 @@ def resize_tall_images(docx_path: Path, target_width_in: float, target_height_in
         print(f"  No images taller than {threshold_in}\" found")
 
 
-def add_page_numbers(docx_path: Path) -> None:
-    """Add page numbers to the footer:
+def set_document_metadata(docx_path: Path, title: str, subject: str) -> None:
+    """Set docx core properties (Title/Subject) and center the cover's
+    Revision line.
+
+    Metadata is set via python-docx rather than Pandoc's --metadata flag:
+    Pandoc's built-in docx template renders a visible Title-styled paragraph
+    at the top of the document whenever a "title" metadata value is passed,
+    which duplicated Cover.md's own title heading. Setting core properties
+    here after conversion only touches docProps/core.xml, not the body.
+    """
+    if not _DOCX_AVAILABLE:
+        print("  SKIP metadata: python-docx not installed (pip install python-docx)")
+        return
+
+    doc = Document(str(docx_path))
+    doc.core_properties.title = title
+    if subject:
+        doc.core_properties.subject = subject
+
+    for para in doc.paragraphs:
+        if para.text.strip().startswith("Revision:"):
+            para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            break
+
+    doc.save(str(docx_path))
+    print("  Set docx Title/Subject metadata and centered cover revision line")
+
+
+def add_page_numbers(docx_path: Path, revision_date: str = "") -> None:
+    """Add a revision-date label and page numbers to the footer:
     - Cover (first page of first section): suppressed.
     - Foreword through Notation: lowercase Roman numerals (i, ii, iii…).
     - Chapter 1 onwards: Arabic numerals restarting at 1.
@@ -224,6 +270,13 @@ def add_page_numbers(docx_path: Path) -> None:
     doc = Document(str(docx_path))
     sections = list(doc.sections)
 
+    # Earlier sections' sectPr may omit page size/margins (inherited from the
+    # last section in the document), so python-docx returns None for them.
+    # The last section always carries explicit values — use those for all.
+    usable_width = (
+        sections[-1].page_width - sections[-1].left_margin - sections[-1].right_margin
+    )
+
     for idx, section in enumerate(sections):
         # Suppress the page number on the first page of the first section (the cover).
         section.different_first_page_header_footer = (idx == 0)
@@ -233,7 +286,16 @@ def add_page_numbers(docx_path: Path) -> None:
             para.clear()
 
         para = footer.paragraphs[0]
-        para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        para.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+        # Right tab stop at the usable page width puts the page number at the
+        # right margin while the revision date sits at the left margin.
+        para.paragraph_format.tab_stops.add_tab_stop(usable_width, WD_TAB_ALIGNMENT.RIGHT)
+
+        if revision_date:
+            para.add_run(f"Rev. {revision_date}")
+
+        para.add_run().add_tab()
 
         run = para.add_run()
         for fld_type, instr in [("begin", None), (None, " PAGE "), ("end", None)]:
@@ -266,6 +328,12 @@ def add_page_numbers(docx_path: Path) -> None:
 def main() -> None:
     version = check_pandoc()
     print(f"Using {version}")
+
+    revision_date = get_latest_revision_date(ROOT)
+    if revision_date:
+        print(f"Latest revision date (from RevisionLog.md): {revision_date}")
+    else:
+        print("  WARNING: could not read a revision date from RevisionLog.md")
 
     missing = [f for f in CHAPTERS if not (ROOT / f).exists()]
     if missing:
@@ -344,10 +412,20 @@ def main() -> None:
                     lambda m: f':::{{custom-style="Title"}}\n{m.group(1)}\n:::',
                     t, flags=re.MULTILINE,
                 )
-                # First *...* paragraph → Subtitle style
+                # First *...* paragraph → Subtitle style, followed by the revision
+                # date (pulled from RevisionLog.md's last row) as Cover Text.
+                def _subtitle_repl(m: re.Match) -> str:
+                    block = f':::{{custom-style="Subtitle"}}\n{m.group(1)}\n:::'
+                    if revision_date:
+                        block += (
+                            f'\n\n:::{{custom-style="Cover Text"}}\n'
+                            f'Revision: {revision_date}\n:::'
+                        )
+                    return block
+
                 t = re.sub(
                     r'^\*([^*\n]+)\*[ \t]*$',
-                    lambda m: f':::{{custom-style="Subtitle"}}\n{m.group(1)}\n:::',
+                    _subtitle_repl,
                     t, count=1, flags=re.MULTILINE,
                 )
                 # Remaining *...* paragraphs (description, attribution) → Cover Text style
@@ -356,10 +434,13 @@ def main() -> None:
                     lambda m: f':::{{custom-style="Cover Text"}}\n{m.group(1)}\n:::',
                     t, flags=re.MULTILINE,
                 )
-                # Scale cover image to fit 8.5x11 page with 1in margins
+                # Scale cover image to fit 8.5x11 page with 1in margins.
+                # Height is kept a bit under the ~6.7in that used to overflow the
+                # 9in usable page height once combined with the title/subtitle/
+                # revision/caption text, which pushed Foreword onto a blank page.
                 t = re.sub(
                     r'(!\[[^\]]*\]\([^)]+\))(?!\{)',
-                    r'\1{width=6.5in height=6.7in}',
+                    r'\1{width=6.5in height=6.0in}',
                     t,
                 )
                 texts[i] = t
@@ -410,8 +491,12 @@ def main() -> None:
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
+    print("Setting document metadata...")
+    subject = f"Revision: {revision_date}" if revision_date else ""
+    set_document_metadata(OUTPUT_DOCX, "IFC Alignment Geometry Implementation Guide", subject)
+
     print("Adding page numbers...")
-    add_page_numbers(OUTPUT_DOCX)
+    add_page_numbers(OUTPUT_DOCX, revision_date)
 
     print("Resizing oversized figures...")
     resize_tall_images(OUTPUT_DOCX, target_width_in=6.5, target_height_in=8.0)
