@@ -3,7 +3,7 @@
 ## A
 
 **accuracy** — 5.2, 11.0  
-**arc length** — 2.2, 3.2, 4.2, 5.4.1, 5.5  
+**arc length** — 2.2, 3.2, 4.2, 5.5  
 **arc length, offset curve** — 5.2  
 **angle point** — 8.2.1.1  
 **asymmetric parabolic arc** — A.4.4  
@@ -102,6 +102,7 @@
 **`IfcAlignmentHorizontal`** — 1.1, 2.0, 2.1  
 **`IfcAlignmentSegment`** — 1.4, 1.5.2  
 **`IfcAlignmentVertical`** — 1.2, 3.0, 3.1  
+**`IfcAnnotation`** — 9.5  
 **`IfcAxis2PlacementLinear`** — 8.2, 8.3  
 **`IfcCircle`**  
 &emsp;horizontal — 2.4, 2.4.1  
@@ -109,6 +110,7 @@
 **`IfcCompositeCurve`** — 1.5, 1.5.1, 2.1  
 **`IfcCurveSegment`** — 1.5, 1.5.2  
 **`IfcGradientCurve`** — 1.5.1, 3.7, 8.3.3  
+**`IfcGroup`** — 9.5  
 **`IfcIndexedPolyCurve`** — 6.1  
 **`IfcLine`**  
 &emsp;horizontal — 2.3, 2.3.1  
@@ -119,6 +121,7 @@
 **`IfcPolyline`** — 6.1  
 **`IfcPolynomialCurve`** — 2.6, 2.7, 2.8, 2.9, 2.10, 2.11  
 **`IfcReferent`** — 9.1, 9.3, 9.4, 9.5  
+**`IfcRelAssignsToGroup`** — 9.5  
 **`IfcRelNests`** — 9.3.1, 9.3.2  
 **`IfcRelPositions`** — 9.4.2, 9.4.3, 9.5  
 **`IfcSectionedSolidHorizontal`** — 10.4, 10.4.1, 10.6.2  
@@ -134,7 +137,7 @@
 **infinite radius** — A.3.6  
 **`INTERSECTION` referent** — 9.5  
 **interpolation, offset values** — 5.3  
-**ISO 19148** — 8.6
+**ISO 19148** — 8.6, 9.5
 
 ## L
 
@@ -163,7 +166,7 @@
 
 ## O
 
-**offset curves** — 5.0–5.8  
+**offset curves** — 5.0–5.5  
 **offset sign convention** — 5.1  
 **`OffsetLateral`** — 5.2, 8.2.1, 8.5.2  
 **`OffsetLongitudinal`** — 8.2.1.1  
@@ -194,7 +197,7 @@
 **reference coordinates** — 12.2.4, 12.4  
 **referent ordering** — 9.3.1  
 **referent placement (`ObjectPlacement`)** — 9.3.3  
-**retaining wall** — 10.6.2.3  
+**retaining wall** — 10.6.2.4  
 **RefDirection** — 4.1.2, 8.3.1  
 **rotation point** — A.5.4
 
@@ -224,7 +227,7 @@
 
 **Tag attribute** — 5.4, 10.3  
 **tangent direction** — 4.1.2  
-**testset** — 12.0–12.5  
+**testset** — 12.1–12.5  
 &emsp;file naming — 12.2  
 &emsp;horizontal test cases — 12.3.1  
 &emsp;vertical test cases — 12.3.2  
