@@ -1,6 +1,6 @@
-<svg width="930" viewBox="0 0 930 660" xmlns="http://www.w3.org/2000/svg" role="img">
-  <title>Entity relationship diagram: two IfcReferent instances of PredefinedType INTERSECTION, each related to a different IfcAlignment via its own IfcRelPositions, correlated by an IfcAnnotation and IfcGroup</title>
-  <desc>Two independent object graphs plus an optional correlation cluster. Left: IfcAlignment "Washington Street" is RelatingPositioningElement of an IfcRelPositions whose RelatedProducts is an IfcReferent (PredefinedType = INTERSECTION) placed on Washington Street's own curve, carrying Pset_Stationing Station = 1000.00 (Sta. 10+00). Right: IfcAlignment "First Avenue" is RelatingPositioningElement of a separate IfcRelPositions whose RelatedProducts is a second, independent IfcReferent (PredefinedType = INTERSECTION) placed on First Avenue's own curve, carrying Pset_Stationing Station = 1200.00 (Sta. 12+00). Center: an IfcGroup is RelatingGroup of an IfcRelAssignsToGroup whose RelatedObjects fans out to three members — the Washington Street referent, the First Avenue referent, and an IfcAnnotation whose Description records the station equivalence text. This Group/Annotation cluster is a project convention, not a formal positioning relationship between the two referents.</desc>
+<svg width="930" viewBox="0 0 930 540" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Entity relationship diagram: two IfcReferent instances of PredefinedType INTERSECTION, each related to a different IfcAlignment via its own IfcRelPositions, correlated by an IfcGroup</title>
+  <desc>Two independent object graphs plus an optional correlation cluster. Left: IfcAlignment "Washington Street" is RelatingPositioningElement of an IfcRelPositions whose RelatedProducts is an IfcReferent (PredefinedType = INTERSECTION) placed on Washington Street's own curve, carrying Pset_Stationing Station = 1000.00 (Sta. 10+00). Right: IfcAlignment "First Avenue" is RelatingPositioningElement of a separate IfcRelPositions whose RelatedProducts is a second, independent IfcReferent (PredefinedType = INTERSECTION) placed on First Avenue's own curve, carrying Pset_Stationing Station = 1200.00 (Sta. 12+00). Center: an IfcGroup, whose own Description records the station equivalence text, is RelatingGroup of an IfcRelAssignsToGroup whose RelatedObjects fans out to two members — the Washington Street referent and the First Avenue referent. This Group cluster is a project convention, not a formal positioning relationship between the two referents.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -41,7 +41,7 @@
   <rect x="32" y="74" width="12" height="11" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
   <text class="lbl" x="50" y="83">Referent / property set</text>
   <rect x="32" y="90" width="12" height="11" rx="2" fill="#FFF3E0" stroke="#B8791A" stroke-width="0.5"/>
-  <text class="lbl" x="50" y="99">Group / annotation</text>
+  <text class="lbl" x="50" y="99">Group</text>
 
   <!-- ── Column headers ── -->
   <text class="th" x="170" y="118" text-anchor="middle" fill="#3C3489">Washington Street</text>
@@ -121,14 +121,14 @@
     <text class="ts" x="760" y="460" text-anchor="middle" dominant-baseline="central">Station = 1200.00 (Sta. 12+00)</text>
   </g>
 
-  <!-- ── Correlation cluster (center): IfcGroup / IfcRelAssignsToGroup / IfcAnnotation ── -->
+  <!-- ── Correlation cluster (center): IfcGroup / IfcRelAssignsToGroup ── -->
   <text class="lbl" x="465" y="296" text-anchor="middle" fill="#8a6d1f">Correlating the crossing (project convention)</text>
 
   <g class="c-amber">
     <rect x="355" y="306" width="220" height="74" rx="8" stroke-width="0.5"/>
     <text class="th" x="465" y="326" text-anchor="middle" dominant-baseline="central">IfcGroup</text>
     <text class="ts" x="465" y="344" text-anchor="middle" dominant-baseline="central">Name = "Intersection: A / B"</text>
-    <text class="ts" x="465" y="362" text-anchor="middle" dominant-baseline="central">gathers referents + annotation</text>
+    <text class="ts" x="465" y="362" text-anchor="middle" dominant-baseline="central">Description: station equivalence text</text>
   </g>
 
   <line x1="465" y1="380" x2="465" y2="422" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
@@ -137,25 +137,16 @@
   <g class="c-gray">
     <rect x="355" y="424" width="220" height="50" rx="8" stroke-width="0.5"/>
     <text class="th" x="465" y="440" text-anchor="middle" dominant-baseline="central">IfcRelAssignsToGroup</text>
-    <text class="ts" x="465" y="458" text-anchor="middle" dominant-baseline="central">RelatedObjects (3)</text>
+    <text class="ts" x="465" y="458" text-anchor="middle" dominant-baseline="central">RelatedObjects (2)</text>
   </g>
 
-  <!-- fan-out arrows: IfcRelAssignsToGroup → the two referents and the annotation -->
+  <!-- fan-out arrows: IfcRelAssignsToGroup → the two referents -->
   <line x1="355" y1="449" x2="280" y2="343" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
   <text class="lbl" x="300" y="418">RelatedObjects</text>
   <line x1="575" y1="449" x2="650" y2="343" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
   <text class="lbl" x="630" y="418" text-anchor="end">RelatedObjects</text>
-  <line x1="465" y1="474" x2="465" y2="514" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
-  <text class="lbl" x="473" y="498">RelatedObjects</text>
-
-  <g class="c-amber">
-    <rect x="355" y="516" width="220" height="64" rx="8" stroke-width="0.5"/>
-    <text class="th" x="465" y="536" text-anchor="middle" dominant-baseline="central">IfcAnnotation</text>
-    <text class="ts" x="465" y="554" text-anchor="middle" dominant-baseline="central">Description: station equivalence</text>
-    <text class="ts" x="465" y="570" text-anchor="middle" dominant-baseline="central">text; placed at the crossing point</text>
-  </g>
 
   <!-- ── Footer note ── -->
-  <text class="hint" x="465" y="612" text-anchor="middle">Each INTERSECTION referent is related to exactly one alignment by its own IfcRelPositions, per ISO 19148 §6.2.12.1.</text>
-  <text class="hint" x="465" y="628" text-anchor="middle">The IfcGroup / IfcRelAssignsToGroup / IfcAnnotation cluster is a project convention for recording the correlation — not a formal positioning relationship.</text>
+  <text class="hint" x="465" y="504" text-anchor="middle">Each INTERSECTION referent is related to exactly one alignment by its own IfcRelPositions, per ISO 19148 §6.2.12.1.</text>
+  <text class="hint" x="465" y="520" text-anchor="middle">The IfcGroup / IfcRelAssignsToGroup cluster is a project convention for recording the correlation — not a formal positioning relationship.</text>
 </svg>

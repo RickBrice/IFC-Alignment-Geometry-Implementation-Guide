@@ -102,7 +102,6 @@
 **`IfcAlignmentHorizontal`** — 1.1, 2.0, 2.1  
 **`IfcAlignmentSegment`** — 1.4, 1.5.2  
 **`IfcAlignmentVertical`** — 1.2, 3.0, 3.1  
-**`IfcAnnotation`** — 9.5  
 **`IfcAxis2PlacementLinear`** — 8.2, 8.3  
 **`IfcCircle`**  
 &emsp;horizontal — 2.4, 2.4.1  

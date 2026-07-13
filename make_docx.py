@@ -28,6 +28,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import date
 from pathlib import Path
 
 try:
@@ -101,22 +102,14 @@ _FRONT_MATTER_SECTION_BREAK = (
 )
 
 
-def get_latest_revision_date(root: Path) -> str:
-    """Return the Date column of the last row in RevisionLog.md's table.
+def get_build_date() -> str:
+    """Return today's date, formatted to match RevisionLog.md's "D Mon YYYY" style.
 
-    RevisionLog.md is the single source of truth for the document's revision
-    date; the cover, footer, and docx metadata all pull from here so there is
-    no second date to keep in sync by hand.
+    The cover, footer, and docx metadata all pull from here, so the revision
+    date always reflects the day the .docx was generated.
     """
-    log_path = root / "RevisionLog.md"
-    if not log_path.exists():
-        return ""
-    lines = log_path.read_text(encoding="utf-8-sig").splitlines()
-    data_rows = [l for l in lines if l.strip().startswith("|")][2:]  # skip header + separator
-    if not data_rows:
-        return ""
-    cols = [c.strip() for c in data_rows[-1].split("|")]
-    return cols[1] if len(cols) > 1 else ""
+    today = date.today()
+    return f"{today.day} {today.strftime('%b %Y')}"
 
 
 def check_pandoc() -> str:
@@ -329,11 +322,8 @@ def main() -> None:
     version = check_pandoc()
     print(f"Using {version}")
 
-    revision_date = get_latest_revision_date(ROOT)
-    if revision_date:
-        print(f"Latest revision date (from RevisionLog.md): {revision_date}")
-    else:
-        print("  WARNING: could not read a revision date from RevisionLog.md")
+    revision_date = get_build_date()
+    print(f"Revision date (today): {revision_date}")
 
     missing = [f for f in CHAPTERS if not (ROOT / f).exists()]
     if missing:
@@ -413,7 +403,7 @@ def main() -> None:
                     t, flags=re.MULTILINE,
                 )
                 # First *...* paragraph → Subtitle style, followed by the revision
-                # date (pulled from RevisionLog.md's last row) as Cover Text.
+                # date (today's build date) as Cover Text.
                 def _subtitle_repl(m: re.Match) -> str:
                     block = f':::{{custom-style="Subtitle"}}\n{m.group(1)}\n:::'
                     if revision_date:

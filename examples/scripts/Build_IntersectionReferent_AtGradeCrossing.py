@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-07-10
+# Date: 2026-07-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates the INTERSECTION referent pattern from Guide Section 9.5 (grounded in ISO 19148
@@ -9,9 +9,9 @@
 # expressed in its own alignment's stationing system, and it is linked to its own alignment by its own
 # IfcRelPositions (alignment as RelatingPositioningElement, referent as RelatedProducts) -- this is what
 # removes the ambiguity of whose stationing system the Station value belongs to. Nothing in the schema
-# formally correlates the two referents as "the same crossing"; the correlation is instead recorded with
-# an IfcAnnotation (Description records the station equivalence) grouped with both referents via
-# IfcGroup / IfcRelAssignsToGroup.
+# formally correlates the two referents as "the same crossing"; the correlation is instead recorded by
+# gathering both referents under a single IfcGroup / IfcRelAssignsToGroup, with the group's Description
+# recording the station equivalence text.
 #
 # Alignment A starts at (0, 0), heads due east, length 1000 ft, elevation 0 climbing at 3%, stationing
 # starts at 1+00. Alignment B starts at (500, -500), heads due north, length 1000 ft, elevation 0
@@ -154,44 +154,23 @@ referent_a = create_intersection_referent(alignment_a, distance_along_a)
 referent_b = create_intersection_referent(alignment_b, distance_along_b)
 
 # Per Section 9.5.3, nothing in the schema formally links Alignment A's and Alignment B's INTERSECTION
-# referents -- the correspondence is a project-specific convention that can be annotated with an
-# IfcAnnotation or a custom property, rather than a formal IFC relationship. Here, an IfcAnnotation is
-# placed at the crossing and its Description records the station equivalence as text, exactly like the
-# station-equivalence notes on a 2D plan sheet. An IfcGroup / IfcRelAssignsToGroup then gathers the
-# annotation together with referent_a and referent_b, so the correlation is also discoverable by any
-# consumer that can follow group assignments -- without creating an IfcRelPositions (or any other formal
-# positioning relationship) between the two referents themselves.
-elevation_a = gradient_a * distance_along_a
-elevation_b = gradient_b * distance_along_b
-crossing_point = (500.0, 0.0, (elevation_a + elevation_b) / 2.0)
+# referents -- the correspondence is a project-specific convention. Here, an IfcGroup gathers
+# referent_a and referent_b via IfcRelAssignsToGroup, and the group's Description records the station
+# equivalence as text, exactly like the station-equivalence notes on a 2D plan sheet -- so the
+# correlation is discoverable by any consumer that can follow group assignments, without creating an
+# IfcRelPositions (or any other formal positioning relationship) between the two referents themselves.
 correlation_text = f"{alignment_a.Name} Sta. {referent_a.Name} = {alignment_b.Name} Sta. {referent_b.Name} (at-grade crossing)"
-
-annotation = file.createIfcAnnotation(
-    GlobalId=ifcopenshell.guid.new(),
-    OwnerHistory=None,
-    Name="Intersection: Alignment A / Alignment B",
-    Description=correlation_text,
-    ObjectType=None,
-    ObjectPlacement=file.createIfcLocalPlacement(
-        PlacementRelTo=None,
-        RelativePlacement=file.createIfcAxis2Placement3D(Location=file.createIfcCartesianPoint(crossing_point)),
-    ),
-    Representation=None,
-    PredefinedType=None,
-)
-# bSI Validation Service requires every IfcAnnotation to be contained in an IfcSpatialStructureElement
-# via IfcRelContainedInSpatialStructure.
-ifcopenshell.api.spatial.assign_container(file, products=[annotation], relating_structure=site)
 
 crossing_group = file.createIfcGroup(
     GlobalId=ifcopenshell.guid.new(),
     OwnerHistory=None,
     Name="Intersection: Alignment A / Alignment B",
+    Description=correlation_text,
 )
 file.createIfcRelAssignsToGroup(
     GlobalId=ifcopenshell.guid.new(),
     OwnerHistory=None,
-    RelatedObjects=[referent_a, referent_b, annotation],
+    RelatedObjects=[referent_a, referent_b],
     RelatedObjectsType=None,
     RelatingGroup=crossing_group,
 )
