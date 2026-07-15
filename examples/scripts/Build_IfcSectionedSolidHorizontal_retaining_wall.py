@@ -168,12 +168,12 @@ def build_model(explicit_axis):
     return file
 
 
-# Implicit axis — Axis omitted; result depends on implementation default (Figure 10.5-2).
+# Implicit axis — Axis omitted; result depends on implementation default (Figure 10.5.5-2).
 model = build_model(explicit_axis=False)
 model.write(os.path.join(examples_dir, "IfcSectionedSolidHorizontal_retaining_wall_implicit_axis.ifc"))
 print("Written: IfcSectionedSolidHorizontal_retaining_wall_implicit_axis.ifc")
 
-# Explicit axis — Axis = (0,0,1); cross-section faces are plumb (Figure 10.5-1).
+# Explicit axis — Axis = (0,0,1); cross-section faces are plumb (Figure 10.5.5-1).
 model = build_model(explicit_axis=True)
 model.write(os.path.join(examples_dir, "IfcSectionedSolidHorizontal_retaining_wall_explicit_axis.ifc"))
 print("Written: IfcSectionedSolidHorizontal_retaining_wall_explicit_axis.ifc")

@@ -9,3 +9,4 @@
 | 9 Jul 2026 | Chapter 9 updated to cover the Product Span Positioning concept. | R. Brice |
 | 10 Jul 2026 | §9.5 rewritten per ISO 19148 §6.2.12.1. | R. Brice |
 | 13 Jul 2026 | §9.5.3 simplified: `IfcAnnotation` removed from the intersection-referent correlation pattern. | R. Brice |
+| 15 Jul 2026 | §10.5.4 expanded to cover cross-section/string-line redundancy. | R. Brice |
