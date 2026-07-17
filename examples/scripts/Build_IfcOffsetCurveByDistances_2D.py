@@ -14,6 +14,9 @@ import ifcopenshell.api.alignment
 import ifcopenshell.api.unit
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
+# ViewDefinition is NotAssigned because IfcOffsetCurveByDistances is not part of any
+# standardized MVD schema subset or implementation level.
+file.header.file_description.description = ("ViewDefinition [NotAssigned]",)
 project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(),Name="Alignment")
 length = ifcopenshell.api.unit.add_conversion_based_unit(file,name="foot")
 angle = ifcopenshell.api.unit.add_si_unit(file,unit_type="PLANEANGLEUNIT")

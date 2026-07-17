@@ -19,7 +19,9 @@ def make_angle(slope):
     
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
-file.header.file_description.description = ("ViewDefinition [Alignment-basedView]",)
+# ViewDefinition is NotAssigned because IfcOffsetCurveByDistances (used as a stringline guide
+# curve) is not part of any standardized MVD schema subset or implementation level.
+file.header.file_description.description = ("ViewDefinition [NotAssigned]",)
 
 project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(),Name="Sectioned Surface with Stringlines")
 site = file.createIfcSite(GlobalId=ifcopenshell.guid.new(),Name="Site")
