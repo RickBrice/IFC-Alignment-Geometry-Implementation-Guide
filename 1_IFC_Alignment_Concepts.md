@@ -103,7 +103,7 @@ element, one spatial zone) and *referencing* (one element, many zones).
 
 ### 1.5.1 Overview
 
-[Section 4.1.7.1.1](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/content.html) of the IFC 4x3 specification indicates that the valid
+[Section 4.1.7.1.1](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/content.html) of the IFC4x3 specification indicates that the valid
 representations of `IfcAlignment` are:
 
 - `IfcCompositeCurve` as a 2D horizontal alignment (represented by its

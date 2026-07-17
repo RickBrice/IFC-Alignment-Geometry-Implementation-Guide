@@ -7,6 +7,7 @@
 **arc length, offset curve** — 5.2  
 **angle point** — 8.2.1.1  
 **asymmetric parabolic arc** — A.4.4  
+**authoring versus consuming** — 10.5.1  
 **Axis (coordinate vector)** — 4.1.2, 8.3.1
 
 ## B
@@ -83,6 +84,7 @@
 **gap equation** — 9.2.3  
 **gap, station undefined** — 9.2.5, 9.2.6  
 **geometric representation** — 1.5, 2.1  
+**global scoping** — 10.5.1  
 **grade** — 3.3, Notation  
 **guide curve** — 10.2, 10.3, 10.5
 
@@ -96,12 +98,13 @@
 
 ## I
 
-**IFC105 validation rule** — 5.1  
+**IFC105 validation rule** — 5.1, 10.5.7  
 **`IfcAlignment`** — 1.0, 1.4, 1.5, 5.2, 7.1  
 **`IfcAlignmentCant`** — 1.3, 4.0  
 **`IfcAlignmentHorizontal`** — 1.1, 2.0, 2.1  
 **`IfcAlignmentSegment`** — 1.4, 1.5.2  
 **`IfcAlignmentVertical`** — 1.2, 3.0, 3.1  
+**`IfcAnnotation`** — 10.5.7  
 **`IfcAxis2PlacementLinear`** — 8.2, 8.3  
 **`IfcCircle`**  
 &emsp;horizontal — 2.4, 2.4.1  
@@ -149,7 +152,8 @@
 **linear placement** — 8.0–8.7  
 **linear referencing** — 8.6  
 **linear transition (cant)** — 4.4, 4.4.1–4.4.3  
-**live model management** — 7.3
+**live model management** — 7.3  
+**local scoping** — 10.5.1
 
 ## M
 
@@ -179,6 +183,7 @@
 &emsp;LandXML — A.4.3, A.4.4  
 **parent curve** — 1.5.2, 2.1  
 **parent/child structure** — 7.1.1  
+**placeholder host product** — 10.5.7  
 **`PlacementRelTo`** — 8.1.2, 8.3.3  
 **precision** — 11.0  
 **Product Relative Positioning** — 9.4.2  
@@ -196,6 +201,7 @@
 **reference coordinates** — 12.2.4, 12.4  
 **referent ordering** — 9.3.1  
 **referent placement (`ObjectPlacement`)** — 9.3.3  
+**representation scoping** — 10.5.1  
 **retaining wall** — 10.6.2.4  
 **RefDirection** — 4.1.2, 8.3.1  
 **rotation point** — A.5.4
@@ -207,6 +213,7 @@
 **segment mapping** — 1.6, 2.3.2, 2.4.2, 2.5.2, 2.6.2, 2.7.2, 2.8.2, 2.9.2, 2.10.2, 2.11.2  
 **semantic definition** — 1.4, 2.1  
 **semantic vs. geometric** — 1.4, 1.5, 9.4  
+**sibling representation** — 10.5.7  
 **sign convention**  
 &emsp;curvature — 2.1  
 &emsp;offset — 5.0  
@@ -219,7 +226,7 @@
 **start station** — 9.2.1, A.6.1  
 **station equations** — 9.2.2–9.2.6, A.6.2  
 **stationing** — 9.2, 9.3.1, A.6  
-**stringlines** — 10.2, 10.3.2  
+**stringlines** — 10.2, 10.3.2, 10.6.1.4–10.6.1.7, 10.6.2.5, 10.6.2.6  
 **superelevation** — *see* cant
 
 ## T

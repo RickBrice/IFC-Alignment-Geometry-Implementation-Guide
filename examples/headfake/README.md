@@ -23,4 +23,4 @@ Do not use these files as reference implementations of `IfcSectionedSurface` wit
 
 - `IfcSectionedSurface_with_stringlines_as_resource_entities.ifc` (§10.6.1.4)
 - `IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.ifc` (§10.6.1.5)
-- `IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc` (§10.6.1.6)
+- `IfcSectionedSurface_with_stringlines_independent_guide_curves.ifc` (§10.6.1.6)

@@ -76,6 +76,7 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 - Positive curvature convention: curves to the left (from the perspective of a traveler moving in the direction of increasing chainage).
 - The guide distinguishes **semantic** alignment (business/design intent, `IfcAlignmentSegment` subtypes) from **geometric** alignment (mathematical curve representation, `IfcCurveSegment`).
 - Tables and Figures are numbered using the section number and a sequence number. An example is Figure 3.2.1-3 is the third figure in section 3.2.1.
+- The specification/schema is spelled **`IFC4x3`** (lowercase x) in prose. The literal schema identifier as it appears in STEP files and example code (e.g., `IFC4X3_ADD2`, `FILE_SCHEMA(('IFC4X3'))`) keeps its actual all-caps spelling — that's a literal enum/string value, not a prose reference, so it's not affected by this rule.
 
 ### Image naming
 
@@ -85,10 +86,23 @@ Two naming schemes exist in `images/`:
 
 Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own `images/` folder for testset plot images — these are separate from the root `images/` directory.
 
+### ERD (entity relationship diagram) figures
+
+Several figures illustrate IFC entity relationships (which entity references which, via which attribute or relationship class) rather than geometry. These are **hand-authored raw SVG** — there is no generator script or diagramming tool involved; new ones are built by copying the structure of an existing one and editing it directly.
+
+Canonical examples to copy from:
+- `images/Figure_9.4.2-1_Referent_Entity_Relationship.svg` — best source for the shared `<defs>` block (arrow marker, text classes, color classes) and the legend box pattern.
+- `images/Figure_9.3.2-1_Alignment_RelNests_ERD.svg` — best source for the "spine + branches" idiom (one entity fanning out to several related entities via a single trunk line).
+
+Shared conventions across all ERD figures:
+- **Color semantics** (applied via `c-purple`/`c-blue`/`c-teal`/`c-gray` classes on a `<g>` wrapping each box): purple = rooted product/root entity, blue = representation/placement infrastructure, teal = geometry or tag-carrying content, gray = relationship entities (`IfcRelNests`, `IfcRelAggregates`, etc.).
+- Boxes are rounded rects (`rx="8"`) with a bold title (`.th`) and optional subtitle (`.ts`) reusing the shared `text`/`.th`/`.ts`/`.lbl` style rules and the single `<marker id="arrow">` definition — copy these verbatim rather than redefining per figure.
+- A small legend box in a corner lists every color class actually used in that figure.
+- **Spine + branches**: for one entity with an ordered list of several related entities (e.g. `Items`, `RelatedObjects`), draw one trunk line from the source box then branch to each target with its own arrowhead, labeled once near the trunk (e.g. "Items (ordered list of N)").
+- **Dashed correlation**: for a relationship that is informal/by-convention rather than a formal schema attribute or relationship (e.g. two values that merely happen to match), use a dashed gray line with no intermediate box, labeled to say it is not a schema relationship.
+- Accessibility: every ERD has `role="img"`, a `<title>`, and a `<desc>` summarizing the relationships depicted.
+- Naming: `Figure_{section}-{n}_{Descriptive_Name}.svg`, following the general image-naming convention above; the markdown alt text starts with "Entity relationship diagram:".
+
 ## TO DO List
 
 The following of a list of things to address for the next version of this document.
-
-- Is it a discrpenecy between IfcSectionedSolidHorizontal and IfcSectionedSurface that IfcSectionedSolidHorizontal.CrossSectionPositions.Location is an IfcPointByDistanceExpression and the NoLongiutindalOffsets formal proposition forbids longitudinal offsets wherease IfcSectionedSurface.CrossSectionPositions.Location is also an IfcPointByDistanceExpression and the NoOffsets formal proposition forbits longitudinal, laterial, and vertical offsets. Why are the formal propositions different?
-
-- 8.9.3.28 - There is a statement that the placement of IfcCurveSegment through IfcAxis2PlacementLinear, the positioning curve (Placement.Location.BasisCurve does not necessarily correspond with the ParentCurve. This statement needs to be analyzed, broken down, and examples provided.

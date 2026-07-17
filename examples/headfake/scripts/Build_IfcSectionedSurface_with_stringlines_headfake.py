@@ -11,7 +11,7 @@
 # near-smooth surface edge that represents what a stringline-capable viewer would render.
 #
 # This is NOT a reference implementation of the stringline mechanism. The actual example
-# with correct IFC structure is IfcSectionedSurface_with_stringlines_independent_edge_alignments.ifc.
+# with correct IFC structure is IfcSectionedSurface_with_stringlines_independent_guide_curves.ifc.
 
 import os
 import math

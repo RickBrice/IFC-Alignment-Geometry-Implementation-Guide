@@ -2,13 +2,17 @@
 # Date: 2026-05-22
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
-# Solid counterpart to Build_IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.py.
-# Demonstrates IfcSectionedSolidHorizontal with guide curves controlling tagged vertices of an
-# IfcArbitraryClosedProfileDef. The same 200 m straight alignment, three offset-curve guide
-# alignments (A-line, B-line, C-line), and variable-width parameters are used. Tags are assigned
-# via IfcCartesianPointList2D.TagList on the three top-surface vertices of the closed profile;
-# the three bottom-surface vertices are untagged and interpolate linearly between the two defined
-# cross-section positions. See §10.6.2.5 of the guide.
+# Solid counterpart to Build_IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.py,
+# but demonstrates a DIFFERENT rooted-entity technique for comparison: rather than wrapping each
+# guide curve in a placeholder IfcAlignment (the surface example's approach, §10.6.1.5), the six
+# guide curves here are bare IfcOffsetCurveByDistances entities placed in a sibling "Axis"
+# IfcShapeRepresentation alongside the solid's "Body" representation, within the same
+# IfcProductDefinitionShape as the IfcPavement that hosts them (§10.5.7, §10.6.2.5). The same
+# 200 m straight alignment and variable-width parameters are used as the surface example, but this
+# solid extends guide curve control to all six profile vertices, not just the top three: the top
+# curves (A_top, B_top, C_top) match the surface example's A/B/C offsets, and the soffit curves
+# (A_bot, B_bot, C_bot) mirror them 1 m lower to hold the slab thickness constant. Tags are
+# assigned via IfcCartesianPointList2D.TagList on all six vertices of the closed profile.
 
 import os
 import ifcopenshell
@@ -32,6 +36,13 @@ angle  = ifcopenshell.api.unit.add_si_unit(file, unit_type="PLANEANGLEUNIT")
 ifcopenshell.api.unit.assign_unit(file, units=[length, angle])
 
 geometric_representation_context = ifcopenshell.api.context.add_context(file, context_type="Model")
+axis_model_representation_subcontext = ifcopenshell.api.context.add_context(
+    file,
+    context_type="Model",
+    context_identifier="Axis",
+    target_view="MODEL_VIEW",
+    parent=geometric_representation_context,
+)
 body = ifcopenshell.api.context.add_context(
     file,
     context_type="Model",
@@ -76,58 +87,74 @@ road_part = file.createIfcRoadPart(GlobalId=ifcopenshell.guid.new(), Name="RoadP
 ifcopenshell.api.aggregate.assign_object(file, relating_object=site, products=[road])
 ifcopenshell.api.aggregate.assign_object(file, relating_object=road, products=[road_part])
 
-# Guide curve alignments — identical offsets to the companion surface example.
-# A-line: right shoulder top (tag "A") — widens from 30 m to 45 m at midpoint, returns.
-# B-line: crown (tag "B")              — stays fixed at (0, 0) throughout.
-# C-line: left shoulder top (tag "C")  — mirrors A-line on the left side.
-# All three BasisCurves are the same basis_curve as the solid Directrix, so tags are
-# scoped to that shared parameterization (see §10.5).
-alignment_a = ifcopenshell.api.alignment.create_as_offset_curve(file, name="A-line", offsets=[
+# Guide curves — six total, authored as bare IfcOffsetCurveByDistances resource entities rather
+# than wrapped in placeholder IfcAlignment instances. Rootedness (IFC105) is instead satisfied by
+# placing all six curves in a sibling "Axis"/GeometricCurveSet IfcShapeRepresentation alongside the
+# solid's "Body" representation, within the same IfcProductDefinitionShape — see §10.5.7 and
+# §10.6.2.5. All six BasisCurves are the same basis_curve as the solid Directrix, so tags are
+# scoped to that shared parameterization (see §10.5.1).
+#
+# Top surface (matches the surface example's A/B/C offsets exactly):
+# A_top-line: right shoulder top — widens from 30 m to 45 m at midpoint, returns.
+# B_top-line: crown              — stays fixed at (0, 0) throughout.
+# C_top-line: left shoulder top  — mirrors A_top-line on the left side.
+#
+# Soffit (mirrors the top curves 1 m lower, holding the slab thickness constant):
+# A_bot-line, B_bot-line, C_bot-line — same lateral path as A_top/B_top/C_top, OffsetVertical
+# shifted down by THICKNESS.
+offset_curve_a_top = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve, OffsetValues=[
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(0.),   OffsetLateral=WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE),
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(100.), OffsetLateral=1.5*WIDTH, OffsetVertical=-1.5*WIDTH*CROWN_SLOPE),
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(200.), OffsetLateral=WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE),
-])
-alignment_b = ifcopenshell.api.alignment.create_as_offset_curve(file, name="B-line", offsets=[
+], Tag="A_top")
+offset_curve_b_top = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve, OffsetValues=[
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(0.),   OffsetLateral=0., OffsetVertical=0.),
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(100.), OffsetLateral=0., OffsetVertical=0.),
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(200.), OffsetLateral=0., OffsetVertical=0.),
-])
-alignment_c = ifcopenshell.api.alignment.create_as_offset_curve(file, name="C-line", offsets=[
+], Tag="B_top")
+offset_curve_c_top = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve, OffsetValues=[
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(0.),   OffsetLateral=-WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE),
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(100.), OffsetLateral=-1.5*WIDTH, OffsetVertical=-1.5*WIDTH*CROWN_SLOPE),
     file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(200.), OffsetLateral=-WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE),
-])
+], Tag="C_top")
 
-offset_curve_a = ifcopenshell.api.alignment.get_curve(alignment_a)
-offset_curve_b = ifcopenshell.api.alignment.get_curve(alignment_b)
-offset_curve_c = ifcopenshell.api.alignment.get_curve(alignment_c)
-
-offset_curve_a.Tag = "A"
-offset_curve_b.Tag = "B"
-offset_curve_c.Tag = "C"
+offset_curve_a_bot = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve, OffsetValues=[
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(0.),   OffsetLateral=WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE - THICKNESS),
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(100.), OffsetLateral=1.5*WIDTH, OffsetVertical=-1.5*WIDTH*CROWN_SLOPE - THICKNESS),
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(200.), OffsetLateral=WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE - THICKNESS),
+], Tag="A_bot")
+offset_curve_b_bot = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve, OffsetValues=[
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(0.),   OffsetLateral=0., OffsetVertical=-THICKNESS),
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(100.), OffsetLateral=0., OffsetVertical=-THICKNESS),
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(200.), OffsetLateral=0., OffsetVertical=-THICKNESS),
+], Tag="B_bot")
+offset_curve_c_bot = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve, OffsetValues=[
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(0.),   OffsetLateral=-WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE - THICKNESS),
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(100.), OffsetLateral=-1.5*WIDTH, OffsetVertical=-1.5*WIDTH*CROWN_SLOPE - THICKNESS),
+    file.createIfcPointByDistanceExpression(BasisCurve=basis_curve, DistanceAlong=file.createIfcLengthMeasure(200.), OffsetLateral=-WIDTH,     OffsetVertical=-WIDTH*CROWN_SLOPE - THICKNESS),
+], Tag="C_bot")
 
 # Closed crown cross-section profile — V-shaped slab, nominal width 60 m, 1 m thick.
-# Top-surface vertices carry TagList labels matching the guide curve tags.
-# Bottom-surface vertices are untagged (None) and interpolate linearly between the
-# two cross-section positions; they do not follow the guide curves.
+# All six vertices carry TagList labels matching one of the six guide curves above; the soffit
+# vertices are guided the same as the top ones, just 1 m lower.
 #
 # Template profile (before guide curves take effect):
 #
-#   C(-30,-6) ___________ B(0,0) ___________ A(30,-6)   ← top surface (20 % crown)
-#            /                                \
-#   (-30,-7)              (0,-1)              (30,-7)    ← soffit (1 m below top)
+#   C_top(-30,-6) _______ B_top(0,0) _______ A_top(30,-6)   ← top surface (20 % crown)
+#              /                                  \
+#   C_bot(-30,-7)        B_bot(0,-1)        A_bot(30,-7)    ← soffit (1 m below top)
 #
 # Vertices wound counterclockwise.
 point_list = file.createIfcCartesianPointList2D(
     CoordList=[
-        (-WIDTH, -WIDTH*CROWN_SLOPE - THICKNESS),  # 1  bottom left   (untagged)
-        (0.,    -THICKNESS),                        # 2  bottom center (untagged)
-        (WIDTH,  -WIDTH*CROWN_SLOPE - THICKNESS),  # 3  bottom right  (untagged)
-        (WIDTH,  -WIDTH*CROWN_SLOPE),              # 4  top right     → "A"
-        (0.,     0.),                               # 5  crown         → "B"
-        (-WIDTH, -WIDTH*CROWN_SLOPE),              # 6  top left      → "C"
+        (-WIDTH, -WIDTH*CROWN_SLOPE - THICKNESS),  # 1  bottom left   → "C_bot"
+        (0.,    -THICKNESS),                        # 2  bottom center → "B_bot"
+        (WIDTH,  -WIDTH*CROWN_SLOPE - THICKNESS),  # 3  bottom right  → "A_bot"
+        (WIDTH,  -WIDTH*CROWN_SLOPE),              # 4  top right     → "A_top"
+        (0.,     0.),                               # 5  crown         → "B_top"
+        (-WIDTH, -WIDTH*CROWN_SLOPE),              # 6  top left      → "C_top"
     ],
-    TagList=["C_bot", "B_bot", "A_bot", "A", "B", "C"]
+    TagList=["C_bot", "B_bot", "A_bot", "A_top", "B_top", "C_top"]
 )
 poly_curve = file.createIfcIndexedPolyCurve(
     Points=point_list,
@@ -150,7 +177,14 @@ representation = file.createIfcShapeRepresentation(
     RepresentationType="SolidModel",
     Items=[solid]
 )
-product_rep = file.createIfcProductDefinitionShape(Representations=[representation])
+axis_representation = file.createIfcShapeRepresentation(
+    ContextOfItems=axis_model_representation_subcontext,
+    RepresentationIdentifier="Axis",
+    RepresentationType="GeometricCurveSet",
+    Items=[offset_curve_a_top, offset_curve_b_top, offset_curve_c_top,
+           offset_curve_a_bot, offset_curve_b_bot, offset_curve_c_bot]
+)
+product_rep = file.createIfcProductDefinitionShape(Representations=[representation, axis_representation])
 
 pavement = file.createIfcPavement(
     GlobalId=ifcopenshell.guid.new(),
