@@ -85,7 +85,8 @@
       "Bash(mkdir -p /c/Users/BriceR/AppData/Local/Temp/claude/F--IFC-Alignment-Geometry-Implementation-Guide/178347f8-28eb-4e36-a566-f88fc7cdb091/scratchpad)",
       "Bash('/c/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe' --headless --disable-gpu --screenshot=/c/Users/BriceR/AppData/Local/Temp/claude/F--IFC-Alignment-Geometry-Implementation-Guide/178347f8-28eb-4e36-a566-f88fc7cdb091/scratchpad/figure951_check.png --window-size=1000,720 file:///__TRACKED_VAR__)",
       "Read(//c/Users/BriceR/AppData/Local/Temp/claude/F--IFC-Alignment-Geometry-Implementation-Guide/178347f8-28eb-4e36-a566-f88fc7cdb091/scratchpad/**)",
-      "Bash(grep -nE \"^#{1,4} \" 5_OffsetCurves.md)"
+      "Bash(grep -nE \"^#{1,4} \" 5_OffsetCurves.md)",
+      "Bash(git log *)"
     ]
   }
 }

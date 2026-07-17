@@ -130,7 +130,7 @@ representation = file.createIfcShapeRepresentation(
 
 product_rep = file.createIfcProductDefinitionShape(Representations=[representation])
 
-proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name="Proxy",
+pavement = file.createIfcPavement(GlobalId=ifcopenshell.guid.new(),Name="Pavement",
         ObjectPlacement=file.createIfcLocalPlacement(
             RelativePlacement=file.createIfcAxis2Placement3D(
                 Location=file.createIfcCartesianPoint(Coordinates=((0.0,0.0,0.0)))
@@ -139,7 +139,7 @@ proxy = file.createIfcBuildingElementProxy(GlobalId=ifcopenshell.guid.new(),Name
         Representation=product_rep
 )
 
-ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[proxy])
+ifcopenshell.api.spatial.assign_container(file,relating_structure=road_part,products=[pavement])
 
 
 output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSurface_with_stringlines_as_resource_entities.ifc")
