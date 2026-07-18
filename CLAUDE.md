@@ -106,3 +106,5 @@ Shared conventions across all ERD figures:
 ## TO DO List
 
 The following of a list of things to address for the next version of this document.
+
+[ ] add a note in chapter 10, sectioned surfaces and solids, about the Tag attribute on IfcBuiltElement and reference the discussion here: https://community.osarch.org/discussion/comment/25421#Comment_25421
