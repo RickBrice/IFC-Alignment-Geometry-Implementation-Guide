@@ -1,14 +1,19 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-22
+# Date: 2026-05-22 (geometry corrected 2026-07-31)
 #
-# Headfake model — produces Figure 10.6.1.6-2 in the IFC Alignment Geometry Implementation Guide.
+# Headfake model — produces Figure 10.6.1.5-1 in the IFC Alignment Geometry Implementation Guide.
 #
 # This model synthetically illustrates the expected geometry of IfcSectionedSurface with
-# independent edge alignments (§10.6.1.6). Because no IFC viewer is currently known to
+# independent edge alignments (§10.6.1.5). Because no IFC viewer is currently known to
 # resolve IfcOffsetCurveByDistances guide curves when rendering a sectioned surface, the
 # correct visual result is approximated here by computing cross-section widths analytically
 # from the circular arc edge geometry at 1 cm spacing (SECTION_SPACING), producing a
 # near-smooth surface edge that represents what a stringline-capable viewer would render.
+#
+# Edge geometry (radius, arc length) matches §10.6.1.5's corrected values — radius 1010 m, arc
+# length 205 m — so this rendering genuinely reproduces the same curve the reference example
+# describes. Main-Line is fixed at 200 m (matching §10.6.1.5's directrix) rather than derived
+# from the arc's own forward reach, as an earlier revision of this script did.
 #
 # This is NOT a reference implementation of the stringline mechanism. The actual example
 # with correct IFC structure is IfcSectionedSurface_with_stringlines_independent_guide_curves.ifc.
@@ -62,10 +67,9 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products
 crownslope = 0.2
 width = 30.
 
-radius = 300.
-arc_length = 150.
-sweep_angle = arc_length / radius
-horizontal_length = radius * math.sin(sweep_angle)
+radius = 1010.
+arc_length = 205.
+horizontal_length = 200.  # Main-Line's length — fixed to match §10.6.1.5's directrix
 cx = 0.
 cy = width + radius
 

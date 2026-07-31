@@ -1,28 +1,110 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-22
+# Date: 2026-05-22 (revised 2026-07-31)
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Solid counterpart to Build_IfcSectionedSurface_with_stringlines_independent_guide_curves.py.
-# Demonstrates IfcSectionedSolidHorizontal where edge guide curves use independent IfcAlignment
-# geometry (circular arcs) rather than parametric offsets from the centerline directrix. Main-Line
-# is 200 m straight; Left_Edge and Right_Edge are 150 m circular arcs starting at ±30 m from the
-# centerline — these remain real, substantive IfcAlignment geometry, unchanged from the surface
-# example. The open IfcOpenCrossProfileDef is replaced by IfcArbitraryClosedProfileDef with
-# IfcCartesianPointList2D.TagList. Because A-line and C-line have BasisCurves independent of the
-# solid Directrix, tags must be globally unique across the model. Unlike the surface example
-# (§10.6.1.6) and this solid's own §10.6.2.5 counterpart, the A_top/B_top/C_top tag-carrying guide
-# curves here are NOT wrapped in placeholder IfcAlignment instances; IFC105 rootedness is instead satisfied via
-# a sibling "Axis" IfcShapeRepresentation (see §10.5.7). The same two specification gaps documented
-# in §10.6.1.6 apply here. See §10.6.2.6 of the guide.
+# Demonstrates IfcSectionedSolidHorizontal where edge guide curves use independent curve geometry
+# (circular arcs) rather than parametric offsets from the centerline directrix. Main-Line is
+# 200 m straight; the left/right edge curves are built directly as bare IfcCompositeCurve/
+# IfcGradientCurve entities via build_edge_curve() — there is no IfcAlignment,
+# IfcAlignmentHorizontal/Vertical, IfcAlignmentSegment, or IfcRelNests/IfcRelAggregates for them at
+# all. This mirrors the surface example exactly: the edge geometry is referenced only as
+# BasisCurve of the A_top/C_top guide curves, which are themselves already rooted through the
+# sibling "Axis" IfcShapeRepresentation construction (§10.5.2) — confirmed against the bSI
+# validation service with no IFC105 violation.
+#
+# The edge curves must pass through the point exactly ±END_WIDTH from Main-Line's own endpoint
+# (200 m forward) — see the surface script for the derivation of solve_arc_radius() and the
+# authoring-defect discussion (§10.5.3, §10.5.5) of getting this wrong. ARC_LENGTH is 205 m,
+# matching the surface example.
+#
+# The open IfcOpenCrossProfileDef is replaced by IfcArbitraryClosedProfileDef with
+# IfcCartesianPointList2D.TagList. Although A_top/C_top's guide curves have a BasisCurve
+# independent of the solid Directrix, this has no effect on tag scoping: all six guide curves are
+# hosted in the same sibling "Axis" representation as the solid, so scoping is governed by that
+# shared IfcProductDefinitionShape (§10.5.2) regardless of BasisCurve.
 
 import os
+import math
 import ifcopenshell
 import ifcopenshell.api.alignment
 import ifcopenshell.api.unit
 
+
+def solve_arc_radius(forward_distance, offset_growth):
+    # See Build_IfcSectionedSurface_with_stringlines_independent_guide_curves.py for derivation.
+    return (forward_distance**2 + offset_growth**2) / (2 * offset_growth)
+
+
+def build_edge_curve(file, y0, radius, signed_arc_length, start_height):
+    # See Build_IfcSectionedSurface_with_stringlines_independent_guide_curves.py for the full
+    # derivation and verification of this construction against ifcopenshell.api.alignment's own
+    # generated STEP entities.
+    L = abs(signed_arc_length)
+    direction_sign = 1.0 if signed_arc_length >= 0 else -1.0
+    phi = L / radius
+    x_end = radius * math.sin(phi)
+    y_end = y0 + direction_sign * radius * (1 - math.cos(phi))
+    tangent_end = (math.cos(phi), direction_sign * math.sin(phi))
+
+    def flat_local_line():
+        return file.createIfcLine(
+            Pnt=file.createIfcCartesianPoint((0., 0.)),
+            Dir=file.createIfcVector(Orientation=file.createIfcDirection((1., 0.)), Magnitude=1.)
+        )
+
+    def placement(location, direction):
+        return file.createIfcAxis2Placement2D(
+            Location=file.createIfcCartesianPoint(location),
+            RefDirection=file.createIfcDirection(direction)
+        )
+
+    circle = file.createIfcCircle(Position=placement((0., 0.), (1., 0.)), Radius=radius)
+
+    arc_segment = file.createIfcCurveSegment(
+        Transition="CONTSAMEGRADIENT",
+        Placement=placement((0., y0), (1., 0.)),
+        SegmentStart=file.createIfcLengthMeasure(0.),
+        SegmentLength=file.createIfcLengthMeasure(signed_arc_length),
+        ParentCurve=circle
+    )
+    horizontal_terminator = file.createIfcCurveSegment(
+        Transition="DISCONTINUOUS",
+        Placement=placement((x_end, y_end), tangent_end),
+        SegmentStart=file.createIfcLengthMeasure(0.),
+        SegmentLength=file.createIfcLengthMeasure(0.),
+        ParentCurve=flat_local_line()
+    )
+    composite_curve = file.createIfcCompositeCurve(Segments=[arc_segment, horizontal_terminator], SelfIntersect=False)
+
+    vertical_segment = file.createIfcCurveSegment(
+        Transition="CONTSAMEGRADIENTSAMECURVATURE",
+        Placement=placement((0., start_height), (1., 0.)),
+        SegmentStart=file.createIfcLengthMeasure(0.),
+        SegmentLength=file.createIfcLengthMeasure(L),
+        ParentCurve=flat_local_line()
+    )
+    vertical_terminator = file.createIfcCurveSegment(
+        Transition="DISCONTINUOUS",
+        Placement=placement((L, start_height), (1., 0.)),
+        SegmentStart=file.createIfcLengthMeasure(0.),
+        SegmentLength=file.createIfcLengthMeasure(0.),
+        ParentCurve=flat_local_line()
+    )
+    return file.createIfcGradientCurve(
+        Segments=[vertical_segment, vertical_terminator],
+        SelfIntersect=False,
+        BaseCurve=composite_curve,
+        EndPoint=placement((L, start_height), (1., 0.))
+    )
+
+
 CROWN_SLOPE = 0.2    # 20 % cross-slope (matches companion surface example)
-WIDTH       = 30.    # m — nominal half-width
+WIDTH       = 30.    # m — nominal half-width at the near cross-section (station 0)
+END_WIDTH   = 50.    # m — half-width at the far cross-section (station 200)
+ARC_LENGTH  = 205.   # m — deliberately longer than the ~201.3 m strictly needed (§10.5.5)
 THICKNESS   = 1.0    # m — slab thickness
+EDGE_RADIUS = solve_arc_radius(200., END_WIDTH - WIDTH)
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
 # ViewDefinition is NotAssigned because IfcOffsetCurveByDistances (used as a stringline guide
@@ -54,7 +136,8 @@ body = ifcopenshell.api.context.add_context(
 
 ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products=[site])
 
-# Main alignment — 200 m straight, due East, flat grade.
+# Main alignment — 200 m straight, due East, flat grade. This remains a real IfcAlignment product
+# — it is the solid's actual Directrix and isn't part of what this example is demonstrating.
 start_station = 500.
 alignment = ifcopenshell.api.alignment.create(file, "Main-Line", include_vertical=True, start_station=start_station)
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
@@ -80,74 +163,25 @@ ifcopenshell.api.alignment.create_layout_segment(file, vlayout,
     )
 )
 
-# Left_Edge — 150 m circular arc curving left (R = +300 m), starting 30 m north of Main-Line.
-# Right_Edge — 150 m circular arc curving right (R = -300 m), starting 30 m south of Main-Line.
-# Both use the same constant-grade vertical, identical to the companion surface example.
-edge_vsegment = file.createIfcAlignmentVerticalSegment(
-    StartDistAlong=0.,
-    HorizontalLength=200.,
-    StartHeight=-WIDTH * CROWN_SLOPE / 2,
-    StartGradient=0.,
-    EndGradient=0.,
-    PredefinedType="CONSTANTGRADIENT"
-)
-
-left_alignment = ifcopenshell.api.alignment.create(file, "Left_Edge", include_vertical=True)
-ifcopenshell.api.alignment.create_layout_segment(
-    file, ifcopenshell.api.alignment.get_horizontal_layout(left_alignment),
-    file.createIfcAlignmentHorizontalSegment(
-        StartPoint=file.createIfcCartesianPoint(Coordinates=(0., WIDTH)),
-        StartDirection=0.0,
-        StartRadiusOfCurvature=300.,
-        EndRadiusOfCurvature=300.,
-        SegmentLength=150.,
-        PredefinedType="CIRCULARARC"
-    )
-)
-ifcopenshell.api.alignment.create_layout_segment(
-    file, ifcopenshell.api.alignment.get_vertical_layout(left_alignment), edge_vsegment
-)
-
-right_alignment = ifcopenshell.api.alignment.create(file, "Right_Edge", include_vertical=True)
-ifcopenshell.api.alignment.create_layout_segment(
-    file, ifcopenshell.api.alignment.get_horizontal_layout(right_alignment),
-    file.createIfcAlignmentHorizontalSegment(
-        StartPoint=file.createIfcCartesianPoint(Coordinates=(0., -WIDTH)),
-        StartDirection=0.0,
-        StartRadiusOfCurvature=-300.,
-        EndRadiusOfCurvature=-300.,
-        SegmentLength=150.,
-        PredefinedType="CIRCULARARC"
-    )
-)
-ifcopenshell.api.alignment.create_layout_segment(
-    file, ifcopenshell.api.alignment.get_vertical_layout(right_alignment), edge_vsegment
-)
-
 basis_curve = ifcopenshell.api.alignment.get_curve(alignment)
-left_curve  = ifcopenshell.api.alignment.get_curve(left_alignment)
-right_curve = ifcopenshell.api.alignment.get_curve(right_alignment)
 ifcopenshell.api.alignment.update_end_point(file, basis_curve)
-ifcopenshell.api.alignment.update_end_point(file, left_curve)
-ifcopenshell.api.alignment.update_end_point(file, right_curve)
 
 road      = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(), Name="Road1")
 road_part = file.createIfcRoadPart(GlobalId=ifcopenshell.guid.new(), Name="RoadPart1", UsageType="LONGITUDINAL")
 ifcopenshell.api.aggregate.assign_object(file, relating_object=site, products=[road])
 ifcopenshell.api.aggregate.assign_object(file, relating_object=road, products=[road_part])
 
-# Guide curves — zero-offset wrappers, same structure as the companion surface example, but
-# authored as bare IfcOffsetCurveByDistances entities (no placeholder IfcAlignment). Left_Edge and
-# Right_Edge remain real IfcAlignment instances with substantive circular-arc geometry — only the
-# A_top/B_top/C_top tag-carrying wrappers are converted. Rootedness is satisfied by the sibling
-# "Axis" representation added to the IfcProductDefinitionShape below (see §10.5.7, §10.6.2.6).
-# Tag naming matches §10.6.2.5's scheme (A_top/B_top/C_top for guided vertices, A_bot/B_bot/C_bot
-# for the unguided soffit vertices below), even though only the top vertices have guide curves here.
-# A_top-line follows Left_Edge (BasisCurve = left_curve, independent of basis_curve).
+# Left/right edge geometry — bare IfcGradientCurve entities, never wrapped in an IfcAlignment
+# product, never aggregated anywhere. Referenced ONLY as BasisCurve of the A_top/C_top guide
+# curves below.
+left_curve  = build_edge_curve(file, y0=WIDTH,  radius=EDGE_RADIUS, signed_arc_length=ARC_LENGTH,  start_height=-WIDTH*CROWN_SLOPE/2)
+right_curve = build_edge_curve(file, y0=-WIDTH, radius=EDGE_RADIUS, signed_arc_length=-ARC_LENGTH, start_height=-WIDTH*CROWN_SLOPE/2)
+
+# Guide curves — bare IfcOffsetCurveByDistances entities, same structure as the companion surface
+# example. Only the top vertices are guided; the soffit falls back to linear interpolation.
+# A_top-line follows the left edge curve (BasisCurve = left_curve, independent of basis_curve).
 # B_top-line follows Main-Line (BasisCurve = basis_curve, same as solid Directrix).
-# C_top-line follows Right_Edge (BasisCurve = right_curve, independent of basis_curve).
-# Because A_top-line and C_top-line have independent BasisCurves, tags "A_top", "B_top", "C_top"
-# must be globally unique across the model — basis-curve scoping does not apply (see §10.5.1).
+# C_top-line follows the right edge curve (BasisCurve = right_curve, independent of basis_curve).
 offset_curve_a_top = file.createIfcOffsetCurveByDistances(BasisCurve=left_curve, OffsetValues=[
     file.createIfcPointByDistanceExpression(BasisCurve=left_curve,  DistanceAlong=file.createIfcLengthMeasure(0.), OffsetLateral=0., OffsetVertical=0.)
 ], Tag="A_top")
@@ -163,16 +197,18 @@ def make_profile(half_width):
     # Crown cross-section: 2×half_width wide, THICKNESS thick, 20% crown slope. CCW vertices.
     # Top-surface vertices tagged A_top, B_top, C_top; bottom-surface vertices tagged A_bot, B_bot,
     # C_bot (no matching guide curves — bottom linearly interpolates between cross-section positions).
+    # Profile X is positive to the left of the directrix (§10.3.3), so A_top/A_bot (+half_width)
+    # are on the left and C_top/C_bot (-half_width) are on the right.
     top_y = -half_width * CROWN_SLOPE
     bot_y = top_y - THICKNESS
     pt_list = file.createIfcCartesianPointList2D(
         CoordList=[
-            (-half_width, bot_y),   # 1 bottom left   C_bot
+            (-half_width, bot_y),   # 1 bottom right  C_bot
             (0.,         -THICKNESS), # 2 bottom center B_bot
-            (half_width,  bot_y),   # 3 bottom right  A_bot
-            (half_width,  top_y),   # 4 top right     A_top
+            (half_width,  bot_y),   # 3 bottom left   A_bot
+            (half_width,  top_y),   # 4 top left      A_top
             (0.,          0.),       # 5 crown         B_top
-            (-half_width, top_y),   # 6 top left      C_top
+            (-half_width, top_y),   # 6 top right     C_top
         ],
         TagList=["C_bot", "B_bot", "A_bot", "A_top", "B_top", "C_top"]
     )
@@ -184,12 +220,10 @@ def make_profile(half_width):
 
 
 # cs1: template at distance 0 m — nominal half-width ±30 m.
-# cs2: template at distance 200 m — nominal half-width ±60 m.
-# Left_Edge and Right_Edge are only 150 m long; their guide curves implicitly extend their final
-# position to 200 m. The authored cs2 template (±60 m) and the extended guide curve positions
-# may disagree at station 200 m — this is the specification gap documented in §10.6.1.6.
+# cs2: template at distance 200 m — nominal half-width ±50 m, matching where the edge curves
+# actually land (see solve_arc_radius / build_edge_curve above).
 cs1 = make_profile(WIDTH)
-cs2 = make_profile(2 * WIDTH)
+cs2 = make_profile(END_WIDTH)
 
 op1 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(0.),   BasisCurve=basis_curve))
 op2 = file.createIfcAxis2PlacementLinear(Location=file.createIfcPointByDistanceExpression(DistanceAlong=file.createIfcLengthMeasure(200.), BasisCurve=basis_curve))
@@ -230,3 +264,5 @@ ifcopenshell.api.spatial.assign_container(file, relating_structure=road_part, pr
 output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSolidHorizontal_with_stringlines_independent_guide_curves.ifc")
 file.write(output_path)
 print("Done!")
+print(f"EDGE_RADIUS = {EDGE_RADIUS:.4f} m, ARC_LENGTH = {ARC_LENGTH:.4f} m")
+print(f"IfcAlignment count: {len(file.by_type('IfcAlignment'))} (Main-Line only)")

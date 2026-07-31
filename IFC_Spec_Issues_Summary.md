@@ -90,28 +90,24 @@
 
 25. Although required for the geometry to be unambiguous, the spec does not explicitly state that an `IfcOpenCrossProfileDef` segment's `Slope` and `Width` must be zero at a breakline's start/end distance along the directrix (§10.3.1).
 
-26. It is unclear whether all tagged cross-section vertices independently participate in guide-curve matching, or whether an unmatched vertex falls back to linear interpolation between authored sections rather than being treated as a modeling error (§10.3.2, §10.5.2).
+26. It is unclear whether all tagged cross-section vertices independently participate in guide-curve matching, or whether an unmatched vertex falls back to linear interpolation between authored sections rather than being treated as a modeling error (§10.3.2, §10.5.4).
 
-27. The spec does not state whether a guide curve's `BasisCurve` must match the surface/solid `Directrix`; three candidate tag-scoping rules exist (Local Scoping, Global Scoping, Representation Scoping), none has a basis in the specification text, and no implementation agreement designates which governs (§10.5.1).
+27. The spec does not state whether a guide curve's `BasisCurve` must match the surface/solid `Directrix`, nor does it explain how a guide curve — referenced only through the surface or solid by the string-valued `Tag` mechanism — satisfies the `IFC105` rootedness rule the bSI Validation Service enforces, which does not trace that reference and flags guide curves as unassociated. Design history behind the guide curve mechanism (§10.5.1) shows the working group's actual intent: host guide curves in a sibling `IfcShapeRepresentation` of the product they belong to. This construction resolves both concerns simultaneously and has been validated against the bSI Validation Service (§10.5.2, §10.6.1.4, §10.6.2.5) — but it is recoverable only from that design history, not from the spec's normative text, and the case of multiple sectioned surfaces/solids sharing one `IfcProductDefinitionShape` remains genuinely undetermined.
 
-28. IFC provides no forward reference (attribute, inverse relationship, or STEP entity identifier) from a tagged vertex to the guide curve controlling it; a consuming application must perform a global search of the model for a matching `Tag`, and tag scoping only disambiguates the results of that search rather than eliminating the need for it (§10.5.1).
+28. IFC provides no forward reference (attribute, inverse relationship, or STEP entity identifier) from a tagged vertex to the guide curve controlling it; under the intended sibling-representation construction a consuming application need only compare tags among the guide curves in that same `IfcProductDefinitionShape`, but even within that narrowed scope the match is by string-equal `Tag` rather than a typed reference (§10.5.2).
 
-29. Figure 8.8.3.35.C in the IFC specification incorrectly depicts sectioned solids extending to the directrix head and tail, contradicting the accompanying specification text (§10.5.3).
+29. Figure 8.8.3.35.C in the IFC specification incorrectly depicts sectioned solids extending to the directrix head and tail, contradicting the accompanying specification text (§10.5.5).
 
-30. When a cross-section vertex and a guide curve with a matching tag occupy different positions at the same cross-section, the spec does not say which governs, nor whether the authored coordinate must be geometrically consistent with the guide curve or may serve only as a placeholder (§10.5.4).
+30. When a cross-section vertex and a guide curve with a matching tag occupy different positions at the same cross-section, the spec provides no machine-enforced consistency check — though the mechanism's own proposer confirms the intent was that the two coincide, with consistency an authoring responsibility rather than a precedence question for consuming applications (§10.5.1, §10.5.3).
 
-31. The default `Axis` direction in `IfcAxis2PlacementLinear` for cross-section positions is undefined (the same ambiguity as §8.3.2); interpretations diverge on graded alignments and are incompatible on canted alignments (§10.5.5).
+31. The default `Axis` direction in `IfcAxis2PlacementLinear` for cross-section positions is undefined (the same ambiguity as §8.3.2); interpretations diverge on graded alignments and are incompatible on canted alignments (§10.5.6).
 
-32. The `IfcSectionedSolidHorizontal` specification incorrectly states that the profile X axis aligns with `RefDirection`; this contradicts `IfcSectionedSurface` and would produce degenerate geometry if implemented as written (§10.5.6).
-
-33. Guide curves are geometrically referenced through the surface or solid (itself a rooted entity) by way of the `Tag` mechanism, but the bSI Validation Service does not trace that path and flags them as unassociated (IFC105); at least three techniques resolve this in practice — placeholder `IfcAlignment`, placeholder `IfcAnnotation`, and sibling representation — but none is prescribed by the spec (§10.5.7).
-
-34. When guide curves carry an independent `BasisCurve` whose length or position is mismatched to the directrix and cross-section endpoints, the spec does not define which geometry governs (§10.6.1.6, §10.6.2.6).
+32. The `IfcSectionedSolidHorizontal` specification incorrectly states that the profile X axis aligns with `RefDirection`; this contradicts `IfcSectionedSurface` and would produce degenerate geometry if implemented as written (§10.5.7).
 
 ---
 
 ## Chapter 11 — Precision and Tolerance
 
-35. No implementation agreement exists for how `Pset_Tolerance` and `Pset_Uncertainty` properties should be used; recommended properties carry no normative weight (§11.0).
+33. No implementation agreement exists for how `Pset_Tolerance` and `Pset_Uncertainty` properties should be used; recommended properties carry no normative weight (§11.0).
 
-36. The spec is silent on how implementations should respond when a computed segment endpoint does not match the stored start point of the next segment, even when a `CONTSAMEGRADIENT` or `CONTSAMEGRADIENTSAMECURVATURE` transition is declared (§11.1).
+34. The spec is silent on how implementations should respond when a computed segment endpoint does not match the stored start point of the next segment, even when a `CONTSAMEGRADIENT` or `CONTSAMEGRADIENTSAMECURVATURE` transition is declared (§11.1).

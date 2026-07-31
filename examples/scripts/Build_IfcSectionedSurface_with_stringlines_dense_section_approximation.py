@@ -1,10 +1,15 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-21
+# Date: 2026-05-21 (revised 2026-07-31)
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Extends v3 with cross-section widths derived analytically from the edge alignment geometry
 # at each sampled station, producing explicitly variable IfcOpenCrossProfileDef instances
 # rather than uniform cross-sections.
+#
+# Edge geometry (radius, arc length) matches §10.6.1.5's corrected values so this example
+# genuinely reproduces the same curve it's approximating. Main-Line is fixed at 200 m (matching
+# §10.6.1.5's directrix) rather than derived from the arc's own forward reach, as an earlier
+# revision did.
 
 import os
 import math
@@ -52,10 +57,9 @@ ifcopenshell.api.aggregate.assign_object(file,relating_object=project,products=[
 crownslope = 0.2
 width = 30.
 
-radius = 300.
-arc_length = 150.
-sweep_angle = arc_length/radius
-horizontal_length = radius * math.sin(sweep_angle)
+radius = 1010.
+arc_length = 205.
+horizontal_length = 200.  # Main-Line's length — fixed to match §10.6.1.5's directrix
 cx = 0.
 cy = width + radius
 
@@ -149,7 +153,7 @@ positions = []
 sections = []
 vertical_edge_offsets = []
 
-for dist in np.linspace(0,horizontal_length,5):
+for dist in np.linspace(0,horizontal_length,4):
     d = float(dist) 
     w = cy - math.sqrt(radius**2 - (d - cx)**2)
     pos = file.createIfcPointByDistanceExpression(BasisCurve=basis_curve,DistanceAlong=file.createIfcLengthMeasure(d))

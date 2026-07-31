@@ -89,7 +89,11 @@
       "Bash(git log *)",
       "Bash(sed -E 's/.*\\\\.//')",
       "Bash(python -c \"import ifcopenshell.api.alignment, inspect, os; print\\(inspect.getsourcefile\\(ifcopenshell.api.alignment\\)\\)\")",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh issue *)",
+      "PowerShell(gh issue *)",
+      "WebFetch(domain:api.github.com)"
     ]
   }
 }

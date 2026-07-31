@@ -10,7 +10,7 @@ Content gaps and topics to research and expand as understanding of IFC continues
 
 - [ ] Provide a better explanation of linear reference systems. One example worth covering: a milepost system where mileage resets to zero when a highway crosses into a new state — e.g., an interstate bridge crossing a river, where the mileage reference changes at the midpoint but stationing is likely continuous through the entire project alignment. (Chapter 8 §8.6 covers ISO 19148 linear referencing generally; Chapter 9 covers stationing.)
 
-- [ ] Continue to improve and clarify string-line-based geometry for sectioned surfaces and solids. Right now there are more open questions than answers. (Chapter 10, §10.5 — see also `IFC_Spec_Issues_Summary.md` #25–34.)
+- [ ] Continue to improve and clarify string-line-based geometry for sectioned surfaces and solids. Right now there are more open questions than answers. (Chapter 10, §10.5 — see also `IFC_Spec_Issues_Summary.md` #25–32.)
 
 - [ ] Add a discussion of MVDs and the Alignment-based View (AbV) in particular, including why some entities are included and others excluded.
 

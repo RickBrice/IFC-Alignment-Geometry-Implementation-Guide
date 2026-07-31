@@ -1,18 +1,18 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-22
+# Date: 2026-05-22 (retitled 2026-07-31)
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
-# Solid counterpart to Build_IfcSectionedSurface_with_stringlines_guide_curves_as_alignments.py,
-# but demonstrates a DIFFERENT rooted-entity technique for comparison: rather than wrapping each
-# guide curve in a placeholder IfcAlignment (the surface example's approach, §10.6.1.5), the six
-# guide curves here are bare IfcOffsetCurveByDistances entities placed in a sibling "Axis"
-# IfcShapeRepresentation alongside the solid's "Body" representation, within the same
-# IfcProductDefinitionShape as the IfcPavement that hosts them (§10.5.7, §10.6.2.5). The same
-# 200 m straight alignment and variable-width parameters are used as the surface example, but this
-# solid extends guide curve control to all six profile vertices, not just the top three: the top
-# curves (A_top, B_top, C_top) match the surface example's A/B/C offsets, and the soffit curves
-# (A_bot, B_bot, C_bot) mirror them 1 m lower to hold the slab thickness constant. Tags are
-# assigned via IfcCartesianPointList2D.TagList on all six vertices of the closed profile.
+# Solid counterpart to Build_IfcSectionedSurface_with_stringlines_shared_basiscurve.py, using
+# the same rooted-entity technique: rather than wrapping each guide curve in a placeholder host
+# product, the six guide curves here are bare IfcOffsetCurveByDistances entities placed in a
+# sibling "Axis" IfcShapeRepresentation alongside the solid's "Body" representation, within the
+# same IfcProductDefinitionShape as the IfcPavement that hosts them — the construction §10.5.1 and
+# §10.5.2 identify as the one the working group intended (§10.6.2.5). The same 200 m straight
+# alignment and variable-width parameters are used as the surface example, but this solid extends
+# guide curve control to all six profile vertices, not just the top three: the top curves (A_top,
+# B_top, C_top) match the surface example's A/B/C offsets, and the soffit curves (A_bot, B_bot,
+# C_bot) mirror them 1 m lower to hold the slab thickness constant. Tags are assigned via
+# IfcCartesianPointList2D.TagList on all six vertices of the closed profile.
 
 import os
 import ifcopenshell
@@ -90,14 +90,14 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=road, products=[r
 # Guide curves — six total, authored as bare IfcOffsetCurveByDistances resource entities rather
 # than wrapped in placeholder IfcAlignment instances. Rootedness (IFC105) is instead satisfied by
 # placing all six curves in a sibling "Axis"/GeometricCurveSet IfcShapeRepresentation alongside the
-# solid's "Body" representation, within the same IfcProductDefinitionShape — see §10.5.7 and
+# solid's "Body" representation, within the same IfcProductDefinitionShape — see §10.5.2 and
 # §10.6.2.5. All six BasisCurves are the same basis_curve as the solid Directrix, so tags are
-# scoped to that shared parameterization (see §10.5.1).
+# scoped to that shared parameterization (see §10.5.2).
 #
 # Top surface (matches the surface example's A/B/C offsets exactly):
-# A_top-line: right shoulder top — widens from 30 m to 45 m at midpoint, returns.
+# A_top-line: left shoulder top  — widens from 30 m to 45 m at midpoint, returns.
 # B_top-line: crown              — stays fixed at (0, 0) throughout.
-# C_top-line: left shoulder top  — mirrors A_top-line on the left side.
+# C_top-line: right shoulder top — mirrors A_top-line on the right side.
 #
 # Soffit (mirrors the top curves 1 m lower, holding the slab thickness constant):
 # A_bot-line, B_bot-line, C_bot-line — same lateral path as A_top/B_top/C_top, OffsetVertical
@@ -138,21 +138,23 @@ offset_curve_c_bot = file.createIfcOffsetCurveByDistances(BasisCurve=basis_curve
 # All six vertices carry TagList labels matching one of the six guide curves above; the soffit
 # vertices are guided the same as the top ones, just 1 m lower.
 #
-# Template profile (before guide curves take effect):
+# Template profile (before guide curves take effect). Profile X is positive to the left of the
+# directrix (§10.3.3), so A_top/A_bot (+WIDTH) are on the left and C_top/C_bot (-WIDTH) are on
+# the right:
 #
-#   C_top(-30,-6) _______ B_top(0,0) _______ A_top(30,-6)   ← top surface (20 % crown)
-#              /                                  \
-#   C_bot(-30,-7)        B_bot(0,-1)        A_bot(30,-7)    ← soffit (1 m below top)
+#   A_top(30,-6) _______ B_top(0,0) _______ C_top(-30,-6)   ← top surface (20 % crown)
+#             \                                   /
+#   A_bot(30,-7)         B_bot(0,-1)        C_bot(-30,-7)    ← soffit (1 m below top)
 #
 # Vertices wound counterclockwise.
 point_list = file.createIfcCartesianPointList2D(
     CoordList=[
-        (-WIDTH, -WIDTH*CROWN_SLOPE - THICKNESS),  # 1  bottom left   → "C_bot"
+        (-WIDTH, -WIDTH*CROWN_SLOPE - THICKNESS),  # 1  bottom right  → "C_bot"
         (0.,    -THICKNESS),                        # 2  bottom center → "B_bot"
-        (WIDTH,  -WIDTH*CROWN_SLOPE - THICKNESS),  # 3  bottom right  → "A_bot"
-        (WIDTH,  -WIDTH*CROWN_SLOPE),              # 4  top right     → "A_top"
+        (WIDTH,  -WIDTH*CROWN_SLOPE - THICKNESS),  # 3  bottom left   → "A_bot"
+        (WIDTH,  -WIDTH*CROWN_SLOPE),              # 4  top left      → "A_top"
         (0.,     0.),                               # 5  crown         → "B_top"
-        (-WIDTH, -WIDTH*CROWN_SLOPE),              # 6  top left      → "C_top"
+        (-WIDTH, -WIDTH*CROWN_SLOPE),              # 6  top right     → "C_top"
     ],
     TagList=["C_bot", "B_bot", "A_bot", "A_top", "B_top", "C_top"]
 )
@@ -199,6 +201,6 @@ pavement = file.createIfcPavement(
 
 ifcopenshell.api.spatial.assign_container(file, relating_structure=road_part, products=[pavement])
 
-output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSolidHorizontal_with_stringlines_guide_curves_as_alignments.ifc")
+output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IfcSectionedSolidHorizontal_with_stringlines_shared_basiscurve.ifc")
 file.write(output_path)
 print("Done!")
