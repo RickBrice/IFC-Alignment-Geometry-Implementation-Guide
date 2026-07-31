@@ -93,7 +93,12 @@
       "WebFetch(domain:github.com)",
       "Bash(gh issue *)",
       "PowerShell(gh issue *)",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "Bash(git merge *)",
+      "Bash(git stash *)",
+      "Bash(git add)",
+      "Bash(git pull *)",
+      "Bash(git add *)"
     ]
   }
 }
