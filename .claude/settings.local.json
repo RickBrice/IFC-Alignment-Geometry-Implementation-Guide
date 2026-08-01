@@ -99,7 +99,10 @@
       "Bash(git add)",
       "Bash(git pull *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(python -c \"import ifcopenshell; print\\(ifcopenshell.version\\)\")",
+      "Bash(python -c \"import ifcopenshell.api.spatial as s; import inspect; print\\(inspect.getsource\\(s.reference_structure\\)\\)\")",
+      "Bash(python -c \"import ifcopenshell.api.aggregate as a; import inspect; print\\(inspect.getsource\\(a.assign_object\\)\\)\")"
     ]
   }
 }

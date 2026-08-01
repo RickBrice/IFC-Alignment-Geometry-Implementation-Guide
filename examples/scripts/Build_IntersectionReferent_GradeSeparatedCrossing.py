@@ -3,25 +3,32 @@
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Companion to Build_IntersectionReferent_AtGradeCrossing.py. Same plan geometry, same INTERSECTION
-# referent pattern from Guide Section 9.5 -- two independent IfcReferent instances, one per alignment,
-# each placed on and owned by its own alignment -- but Alignment B's grade is flipped to -3% (it
+# referent pattern from Guide Section 9.5.1 -- two independent IfcReferent instances, one per alignment,
+# each placed on and owned by its own alignment -- but First Avenue's grade is flipped to -3% (it
 # descends instead of climbing). Both still start at z=0:
-#  - Alignment A climbs from (0,0,0) to (1000,0,30) -- unchanged.
-#  - Alignment B now descends from (500,-500,0) to (500,500,-30).
+#  - Washington Street climbs from (0,0,0) to (1000,0,30) -- unchanged.
+#  - First Avenue now descends from (500,-500,0) to (500,500,-30).
 #
-# In plan view, A and B still cross at (500, 0) -- 500 ft along each from its own start -- the kind of
-# crossing that would be flagged as an intersection point on a traditional 2D civil plan sheet. But at
-# that station, Alignment A is at elevation +15 ft and Alignment B is at -15 ft: a 30 ft vertical
-# separation. This is a grade separation -- e.g. a road passing under a railway or over another road --
-# not a physical meeting point.
+# In plan view, the two alignments still cross at (500, 0) -- 500 ft along each from its own start. But
+# at that station, Washington Street is at elevation +15 ft and First Avenue is at -15 ft: a 30 ft
+# vertical separation. This is a grade separation -- e.g. a road passing over another road -- not a
+# physical meeting point.
 #
-# Per Section 9.5.3, this is exactly the case where the schema's silence about correlating the two
-# referents matters: at an at-grade crossing, a consumer could at least discover the correspondence by
-# noticing the two referents' ObjectPlacement results coincide (as in the companion script). Here that
-# geometric coincidence doesn't exist either -- the two referents share only their plan-view (X, Y)
-# location. Nothing in the file states that referent_a and referent_b describe the same crossing, and
-# nothing distinguishes this grade-separated crossing from an at-grade one -- both use the identical
-# PredefinedType = INTERSECTION. The only record of the correlation is the IfcGroup described below.
+# Per Guide Section 9.5.2, this is exactly the case where a directional InterferenceType earns its keep:
+# the crossing is recorded with a single IfcRelInterferesElements relating the Washington Street and
+# First Avenue IfcRoad facilities (the facilities each alignment lays out -- IfcAlignment itself cannot
+# be a party to IfcRelInterferesElements, since IfcInterferenceSelect only accepts IfcElement or
+# IfcSpatialElement, and IfcAlignment is a IfcPositioningElement -- each alignment is referenced by its
+# own IfcRoad via IfcRelReferencedInSpatialStructure, not aggregated under it; see the comment above the
+# IfcRoad creation below for why). InterferenceType = "PassesOver" and
+# ImpliedOrder = TRUE record that Washington Street (RelatingElement) is the one physically above, First
+# Avenue (RelatedElement) the one below -- information that neither INTERSECTION referent carries, since
+# both alignments' referents use the identical PredefinedType regardless of whether the crossing is
+# at-grade or grade-separated.
+#
+# Stationing is chosen so the crossing lands on the same illustrative station values used in the
+# at-grade companion script and in Figure 9.5-1 (Sta. 10+00 on Washington Street, Sta. 12+00 on First
+# Avenue).
 
 import os
 import ifcopenshell
@@ -32,9 +39,12 @@ import ifcopenshell.api.aggregate
 import ifcopenshell.api.spatial
 import ifcopenshell.api.pset
 import ifcopenshell.util.alignment
+import ifcopenshell.util.element
 import ifcopenshell.guid
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
+file.header.file_description.description = ("ViewDefinition [Alignment-basedView]",)
+
 project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(), Name="Intersection Referents: Grade-Separated Crossing")
 
 length_unit = ifcopenshell.api.unit.add_conversion_based_unit(file, name="foot")
@@ -72,26 +82,79 @@ def create_straight_graded_alignment(name, start_point, end_point, gradient, sta
         file, vertical_layout, [(0.0, 0.0), (length, gradient * length)], []
     )
 
-    ifcopenshell.api.spatial.reference_structure(file, products=[alignment], relating_structure=site)
+    fix_starting_referent_placement(alignment)
+
     return alignment
 
-# Alignment A -- straight tangent from (0, 0) heading due east for 1000 ft, elevation 0 climbing at 3%,
-# stationing starting at 1+00 (station 100.0). Unchanged from the at-grade companion script.
-gradient_a = 0.03
-alignment_a = create_straight_graded_alignment(
-    "Alignment A", (0.0, 0.0), (1000.0, 0.0), gradient=gradient_a, start_station=100.0
+# create() (called above) builds the alignment's starting STATION referent -- via
+# add_stationing_referent() -- before the horizontal layout has any segments. At that point
+# get_basis_curve(alignment) returns an empty IfcCompositeCurve, so add_stationing_referent() falls back
+# to IfcLocalPlacement at the alignment's own local origin (0.0, 0.0) with PlacementRelTo=None. That
+# fallback is never revisited once real geometry exists, so every alignment's starting referent ends up
+# placed at literal world (0, 0, 0) regardless of where that alignment's curve actually starts -- e.g.
+# First Avenue's Sta. 7+00 referent would resolve to the same point as Washington Street's Sta. 5+00
+# referent, even though First Avenue starts at (500, -500), not (0, 0). This rebuilds that referent's
+# ObjectPlacement as a proper IfcLinearPlacement / IfcPointByDistanceExpression at DistanceAlong = 0.0
+# against the now-populated basis curve, the same construction add_stationing_referent() would have used
+# had the curve existed when it ran.
+def fix_starting_referent_placement(alignment):
+    nest = ifcopenshell.api.alignment.get_stationing_nest(file, alignment)
+    referent = nest.RelatedObjects[0]
+    old_placement = referent.ObjectPlacement
+
+    curve = ifcopenshell.api.alignment.get_basis_curve(alignment)
+    object_placement = file.createIfcLinearPlacement(
+        RelativePlacement=file.createIfcAxis2PlacementLinear(
+            Location=file.createIfcPointByDistanceExpression(
+                DistanceAlong=file.createIfcLengthMeasure(0.0),
+                OffsetLateral=None,
+                OffsetVertical=None,
+                OffsetLongitudinal=None,
+                BasisCurve=curve,
+            )
+        ),
+    )
+    ifcopenshell.api.alignment.update_fallback_position(file, object_placement)
+    referent.ObjectPlacement = object_placement
+    ifcopenshell.util.element.remove_deep2(file, old_placement)
+
+# Washington Street -- straight tangent from (0, 0) heading due east for 1000 ft, elevation 0 climbing
+# at 3%, stationing starting at 5+00 (station 500.0). Unchanged from the at-grade companion script.
+gradient_washington = 0.03
+alignment_washington = create_straight_graded_alignment(
+    "Washington Street", (0.0, 0.0), (1000.0, 0.0), gradient=gradient_washington, start_station=500.0
 )
 
-# Alignment B -- straight tangent from (500, -500) heading due north for 1000 ft, elevation 0,
-# stationing starting at 1+10 (station 110.0) -- same plan geometry as the companion script, but now
-# descending at 3% (gradient=-0.03) instead of climbing, so it no longer meets Alignment A in 3D.
-gradient_b = -0.03
-alignment_b = create_straight_graded_alignment(
-    "Alignment B", (500.0, -500.0), (500.0, 500.0), gradient=gradient_b, start_station=110.0
+# First Avenue -- straight tangent from (500, -500) heading due north for 1000 ft, elevation 0,
+# stationing starting at 7+00 (station 700.0) -- same plan geometry and stationing as the companion
+# script, but now descending at 3% (gradient=-0.03) instead of climbing, so it no longer meets
+# Washington Street in 3D.
+gradient_first_avenue = -0.03
+alignment_first_avenue = create_straight_graded_alignment(
+    "First Avenue", (500.0, -500.0), (500.0, 500.0), gradient=gradient_first_avenue, start_station=700.0
 )
+
+# Each alignment lays out one facility. Per Guide Section 9.5.2, IfcRoad -- not IfcAlignment -- is what
+# IfcRelInterferesElements is later related through, since IfcAlignment is not eligible as an
+# IfcInterferenceSelect party. The two IfcRoad instances are aggregated under Site (IfcRelAggregates),
+# alongside the ordinary Project -> Site -> Road spatial breakdown.
+#
+# IfcAlignment stays where alignment.create() put it -- aggregated directly under IfcProject
+# (IFC 4.1.4.1.1 Alignment Aggregation To Project) -- rather than being re-parented under its IfcRoad.
+# The bSI Validation Service's SPS002 (Correct spatial breakdown) rule restricts what IfcRelAggregates
+# may nest under an IfcRoad to other IfcFacility / IfcFacilityPartCommon / IfcRoadPart / IfcSpace
+# instances; IfcAlignment is not in that list, so aggregating it under IfcRoad fails validation.
+# reference_structure() instead creates an IfcRelReferencedInSpatialStructure -- a non-hierarchical
+# relationship, not a decomposition -- linking each IfcRoad (RelatingStructure) to its IfcAlignment
+# (RelatedElements). That relationship is what IfcRoad -> IfcAlignment actually is here.
+road_washington = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(), Name="Washington Street")
+road_first_avenue = file.createIfcRoad(GlobalId=ifcopenshell.guid.new(), Name="First Avenue")
+ifcopenshell.api.aggregate.assign_object(file, relating_object=site, products=[road_washington, road_first_avenue])
+ifcopenshell.api.spatial.reference_structure(file, products=[alignment_washington], relating_structure=road_washington)
+ifcopenshell.api.spatial.reference_structure(file, products=[alignment_first_avenue], relating_structure=road_first_avenue)
 
 # Identical to the companion script: builds one INTERSECTION referent owned by a single alignment, per
-# Section 9.5 / checklist #12 -- ObjectPlacement against that alignment's own curve, Pset_Stationing.
+# Section 9.5.1 / checklist #14 -- ObjectPlacement against that alignment's own curve, Pset_Stationing.
 # Station in that alignment's own stationing, and an IfcRelPositions with the alignment as
 # RelatingPositioningElement and the referent as RelatedProducts. Not nested via IfcRelNests (that's
 # reserved for STATION referents that define the stationing system itself).
@@ -135,44 +198,62 @@ def create_intersection_referent(alignment, distance_along):
 
     return referent
 
-# referent_a is owned by Alignment A alone and stationed in A's system (1+00 + 500 ft = 6+00);
-# referent_b is a completely separate IfcReferent, owned by Alignment B alone and stationed in B's
-# system (1+10 + 500 ft = 6+10). As in the companion script, neither referent references the other or
-# the other alignment -- the only thing that changes here is where each one physically resolves to.
-distance_along_a = 500.0
-distance_along_b = 500.0
+# referent_washington is owned by Washington Street alone and stationed in its own system (5+00 + 500 ft
+# = 10+00); referent_first_avenue is a completely separate IfcReferent, owned by First Avenue alone and
+# stationed in its own system (7+00 + 500 ft = 12+00) -- identical station values to the at-grade
+# companion script. As in that script, neither referent references the other or the other alignment --
+# the only thing that changes here is where each one physically resolves to.
+distance_along_washington = 500.0
+distance_along_first_avenue = 500.0
 
-referent_a = create_intersection_referent(alignment_a, distance_along_a)
-referent_b = create_intersection_referent(alignment_b, distance_along_b)
+referent_washington = create_intersection_referent(alignment_washington, distance_along_washington)
+referent_first_avenue = create_intersection_referent(alignment_first_avenue, distance_along_first_avenue)
 
-# Per Section 9.5.3, nothing in the schema formally links Alignment A's and Alignment B's INTERSECTION
-# referents -- the correspondence is a project-specific convention. This matters more here than in the
-# at-grade companion script, since the referents' ObjectPlacement results no longer coincide at all --
-# there's no geometric fallback for discovering the correlation. An IfcGroup gathers referent_a and
-# referent_b via IfcRelAssignsToGroup, and the group's Description records the station equivalence and
-# the vertical separation as text, so the correlation is discoverable by any consumer that can follow
-# group assignments -- without creating an IfcRelPositions (or any other formal positioning
-# relationship) between the two referents themselves.
-elevation_a = gradient_a * distance_along_a
-elevation_b = gradient_b * distance_along_b
-delta_z = abs(elevation_a - elevation_b)
-correlation_text = (
-    f"{alignment_a.Name} Sta. {referent_a.Name} crosses {alignment_b.Name} Sta. {referent_b.Name} "
-    f"in plan view only -- grade-separated, dZ = {delta_z:.2f} ft"
+# Per Guide Section 9.5.2, the crossing itself -- as a fact about the two facilities, independent of
+# either INTERSECTION referent -- is recorded with a single IfcRelInterferesElements relating the
+# Washington Street and First Avenue IfcRoad instances. Unlike the at-grade companion script, this
+# crossing has a direction: Washington Street is physically above First Avenue at the crossing, so
+# InterferenceType = "PassesOver" and ImpliedOrder = TRUE, meaning RelatingElement (Washington Street) is
+# the source (the one passing over) and RelatedElement (First Avenue) is the target (the one passed
+# under). InterferenceType remains an IfcIdentifier -- free text, not a restricted enumeration -- so
+# "PassesOver" is a project convention, not a fixed schema value.
+elevation_washington = gradient_washington * distance_along_washington
+elevation_first_avenue = gradient_first_avenue * distance_along_first_avenue
+delta_z = abs(elevation_washington - elevation_first_avenue)
+
+# InterferenceGeometry is modeled as an IfcConnectionPointEccentricity, reusing the same
+# IfcPointByDistanceExpression instances already built for each INTERSECTION referent's own
+# ObjectPlacement (§9.5.1) rather than introducing new IfcCartesianPoint literals -- the referents and
+# the interference geometry describe the same two points, so they share the same point entities. The
+# two points share the same plan-view (X, Y) but no longer coincide in Z, so a plain
+# IfcConnectionPointGeometry (as used in the at-grade companion script) can't represent the separation;
+# IfcConnectionPointEccentricity adds EccentricityInX/Y/Z, which record the offset from
+# PointOnRelatingElement (Washington Street, above) to PointOnRelatedElement (First Avenue, below).
+interference_geometry = file.createIfcConnectionPointEccentricity(
+    PointOnRelatingElement=referent_washington.ObjectPlacement.RelativePlacement.Location,
+    PointOnRelatedElement=referent_first_avenue.ObjectPlacement.RelativePlacement.Location,
+    EccentricityInX=0.0,
+    EccentricityInY=0.0,
+    EccentricityInZ=elevation_first_avenue - elevation_washington,
 )
 
-crossing_group = file.createIfcGroup(
-    GlobalId=ifcopenshell.guid.new(),
-    OwnerHistory=None,
-    Name="Intersection: Alignment A / Alignment B",
-    Description=correlation_text,
+interference_description = (
+    f"{road_washington.Name} passes over {road_first_avenue.Name} "
+    f"({alignment_washington.Name} Sta. {referent_washington.Name} / "
+    f"{alignment_first_avenue.Name} Sta. {referent_first_avenue.Name}, dZ = {delta_z:.2f} ft)"
 )
-file.createIfcRelAssignsToGroup(
+file.create_entity(
+    "IfcRelInterferesElements",
     GlobalId=ifcopenshell.guid.new(),
     OwnerHistory=None,
-    RelatedObjects=[referent_a, referent_b],
-    RelatedObjectsType=None,
-    RelatingGroup=crossing_group,
+    Name="Washington Street / First Avenue Crossing",
+    Description=interference_description,
+    RelatingElement=road_washington,
+    RelatedElement=road_first_avenue,
+    InterferenceGeometry=interference_geometry,
+    InterferenceType="PassesOver",
+    ImpliedOrder=True,
+    InterferenceSpace=None,
 )
 
 output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "IntersectionReferent_GradeSeparatedCrossing.ifc")

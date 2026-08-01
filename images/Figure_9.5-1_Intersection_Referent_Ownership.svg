@@ -1,6 +1,6 @@
 <svg width="930" viewBox="0 0 930 540" xmlns="http://www.w3.org/2000/svg" role="img">
-  <title>Entity relationship diagram: two IfcReferent instances of PredefinedType INTERSECTION, each related to a different IfcAlignment via its own IfcRelPositions, correlated by an IfcGroup</title>
-  <desc>Two independent object graphs plus an optional correlation cluster. Left: IfcAlignment "Washington Street" is RelatingPositioningElement of an IfcRelPositions whose RelatedProducts is an IfcReferent (PredefinedType = INTERSECTION) placed on Washington Street's own curve, carrying Pset_Stationing Station = 1000.00 (Sta. 10+00). Right: IfcAlignment "First Avenue" is RelatingPositioningElement of a separate IfcRelPositions whose RelatedProducts is a second, independent IfcReferent (PredefinedType = INTERSECTION) placed on First Avenue's own curve, carrying Pset_Stationing Station = 1200.00 (Sta. 12+00). Center: an IfcGroup, whose own Description records the station equivalence text, is RelatingGroup of an IfcRelAssignsToGroup whose RelatedObjects fans out to two members — the Washington Street referent and the First Avenue referent. This Group cluster is a project convention, not a formal positioning relationship between the two referents.</desc>
+  <title>Entity relationship diagram: two independent IfcReferent instances of PredefinedType INTERSECTION, each related to a different IfcAlignment via its own IfcRelPositions</title>
+  <desc>Two completely independent object graphs, with no relationship between them. Left: IfcAlignment "Washington Street" is RelatingPositioningElement of an IfcRelPositions whose RelatedProducts is an IfcReferent (PredefinedType = INTERSECTION) placed on Washington Street's own curve, carrying Pset_Stationing Station = 1000.00 (Sta. 10+00). Right: IfcAlignment "First Avenue" is RelatingPositioningElement of a separate IfcRelPositions whose RelatedProducts is a second, independent IfcReferent (PredefinedType = INTERSECTION) placed on First Avenue's own curve, carrying Pset_Stationing Station = 1200.00 (Sta. 12+00). Nothing connects the two graphs — neither referent references the other referent or the other alignment. The fact that the two alignments cross is recorded separately, by an IfcRelInterferesElements relating the two facilities (see Figure 9.5.2-1), not by anything shown here.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -24,15 +24,11 @@
       .c-teal rect   { fill: #E1F5EE; stroke: #0F6E56; }
       .c-teal .th    { fill: #085041; }
       .c-teal .ts    { fill: #0F6E56; }
-
-      .c-amber rect  { fill: #FFF3E0; stroke: #B8791A; }
-      .c-amber .th   { fill: #7A4E0A; }
-      .c-amber .ts   { fill: #B8791A; }
     </style>
   </defs>
 
   <!-- ── Legend ── -->
-  <rect x="20" y="16" width="210" height="88" rx="6" fill="none" stroke="#ccc" stroke-width="0.5"/>
+  <rect x="20" y="16" width="210" height="72" rx="6" fill="none" stroke="#ccc" stroke-width="0.5"/>
   <text class="lbl" x="125" y="34" text-anchor="middle" fill="#555">Legend</text>
   <rect x="32" y="42" width="12" height="11" rx="2" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
   <text class="lbl" x="50" y="51">Spatial element</text>
@@ -40,8 +36,6 @@
   <text class="lbl" x="50" y="67">Relationship</text>
   <rect x="32" y="74" width="12" height="11" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
   <text class="lbl" x="50" y="83">Referent / property set</text>
-  <rect x="32" y="90" width="12" height="11" rx="2" fill="#FFF3E0" stroke="#B8791A" stroke-width="0.5"/>
-  <text class="lbl" x="50" y="99">Group</text>
 
   <!-- ── Column headers ── -->
   <text class="th" x="170" y="118" text-anchor="middle" fill="#3C3489">Washington Street</text>
@@ -121,32 +115,13 @@
     <text class="ts" x="760" y="460" text-anchor="middle" dominant-baseline="central">Station = 1200.00 (Sta. 12+00)</text>
   </g>
 
-  <!-- ── Correlation cluster (center): IfcGroup / IfcRelAssignsToGroup ── -->
-  <text class="lbl" x="465" y="296" text-anchor="middle" fill="#8a6d1f">Correlating the crossing (project convention)</text>
-
-  <g class="c-amber">
-    <rect x="355" y="306" width="220" height="74" rx="8" stroke-width="0.5"/>
-    <text class="th" x="465" y="326" text-anchor="middle" dominant-baseline="central">IfcGroup</text>
-    <text class="ts" x="465" y="344" text-anchor="middle" dominant-baseline="central">Name = "Intersection: A / B"</text>
-    <text class="ts" x="465" y="362" text-anchor="middle" dominant-baseline="central">Description: station equivalence text</text>
-  </g>
-
-  <line x1="465" y1="380" x2="465" y2="422" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
-  <text class="lbl" x="473" y="404">RelatingGroup</text>
-
-  <g class="c-gray">
-    <rect x="355" y="424" width="220" height="50" rx="8" stroke-width="0.5"/>
-    <text class="th" x="465" y="440" text-anchor="middle" dominant-baseline="central">IfcRelAssignsToGroup</text>
-    <text class="ts" x="465" y="458" text-anchor="middle" dominant-baseline="central">RelatedObjects (2)</text>
-  </g>
-
-  <!-- fan-out arrows: IfcRelAssignsToGroup → the two referents -->
-  <line x1="355" y1="449" x2="280" y2="343" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
-  <text class="lbl" x="300" y="418">RelatedObjects</text>
-  <line x1="575" y1="449" x2="650" y2="343" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
-  <text class="lbl" x="630" y="418" text-anchor="end">RelatedObjects</text>
+  <!-- ── Center note: no relationship connects the two graphs ── -->
+  <rect x="345" y="326" width="240" height="54" rx="8" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="4 3"/>
+  <text class="lbl" x="465" y="346" text-anchor="middle" fill="#999">Nothing links these two graphs —</text>
+  <text class="lbl" x="465" y="360" text-anchor="middle" fill="#999">no shared referent, no IfcRelPositions</text>
+  <text class="lbl" x="465" y="374" text-anchor="middle" fill="#999">between them</text>
 
   <!-- ── Footer note ── -->
   <text class="hint" x="465" y="504" text-anchor="middle">Each INTERSECTION referent is related to exactly one alignment by its own IfcRelPositions, per ISO 19148 §6.2.12.1.</text>
-  <text class="hint" x="465" y="520" text-anchor="middle">The IfcGroup / IfcRelAssignsToGroup cluster is a project convention for recording the correlation — not a formal positioning relationship.</text>
+  <text class="hint" x="465" y="520" text-anchor="middle">The crossing itself — as a fact about the two facilities — is recorded independently by IfcRelInterferesElements. See Figure 9.5.2-1.</text>
 </svg>

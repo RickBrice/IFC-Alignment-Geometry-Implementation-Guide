@@ -1,0 +1,117 @@
+<svg width="1000" viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Entity relationship diagram: IfcRelInterferesElements recording that two IfcRoad facilities cross, independent of the IfcAlignment instances each lays out</title>
+  <desc>Left: an IfcRoad "Washington Street" is RelatingStructure of an IfcRelReferencedInSpatialStructure whose RelatedElements includes an IfcAlignment "Washington Street" — the alignment remains aggregated under IfcProject and is only referenced by the road, not decomposed into it. Right: an IfcRoad "First Avenue" is RelatingStructure of a separate IfcRelReferencedInSpatialStructure whose RelatedElements includes the IfcAlignment "First Avenue". Center: a single IfcRelInterferesElements has RelatingElement = the Washington Street IfcRoad and RelatedElement = the First Avenue IfcRoad, with InterferenceType = "Crosses" and ImpliedOrder = FALSE. The interference relates the two IfcRoad facilities directly; it does not reference either IfcAlignment or either INTERSECTION referent from Figure 9.5-1, because IfcRelInterferesElements.RelatingElement/RelatedElement are typed IfcInterferenceSelect, which accepts only IfcElement or IfcSpatialElement — IfcAlignment is a subtype of IfcPositioningElement and is not eligible. Aggregating IfcAlignment under IfcRoad via IfcRelAggregates would also fail the bSI Validation Service's SPS002 (Correct spatial breakdown) rule.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: sans-serif; fill: #1a1a1a; }
+      .th  { font-size: 14px; font-weight: 500; }
+      .ts  { font-size: 12px; font-weight: 400; }
+      .lbl { font-size: 11px; font-weight: 400; fill: #777; }
+      .hint { font-size: 11px; fill: #aaa; }
+
+      .c-purple rect { fill: #EEEDFE; stroke: #534AB7; }
+      .c-purple .th  { fill: #3C3489; }
+      .c-purple .ts  { fill: #534AB7; }
+
+      .c-gray rect   { fill: #F1EFE8; stroke: #5F5E5A; }
+      .c-gray .th    { fill: #2C2C2A; }
+      .c-gray .ts    { fill: #5F5E5A; }
+    </style>
+  </defs>
+
+  <!-- ── Legend ── -->
+  <rect x="20" y="16" width="210" height="56" rx="6" fill="none" stroke="#ccc" stroke-width="0.5"/>
+  <text class="lbl" x="125" y="34" text-anchor="middle" fill="#555">Legend</text>
+  <rect x="32" y="42" width="12" height="11" rx="2" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text class="lbl" x="50" y="51">Spatial / positioning element</text>
+  <rect x="32" y="58" width="12" height="11" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+  <text class="lbl" x="50" y="67">Relationship</text>
+
+  <!-- ── Column headers ── -->
+  <text class="th" x="170" y="98" text-anchor="middle" fill="#3C3489">Washington Street</text>
+  <text class="th" x="760" y="98" text-anchor="middle" fill="#3C3489">First Avenue</text>
+
+  <!-- ── IfcRoad (left) ── -->
+  <g class="c-purple">
+    <rect x="60" y="110" width="220" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="170" y="132" text-anchor="middle" dominant-baseline="central">IfcRoad</text>
+    <text class="ts" x="170" y="150" text-anchor="middle" dominant-baseline="central">facility</text>
+  </g>
+
+  <!-- ── IfcRoad (right) ── -->
+  <g class="c-purple">
+    <rect x="720" y="110" width="220" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="830" y="132" text-anchor="middle" dominant-baseline="central">IfcRoad</text>
+    <text class="ts" x="830" y="150" text-anchor="middle" dominant-baseline="central">facility</text>
+  </g>
+
+  <!-- ── IfcRelInterferesElements (center) ── -->
+  <g class="c-gray">
+    <rect x="335" y="99" width="290" height="86" rx="8" stroke-width="0.5"/>
+    <text class="th" x="480" y="121" text-anchor="middle" dominant-baseline="central">IfcRelInterferesElements</text>
+    <text class="ts" x="480" y="141" text-anchor="middle" dominant-baseline="central">InterferenceType = "Crosses"</text>
+    <text class="ts" x="480" y="159" text-anchor="middle" dominant-baseline="central">ImpliedOrder = FALSE</text>
+  </g>
+
+  <!-- arrows: IfcRoad → IfcRelInterferesElements -->
+  <line x1="280" y1="138" x2="333" y2="130" stroke="#534AB7" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="300" y="122" text-anchor="middle">RelatingElement</text>
+  <line x1="720" y1="138" x2="627" y2="130" stroke="#534AB7" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="660" y="122" text-anchor="middle">RelatedElement</text>
+
+  <!-- arrows: IfcRoad → IfcRelReferencedInSpatialStructure -->
+  <line x1="170" y1="166" x2="170" y2="208" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="178" y="190">RelatingStructure</text>
+  <line x1="830" y1="166" x2="830" y2="208" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="838" y="190">RelatingStructure</text>
+
+  <!-- ── IfcRelReferencedInSpatialStructure (left) ── -->
+  <g class="c-gray">
+    <rect x="60" y="210" width="220" height="44" rx="8" stroke-width="0.5"/>
+    <text x="170" y="226" text-anchor="middle" dominant-baseline="central" font-size="11px" font-weight="500">IfcRelReferencedInSpatialStructure</text>
+    <text class="ts" x="170" y="242" text-anchor="middle" dominant-baseline="central">alignment reference, not aggregation</text>
+  </g>
+
+  <!-- ── IfcRelReferencedInSpatialStructure (right) ── -->
+  <g class="c-gray">
+    <rect x="720" y="210" width="220" height="44" rx="8" stroke-width="0.5"/>
+    <text x="830" y="226" text-anchor="middle" dominant-baseline="central" font-size="11px" font-weight="500">IfcRelReferencedInSpatialStructure</text>
+    <text class="ts" x="830" y="242" text-anchor="middle" dominant-baseline="central">alignment reference, not aggregation</text>
+  </g>
+
+  <!-- arrows: IfcRelReferencedInSpatialStructure → IfcAlignment -->
+  <line x1="170" y1="254" x2="170" y2="296" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="178" y="278">RelatedElements</text>
+  <line x1="830" y1="254" x2="830" y2="296" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
+  <text class="lbl" x="838" y="278">RelatedElements</text>
+
+  <!-- ── IfcAlignment (left) ── -->
+  <g class="c-purple">
+    <rect x="60" y="298" width="220" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="170" y="318" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+    <text class="ts" x="170" y="336" text-anchor="middle" dominant-baseline="central">horizontal / vertical layout</text>
+  </g>
+
+  <!-- ── IfcAlignment (right) ── -->
+  <g class="c-purple">
+    <rect x="720" y="298" width="220" height="56" rx="8" stroke-width="0.5"/>
+    <text class="th" x="830" y="318" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
+    <text class="ts" x="830" y="336" text-anchor="middle" dominant-baseline="central">horizontal / vertical layout</text>
+  </g>
+
+  <!-- ── Center note: alignments are outside the interference relationship ── -->
+  <rect x="365" y="298" width="230" height="56" rx="8" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="4 3"/>
+  <text class="lbl" x="480" y="318" text-anchor="middle" fill="#999">Not a party here — IfcAlignment is</text>
+  <text class="lbl" x="480" y="332" text-anchor="middle" fill="#999">IfcPositioningElement, not IfcElement</text>
+  <text class="lbl" x="480" y="346" text-anchor="middle" fill="#999">or IfcSpatialElement</text>
+
+  <!-- ── Footer note ── -->
+  <text class="hint" x="480" y="392" text-anchor="middle">IfcRelInterferesElements relates the two IfcRoad facilities directly — it does not reference either IfcAlignment.</text>
+  <text class="hint" x="480" y="408" text-anchor="middle">It is independent of, and never references, the two INTERSECTION referents shown in Figure 9.5-1.</text>
+  <text class="hint" x="480" y="424" text-anchor="middle">InterferenceType is a free-text IfcIdentifier, not a restricted enumeration — "Crosses" is a project convention.</text>
+  <text class="hint" x="480" y="440" text-anchor="middle">IfcAlignment stays aggregated under IfcProject — aggregating it under IfcRoad instead fails bSI Validation Service rule SPS002.</text>
+</svg>
