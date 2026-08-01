@@ -41,7 +41,7 @@ def add_superelevation(file, name, alignment, station, start_station, side, slop
         "TransitionSuperelevation": ["LINEAR"]
     })
 
-    nest = ifcopenshell.api.alignment.get_referent_nest(file, alignment)
+    nest = ifcopenshell.api.alignment.get_stationing_nest(file, alignment)
     nest.RelatedObjects += (referent,)
     return referent
 
@@ -53,6 +53,8 @@ def make_angle(slope):
 
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
+file.header.file_description.description = ("ViewDefinition [Alignment-basedView]",)
+
 project = file.createIfcProject(GlobalId=ifcopenshell.guid.new(), Name="Superelevation Example")
 site = file.createIfcSite(GlobalId=ifcopenshell.guid.new(), Name="Site")
 
