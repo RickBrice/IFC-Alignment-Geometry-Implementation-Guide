@@ -85,6 +85,7 @@
 **gap, station undefined** — 9.2.5, 9.2.6  
 **geometric representation** — 1.5, 2.1  
 **grade** — 3.3, Notation  
+**grade-separated crossing** — 9.5.2  
 **guide curve** — 10.2, 10.3, 10.5
 
 ## H
@@ -108,10 +109,12 @@
 &emsp;horizontal — 2.4, 2.4.1  
 &emsp;vertical — 3.4, 3.4.1  
 **`IfcCompositeCurve`** — 1.5, 1.5.1, 2.1  
+**`IfcConnectionPointEccentricity`** — 9.5.2  
+**`IfcConnectionPointGeometry`** — 9.5.2  
 **`IfcCurveSegment`** — 1.5, 1.5.2  
 **`IfcGradientCurve`** — 1.5.1, 3.7, 8.3.3  
-**`IfcGroup`** — 9.5  
 **`IfcIndexedPolyCurve`** — 6.1  
+**`IfcInterferenceSelect`** — 9.5.2  
 **`IfcLine`**  
 &emsp;horizontal — 2.3, 2.3.1  
 &emsp;vertical — 3.3, 3.3.1  
@@ -120,10 +123,13 @@
 **`IfcPointByDistanceExpression`** — 5.0, 8.2  
 **`IfcPolyline`** — 6.1  
 **`IfcPolynomialCurve`** — 2.6, 2.7, 2.8, 2.9, 2.10, 2.11  
-**`IfcReferent`** — 9.1, 9.3, 9.4, 9.5  
-**`IfcRelAssignsToGroup`** — 9.5  
-**`IfcRelNests`** — 9.3.1, 9.3.2  
+**`IfcRailway`** — 9.5.2  
+**`IfcReferent`** — 9.1, 9.3, 9.3.4, 9.4, 9.5  
+**`IfcRelInterferesElements`** — 9.5.2  
+**`IfcRelNests`** — 9.3.1, 9.3.2, 9.3.4  
 **`IfcRelPositions`** — 9.4.2, 9.4.3, 9.5  
+**`IfcRelReferencedInSpatialStructure`** — 9.5.2  
+**`IfcRoad`** — 9.5.2  
 **`IfcSectionedSolidHorizontal`** — 10.4, 10.4.1, 10.6.2  
 **`IfcSectionedSurface`** — 10.3, 10.3.1, 10.3.2, 10.6.1  
 **`IfcSegmentedReferenceCurve`** — 1.5.1, 4.0, 4.2  
@@ -134,10 +140,18 @@
 &emsp;linear placement — 8.7  
 &emsp;referents and stationing — 9.6  
 **implementation questions** — 7.2  
+**`ImpliedOrder`** — 9.5.2  
 **infinite radius** — A.3.6  
-**`INTERSECTION` referent** — 9.5  
+**`InterferenceType`** — 9.5.2  
+**`INTERSECTION` referent** — 9.5, 9.5.1  
 **interpolation, offset values** — 5.3  
-**ISO 19148** — 8.6, 9.5
+**ISO 19148** — 8.6, 9.5.1
+
+## K
+
+**key-point referent** — 9.3.4  
+&emsp;horizontal (P.O.B., P.C., P.T., P.O.E.) — 9.3.4.1  
+&emsp;vertical (V.P.O.B., P.V.C., P.V.T., V.P.O.E.) — 9.3.4.1
 
 ## L
 
@@ -187,13 +201,13 @@
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5.7  
 **`Pset_LinearReferencingMethod`** — 8.6.2, 8.6.3, 8.6.4  
-**`Pset_Stationing`** — 9.3.1  
-**PVI (point of vertical intersection)** — A.4.2
+**`Pset_Stationing`** — 9.3.1, 9.3.4  
+**PVI (point of vertical intersection)** — 9.3.4, A.4.2
 
 ## R
 
 **radius sign convention** — 2.1, A.3.5  
-**real-world alignments (testset)** — 12.3.4  
+**real-world alignments (testset)** — 9.3.4.1, 12.3.4  
 **reference coordinates** — 12.2.4, 12.4  
 **referent ordering** — 9.3.1  
 **referent placement (`ObjectPlacement`)** — 9.3.3  

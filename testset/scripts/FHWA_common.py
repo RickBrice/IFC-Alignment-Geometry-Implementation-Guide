@@ -129,3 +129,8 @@ def build_eline_layout(ifc, alignment):
     ifcopenshell.api.alignment.create_representation(ifc, alignment)
     gradient_curve = ifcopenshell.api.alignment.get_curve(alignment)
     ifcopenshell.api.alignment.update_end_point(ifc, gradient_curve)
+
+    # Key-point referents (P.O.B./P.C./P.T./P.O.E., V.P.O.B./P.V.C./P.V.T./V.P.O.E.), one
+    # IfcRelNests per discipline nested to its own layout -- see Guide Section 9.3.4.
+    ifcopenshell.api.alignment.update_key_point_referents(ifc, hlayout)
+    ifcopenshell.api.alignment.update_key_point_referents(ifc, vlayout)

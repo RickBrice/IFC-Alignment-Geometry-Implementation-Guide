@@ -12,3 +12,4 @@
 | 15 Jul 2026 | §10.5.4 expanded to cover cross-section/string-line redundancy. | R. Brice |
 | 17 Jul 2026 | Chapter 10 expanded to cover an additional guide-curve rooting and tag scoping technique, with examples and figures updated to match. | R. Brice |
 | 31 Jul 2026 | Chapter 10 §10.5 restructured around bSI-InfraRoom/IFC-Specification#118 (the guide-curve mechanism's origin issue) | R. Brice |
+| 1 Aug 2026 | Added §9.3.4 (Key-Point Referents) and §9.5.2 (IfcRelInterfersElements) | R. Brice |

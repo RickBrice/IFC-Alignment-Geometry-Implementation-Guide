@@ -102,7 +102,9 @@
       "Bash(git commit *)",
       "Bash(python -c \"import ifcopenshell; print\\(ifcopenshell.version\\)\")",
       "Bash(python -c \"import ifcopenshell.api.spatial as s; import inspect; print\\(inspect.getsource\\(s.reference_structure\\)\\)\")",
-      "Bash(python -c \"import ifcopenshell.api.aggregate as a; import inspect; print\\(inspect.getsource\\(a.assign_object\\)\\)\")"
+      "Bash(python -c \"import ifcopenshell.api.aggregate as a; import inspect; print\\(inspect.getsource\\(a.assign_object\\)\\)\")",
+      "Bash(python -c \"import xml.dom.minidom as m; m.parse\\('d:/IFC-Alignment-Geometry-Implementation-Guide/images/Figure_9.3.4-1_KeyPointReferent_Nesting.svg'\\); print\\('OK'\\)\")",
+      "Bash(grep -n \"^#\\\\{2,4\\\\} \" 9_Referents_and_Stationing.md)"
     ]
   }
 }
