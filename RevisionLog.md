@@ -13,3 +13,5 @@
 | 17 Jul 2026 | Chapter 10 expanded to cover an additional guide-curve rooting and tag scoping technique, with examples and figures updated to match. | R. Brice |
 | 31 Jul 2026 | Chapter 10 §10.5 restructured around bSI-InfraRoom/IFC-Specification#118 (the guide-curve mechanism's origin issue) | R. Brice |
 | 1 Aug 2026 | Added §9.3.4 (Key-Point Referents) and §9.5.2 (IfcRelInterfersElements) | R. Brice |
+| 5 Aug 2026 | §9.3.4 corrected: key-point referents nest to `IfcAlignment` (Concept Template 4.1.4.4.3 Object Nesting) | R. Brice |
+

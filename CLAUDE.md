@@ -91,7 +91,7 @@ Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own 
 Several figures illustrate IFC entity relationships (which entity references which, via which attribute or relationship class) rather than geometry. These are **hand-authored raw SVG** — there is no generator script or diagramming tool involved; new ones are built by copying the structure of an existing one and editing it directly.
 
 Canonical examples to copy from:
-- `images/Figure_9.4.2-1_Referent_Entity_Relationship.svg` — best source for the shared `<defs>` block (arrow marker, text classes, color classes) and the legend box pattern.
+- `images/Figure_9.4.1-1_Referent_Entity_Relationship.svg` — best source for the shared `<defs>` block (arrow marker, text classes, color classes) and the legend box pattern.
 - `images/Figure_9.3.2-1_Alignment_RelNests_ERD.svg` — best source for the "spine + branches" idiom (one entity fanning out to several related entities via a single trunk line).
 
 Shared conventions across all ERD figures:

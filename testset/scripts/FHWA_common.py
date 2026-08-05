@@ -17,6 +17,7 @@ import ifcopenshell.api.context
 import ifcopenshell.api.root
 import ifcopenshell.api.spatial
 import ifcopenshell.api.unit
+import ifcopenshell.guid
 import ifcopenshell.util.unit
 
 ALIGNMENT_NAME = "E-Line"
@@ -131,6 +132,12 @@ def build_eline_layout(ifc, alignment):
     ifcopenshell.api.alignment.update_end_point(ifc, gradient_curve)
 
     # Key-point referents (P.O.B./P.C./P.T./P.O.E., V.P.O.B./P.V.C./P.V.T./V.P.O.E.), one
-    # IfcRelNests per discipline nested to its own layout -- see Guide Section 9.3.4.
-    ifcopenshell.api.alignment.update_key_point_referents(ifc, hlayout)
-    ifcopenshell.api.alignment.update_key_point_referents(ifc, vlayout)
+    # IfcRelNests per discipline, nested to IfcAlignment (not the layout) -- see Guide Section 9.3.4.
+    h_nest = ifc.createIfcRelNests(
+        GlobalId=ifcopenshell.guid.new(), RelatingObject=alignment, RelatedObjects=()
+    )
+    ifcopenshell.api.alignment.update_key_point_referents(ifc, hlayout, rel_nests=h_nest)
+    v_nest = ifc.createIfcRelNests(
+        GlobalId=ifcopenshell.guid.new(), RelatingObject=alignment, RelatedObjects=()
+    )
+    ifcopenshell.api.alignment.update_key_point_referents(ifc, vlayout, rel_nests=v_nest)

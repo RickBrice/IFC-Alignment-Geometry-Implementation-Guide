@@ -127,7 +127,7 @@
 **`IfcReferent`** — 9.1, 9.3, 9.3.4, 9.4, 9.5  
 **`IfcRelInterferesElements`** — 9.5.2  
 **`IfcRelNests`** — 9.3.1, 9.3.2, 9.3.4  
-**`IfcRelPositions`** — 9.4.2, 9.4.3, 9.5  
+**`IfcRelPositions`** — 9.4.1, 9.4.2, 9.5  
 **`IfcRelReferencedInSpatialStructure`** — 9.5.2  
 **`IfcRoad`** — 9.5.2  
 **`IfcSectionedSolidHorizontal`** — 10.4, 10.4.1, 10.6.2  
@@ -196,8 +196,8 @@
 **parent/child structure** — 7.1.1  
 **`PlacementRelTo`** — 8.1.2, 8.3.3  
 **precision** — 11.0  
-**Product Relative Positioning** — 9.4.2  
-**Product Span Positioning** — 9.4.3  
+**Product Relative Positioning** — 9.4.1  
+**Product Span Positioning** — 9.4.2  
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5.7  
 **`Pset_LinearReferencingMethod`** — 8.6.2, 8.6.3, 8.6.4  

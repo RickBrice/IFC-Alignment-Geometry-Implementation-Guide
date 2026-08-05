@@ -1,6 +1,6 @@
-<svg width="760" viewBox="0 0 760 640" xmlns="http://www.w3.org/2000/svg" role="img">
-  <title>Key-point referent nesting: IfcAlignmentHorizontal and IfcAlignmentVertical each nest their own POSITION referents via a separate IfcRelNests</title>
-  <desc>IfcAlignmentHorizontal is RelatingObject of an IfcRelNests nesting its own key-point IfcReferent instances (PredefinedType POSITION, e.g. P.O.B., P.C., P.T., P.O.E.), each carrying Pset_Stationing. IfcAlignmentVertical has an independent, parallel IfcRelNests nesting its own key-point referents (e.g. V.P.O.B., P.V.C., P.V.T., V.P.O.E.). A muted note indicates that nesting to IfcAlignment instead, or combining both disciplines into one nest, is schema-legal but not the recommended pattern.</desc>
+<svg width="760" viewBox="0 0 760 560" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Key-point referent nesting: IfcAlignment nests horizontal and vertical POSITION referents via two separate IfcRelNests</title>
+  <desc>IfcAlignment is RelatingObject of two independent IfcRelNests instances: one nesting the horizontal layout's key-point IfcReferent instances (PredefinedType POSITION, e.g. P.O.B., P.C., P.T., P.O.E.), each carrying Pset_Stationing, and one nesting the vertical layout's key-point referents (e.g. V.P.O.B., P.V.C., P.V.T., V.P.O.E.).</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -32,16 +32,10 @@
     </style>
   </defs>
 
-  <!-- ── IfcAlignmentHorizontal (top left) ── -->
-  <g class="c-blue">
-    <rect x="40" y="30" width="230" height="44" rx="8" stroke-width="0.5"/>
-    <text class="th" x="155" y="52" text-anchor="middle" dominant-baseline="central">IfcAlignmentHorizontal</text>
-  </g>
-
-  <!-- ── IfcAlignmentVertical (top right) ── -->
-  <g class="c-blue">
-    <rect x="490" y="30" width="230" height="44" rx="8" stroke-width="0.5"/>
-    <text class="th" x="605" y="52" text-anchor="middle" dominant-baseline="central">IfcAlignmentVertical</text>
+  <!-- ── IfcAlignment (top center) ── -->
+  <g class="c-purple">
+    <rect x="280" y="30" width="200" height="44" rx="8" stroke-width="0.5"/>
+    <text class="th" x="380" y="52" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
   </g>
 
   <!-- ── IfcRelNests (left, horizontal key points) ── -->
@@ -58,13 +52,13 @@
     <text class="ts" x="605" y="174" text-anchor="middle" dominant-baseline="central">vertical key points</text>
   </g>
 
-  <!-- arrow: IfcAlignmentHorizontal → IfcRelNests (left) -->
-  <line x1="155" y1="74" x2="155" y2="138" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
-  <text class="ts muted" x="163" y="106">RelatingObject</text>
+  <!-- arrow: IfcAlignment → IfcRelNests (left) -->
+  <path d="M330 74 L180 138" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="ts muted" x="225" y="100" text-anchor="end">RelatingObject</text>
 
-  <!-- arrow: IfcAlignmentVertical → IfcRelNests (right) -->
-  <line x1="605" y1="74" x2="605" y2="138" stroke="#888" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
-  <text class="ts muted" x="613" y="106">RelatingObject</text>
+  <!-- arrow: IfcAlignment → IfcRelNests (right) -->
+  <path d="M430 74 L580 138" fill="none" stroke="#888" stroke-width="1" marker-end="url(#arrow)"/>
+  <text class="ts muted" x="535" y="100" text-anchor="start">RelatingObject</text>
 
   <!-- ── IfcReferent (left, horizontal) ── -->
   <g class="c-teal">
@@ -108,16 +102,7 @@
   <line x1="605" y1="312" x2="605" y2="398" stroke="#0F6E56" stroke-width="1" marker-end="url(#arrow)" fill="none"/>
   <text class="ts muted" x="613" y="360">HasProperties</text>
 
-  <!-- ── Alternative-pattern note (muted, not fully diagrammed) ── -->
-  <g class="c-purple">
-    <rect x="270" y="500" width="220" height="44" rx="8" stroke-width="0.5" stroke-dasharray="4 3"/>
-    <text class="th" x="380" y="516" text-anchor="middle" dominant-baseline="central">IfcAlignment</text>
-    <text class="ts" x="380" y="534" text-anchor="middle" dominant-baseline="central">(alternative RelatingObject)</text>
-  </g>
-  <path d="M270 515 L160 190" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
-  <path d="M490 515 L610 190" fill="none" stroke="#aaa" stroke-width="1" stroke-dasharray="3 3"/>
-
   <!-- ── Footer note ── -->
-  <text class="ts hint" x="380" y="580" text-anchor="middle">Recommended: nest each discipline's key-point referents to its own layout, not to IfcAlignment.</text>
-  <text class="ts hint" x="380" y="600" text-anchor="middle">Nesting to IfcAlignment instead (dashed) is schema-legal; combining both disciplines into one nest is also legal but discouraged (§9.3.4).</text>
+  <text class="ts hint" x="380" y="505" text-anchor="middle">Concept Template 4.1.4.4.3 Object Nesting lists IfcAlignment as RelatingObject for IfcReferent —</text>
+  <text class="ts hint" x="380" y="525" text-anchor="middle">both key-point nests attach here, one per discipline, independent of the segment and stationing nests.</text>
 </svg>
