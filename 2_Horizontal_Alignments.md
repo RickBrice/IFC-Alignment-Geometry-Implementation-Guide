@@ -116,7 +116,7 @@ Mapping of the semantic definition of the linear segment to the
 geometric definition is described with the following example.
 
 Given a horizontal alignment segment is a line segment starting at point
-(500,2500), bearing in the direction S 57 E (5.70829654085293 radian) and has a length of 1956.785654. 
+(500,2500), bearing in the direction S 57° E (5.70829654085293 radian) and has a length of 1956.785654. 
 
 ![Figure 2.3.2-1 — Plan-view engineering drawing of a straight tangent segment from P₁ (500, 2500) to P₂ (2140, 1435) bearing S 57° E, with a north arrow at P₁ and a dimension line annotating the total length L = 1956.786 m.](images/Figure_2.3.2-1_Tangent_Segment.svg)
 

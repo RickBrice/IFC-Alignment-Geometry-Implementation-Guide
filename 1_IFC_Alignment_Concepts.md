@@ -6,14 +6,13 @@ IFC4x3 ADD2, published as ISO 16739-1:2024 [1], is the current IFC standard and 
 
 If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673) [2], Chapters 1 - 5 and Appendix B. 
 
-The IFC specification identifies concept templates as the mechanism for
-mapping semantic alignment representations to their geometric
-counterparts. The concept templates — covering aggregation to
-project, alignment layout nesting, and the four alignment geometry
-variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
+This guide assumes the reader has a basic working knowledge of IFC and is familar with the specifications including the fundamental concepts and assumptions.
+
+The IFC specification provides concept templates for mapping semantic alignment representations to their geometric counterparts. The concept templates — covering aggregation to project, alignment layout nesting, and the four alignment geometry variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
 provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The *partial* concept templates that
-cover individual curve segment geometry types, however, are sparse: they show class relationships but provide no
-mathematical equations or parameter mappings. This guide fills that gap. Its coverage extends beyond curve geometry to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Chapters 2–4); offset curves (Chapter 5); approximate polyline representations (Chapter 6); alignments that share a common horizontal layout (Chapter 7); linear placement of objects along an alignment (Chapter 8); referents and stationing, including station equations (Chapter 9); alignment-based physical geometry — sectioned surfaces and solids (Chapter 10); precision and tolerance guidance (Chapter 11); examples and validation data (Chapter 12); and references (Chapter 13). LandXML-to-IFC conversion is covered in [Appendix A](Appendix_A_LandXML.md). This guide assumes the reader has a basic working knowledge of IFC — familiarity with the schema structure, entity relationships, and how IFC files are organized.
+cover individual curve segment geometry types, however, are sparse: they show class relationships but do not provide mathematical equations or parameter mappings. 
+
+This guide aims to encompass the full scope of IFC alignment implementation: the parametric equations for horizontal, vertical, and cant curve segments (Chapters 2–4); offset curves (Chapter 5); approximate polyline representations (Chapter 6); alignments that share a common horizontal layout (Chapter 7); linear placement of objects along an alignment (Chapter 8); referents and stationing, including station equations (Chapter 9); alignment-based physical geometry — sectioned surfaces and solids (Chapter 10); precision and tolerance guidance (Chapter 11); examples and validation data (Chapter 12); and references (Chapter 13). LandXML-to-IFC conversion is covered in [Appendix A](Appendix_A_LandXML.md). 
 
 ## 1.1 Horizontal Alignment
 
@@ -29,7 +28,7 @@ curve, are typically denoted with *stations* (also called *chainage* in British 
 ## 1.2 Vertical Alignment
 
 A vertical alignment (often referred to as the vertical profile by civil engineers) consists of straight sections of **grade lines** connected by **vertical curves**. The vertical curves are typically
-parabolas, though sometimes circular arcs or clothoid curves are used. A
+parabolas for roadway and circular arcs or clothoid curves for rail. A
 vertical alignment is defined along the curvilinear path of a horizontal
 alignment in a 2D "Distance Along Horizontal Alignment, Elevation" coordinate system. Combined,
 the horizontal and vertical alignments define a 3D curve. This
@@ -42,9 +41,9 @@ based on management priorities, design era, and available software tools.
 
 When a rail vehicle traverses a horizontal curve, centrifugal force acts laterally on passengers and cargo. Tilting the track cross-section — raising the outer (high) rail above the inner (low) rail — converts part of that lateral force into a downward component, improving ride comfort and permitting higher operating speeds through curves. This tilt is called **cant** (or *superelevation*).
 
-Cant is measured as the height difference (deviating elevation) between the two rail heads, perpendicular to the track. The low (inner-curve) rail is the conventional pivot for rotation; the high (outer-curve) rail rises by the cant amount.
+Cant is measured as the height difference (deviating elevation) between the two rail heads, perpendicular to the track. The low (inner-curve) rail is the conventional pivot point for rotation; the high (outer-curve) rail rises by the cant amount.
 
-A cant alignment is structured similarly to the horizontal and vertical alignments: **constant-cant zones** — corresponding to the circular arc sections of the horizontal alignment, where cant is held at a fixed value — are connected by **cant transitions** that ramp over the length of the horizontal transition spiral. Transitions may be linear or may follow the same non-linear curve families used for horizontal spirals.
+A cant alignment is structured similarly to the horizontal and vertical alignments: **constant-cant zones** — corresponding to the tangent and circular arc sections of the horizontal alignment, where cant is held at a fixed value — are connected by **cant transitions** that ramp over the length of the horizontal transition spiral. Transitions may be linear or may follow the same non-linear curve families used for horizontal spirals.
 
 Like the vertical alignment, the cant alignment is defined in a two-dimensional profile: distance along the horizontal alignment on one axis, cant value on the other. The cant profile encodes not only a deviating elevation but also the cross slope of the rail head, fully defining the rotated cross-section. This profile is then layered onto the combined horizontal and vertical alignment to produce a full 3D alignment curve incorporating cross-sectional banking.
 
@@ -69,6 +68,8 @@ has not yet been computed.
 
 An `IfcAlignment` may be defined with a horizontal layout only, a horizontal and vertical layout, or a full horizontal, vertical, and cant layout. Each layout type is composed through an `IfcRelNests` relationship: `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant` are nested within the `IfcAlignment` as applicable. Each layout is in turn composed of one or more `IfcAlignmentSegment` entities, also through `IfcRelNests`. The `IfcAlignmentSegment` models the segment design parameters in a subtype of `IfcAlignmentParameterSegment`: `IfcAlignmentHorizontalSegment`, `IfcAlignmentVerticalSegment`, or `IfcAlignmentCantSegment`, depending on the layout. The semantic definition model is shown in Figure 1.4-1.
 
+> NOTE: Multiple vertical and cant alignments can reuse the same horizontal alignment in more complex modelling scenarios. This is discussed in Chapter 7.
+
 ![Figure 1.4-1 — Entity-relationship diagram: IfcAlignment nests via IfcRelNests to IfcAlignmentHorizontal, IfcAlignmentVertical, and IfcAlignmentCant (cant highlighted in purple). Each layout contains IfcAlignmentSegment instances, which hold subtypes of the abstract IfcAlignmentParameterSegment (IfcAlignmentHorizontalSegment, IfcAlignmentVerticalSegment, IfcAlignmentCantSegment).](images/Figure_1.4-1_Semantic_Alignment_Model.svg)
 
 *Figure 1.4-1 Semantic alignment model*
@@ -91,13 +92,17 @@ in the IFC spatial structure. Every alignment must be aggregated to
 via an `IfcRelAggregates` relationship. An alignment not connected to
 the project is invalid.
 
-**Referencing to site.** Because an alignment typically traverses
-multiple administrative or physical sites, `IfcAlignment` associates
+**Referencing to site.** Alignments can traverse
+multiple administrative or physical sites. For this reason, `IfcAlignment` associates
 with `IfcSite` using `IfcRelReferencedInSpatialStructure` rather than
 `IfcRelContainedInSpatialStructure`. The referenced-in relationship is
 non-exclusive: a single alignment may be referenced by every `IfcSite`
 it crosses. This is the key distinction between *containment* (one
-element, one spatial zone) and *referencing* (one element, many zones).
+element, one spatial zone) and *referencing* (one element, many zones). Figure 1.4-2 shows multiple sites along an alignment. The central East-West alignment is contained in the spatial structure of the project and referenced into the spatial structure of all the sites it traverses.
+
+![](images/Figure_1.4-2.png)
+
+*Figure 1.4-2 Alignments spanning multiple sites*
 
 ## 1.5 Geometric Representation
 
@@ -184,6 +189,9 @@ geometric representation of the horizontal alignment.
 
 *Figure 1.5.2-2 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
 
+> NOTE: Angles start on the positive coordinate axis (X-axis for this example) and increase in counter-clockwise direction.
+
+
 A similar process is used to create the vertical alignment.
 `IfcCurveSegment` instances trim geometry from parent curves and combine end to start to
 create an `IfcGradientCurve`. `IfcGradientCurve` is a sub-type of
@@ -195,8 +203,8 @@ its base curve.
 
 `IfcSegmentedReferenceCurve` is also a sub-type of `IfcCompositeCurve`. It
 defines a deviating elevation and rail head cross slope along the base
-curve. The base curve is typically an `IfcGradientCurve`. The "distance along"
-coordinate is along the gradient curve's base curve, which is the horizontal alignment curve.
+curve. The base curve is an `IfcGradientCurve`. The "distance along"
+value is along the gradient curve's base curve, which is the horizontal alignment curve.
 
 #### 1.5.2.1 Curve segment geometry
 

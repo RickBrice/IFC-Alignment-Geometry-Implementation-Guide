@@ -83,7 +83,7 @@ The arc length of `IfcOffsetCurveByDistances` at any given location is obtained 
 
 The consequence is that a `DistanceAlong` value specified against an `IfcOffsetCurveByDistances` does not map to a unique, reproducible point across implementations. This is in direct contrast to `DistanceAlong` measured along an `IfcCompositeCurve` or `IfcGradientCurve`, where arc length is determined exactly by the curve equations.
 
-For precise linear placement, the recommended practice (discussed fully in [§8.6](8_LinearPlacement.md#86-linear-placement-along-ifcoffsetcurvebydistances)) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
+For precise linear placement, the recommended practice (discussed fully in [§8.5](8_LinearPlacement.md#85-linear-placement-along-ifcoffsetcurvebydistances)) is to reference the **parent alignment** as the `BasisCurve` in `IfcPointByDistanceExpression` and use `OffsetLateral` to account for the transverse distance — rather than placing objects directly along the offset curve. This avoids the arc-length approximation entirely and keeps placement reproducible across software implementations.
 
 ## 5.3 Interpolation of Offset Values
 

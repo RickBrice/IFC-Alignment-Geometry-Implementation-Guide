@@ -107,7 +107,10 @@
       "Bash(grep -n \"^#\\\\{2,4\\\\} \" 9_Referents_and_Stationing.md)",
       "Read(//f/IfcOpenShell/_deps/python.3.13.0/tools/Lib/site-packages/ifcopenshell/api/unit/**)",
       "Read(//f/IfcOpenShell/_deps/python.3.13.0/tools/Lib/site-packages/ifcopenshell/**)",
-      "Bash(echo \"EXIT:$?\")"
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(command -v soffice)",
+      "Bash(command -v libreoffice)",
+      "PowerShell(try { $word = New-Object -ComObject Word.Application; Write-Output \"Word COM available: $\\($word.Version\\)\"; $word.Quit\\(\\) } catch { Write-Output \"Word COM not available: $\\($_.Exception.Message\\)\" })"
     ]
   }
 }

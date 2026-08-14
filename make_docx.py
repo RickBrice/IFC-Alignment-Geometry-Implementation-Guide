@@ -48,7 +48,7 @@ INKSCAPE = Path("C:/Program Files/Inkscape/bin/inkscape.exe")
 
 CHAPTERS = [
     "Cover.md",
-    "Foreword.md",
+    "ExecutiveSummary.md",
     "RevisionLog.md",
     "TableOfContents.md",
     "Notation.md",
@@ -88,7 +88,7 @@ _TOC_FIELD = (
 
 
 # Section break injected before Chapter 1.
-# The w:sectPr ends the front matter section (Cover + Foreword + Notation)
+# The w:sectPr ends the front matter section (Cover + Executive Summary + Notation)
 # and sets its page number format to lowercase Roman (i, ii, iii…).
 # The document-level sectPr (configured in add_page_numbers) governs
 # Chapter 1 onwards with Arabic numbering restarting at 1.
@@ -253,7 +253,7 @@ def set_document_metadata(docx_path: Path, title: str, subject: str) -> None:
 def add_page_numbers(docx_path: Path, revision_date: str = "") -> None:
     """Add a revision-date label and page numbers to the footer:
     - Cover (first page of first section): suppressed.
-    - Foreword through Notation: lowercase Roman numerals (i, ii, iii…).
+    - Executive Summary through Notation: lowercase Roman numerals (i, ii, iii…).
     - Chapter 1 onwards: Arabic numerals restarting at 1.
     """
     if not _DOCX_AVAILABLE:
@@ -347,7 +347,7 @@ def main() -> None:
 
         # Front/back matter headings use non-Heading-1 styles so the TOC field
         # (which collects Heading 1 only) excludes them automatically.
-        FRONTMATTER = {"Foreword.md", "RevisionLog.md", "Notation.md"}   # → Frontmatter Heading style
+        FRONTMATTER = {"ExecutiveSummary.md", "RevisionLog.md", "Notation.md"}   # → Frontmatter Heading style
         BACKMATTER  = {"Index.md"}                      # → Title style
 
         # Replace TableOfContents.md static list with a live Word TOC field.

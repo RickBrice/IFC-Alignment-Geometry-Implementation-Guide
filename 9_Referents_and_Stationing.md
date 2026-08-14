@@ -4,7 +4,7 @@
 
 Chapter 8 established that `IfcPointByDistanceExpression.DistanceAlong` is a **geometric distance** — a raw arc-length measure from the start of a curve. But civil engineering practice does not communicate location this way. Engineers say “Pier 3 is at Station 14+235.75,” not “Pier 3 is 14,235.75 feet from the start of the survey baseline.” The station label is a human-readable, project-specific identifier that may begin at an arbitrary value, may use different units than the project, and may not even progress continuously along the alignment.
 
-`IfcReferent` is the IFC mechanism that bridges these two worlds. It is a positioned object that attaches semantic location information — most importantly, stationing — to a specific geometric point on an alignment. It does not change the geometry; it annotates it.
+`IfcReferent` is the IFC mechanism that bridges these two worlds. It is a positioned object that attaches 1D semantic location information — most importantly, stationing — to a specific geometric point on an alignment. It does not change the geometry; it annotates it.
 
 `IfcReferent` plays two distinct roles, and this chapter is organized around them:
 
@@ -13,6 +13,7 @@ Chapter 8 established that `IfcPointByDistanceExpression.DistanceAlong` is a **g
 - The **geometric role** — how a referent is attached to its own alignment: `Pset_Stationing`, `IfcRelNests`, and the nesting/placement edge cases that follow directly from that mechanism (the mixed-nesting problem, `ObjectPlacement` for semantic-only alignments, key-point referents marking a layout's own segment transitions, and — per ISO 19148 — why an `INTERSECTION` referent is owned by one alignment rather than shared between two).
 - The **semantic role** — how a referent labels another product's position via `IfcRelPositions`, covering the single-point pattern (Product Relative Positioning) and the start/end-extent pattern (Product Span Positioning).
 - How the fact that two alignments physically cross — as opposed to the station label at that location — is recorded independently of any referent, using `IfcRelInterferesElements` between the facilities the alignments lay out.
+- ISO 19148 Linear Referencing: the underlying model of Linear Referencing Methods (LRM) that stationing, kilometer-posting, and similar conventions all instantiate, and how it relates to `DistanceAlong`.
 
 ## 9.1 What Is a Referent?
 
@@ -33,9 +34,9 @@ The single attribute `IfcReferent` adds beyond its supertypes is `PredefinedType
 
 ### 9.2.1 What Is a Station?
 
-Stationing (also called *chainage* in British practice) is a distance-based coordinate system used to identify locations along a linear route. In North American highway practice, stations are expressed in the form `ccc+dd.dd`, where the number before the `+` is the count of hundreds of feet (or hundreds of meters in metric projects) and the digits after are the remainder. For example, Sta. 142+35.75 means 14,235.75 feet (or meters) from the project datum.
+Stationing (also called *chainage* in British practice) is a distance-based coordinate system used to identify locations along a linear route. In North American highway practice, stations are expressed in the form `ccc+dd.dd`, where the number before the `+` is the count of hundreds of feet and the digits after are the remainder. For example, Sta. 142+35.75 means 14,235.75 feet from the alignment start station.
 
-The project datum — the zero point of stationing — is defined by the first `IfcReferent` nested in the alignment (see §9.3.1). Stationing typically begins at a round number such as 10+00 or 100+00 rather than 0+00, to avoid negative stations at points that may be surveyed upstream of the formal project start.
+The project datum — the zero point of stationing — is defined by the first `IfcReferent` nested in the alignment (see §9.3.1). Stationing often begins at a round number such as 10+00 or 100+00 rather than 0+00, to avoid negative stations at points that may be surveyed upstream of the formal project start.
 
 Stationing is a **display convention**, not a geometric quantity. The geometric position of a point is fully determined by `DistanceAlong` in `IfcPointByDistanceExpression`. The station label is metadata that identifies that point to engineers and field crews in human-readable terms.
 
@@ -63,7 +64,7 @@ A **gap equation** (also called a *station ahead* or *forward equation*) occurs 
 
 An **overlap equation** (also called a *station back* or *backward equation*) occurs when stationing jumps backward. The alignment geometry is continuous, but the station number decreases at the equation point.
 
-*Example:* Incoming station 78+42.10, outgoing station 76+00.00. There is an overlap of 242.10 ft. Two different geometric points — one upstream and one downstream of the equation — carry station labels between 76+00 and 78+42.
+*Example:* Incoming station 78+42.10, outgoing station 76+00.00. There is an overlap of 242.10 ft. Two different geometric points — one upstream and one downstream of the equation — carry station labels between 76+00 and 78+42. Software implementations may consider adding an indicator, such as a suffix, to the station label to indicate which stationing region the station label applies to.
 
 ![Figure 9.2.4-1 — Station overlap equation: incoming alignment arrives at Sta. 78+42.10, the equation point jumps backward to Sta. 76+00.00, with an OVERLAP annotation showing 242.10 ft of station range used twice. The outgoing alignment continues to the right with an arrow.](images/Figure_9.2.4-1_Overlap_Equation.svg)
 
@@ -278,7 +279,7 @@ An `IfcReferent` with `PredefinedType = INTERSECTION` marks the point where two 
 
 ### 9.5.1 Referent Ownership: One Referent Per Alignment
 
-In each case, the `IfcRelPositions` has that `IfcAlignment` as `RelatingPositioningElement` and the referent as `RelatedProducts` — the same alignment-link pattern used for the `POSITION` referent's second `IfcRelPositions` in §9.4.1 — and each referent carries its own `Pset_Stationing.Station` value in its owning alignment's stationing. This interpretation follows directly from ISO 19148 §6.2.12.1, which IFC's linear referencing model is built on (§8.6):
+In each case, the `IfcRelPositions` has that `IfcAlignment` as `RelatingPositioningElement` and the referent as `RelatedProducts` — the same alignment-link pattern used for the `POSITION` referent's second `IfcRelPositions` in §9.4.1 — and each referent carries its own `Pset_Stationing.Station` value in its owning alignment's stationing. This interpretation follows directly from ISO 19148 §6.2.12.1, which IFC's linear referencing model is built on (§9.6):
 
 > Referents are owned by a single feature. For example, the reference markers along Interstate 95 are owned by the feature that represents Interstate 95. The referent representing the intersection with First Avenue along Washington Street is owned by Washington Street if it is used to specify relative linearly referenced locations along Washington Street. The location of this referent is most likely specified with a position expression along Washington Street. A different referent can represent the intersection with Washington Street along First Avenue. This referent is owned by First Avenue and is used to specify relative linearly referenced locations along First Avenue.
 
@@ -330,7 +331,53 @@ Two example files demonstrate this pattern:
 
 **A note on `InterferenceGeometry` and the Alignment-based View MVD.** [`IfcConnectionGeometry`](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcConnectionGeometry.htm) is tagged as part of the Alignment-based View (AbV), but it is abstract, and none of its five concrete descendants — including `IfcConnectionPointGeometry` and `IfcConnectionPointEccentricity`, used above — carry that tag themselves, the same kind of AbV-tagging gap noted for Object Nesting in §9.3.4. The two example files were checked against the bSI Validation Service and were not flagged as non-conforming to AbV.
 
-## 9.6 Summary and Implementation Checklist
+## 9.6 ISO 19148 Linear Referencing
+
+### 9.6.1 Background
+
+ISO 19148 *Geographic information — Linear referencing* is the international standard that formalizes the concept of locating features along a linear element. IFC4x3's infrastructure extensions draw on ISO 19148 concepts, and `Pset_LinearReferencingMethod` (applicable to `IfcAlignment` and `IfcReferent`) is defined in terms of ISO 19148.
+
+Understanding the ISO 19148 model helps implementers correctly interpret `DistanceAlong` values, especially when data is exchanged between systems that use different linear referencing conventions.
+
+### 9.6.2 Key ISO 19148 Concepts
+
+**Linear Referencing Method (LRM).** An LRM defines the rules for measuring distance along a linear element. The most common types are:
+
+|LRM Type             |Description                                                  |Highway Example                   |
+|--------------------|--------------------------------------------------|------------------------------|
+|Absolute             |Distance measured continuously from a fixed start point.     |Route mileage from a state border.|
+|Relative             |Distance measured from a nominated referent (not the start). |“0.4 km past interchange 12.”     |
+|Interpolated Position|Location expressed as a fraction between two known referents.|Between mileposts 43 and 44.      |
+
+`Pset_LinearReferencingMethod` records the LRM type (`LRMType`), its name (`LRMName`), and the units of measure (`LRMUnit`) for an alignment or referent element.
+
+**Referents and Milestones vs. Stationing.** In European road practice, distance along a route is often expressed using *kilometer posts* (KP) or *reference posts* — physical markers at known locations. A KP system is a Relative or Reference Post LRM: distance is measured to the nearest upstream post, plus an offset. In North American highway practice, *stationing* is an Absolute LRM: every point on the alignment is assigned a cumulative distance from the project start, expressed as `ccc+dd.dd` (hundreds of feet) or in meters.
+
+The key difference:
+
+- **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`, per §9.3.1).
+- **KP / Reference Post (Relative LRM):** `DistanceAlong` in IFC is always the absolute geometric distance from the curve start. A KP value must be converted to a geometric distance before use in `IfcPointByDistanceExpression`.
+
+### 9.6.3 LRM Name Examples from ISO 19148 Annex C
+
+ISO 19148 Annex C lists recognized LRM name aliases. Common examples include:
+
+|Name           |Common Alias|Typical Region       |
+|-----------------------------------|-------------------------|----------------------------------------|
+|milepoint      |milepost, MP|USA, Canada          |
+|kilometer point|KP, PK      |Europe, Latin America|
+|chainage       |ch          |UK, Australia, India |
+|reference post |RP          |Rail, some roads     |
+
+`Pset_LinearReferencingMethod.LRMName` should use one of these recognized names where possible for maximum interoperability.
+
+### 9.6.4 Impact on DistanceAlong
+
+Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpression.DistanceAlong` is always the **geometric distance from the start of `BasisCurve`**. LRM labels (station values, KP values, etc.) are a display convention managed through `IfcReferent` and `Pset_LinearReferencingMethod`, not through `DistanceAlong` directly.
+
+See §9.2 (Stationing) and §9.3 (Attaching Referents to an Alignment) above for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
+
+## 9.7 Summary and Implementation Checklist
 
 |# |Item                                                                                                                                                      |Notes                                                                                   |
 |-----|-----------------------------------------------|------------------------------------------------|
@@ -355,3 +402,4 @@ Two example files demonstrate this pattern:
 |19|Key-point referents (P.C., P.T., and similar segment-transition markers) are optional. When used, give them `PredefinedType = POSITION` and relate them with `IfcRelNests`, one nest per applicable discipline, `RelatingObject = IfcAlignment` — not `IfcRelPositions`, and not `STATION`.|`POSITION` here does not mean the same relationship as the product-labeling `POSITION` referent of §9.4.1 — same enum value, different relationship. See §9.3.4.|
 |20|Don't be alarmed that Concept Template 4.1.4.4.3 (Object Nesting) isn't itself tagged Alignment-based View (AbV) — apply it anyway for stationing and key-point referents.|A gap in the MVD's tagging, not a reason to avoid the concept template; the same kind of gap noted for `IfcConnectionGeometry` in item 18. See §9.3.4.|
 |21|Treat the abbreviation text used in a key-point referent's `Name` as a display convention, not a schema enumeration.|The guide's worked example uses a typical North American convention; other jurisdictions/agencies may use different abbreviations or additional key-point types. See §9.3.4.|
+|22|Record the LRM type and units in `Pset_LinearReferencingMethod` on the `IfcAlignment`.|Required for correct interpretation of `IfcReferent` stationing labels; `DistanceAlong` itself is always a geometric distance regardless of the LRM in use. See §9.6.|

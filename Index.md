@@ -124,7 +124,7 @@
 **`IfcPolyline`** — 6.1  
 **`IfcPolynomialCurve`** — 2.6, 2.7, 2.8, 2.9, 2.10, 2.11  
 **`IfcRailway`** — 9.5.2  
-**`IfcReferent`** — 9.1, 9.3, 9.3.4, 9.4, 9.5  
+**`IfcReferent`** — 9.1, 9.3, 9.3.4, 9.4, 9.5, 9.6  
 **`IfcRelInterferesElements`** — 9.5.2  
 **`IfcRelNests`** — 9.3.1, 9.3.2, 9.3.4  
 **`IfcRelPositions`** — 9.4.1, 9.4.2, 9.5  
@@ -137,15 +137,15 @@
 &emsp;horizontal — 2.13  
 &emsp;vertical — 3.9  
 &emsp;cant — 4.13  
-&emsp;linear placement — 8.7  
-&emsp;referents and stationing — 9.6  
+&emsp;linear placement — 8.6  
+&emsp;referents and stationing — 9.7  
 **implementation questions** — 7.2  
 **`ImpliedOrder`** — 9.5.2  
 **infinite radius** — A.3.6  
 **`InterferenceType`** — 9.5.2  
 **`INTERSECTION` referent** — 9.5, 9.5.1  
 **interpolation, offset values** — 5.3  
-**ISO 19148** — 8.6, 9.5.1
+**ISO 19148** — 9.5.1, 9.6
 
 ## K
 
@@ -161,8 +161,8 @@
 &emsp;cant mapping — A.5  
 &emsp;stationing — A.6  
 **lane striping** — 5.0  
-**linear placement** — 8.0–8.7  
-**linear referencing** — 8.6  
+**linear placement** — 8.0–8.6  
+**linear referencing** — 9.6  
 **linear transition (cant)** — 4.4, 4.4.1–4.4.3  
 **live model management** — 7.3  
 
@@ -200,7 +200,7 @@
 **Product Span Positioning** — 9.4.2  
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5.7  
-**`Pset_LinearReferencingMethod`** — 8.6.2, 8.6.3, 8.6.4  
+**`Pset_LinearReferencingMethod`** — 9.6.2, 9.6.3, 9.6.4  
 **`Pset_Stationing`** — 9.3.1, 9.3.4  
 **PVI (point of vertical intersection)** — 9.3.4, A.4.2
 

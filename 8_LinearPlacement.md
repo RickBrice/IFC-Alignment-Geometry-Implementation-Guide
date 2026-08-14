@@ -12,7 +12,6 @@ This section covers:
 - The IFC class hierarchy: `IfcLinearPlacement`, `IfcAxis2PlacementLinear`, and `IfcPointByDistanceExpression`.
 - How the local coordinate system is constructed at a placement point.
 - Special cases: longitudinal offset for unreachable points, and placement along `IfcOffsetCurveByDistances`.
-- ISO 19148 Linear Referencing and how its concepts relate to IFC linear placement.
 
 ## 8.1 Linear Placement in Practice
 
@@ -250,53 +249,7 @@ For applications requiring precise linear placement:
 1. **If placement along an offset curve is unavoidable**, document the sampling density of the `IfcOffsetCurveByDistances` so that receivers can evaluate the precision of derived positions.
 1. **Do not rely on** `DistanceAlong` values along an `IfcOffsetCurveByDistances` being reproducible across different software implementations.
 
-## 8.6 ISO 19148 Linear Referencing
-
-### 8.6.1 Background
-
-ISO 19148 *Geographic information — Linear referencing* is the international standard that formalizes the concept of locating features along a linear element. IFC4x3’s infrastructure extensions draw on ISO 19148 concepts, and `Pset_LinearReferencingMethod` (applicable to `IfcAlignment` and `IfcReferent`) is defined in terms of ISO 19148.
-
-Understanding the ISO 19148 model helps implementers correctly interpret `DistanceAlong` values, especially when data is exchanged between systems that use different linear referencing conventions.
-
-### 8.6.2 Key ISO 19148 Concepts
-
-**Linear Referencing Method (LRM).** An LRM defines the rules for measuring distance along a linear element. The most common types are:
-
-|LRM Type             |Description                                                  |Highway Example                   |
-|--------------------|--------------------------------------------------|------------------------------|
-|Absolute             |Distance measured continuously from a fixed start point.     |Route mileage from a state border.|
-|Relative             |Distance measured from a nominated referent (not the start). |“0.4 km past interchange 12.”     |
-|Interpolated Position|Location expressed as a fraction between two known referents.|Between mileposts 43 and 44.      |
-
-`Pset_LinearReferencingMethod` records the LRM type (`LRMType`), its name (`LRMName`), and the units of measure (`LRMUnit`) for an alignment or referent element.
-
-**Referents and Milestones vs. Stationing.** In European road practice, distance along a route is often expressed using *kilometer posts* (KP) or *reference posts* — physical markers at known locations. A KP system is a Relative or Reference Post LRM: distance is measured to the nearest upstream post, plus an offset. In North American highway practice, *stationing* is an Absolute LRM: every point on the alignment is assigned a cumulative distance from the project start, expressed as `ccc+dd.dd` (hundreds of feet) or in meters.
-
-The key difference:
-
-- **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`).
-- **KP / Reference Post (Relative LRM):** `DistanceAlong` in IFC is always the absolute geometric distance from the curve start. A KP value must be converted to a geometric distance before use in `IfcPointByDistanceExpression`.
-
-### 8.6.3 LRM Name Examples from ISO 19148 Annex C
-
-ISO 19148 Annex C lists recognized LRM name aliases. Common examples include:
-
-|Name           |Common Alias|Typical Region       |
-|-----------------------------------|-------------------------|----------------------------------------|
-|milepoint      |milepost, MP|USA, Canada          |
-|kilometer point|KP, PK      |Europe, Latin America|
-|chainage       |ch          |UK, Australia, India |
-|reference post |RP          |Rail, some roads     |
-
-`Pset_LinearReferencingMethod.LRMName` should use one of these recognized names where possible for maximum interoperability.
-
-### 8.6.4 Impact on DistanceAlong
-
-Regardless of the LRM in use for labelling purposes, `IfcPointByDistanceExpression.DistanceAlong` is always the **geometric distance from the start of `BasisCurve`**. LRM labels (station values, KP values, etc.) are a display convention managed through `IfcReferent` and `Pset_LinearReferencingMethod`, not through `DistanceAlong` directly.
-
-See Chapter 9 (Referents and Stationing) for a detailed treatment of how station labels are stored and how to convert between station labels and geometric distances.
-
-## 8.7 Summary and Implementation Checklist
+## 8.6 Summary and Implementation Checklist
 
 |#|Item                                                                                              |Notes                                                                                                   |
 |-----|-----------------------------------------------|------------------------------------------------|
@@ -307,5 +260,4 @@ See Chapter 9 (Referents and Stationing) for a detailed treatment of how station
 |5|Set `Axis = (0,0,1)` explicitly to remove ambiguity.                                              |Do not rely on the default; the default is not unambiguously defined in the IFC schema.                 |
 |6|Use `OffsetLongitudinal` only for geometrically unreachable points (e.g., outside an angle point).|For all ordinary placements, omit or set to zero.                                                       |
 |7|Avoid using `IfcOffsetCurveByDistances` as `BasisCurve` for precise placement.                    |Use the parent alignment with `OffsetLateral` instead.                                                  |
-|8|Record the LRM type and units in `Pset_LinearReferencingMethod` on the `IfcAlignment`.            |Required for correct interpretation of `IfcReferent` stationing labels.                                 |
-|9|Provide `CartesianPosition` only when exchanging with applications that lack linear placement support; omit otherwise.|Regenerate it after any alignment geometry change; validate consistency with the buildingSMART Validation Service.|
+|8|Provide `CartesianPosition` only when exchanging with applications that lack linear placement support; omit otherwise.|Regenerate it after any alignment geometry change; validate consistency with the buildingSMART Validation Service.|

@@ -1,0 +1,9 @@
+# Executive Summary
+
+IFC4x3 — published as ISO 16739-1:2024 — is the first version of the IFC schema to support infrastructure alignment geometry: the horizontal, vertical, and cant (superelevation) curves defining the plan, profile, and cross-slope of roads, railways, and other linear infrastructure. The specification defines the *schema* for these entities but not the *mathematics* needed to evaluate them — the parametric equations for curvature, tangent direction, and position are left to the implementer. This guide fills that gap.
+
+**Purpose and audience.** This is an implementation guide, not a specification, written for software developers building or extending IFC4x3 alignment support in authoring tools, viewers, and validation software. Where the IFC specification states *what* an entity means, this guide supplies *how* to compute it: closed-form and iterative equations, worked examples, and IFC-conformant sample models.
+
+**Scope.** The guide covers the full alignment geometry stack: semantic vs. geometric representations and concept templates (Ch. 1); parametric equations for every horizontal, vertical, and cant curve type — lines, circular arcs, parabolas, and the five transition-curve families (Clothoid, Bloss, Cosine, Sine, Helmert, Viennese Bend) (Ch. 2–4); offset curves (Ch. 5); approximate polyline geometry (Ch. 6); alignment reuse across layouts (Ch. 7); linear placement (Ch. 8); referents and stationing, including ISO 19148 linear referencing (Ch. 9); sectioned surfaces and solids (Ch. 10); precision and tolerance (Ch. 11); a validated test set (Ch. 12); references (Ch. 13); and a LandXML-to-IFC appendix.
+
+Each chapter closes with a self-contained implementation checklist and is illustrated with figures, worked examples, and links to IFC example files. Readers new to IFC alignment geometry should start with Chapters 1–2; others may go directly to the chapter covering their feature of interest.

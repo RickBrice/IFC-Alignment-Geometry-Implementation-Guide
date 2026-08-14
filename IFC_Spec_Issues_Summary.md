@@ -82,6 +82,12 @@
 
 23. At a station-equation overlap, a single station value maps to two geometrically valid `DistanceAlong` positions; the schema provides no way to disambiguate them, and implementations must apply a project-specific convention (§9.2.6).
 
+34. Concept Template 4.1.4.4.3 (Object Nesting) is the only schema mechanism that establishes alignment stationing (`STATION` referents, §9.3.1) or key-point referents (§9.3.4), yet the template itself is not tagged as part of the Alignment-based View (AbV); a conformance check applied strictly by MVD tag could flag conforming stationing/key-point-referent models as out of scope even though no alternative AbV-tagged mechanism exists (§9.3.4).
+
+35. `IfcConnectionGeometry` is tagged as part of the Alignment-based View (AbV), but none of its five concrete subtypes — including `IfcConnectionPointGeometry` and `IfcConnectionPointEccentricity`, the only types usable as `IfcRelInterferesElements.InterferenceGeometry` — carry that tag themselves; the same tag-propagation gap as item 34, here affecting intersection-crossing geometry rather than referent nesting (§9.5.2).
+
+36. `IfcRelInterferesElements.InterferenceType` is typed as free-text `IfcIdentifier` rather than a restricted enumeration; the schema documentation's example values (`Crosses`, `PassesOver`, `PassesUnder`, `PassesThrough`, `Along`, `Clash`) carry no normative weight, so two implementations recording the same physical relationship may choose different vocabularies and neither is non-conforming (§9.5.2).
+
 ---
 
 ## Chapter 10 — Sectioned Surfaces and Solids
