@@ -9,7 +9,7 @@ Chapter 8 established that `IfcPointByDistanceExpression.DistanceAlong` is a **g
 `IfcReferent` plays two distinct roles, and this chapter is organized around them:
 
 - What `IfcReferent` is and the range of uses it serves beyond stationing.
-- Stationing as a concept: what a station is, why station equations (gaps and overlaps) exist, and how to convert between station labels and `DistanceAlong`.
+- Stationing as a concept: what a station is, why station equations (gaps and overlaps) exist, how stationing can run *against* the alignment direction (reverse stationing), and how to convert between station labels and `DistanceAlong` in each case.
 - The **geometric role** — how a referent is attached to its own alignment: `Pset_Stationing`, `IfcRelNests`, and the nesting/placement edge cases that follow directly from that mechanism (the mixed-nesting problem, `ObjectPlacement` for semantic-only alignments, key-point referents marking a layout's own segment transitions, and — per ISO 19148 — why an `INTERSECTION` referent is owned by one alignment rather than shared between two).
 - The **semantic role** — how a referent labels another product's position via `IfcRelPositions`, covering the single-point pattern (Product Relative Positioning) and the start/end-extent pattern (Product Span Positioning).
 - How the fact that two alignments physically cross — as opposed to the station label at that location — is recorded independently of any referent, using `IfcRelInterferesElements` between the facilities the alignments lay out.
@@ -37,6 +37,8 @@ The single attribute `IfcReferent` adds beyond its supertypes is `PredefinedType
 Stationing (also called *chainage* in British practice) is a distance-based coordinate system used to identify locations along a linear route. In North American highway practice, stations are expressed in the form `ccc+dd.dd`, where the number before the `+` is the count of hundreds of feet and the digits after are the remainder. For example, Sta. 142+35.75 means 14,235.75 feet from the alignment start station.
 
 The project datum — the zero point of stationing — is defined by the first `IfcReferent` nested in the alignment (see §9.3.1). Stationing often begins at a round number such as 10+00 or 100+00 rather than 0+00, to avoid negative stations at points that may be surveyed upstream of the formal project start.
+
+Stationing also has a **direction**. Normally station values increase in the direction of increasing `DistanceAlong` — the direction the alignment geometry runs. An alignment may instead be *reverse-stationed*, with station values that decrease as `DistanceAlong` increases; §9.2.7 covers this case and the `Pset_Stationing.HasIncreasingStation` flag that records it.
 
 Stationing is a **display convention**, not a geometric quantity. The geometric position of a point is fully determined by `DistanceAlong` in `IfcPointByDistanceExpression`. The station label is metadata that identifies that point to engineers and field crews in human-readable terms.
 
@@ -86,17 +88,24 @@ $$\text{DistanceAlong} = D_i + (S - S_i)$$
 
 Before applying the formula, check whether the station overshoots the next referent: if a next referent exists and $S - S_i > D_{i+1} - D_i$, the station falls inside a gap — it was skipped by a forward equation — and `DistanceAlong` is undefined.
 
+The algorithm above assumes station values **increase** with `DistanceAlong`. When a referent carries `Pset_Stationing.HasIncreasingStation = FALSE`, the region it governs runs the opposite way (§9.2.7): the selection test in step 3 becomes *the last referent $i$, ordered by `DistanceAlong`, with $S_i \geq S$*, and the conversion generalizes to
+
+$$\text{DistanceAlong} = D_i + \sigma_i\,(S - S_i), \qquad
+\sigma_i = \begin{cases} +1 & \text{increasing region} \\ -1 & \text{decreasing region} \end{cases}$$
+
+The step-2 validation, the gap/overshoot check (compare $\sigma_i\,(S - S_i)$ against $D_{i+1} - D_i$), and the sign convention that distinguishes a gap equation from an overlap equation all flip with $\sigma_i$. §9.2.7 works through a decreasing-stationing example.
+
 Figure 9.2.5-1 illustrates how the geometric distance axis and the station label axis diverge when equations are present.
 
-![Figure 9.2.5-1 — Two-panel diagram. Top: uniform geometric distance axis with five points P₁–P₅ at 200 m spacing. Bottom: station label axis for the same points, with a station equation gap at P₃ (red — back station less than forward station) and an overlap at P₄ (green — back station greater than forward station), illustrating how station equations introduce discontinuities in the labeling axis.](images/Figure_9.2.5-1_Stationing_Diagram.svg)
+![Figure 9.2.5-1 — Two-panel diagram. Top: uniform geometric distance axis with five points P₁–P₅ at 200-unit spacing. Bottom: station label axis for the same points, with a station equation gap at P₃ (red — back station less than forward station) and an overlap at P₄ (green — back station greater than forward station), illustrating how station equations introduce discontinuities in the labeling axis.](images/Figure_9.2.5-1_Stationing_Diagram.svg)
 
 *Figure 9.2.5-1 — Two-axis diagram comparing DistanceAlong (geometric distance) and station label for an alignment with one gap equation and one overlap equation.*
 
 ### 9.2.6 Example: `DistanceAlong` Conversion with Gap and Overlap Equations
 
-The table below reflects the alignment shown in Figure 9.2.5-1: five points at 200 m intervals along a generic alignment, a gap equation at P3, and an overlap equation at P4. Only P1, P3, and P4 map to actual `IfcReferent` instances (§9.3.1) — P1 as the starting station, P3 and P4 at the equations. P2 and P5 are ordinary points on the alignment with no referent of their own; they appear here only to anchor the geometric spacing.
+The table below reflects the alignment shown in Figure 9.2.5-1: five points at 200-unit intervals along a generic alignment, a gap equation at P3, and an overlap equation at P4. Only P1, P3, and P4 map to actual `IfcReferent` instances (§9.3.1) — P1 as the starting station, P3 and P4 at the equations. P2 and P5 are ordinary points on the alignment with no referent of their own; they appear here only to anchor the geometric spacing.
 
-| Point | $D_i$ (m) | $S_i$ outgoing | `IncomingStation` | Note |
+| Point | $D_i$ | $S_i$ outgoing | `IncomingStation` | Note |
 |----------|-----------|----------------|-------------------|------|
 | P1 | 0 | 1000.00 (Sta. 10+00) | — | Starting station |
 | P2 | 200 | 1200.00 (Sta. 12+00) | — | |
@@ -122,7 +131,7 @@ Last $i$ where $S_i \leq 1925$: P4 ($S_4 = 1850$, $D_4 = 600$).
 
 $$\text{DistanceAlong} = 600 + (1925 - 1850) = 675$$
 
-Without accounting for the equations, naive subtraction gives $1925 - 1000 = 925$ — an error of 250 m. The error is the net station inflation introduced by the two equations: the gap at P3 added 300 station units with no corresponding geometry, and the overlap at P4 recovered 50, leaving a net surplus of $300 - 50 = 250$ station units.
+Without accounting for the equations, naive subtraction gives $1925 - 1000 = 925$ — an error of 250. The error is the net station inflation introduced by the two equations: the gap at P3 added 300 station units with no corresponding geometry, and the overlap at P4 recovered 50, leaving a net surplus of $300 - 50 = 250$ station units.
 
 **Gap check — Sta. 15+00 (1500.00):**
 
@@ -146,7 +155,68 @@ $$\text{DistanceAlong} = 400 + (1875 - 1700) = 575$$
 
 $$\text{DistanceAlong} = 600 + (1875 - 1850) = 625$$
 
-Both answers are geometrically valid. The algorithm as defined in §9.2.5 always returns the post-equation result (625 m here), silently discarding the pre-equation match. Implementations that need to resolve ambiguous overlap stations must detect the overlap zone — any $S$ where $S_i^{\text{outgoing}} \leq S \leq S_i^{\text{incoming}}$ at an overlap equation referent — and either return both candidate distances or apply project-specific rules to select one.
+Both answers are geometrically valid. The algorithm as defined in §9.2.5 always returns the post-equation result (625 here), silently discarding the pre-equation match. Implementations that need to resolve ambiguous overlap stations must detect the overlap zone — any $S$ where $S_i^{\text{outgoing}} \leq S \leq S_i^{\text{incoming}}$ at an overlap equation referent — and either return both candidate distances or apply project-specific rules to select one.
+
+### 9.2.7 Decreasing (Reverse) Stationing
+
+Sections 9.2.1–9.2.6 assume station values increase in the direction the alignment geometry runs — the direction of increasing `DistanceAlong`. This is the usual case, but it is not required. An alignment is **reverse-stationed** (or *decreasing-stationed*) when its station labels decrease as `DistanceAlong` increases. It is recorded by setting `Pset_Stationing.HasIncreasingStation = FALSE` on the starting-station referent (§9.3.1).
+
+**`DistanceAlong` is unchanged.** `DistanceAlong` is always the geometric arc length from the start of the basis curve, always increasing (Chapter 8). Reverse stationing reverses only the *label* axis. For the same reason, the geometric conventions that depend on travel direction — the positive-curvature sign ("curves to the left"), the cross-section local axes of Chapter 10 — follow increasing `DistanceAlong`, not the station-label direction, and are unaffected.
+
+**Referent ordering is unchanged.** Referents are still nested in `IfcRelNests.RelatedObjects` in order of increasing `DistanceAlong` (§9.3.1) — which, under reverse stationing, means order of *decreasing* `Station`. Read referents by sorting on `DistanceAlong`, never on `Station`.
+
+**Converting station to `DistanceAlong`.** The algorithm of §9.2.5 generalizes by attaching a direction sign $\sigma_i$ to each referent's region:
+
+$$\sigma_i = \begin{cases} +1 & \text{referent } i \text{ governs an increasing-station region} \\ -1 & \text{referent } i \text{ governs a decreasing-station region} \end{cases}$$
+
+- **Select the governing referent.** For an increasing region, take the last referent $i$ (by `DistanceAlong`) with $S_i \leq S$. For a decreasing region, take the last referent $i$ (by `DistanceAlong`) with $S_i \geq S$.
+- **Convert.** $\text{DistanceAlong} = D_i + \sigma_i\,(S - S_i)$.
+- **Validate** (optional). At a referent carrying `IncomingStation`, check $S_{i-1} + \sigma_{i-1}\,(D_i - D_{i-1}) \approx \text{IncomingStation}$.
+- **Gap / overshoot check.** If a next referent exists and $\sigma_i\,(S - S_i) > D_{i+1} - D_i$, the station was skipped by an equation and `DistanceAlong` is undefined.
+
+The sign convention that distinguishes a gap equation from an overlap equation flips with direction:
+
+| Region direction | Gap equation (labels skipped) | Overlap equation (labels repeated) |
+|---|---|---|
+| Increasing | `Station` > `IncomingStation` | `Station` < `IncomingStation` |
+| Decreasing | `Station` < `IncomingStation` | `Station` > `IncomingStation` |
+
+#### 9.2.7.1 Worked Example: Reverse Stationing with a Gap Equation
+
+An alignment is stationed against an agency convention whose values increase from the route's north terminus. The alignment geometry was captured running south from that terminus, so `DistanceAlong = 0.0` sits at the *highest*-station end and station labels count down as `DistanceAlong` increases. A past realignment shortened the middle of the route, leaving one gap equation. Three referents are nested under the alignment, in order of increasing `DistanceAlong`:
+
+| Point | $D_i$ | $S_i$ outgoing | `IncomingStation` | Note |
+|---|---|---|---|---|
+| R1 | 0 | 2000.00 (Sta. 20+00) | — | Starting station; `HasIncreasingStation = FALSE` |
+| R2 | 400 | 1550.00 (Sta. 15+50) | 1600.00 (Sta. 16+00) | Gap = 50 |
+| R3 | 800 | 1150.00 (Sta. 11+50) | — | End referent |
+
+All three regions are decreasing, so $\sigma_i = -1$ throughout.
+
+**Consistency of the input.** Advancing 400 along the geometry from R1 reaches a label of $2000 - 400 = 1600.00$ — matching R2's `IncomingStation`. At R2 the outgoing `Station` (1550.00) is *less than* the incoming (1600.00); by the table above, that is a **gap** in a decreasing region, skipping the 50 from 1600 down to 1550. Advancing another 400 from R2 reaches $1550 - 400 = 1150.00$ — matching R3's `Station`.
+
+**Sta. 18+00 (1800.00).** Last referent with $S_i \geq 1800$ is R1 ($S_1 = 2000$, $D_1 = 0$):
+
+$$\text{DistanceAlong} = 0 + (-1)(1800 - 2000) = 200$$
+
+**Sta. 13+00 (1300.00).** Last referent with $S_i \geq 1300$ is R2 ($S_2 = 1550$, $D_2 = 400$):
+
+$$\text{DistanceAlong} = 400 + (-1)(1300 - 1550) = 650$$
+
+Naive subtraction from the starting station — $2000 - 1300 = 700$ — overstates the distance by 50. The error is exactly the gap: the equation at R2 dropped 50 station units with no corresponding geometry, so every station past R2 sits 50 units lower than its distance from R1 alone would imply.
+
+**Gap check — Sta. 15+75 (1575.00).** This label lies between R2's outgoing 1550 and incoming 1600.
+
+- R1: $S_1 = 2000 \geq 1575$ ✓
+- R2: $S_2 = 1550 \geq 1575$ ✗
+
+The governing referent is R1. Before converting, apply the overshoot check: $\sigma_1\,(S - S_1) = (-1)(1575 - 2000) = 425$, but the geometric span to R2 is only $D_2 - D_1 = 400$. Since $425 > 400$, Sta. 15+75 falls in the range the equation at R2 skipped — it has no geometric position, and `DistanceAlong` is undefined. Any station between Sta. 15+50 and Sta. 16+00 gives the same result. As in §9.2.6, implementations must return an error, `null`, or a sentinel rather than a meaningless distance.
+
+Figure 9.2.7-1 shows the two axes for this alignment.
+
+![Figure 9.2.7-1 — Two-panel diagram. Top: uniform geometric distance axis with referents R1, R2, R3 at equal spacing, DistanceAlong increasing left to right from 0 to 800. Bottom: station label axis for the same referents with labels decreasing left to right — 20+00, 15+50, 11+50 — and a gap-equation marker at R2 where the incoming label 16+00 drops to the outgoing 15+50. The station label axis runs opposite to the geometric distance axis.](images/Figure_9.2.7-1_Decreasing_Stationing_Axes.svg)
+
+*Figure 9.2.7-1 — Reverse stationing: the station label axis decreases in the direction of increasing `DistanceAlong`. A gap equation at R2 skips 50 station units. Contrast with Figure 9.2.5-1, where the label axis increases.*
 
 ## 9.3 Attaching Referents to an Alignment
 
@@ -162,7 +232,7 @@ Stationing metadata is stored in `Pset_Stationing`, attached to an `IfcReferent`
 |--------------------|---------------|-------------------------------------------------------------------|
 |`Station`             |`IfcLengthMeasure`|The station value at this referent’s location. For the first referent, this defines the starting station of the alignment.                                                              |
 |`IncomingStation`     |`IfcLengthMeasure`|Present only at a station equation. The station value on the *incoming* (upstream) side of the break. The `Station` property holds the *outgoing* value immediately after the break.    |
-|`HasIncreasingStation`|`IfcBoolean`      |Controls the direction of stationing. If `TRUE` (or absent), subsequently nested referents have increasing station values. If `FALSE`, they decrease. Covers reverse-stationing schemes.|
+|`HasIncreasingStation`|`IfcBoolean`      |Records the direction of stationing for the referents nested *after* this one. If `TRUE` or absent, those referents are expected to carry greater `Station` values (increasing stations); if `FALSE`, lower values (decreasing stations). Set `FALSE` on the starting referent for a reverse-stationed alignment — see §9.2.7.|
 
 The `Station` value is expressed in the same units as the project length unit (typically meters or feet), **not** in the `ccc+dd.dd` string form. A station of 142+35.75 ft is stored as `14235.75` with feet as the project unit.
 
@@ -179,6 +249,12 @@ Figure 9.3.1-1 shows this mechanism populated with the starting-station referent
 
 *Figure 9.3.1-1 — `IfcRelNests` establishing the stationing order for `IfcReferent` instances P1, P3, and P4, with `Pset_Stationing` values matching the §9.2.6 worked example. P2 and P5 are omitted because they are ordinary points on the alignment, not referents — of the five points in the §9.2.6 example, only P1, P3, and P4 have a corresponding `IfcReferent`.*
 
+**Reverse-stationed alignments.** To station an alignment so that station values *decrease* in the direction of increasing `DistanceAlong` (§9.2.7), set `Pset_Stationing.HasIncreasingStation = FALSE` on the starting-station referent — the first entry in `RelatedObjects`. The nesting order does not change: referents are still listed by increasing `DistanceAlong`, which for a reverse-stationed alignment means by *decreasing* `Station`. Figure 9.3.1-2 shows the mechanism for the reverse-stationed alignment of §9.2.7.1, whose starting station is Sta. 20+00 and whose one equation is a gap.
+
+![Figure 9.3.1-2 — Entity relationship diagram: IfcAlignment is the RelatingObject of an IfcRelNests relationship whose RelatedObjects list, ordered by DistanceAlong, contains three IfcReferent instances of PredefinedType STATION — R1 (DistanceAlong 0.0, starting station), R2 (DistanceAlong 400.0, gap equation), and R3 (DistanceAlong 800.0, end). R1 carries a Pset_Stationing with Station = 2000.00 and HasIncreasingStation = FALSE; R2 carries Station = 1550.00 and IncomingStation = 1600.00; R3 carries Station = 1150.00. Station values decrease as DistanceAlong increases.](images/Figure_9.3.1-2_Decreasing_Stationing_Referent.svg)
+
+*Figure 9.3.1-2 — `IfcRelNests` for the reverse-stationed alignment of §9.2.7.1. `HasIncreasingStation = FALSE` on the starting referent R1 makes the subsequently nested referents decrease in `Station` even though they increase in `DistanceAlong`.*
+
 ### 9.3.2 The Mixed-Nesting Problem
 
 `IfcRelNests` is also used to attach alignment layout components (`IfcAlignmentHorizontal`, `IfcAlignmentVertical`, `IfcAlignmentCant`) to `IfcAlignment`. Both layout sub-objects and referents decompose the same parent through the same relationship type. This creates ambiguity: should layout sub-objects and referents share a single `IfcRelNests` instance, or should they use separate ones?
@@ -187,7 +263,9 @@ The IFC specification does not resolve this clearly. Two patterns are seen in pr
 
 **Pattern A — Shared nest.** A single `IfcRelNests` instance contains both layout objects and referents interleaved or grouped. This works but can make parsing complex, because consumers must distinguish layout objects from referents by type.
 
-**Pattern B — Separate nests (recommended).** Two distinct `IfcRelNests` instances are used: one whose `RelatedObjects` contains only the alignment layout sub-objects, and one whose `RelatedObjects` contains only `IfcReferent` instances.
+Pattern A also has an ordering problem. `RelatedObjects` is an *ordered* list, and referents have a natural order — each sits at a single `DistanceAlong`. Layout sub-objects do not: `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant` each span the whole alignment. In a shared nest there is no schema rule, and no settled convention, for where a layout sub-object falls relative to a referent that lies partway along it — a `SUPERELEVATIONEVENT` at a cant transition, a `POSITION` referent at the low point of a vertical curve, an `INTERSECTION` referent inside a segment. A reader cannot recover the intended order without a convention that IFC does not supply, and one would have to be standardized for Pattern A to be interoperable.
+
+**Pattern B — Separate nests (recommended).** Two distinct `IfcRelNests` instances are used: one whose `RelatedObjects` contains only the alignment layout sub-objects, and one whose `RelatedObjects` contains only `IfcReferent` instances. The ordering problem disappears: each list holds one kind of object with an unambiguous order — layout sub-objects by discipline, referents by `DistanceAlong`.
 
 **Recommendation:** Use Pattern B — separate nests. This is the pattern illustrated in the existing Figure 9.3.2-1 and is more robust for software implementations. The layout nest and the referent nest are independent, and each can be processed without concern for the content of the other.
 
@@ -355,7 +433,7 @@ Understanding the ISO 19148 model helps implementers correctly interpret `Distan
 
 The key difference:
 
-- **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`, per §9.3.1).
+- **Stationing (Absolute LRM):** `DistanceAlong` in IFC closely matches the station value (after accounting for any starting station offset defined by an `IfcReferent`, per §9.3.1, and any station equations, per §9.2.5). A reverse-stationed alignment (§9.2.7) is still an Absolute LRM — `DistanceAlong` still runs forward from the curve start; only the sign relating it to the station value changes.
 - **KP / Reference Post (Relative LRM):** `DistanceAlong` in IFC is always the absolute geometric distance from the curve start. A KP value must be converted to a geometric distance before use in `IfcPointByDistanceExpression`.
 
 ### 9.6.3 LRM Name Examples from ISO 19148 Annex C
@@ -383,13 +461,13 @@ See §9.2 (Stationing) and §9.3 (Attaching Referents to an Alignment) above for
 |-----|-----------------------------------------------|------------------------------------------------|
 |1 |Use `IfcReferent` to attach station labels and other semantic location information to alignment positions.                                                |Referents are informational overlays on geometry, not geometry themselves.              |
 |2 |Store the station value in `Pset_Stationing.Station` as a plain `IfcLengthMeasure` in project length units.                                               |Do not store the `ccc+dd.dd` string — compute it from the numeric value when displaying.|
-|3 |Set `Pset_Stationing.HasIncreasingStation = FALSE` only for reverse-stationing schemes.                                                                   |When absent or `TRUE`, stationing increases in the direction of the alignment.          |
+|3 |Set `Pset_Stationing.HasIncreasingStation = FALSE` on the starting referent when station values decrease in the direction of increasing `DistanceAlong` (reverse stationing). It governs the referents nested after it.|When absent or `TRUE`, stationing increases with `DistanceAlong` — the common case. `DistanceAlong` itself never reverses; only the sign relating it to `Station` changes. See §9.2.7.|
 |4 |At a station equation, provide both `IncomingStation` and `Station` on the same referent.                                                                 |`IncomingStation` = upstream label; `Station` = downstream label.                       |
-|5 |Do not convert station labels to `DistanceAlong` by simple subtraction. For each referent record $D_i$ and outgoing $S_i$; find the last $i$ where $S_i \leq S$; then `DistanceAlong` $= D_i + (S - S_i)$.|See §9.2.5 for the full algorithm.                                                      |
-|6 |Before applying the conversion formula, check for a gap: if $S - S_i > D_{i+1} - D_i$, the station was skipped by a forward equation and `DistanceAlong` is undefined.|Return an error or sentinel value — do not silently produce a meaningless distance. See §9.2.6.|
-|7 |Stations in an overlap zone map to two geometric points. Detect the zone ($S_i^{\text{outgoing}} \leq S \leq S_i^{\text{incoming}}$ at an overlap referent) and either return both candidates or apply project rules to select one.|See §9.2.6.                                                                             |
-|8 |Use separate `IfcRelNests` instances for alignment layout sub-objects and referents.                                                                      |Mixing them in a single nest is allowed but makes parsing harder.                       |
-|9 |Order referents in `IfcRelNests.RelatedObjects` by increasing `DistanceAlong`.                                                                            |Required by the nesting concept template; sort defensively when reading.                |
+|5 |Do not convert station labels to `DistanceAlong` by simple subtraction. For each referent record $D_i$ and outgoing $S_i$; find the last $i$ where $S_i \leq S$; then `DistanceAlong` $= D_i + (S - S_i)$.|See §9.2.5 for the full algorithm. For a reverse-stationed region, select the last $i$ where $S_i \geq S$ and use `DistanceAlong` $= D_i - (S - S_i)$. See §9.2.7.|
+|6 |Before applying the conversion formula, check for a gap: if $\sigma_i\,(S - S_i) > D_{i+1} - D_i$ (with $\sigma_i = +1$ increasing, $-1$ decreasing), the station was skipped by an equation and `DistanceAlong` is undefined.|Return an error or sentinel value — do not silently produce a meaningless distance. See §9.2.6, §9.2.7.|
+|7 |Stations in an overlap zone map to two geometric points. Detect the zone (the `Station`–`IncomingStation` interval at an overlap referent) and either return both candidates or apply project rules to select one.|Which of `Station`/`IncomingStation` is the greater — i.e. what counts as an overlap versus a gap — flips with stationing direction. See §9.2.6, §9.2.7.|
+|8 |Use separate `IfcRelNests` instances for alignment layout sub-objects and referents.                                                                      |Mixing them in a single nest is allowed but makes parsing harder, and leaves the list order between a whole-alignment layout sub-object and a referent partway along it undefined. See §9.3.2.|
+|9 |Order referents in `IfcRelNests.RelatedObjects` by increasing `DistanceAlong` — which, for a reverse-stationed alignment, means by *decreasing* `Station`.|Required by the nesting concept template; sort defensively on `DistanceAlong` when reading, never on `Station`. See §9.2.7.|
 |10|Place the first referent at `DistanceAlong = 0.0` and set `Pset_Stationing.Station` to the starting station value.                                        |Commonly a round number like 1000.00 (Sta. 10+00). For semantic-only alignments, `ObjectPlacement` = alignment's placement; for geometric alignments, use `IfcLinearPlacement` at distance 0. Update when adding geometry.|
 |11|Use `IfcRelPositions` to link a referent to the object(s) whose station it names.                                                                         |This is semantic annotation only; it does not affect geometry.                          |
 |12|An `IfcReferent` that provides stationing should itself be linked to its `IfcAlignment` via `IfcRelPositions`, with `IfcAlignment` as `RelatingPositioningElement` and the referent as `RelatedProducts`.|Without this link, a station label is ambiguous — nothing states which alignment's stationing it belongs to. See §9.4.1, §9.4.2.|
@@ -403,3 +481,4 @@ See §9.2 (Stationing) and §9.3 (Attaching Referents to an Alignment) above for
 |20|Don't be alarmed that Concept Template 4.1.4.4.3 (Object Nesting) isn't itself tagged Alignment-based View (AbV) — apply it anyway for stationing and key-point referents.|A gap in the MVD's tagging, not a reason to avoid the concept template; the same kind of gap noted for `IfcConnectionGeometry` in item 18. See §9.3.4.|
 |21|Treat the abbreviation text used in a key-point referent's `Name` as a display convention, not a schema enumeration.|The guide's worked example uses a typical North American convention; other jurisdictions/agencies may use different abbreviations or additional key-point types. See §9.3.4.|
 |22|Record the LRM type and units in `Pset_LinearReferencingMethod` on the `IfcAlignment`.|Required for correct interpretation of `IfcReferent` stationing labels; `DistanceAlong` itself is always a geometric distance regardless of the LRM in use. See §9.6.|
+|23|For a reverse-stationed region, apply the direction-aware conversion: select the last referent (by `DistanceAlong`) with $S_i \geq S$, then `DistanceAlong` $= D_i + \sigma_i\,(S - S_i)$ with $\sigma_i = -1$. Reverse stationing is a whole-region property; an overlap equation is a single-point discontinuity — do not conflate them.|`HasIncreasingStation = FALSE` records the direction. Reverse stationing does not change referent nesting order, `DistanceAlong` direction, or any geometry convention (curvature sign, cross-section axes). See §9.2.7.|

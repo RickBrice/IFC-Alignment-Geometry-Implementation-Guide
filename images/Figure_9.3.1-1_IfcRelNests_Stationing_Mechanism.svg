@@ -1,6 +1,6 @@
 <svg width="1020" viewBox="0 0 1020 540" xmlns="http://www.w3.org/2000/svg" role="img">
   <title>Entity relationship diagram: IfcRelNests establishing stationing order for IfcReferent instances</title>
-  <desc>IfcAlignment is the RelatingObject of an IfcRelNests relationship whose RelatedObjects list, ordered by DistanceAlong, contains three IfcReferent instances, each with PredefinedType = STATION: P1 (DistanceAlong 0.0, the starting-station referent), P3 (DistanceAlong 400.0, a gap-equation referent), and P4 (DistanceAlong 600.0, an overlap-equation referent). Each referent carries a Pset_Stationing property set: P1 has Station = 1000.00; P3 has Station = 1700.00 and IncomingStation = 1400.00; P4 has Station = 1850.00 and IncomingStation = 1900.00. These values match the worked example in section 9.2.6.</desc>
+  <desc>IfcAlignment is the RelatingObject of an IfcRelNests relationship whose RelatedObjects list, ordered by DistanceAlong, contains three IfcReferent instances, each with PredefinedType = STATION: P1 (DistanceAlong 0.0, the starting-station referent), P3 (DistanceAlong 400.0, a gap-equation referent), and P4 (DistanceAlong 600.0, an overlap-equation referent). Each referent carries a Pset_Stationing property set: P1 has Station = 1000.00 and HasIncreasingStation = TRUE; P3 has Station = 1700.00 and IncomingStation = 1400.00; P4 has Station = 1850.00 and IncomingStation = 1900.00. These values match the worked example in section 9.2.6.</desc>
 
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -101,9 +101,10 @@
 
   <!-- ── Pset_Stationing P1 ── -->
   <g class="c-teal">
-    <rect x="40" y="400" width="220" height="50" rx="8" stroke-width="0.5" stroke-dasharray="4 3"/>
+    <rect x="40" y="400" width="220" height="66" rx="8" stroke-width="0.5" stroke-dasharray="4 3"/>
     <text class="th" x="150" y="418" text-anchor="middle" dominant-baseline="central">Pset_Stationing</text>
     <text class="ts" x="150" y="436" text-anchor="middle" dominant-baseline="central">Station = 1000.00</text>
+    <text class="ts" x="150" y="452" text-anchor="middle" dominant-baseline="central">HasIncreasingStation = TRUE</text>
   </g>
 
   <!-- ── Pset_Stationing P3 ── -->

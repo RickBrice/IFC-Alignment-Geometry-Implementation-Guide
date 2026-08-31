@@ -60,8 +60,8 @@
 **default Axis direction** — 8.3.2, 10.5.6  
 **deviating elevation** — 4.0, 4.1.2, Notation  
 **directrix** — 10.3, 10.4, 10.5  
-**`DistanceAlong`** — 8.2.1, 8.2.2, 9.2.5  
-**`DistanceAlong`, station conversion** — 8.2.2, 9.2.5, 9.2.6, A.4.6
+**`DistanceAlong`** — 8.2.1, 8.2.2, 9.2.5, 9.2.7  
+**`DistanceAlong`, station conversion** — 8.2.2, 9.2.5, 9.2.6, 9.2.7, A.4.6
 
 ## E
 
@@ -82,7 +82,7 @@
 ## G
 
 **gap equation** — 9.2.3  
-**gap, station undefined** — 9.2.5, 9.2.6  
+**gap, station undefined** — 9.2.5, 9.2.6, 9.2.7  
 **geometric representation** — 1.5, 2.1  
 **grade** — 3.3, Notation  
 **grade-separated crossing** — 9.5.2  
@@ -90,6 +90,7 @@
 
 ## H
 
+**`HasIncreasingStation`** — 9.2.5, 9.2.7, 9.3.1  
 **Helmert transition curve**  
 &emsp;horizontal — 2.7, 2.7.1–2.7.3  
 &emsp;cant — 4.5, 4.5.1–4.5.3  
@@ -186,7 +187,7 @@
 **`OffsetLongitudinal`** — 8.2.1.1  
 **`OffsetVertical`** — 8.2.1  
 **overlap equation** — 9.2.4  
-**overlap, station ambiguity** — 9.2.6
+**overlap, station ambiguity** — 9.2.6, 9.2.7
 
 ## P
 
@@ -201,7 +202,7 @@
 **profile (cross-section)** — 10.1  
 **profile orientation** — 10.5.7  
 **`Pset_LinearReferencingMethod`** — 9.6.2, 9.6.3, 9.6.4  
-**`Pset_Stationing`** — 9.3.1, 9.3.4  
+**`Pset_Stationing`** — 9.2.7, 9.3.1, 9.3.4  
 **PVI (point of vertical intersection)** — 9.3.4, A.4.2
 
 ## R
@@ -209,10 +210,11 @@
 **radius sign convention** — 2.1, A.3.5  
 **real-world alignments (testset)** — 9.3.4.1, 12.3.4  
 **reference coordinates** — 12.2.4, 12.4  
-**referent ordering** — 9.3.1  
+**referent ordering** — 9.2.7, 9.3.1  
 **referent placement (`ObjectPlacement`)** — 9.3.3  
 **representation scoping** — 10.5.2  
 **retaining wall** — 10.6.2.4  
+**reverse stationing** — *see* stationing, decreasing / reverse  
 **RefDirection** — 4.1.2, 8.3.1  
 **rotation point** — A.5.4
 
@@ -236,6 +238,7 @@
 **start station** — 9.2.1, A.6.1  
 **station equations** — 9.2.2–9.2.6, A.6.2  
 **stationing** — 9.2, 9.3.1, A.6  
+&emsp;decreasing / reverse (`HasIncreasingStation`) — 9.2.7, 9.3.1, 9.6.2  
 **stringlines** — 10.2, 10.3.2, 10.6.1.4–10.6.1.6, 10.6.2.5, 10.6.2.6  
 **superelevation** — *see* cant
 

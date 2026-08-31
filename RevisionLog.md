@@ -15,4 +15,5 @@
 | 1 Aug 2026 | Added §9.3.4 (Key-Point Referents) and §9.5.2 (IfcRelInterfersElements) | R. Brice |
 | 5 Aug 2026 | §9.3.4 corrected: key-point referents nest to `IfcAlignment` (Concept Template 4.1.4.4.3 Object Nesting) | R. Brice |
 | 14 Aug 2026 | Updates based on Scott's review comments. | R. Brice |
+| 31 Aug 2026 | Added §9.2.7 (Decreasing/Reverse Stationing) with a worked example and Figure 9.2.7-1; generalized the §9.2.5 conversion algorithm and §9.7 checklist for stationing direction; expanded §9.3.1 (`HasIncreasingStation`, new Figure 9.3.1-2) and §9.3.2 (Pattern A list-ordering ambiguity, also IFC spec issue 21). | R. Brice |
 

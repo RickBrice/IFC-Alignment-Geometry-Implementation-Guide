@@ -76,7 +76,7 @@
 
 20. The ordering of `IfcReferent` instances within `IfcRelNests.RelatedObjects` (by increasing `DistanceAlong`) is required only by the IFC concept template, not by a schema `WHERE` rule; a model with an unsorted list still validates (§9.3.1).
 
-21. Whether layout sub-objects and referents should share a single `IfcRelNests` relationship or use separate ones is not resolved; two patterns exist in practice (§9.3.2).
+21. Whether layout sub-objects and referents should share a single `IfcRelNests` relationship or use separate ones is not resolved; two patterns exist in practice (§9.3.2). Where they do share one nest, the `RelatedObjects` order between a whole-alignment layout sub-object and a referent located partway along it (e.g. a `SUPERELEVATIONEVENT`, a `POSITION` referent at a vertical curve's low point, or an `INTERSECTION` referent inside a segment) is left undefined — the layout sub-objects have no single `DistanceAlong` to sort by, and the schema supplies no convention (§9.3.2).
 
 22. The schema does not restrict `IfcReferent.ObjectPlacement` to `IfcLinearPlacement`; `IfcLocalPlacement` and `IfcGridPlacement` are schema-valid alternatives but carry no `DistanceAlong` value, leaving no reliable basis for ordering referents or performing station-to-distance conversions (§9.3.3).
 
