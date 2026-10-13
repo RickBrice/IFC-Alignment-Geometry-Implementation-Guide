@@ -347,6 +347,14 @@ complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment is appr
 | Project unit | Meter (ETRS-TM35FIN) |
 | 3D curve type | `IfcSegmentedReferenceCurve` |
 
+The horizontal layout contains ten Helmert transition curves (`HELMERTCURVE`). In the
+source data, these segments do not end exactly where the next segment starts. A Helmert
+curve evaluated from its design parameters, as defined in [Section 2.7](2_Horizontal_Alignments.md),
+ends 0.5–9.6 cm from the following segment's `StartPoint` and 2.5–6.3 × 10⁻⁴ rad from its
+`StartDirection`. These gaps are a property of the design data, not of the evaluation, so the
+reference coordinates jump at those locations. The curve segments that follow each Helmert
+curve are placed at their own `StartPoint`.
+
 #### Exit Turnout — Huni Valley Station
 
 The third case is the mainline alignment of an exit turnout at Huni Valley Station on a
@@ -369,8 +377,11 @@ segments with a rail head distance of 1.0 m.
 
 #### Reference coordinate format
 
-All three CSV files contain 101 rows sampled at 100 equal intervals along the full alignment
-length. All positions are in project units; direction components are dimensionless. The
+All three CSV files are sampled at every whole metre of distance along the 3D curve,
+starting at 0, plus a final row at the end of the curve when it does not fall on a whole
+metre. The sampling interval is 1 m (SI) regardless of the project unit, so in
+`FHWA_Alignment.csv` (international feet) `DistAlong` advances by 3.280840 ft per row.
+All positions are in project units; direction components are dimensionless. The
 column definitions are given in Section 12.4.2.
 
 ## 12.4 Reference Coordinates

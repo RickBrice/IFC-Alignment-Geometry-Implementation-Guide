@@ -10,9 +10,8 @@ Default (no flag) — real-world alignments:
   present, otherwise IfcGradientCurve.
 
   Default sampling (files without IfcLinearPlacement entities):
-    function-step-type  = 1  (step-param is the minimum number of steps)
-    function-step-param = 100  (100 intervals → 101 evenly-spaced points)
-    evaluation_points() on the evaluator returns the sample distances.
+    every whole metre of distance along the 3D curve (0, 1, 2 … m, SI),
+    plus the end of the curve when it does not fall on a whole metre.
 
   Linear-placement sampling (files in LINEAR_PLACEMENT_FILES):
     Each IfcLinearPlacement is resolved directly via
@@ -31,8 +30,8 @@ Default (no flag) — real-world alignments:
   to Alignment-reference-testset/{AlignmentType}/{CurveType}/3D/.
 
   Sampling matches generate_csv.py: 101 points at 0, 1, 2 … 100 m (SI),
-  converted to project units in the output.  The sample count is derived from
-  the horizontal layout length so the script is robust to non-100 m cases.
+  converted to project units in the output.  Uses the same whole-metre sampling
+  as the real-world mode, so it is robust to non-100 m cases.
 
 Columns (all length values in project units; directions are dimensionless):
   DistAlong     — distance along the curve from the start
@@ -47,6 +46,7 @@ Usage:
 """
 import argparse
 import csv
+import math
 import sys
 from pathlib import Path
 
@@ -91,6 +91,9 @@ CUSTOM_CSV_FILES = {
     'FHWA_Alignment_LinearPlacement_VerticalOffset': 'generate_fhwa_verticaloffset_csv.py',
 }
 
+# Metres. See _sample_distances().
+END_SNAP_TOLERANCE = 1e-6
+
 
 def get_3d_curve(alignment):
     """Return the best available 3D curve for this alignment.
@@ -108,11 +111,28 @@ def get_3d_curve(alignment):
 
 def _make_evaluator(curve):
     s = ifcopenshell.geom.settings()
-    s.set('function-step-type', 1)
-    s.set('function-step-param', 100.0)
-    fi = ifcopenshell_wrapper.map_shape(s, curve.wrapped_data)
+    fi = ifcopenshell_wrapper.map_shape(s, curve)
     ev = ifcopenshell_wrapper.function_item_evaluator(s, fi)
     return ev
+
+
+def _sample_distances(ev):
+    """Return distances along (SI metres) at every whole metre from the start of the
+    curve, plus the end of the curve if it does not fall on a whole metre.
+
+    The end of the curve is taken from the evaluator's own domain (the last of its
+    evaluation_points()), which is the extent the 3D curve can actually be evaluated
+    over -- shorter than the horizontal layout when the vertical or cant layout ends
+    first. An end within END_SNAP_TOLERANCE of a whole metre is treated as that whole
+    metre: the evaluator's domain can fall a fraction of a micrometre short of the
+    nominal length (e.g. 99.9999995 m for a 100 m parabolic vertical curve), and the
+    sample should land on the nominal end, not on that numerical noise.
+    """
+    end_m = ev.evaluation_points()[-1]
+    distances = [float(i) for i in range(int(math.floor(end_m + END_SNAP_TOLERANCE)) + 1)]
+    if end_m - distances[-1] > END_SNAP_TOLERANCE:
+        distances.append(end_m)
+    return distances
 
 
 def _eval_row(ev, d_m, unit_scale):
@@ -202,7 +222,7 @@ def process_realworld_file(src: Path):
     else:
         unit_scale = ifcopenshell.util.unit.calculate_unit_scale(ifc)
         ev = _make_evaluator(get_3d_curve(alignment))
-        rows = [_eval_row(ev, d_m, unit_scale) for d_m in ev.evaluation_points()]
+        rows = [_eval_row(ev, d_m, unit_scale) for d_m in _sample_distances(ev)]
 
     dest = src.with_suffix('.csv')
     _write_csv(dest, rows)
@@ -216,15 +236,7 @@ def process_testset_file(src: Path):
     alignment = ifc.by_type('IfcAlignment')[0]
 
     ev = _make_evaluator(get_3d_curve(alignment))
-
-    # Derive sample count from horizontal layout length (100 m → 101 points).
-    h_layout = align_api.get_horizontal_layout(alignment)
-    h_curve = align_api.get_layout_curve(h_layout)
-    real_segs = [s for s in h_curve.Segments if s.SegmentLength.wrappedValue != 0.0]
-    total_m = sum(abs(s.SegmentLength.wrappedValue) * unit_scale for s in real_segs)
-    n_points = int(round(total_m)) + 1
-
-    rows = [_eval_row(ev, float(i), unit_scale) for i in range(n_points)]
+    rows = [_eval_row(ev, d_m, unit_scale) for d_m in _sample_distances(ev)]
 
     rel = src.relative_to(GEOMETRY_ROOT)
     csv_name = rel.stem.removeprefix('Generated_') + '.csv'

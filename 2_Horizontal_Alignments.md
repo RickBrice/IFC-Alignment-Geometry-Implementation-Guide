@@ -894,9 +894,9 @@ Evaluate the raw second half spiral (with `Position` at origin) at $t = L/2$ to 
 
 $$\theta_{p} = \theta_{1} - \theta_{2} = 0.0277777777 - (-0.0277777777) = 0.05555555$$
 
-$$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p} = 49.9972 - 49.9664\cos(0.0555555) - 1.73556\sin(0.0555555) = 0.011503\ m$$
+$$x_{p} = x_{1} - x_{2}\cos\theta_{p} + y_{2}\sin\theta_{p} = 49.997244 - 49.966385\cos(0.0555556) + (-1.735658)\sin(0.0555556) = 0.011573\ m$$
 
-$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p} = 0.347204 - 49.9664\sin(0.055555) + 1.73556\cos(0.0555555) = -0.6943693\ m$$
+$$y_{p} = y_{1} - x_{2}\sin\theta_{p} - y_{2}\cos\theta_{p} = 0.347204 - 49.966385\sin(0.0555556) - (-1.735658)\cos(0.0555556) = -0.694298\ m$$
 
 $$dx_p = \cos(\theta_p) = \cos(0.055555555) = 0.998457$$
 
@@ -970,7 +970,7 @@ $$M_{CSP} = \begin{bmatrix}
 
 #### Step 2 — Evaluate the second half parent curve at SegmentStart and form the normalization matrix $M_N$
 
-The second half parent curve has `Position` at $(x_p, y_p) = (0.011503,\ -0.694370)$ with direction $\theta_p = 0.055556\ \text{rad}$. This was chosen so that the parent curve at $t = L/2 = 50$ yields $(x_1, y_1, \theta_1) = (49.9972,\ 0.347204,\ 0.027778)$ — the endpoint of the first half.
+The second half parent curve has `Position` at $(x_p, y_p) = (0.011573,\ -0.694298)$ with direction $\theta_p = 0.055556\ \text{rad}$. This was chosen so that the parent curve at $t = L/2 = 50$ yields $(x_1, y_1, \theta_1) = (49.9972,\ 0.347204,\ 0.027778)$ — the endpoint of the first half.
 
 $M_N$ maps $(x_1, y_1, \theta_1)$ to the origin with the $x$-axis tangent direction:
 
@@ -982,8 +982,8 @@ $$M_N = \begin{bmatrix}
 \end{bmatrix}$$
 
 $$M_N = \begin{bmatrix}
-0.999614 & 0.027774 & 0 & -50.0\\
--0.027774 & 0.999614 & 0 & 0\\
+0.999614 & 0.027774 & 0 & -49.987600\\
+-0.027774 & 0.999614 & 0 & 1.041563\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -996,15 +996,17 @@ $$\theta_{raw}(t) = \frac{t^3}{3(-114.4714)^3} + \frac{86.6025}{2\left|86.6025^3
 
 $$\theta_{raw}(100) = -0.22222 + 0.66666 - 0.33333 = 0.11111\ \text{rad}$$
 
-$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 99.8942272\ \text{m}$$
+$$x_{raw} = \int_0^{100}\cos\theta_{raw}(t)\,dt = 99.8942275\ \text{m}$$
 
-$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = -0.00146765266\ \text{m}$$
+$$y_{raw} = \int_0^{100}\sin\theta_{raw}(t)\,dt = -0.00146897\ \text{m}$$
+
+> **Note:** These integrals have no closed form and must be evaluated numerically. The values above are converged to better than $10^{-12}\ \text{m}$. A production implementation's integrator may be less precise. For example, IfcOpenShell evaluates $(x_{raw}, y_{raw}) = (99.8942272,\ -0.0014677)$, about $1.3 \times 10^{-6}\ \text{m}$ from the converged values. Expect agreement between implementations, and with the test set in [Chapter 12](12_Alignment_Geometry_Testset.md), at the $10^{-6}\ \text{m}$ level for a 100 m Helmert curve, not to the last printed digit.
 
 Apply the parent curve `Position` $(x_p, y_p, \theta_p)$:
 
-$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011503 + 99.8942272(0.998457) - (-0.00146765266)(0.055527) = 99.7517\ \text{m}$$
+$$x_{pos} = x_p + x_{raw}\cos\theta_p - y_{raw}\sin\theta_p = 0.011573 + 99.8942275(0.998457) - (-0.00146897)(0.055527) = 99.751763\ \text{m}$$
 
-$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694370 + 99.8942272(0.055527) + (-0.00146765266)(0.998457) = 4.8510\ \text{m}$$
+$$y_{pos} = y_p + x_{raw}\sin\theta_p + y_{raw}\cos\theta_p = -0.694298 + 99.8942275(0.055527) + (-0.00146897)(0.998457) = 4.851061\ \text{m}$$
 
 $$\theta_{pos}(100) = \theta_p + \theta_{raw}(100) = 0.055556 + 0.11111 = 0.16\overline{6}\ \text{rad}$$
 
@@ -1019,8 +1021,8 @@ $$M_{PC} = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix} = 
 \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 99.7517\\
-0.16590 & 0.98615 & 0 & 4.8510\\
+0.986143 & -0.165896 & 0 & 99.751763\\
+0.165896 & 0.986143 & 0 & 4.851061\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
@@ -1036,21 +1038,21 @@ $$M_h = \begin{bmatrix}
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-0.999614 & 0.027774 & 0 & -50.0\\
--0.027774 & 0.999614 & 0 & 0\\
+0.999614 & 0.027774 & 0 & -49.987600\\
+-0.027774 & 0.999614 & 0 & 1.041563\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-0.98615 & -0.16590 & 0 & 99.7517\\
-0.16590 & 0.98615 & 0 & 4.8510\\
+0.986143 & -0.165896 & 0 & 99.751763\\
+0.165896 & 0.986143 & 0 & 4.851061\\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
 
 $$M_{h} = \begin{bmatrix}
-0.98614323 & -0.16589613 & 0. & 99.75176295 \\
-0.16589613 & 0.98614323  & 0. & 4.85106157 \\
+0.98614323 & -0.16589613 & 0. & 99.75176345 \\
+0.16589613 & 0.98614323  & 0. & 4.85106052 \\
 0 & 0 & 1 & 0\\
 0 & 0 & 0 & 1
 \end{bmatrix}$$
