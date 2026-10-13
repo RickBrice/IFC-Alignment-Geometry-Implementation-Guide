@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-06-02
+# Date: 2026-10-13
 # Generates Figure 2.7.2-3: Helmert curve segments
 
 from pathlib import Path
@@ -17,12 +17,20 @@ model = ifcopenshell.open(str(ifc_path))
 
 settings = geom.settings()
 
+
+def sample_distances(segment, step=0.5):
+    """Distances along the curve segment, every step metres from its start to its end."""
+    length = abs(segment.SegmentLength.wrappedValue)
+    n = int(round(length / step))
+    return [length * i / n for i in range(n + 1)]
+
+
 X = []
 Y = []
 segment = model.by_id(36)
-mapped_shape = ifcopenshell.ifcopenshell_wrapper.map_shape(settings, segment.wrapped_data)
+mapped_shape = ifcopenshell.ifcopenshell_wrapper.map_shape(settings, getattr(segment, 'wrapped_data', segment))
 evaluator = ifcopenshell.ifcopenshell_wrapper.function_item_evaluator(settings, mapped_shape)
-for d in evaluator.evaluation_points():
+for d in sample_distances(segment):
     m = evaluator.evaluate(d)
     X.append(m[0][3])
     Y.append(m[1][3])
@@ -30,9 +38,9 @@ for d in evaluator.evaluation_points():
 X2 = []
 Y2 = []
 segment = model.by_id(48)
-mapped_shape = ifcopenshell.ifcopenshell_wrapper.map_shape(settings, segment.wrapped_data)
+mapped_shape = ifcopenshell.ifcopenshell_wrapper.map_shape(settings, getattr(segment, 'wrapped_data', segment))
 evaluator = ifcopenshell.ifcopenshell_wrapper.function_item_evaluator(settings, mapped_shape)
-for d in evaluator.evaluation_points():
+for d in sample_distances(segment):
     m = evaluator.evaluate(d)
     X2.append(m[0][3])
     Y2.append(m[1][3])
