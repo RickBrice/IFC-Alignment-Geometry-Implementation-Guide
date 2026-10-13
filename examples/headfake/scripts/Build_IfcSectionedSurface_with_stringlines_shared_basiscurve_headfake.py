@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-21 (retitled 2026-07-31)
+# Date: 2026-10-13
 #
 # Headfake model — produces Figure 10.6.1.4-1 in the IFC Alignment Geometry Implementation Guide.
 #
@@ -17,6 +17,7 @@ import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
 
 
@@ -56,7 +57,7 @@ body = ifcopenshell.api.context.add_context(
 ifcopenshell.api.aggregate.assign_object(file,relating_object=project,products=[site,])
 
 start_station = 500.
-alignment = ifcopenshell.api.alignment.create(file,"Main-Line",include_vertical=True,start_station=start_station)
+alignment = ifcopenshell.api.alignment.create(file,"Main-Line",include_vertical=True)
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 
 segment1 = file.createIfcAlignmentHorizontalSegment(
@@ -69,6 +70,16 @@ segment1 = file.createIfcAlignmentHorizontalSegment(
 )
 
 end = ifcopenshell.api.alignment.create_layout_segment(file,layout,segment1)
+
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+    alignment=alignment,
+    distance_along=0.0,
+    station=start_station,
+)
 
 vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
 

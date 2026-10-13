@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-21 (revised 2026-07-31)
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSurface where edge stringlines are defined from independent curve
@@ -32,6 +32,7 @@ import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
 
 
@@ -167,7 +168,7 @@ EDGE_RADIUS = solve_arc_radius(200., END_WIDTH - WIDTH)
 # Main-Line remains a real IfcAlignment product — it is the surface's actual Directrix and isn't
 # part of what this example is demonstrating.
 start_station = 500.
-alignment = ifcopenshell.api.alignment.create(file, "Main-Line", include_vertical=True, start_station=start_station)
+alignment = ifcopenshell.api.alignment.create(file, "Main-Line", include_vertical=True)
 
 segment1 = file.createIfcAlignmentHorizontalSegment(
     StartPoint=file.createIfcCartesianPoint(Coordinates=(0., 0.)),
@@ -180,6 +181,16 @@ segment1 = file.createIfcAlignmentHorizontalSegment(
 
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 ifcopenshell.api.alignment.create_layout_segment(file, layout, segment1)
+
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+    alignment=alignment,
+    distance_along=0.0,
+    station=start_station,
+)
 
 vsegment1 = file.createIfcAlignmentVerticalSegment(
     StartDistAlong=0.,

@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-21
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcOffsetCurveByDistances with a 3D basis curve. Offset1 uses the
@@ -13,6 +13,7 @@
 import os
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
@@ -38,7 +39,7 @@ body = ifcopenshell.api.context.add_context(
     target_view="MODEL_VIEW",
     parent=geometric_representation_context)
 
-alignment = ifcopenshell.api.alignment.create(file,"E-Line",include_vertical=True,start_station=10000.)
+alignment = ifcopenshell.api.alignment.create(file,"E-Line",include_vertical=True)
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 
 segment = file.createIfcAlignmentHorizontalSegment(
@@ -50,6 +51,16 @@ segment = file.createIfcAlignmentHorizontalSegment(
     PredefinedType="CIRCULARARC"
 )
 end = ifcopenshell.api.alignment.create_layout_segment(file,layout,segment)
+
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, 10000.),
+    alignment=alignment,
+    distance_along=0.0,
+    station=10000.,
+)
 
 vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
 ifcopenshell.api.alignment.create_layout_segment(file, vlayout,

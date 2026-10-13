@@ -7,6 +7,7 @@ import ifcopenshell.api.unit
 import ifcopenshell.api.aggregate
 import ifcopenshell.api.spatial
 import ifcopenshell.api.alignment as align_api
+import ifcopenshell.util.alignment
 
 RAIL_HEAD_DISTANCE = 1.5  # metres, standard gauge approximation
 
@@ -99,11 +100,28 @@ def setup(alignment_name, include_vertical=False, include_cant=False,
         include_cant=include_cant,
         include_geometry=False
     )
+    add_start_station(ifc, alignment)
     # Reference alignment into spatial structure per CT 4.1.5.1
     ifcopenshell.api.spatial.reference_structure(ifc, products=[alignment], relating_structure=site)
     if include_cant:
         align_api.get_cant_layout(alignment).RailHeadDistance = RAIL_HEAD_DISTANCE * scale
     return ifc, alignment
+
+
+def add_start_station(ifc, alignment, station=0.0):
+    """Define the alignment's stationing with a starting-station IfcReferent at distance along 0.
+
+    align_api.create() no longer does this. The referent is named with the bare station string
+    (e.g. '0+000.000'). Before the alignment has geometry it is placed at the origin;
+    create_representation() later restates it onto the curve with an IfcLinearPlacement.
+    """
+    return align_api.add_stationing_referent(
+        ifc,
+        name=ifcopenshell.util.alignment.station_as_string(ifc, station),
+        alignment=alignment,
+        distance_along=0.0,
+        station=station,
+    )
 
 
 def add_h_segment(ifc, layout, start_r, end_r, length, ptype,
