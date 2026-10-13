@@ -759,7 +759,7 @@ $$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
 #109=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #110=IFCDIRECTION((1.,0.,0.));
 #111=IFCAXIS2PLACEMENT3D(#108,#109,#110);
-#112=IFCCURVESEGMENT(.CONTINUOUS.,#111,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(50.),#107);
+#112=IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE.,#111,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(50.),#107);
 ~~~
 
 Second half:
@@ -801,26 +801,24 @@ $$D'(50\ m) = (50\ m)^2\left(\frac{2\cdot 50\ m}{(-538.6086725\ m)^3}\right) = -
 
 $$dx_x = \frac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.999998724,\ dy_x = \frac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.00159999795$$
 
-The cant at the end of the first half is one-half of the total cant change over the length of the transition segment.
+The second half starts where the first half ends. The cross slope is interpolated linearly in the deviating elevation between the start and end cross slopes of the full transition (§4.2). The deviating elevation at the end of the first half is half way between $D_s$ and $D_e$, so the cross slope there is half way, in angle, between them:
 
-$$\frac{(D_{sr} - D_{sl}) + (D_{er} - D_{el})}{2} = \frac{(0.16 - 0.0) + (0.0 + 0.0)}{2} = 0.08$$
+$$\phi(50\ m) = \frac{\phi_s + \phi_e}{2} = \frac{1.463926346 + \frac{\pi}{2}}{2} = 1.517361336$$
 
-The cross slope at the end of the first half is 
+> **Note:** This is not the angle whose cosine is the cant ratio at the midpoint, $\cos^{-1}\left(\frac{0.08}{1.5}\right) = 1.517437677$. The two differ by $7.6 \times 10^{-5}\ rad$. The second half's `Axis` must use the interpolated angle so that the cross slope is continuous where the halves meet.
 
-$$\phi(50\ m) = \cos^{-1}\left(\frac{0.08}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.08}{1.5}\right) = 1.517437677$$
+$$dy_z = \cos(\phi(50\ m)) = \cos(1.517361336) = 0.053409565$$
 
-$$dy_z = \cos(\phi_s) = \cos(1.517437677) = 0.053333333$$
-
-$$dz_z = \sin(\phi_s) = \sin(1.517437677) = 0.998576765$$
+$$dz_z = \sin(\phi(50\ m)) = \sin(1.517361336) = 0.998572691$$
 
 The trimming begins at $50\ m$ and progresses for a length of $50\ m$ for the second half segment.
 
 ~~~
 #117=IFCCARTESIANPOINT((50.,0.04,0.));
-#118=IFCDIRECTION((0.,0.053333333333333337,0.99857676497881498));
+#118=IFCDIRECTION((0.,0.05340956531005583,0.9985726905605775));
 #119=IFCDIRECTION((0.9999987200024576,-0.0015999979520039342,0.));
 #120=IFCAXIS2PLACEMENT3D(#117,#118,#119);
-#121=IFCCURVESEGMENT(.CONTINUOUS.,#120,IFCLENGTHMEASURE(50.),IFCLENGTHMEASURE(50.),#116);
+#121=IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE.,#120,IFCLENGTHMEASURE(50.),IFCLENGTHMEASURE(50.),#116);
 ~~~
 
 ### 4.5.3 Compute Point on Curve
@@ -832,44 +830,44 @@ transition, $\ell = 75\ m - 50\ m = 25\ m$.
 
 $$\mathbf{RefDir}_p = (0.9999987200024576,\ -0.0015999979520039342,\ 0.)$$
 
-$$\mathbf{Axis}_p = (0.,\ 0.053333333333333337,\ 0.99857676497881498)$$
+$$\mathbf{Axis}_p = (0.,\ 0.05340956531005583,\ 0.9985726905605775)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.00159772,\ 0.998575,\  -0.0533333)$$
+$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.001597714,\ 0.9985714,\ -0.0534095)$$
 
 $$M_{CSP} = \begin{bmatrix}
-   0.999998723643333 &  0.00159772078470193 &                    0 &                   50 \\
--0.00159544685252706 &    0.998575490438703 &   0.0533333333333333 &                 0.04 \\
-8.52117751841028e-05 &  -0.0533332652609777 &    0.998576764978815 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999998720002458 &   0.00159771425982398 &                     0 &                    50 \\
+ -0.00159543382717944 &     0.998571412389988 &    0.0534095653100558 &                  0.04 \\
+ 8.53332241068765e-05 &   -0.0534094969459435 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 
-$$D_s = D(50\ m) = (50\ m)^{2}\left(\frac{1}{(538.6086725\ m)^{3}}(50\ m)^{2} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|}(50\ m) + \frac{1}{15625\ m}\right) = 0.16\ m$$
+$$D_s = D(50\ m) = (50\ m)^{2}\left(\frac{1}{(538.6086725\ m)^{3}}(50\ m)^{2} + \frac{-883.8834765\ m}{\left| (-883.8834765\ m)^{3} \right|}(50\ m) + \frac{1}{15625\ m}\right) = 0.04\ m$$
 
 $$D'(s) = D'(50\ m) = (50\ m)^{2}\left( \frac{(2)(50\ m)}{(538.6086725\ m)^{3}} + \frac{(-883.8834765\ m)}{\left| (-883.8834765\ m)^{3} \right|} \right) = -0.0016$$
 
 $$dx_x = \frac{1}{\sqrt{(-0.0016)^2 + 1}} = 0.99999872$$
 
-$$dy_x = \frac{-0.0064}{\sqrt{(-0.0016)^2 + 1}} = -0.001599998$$
+$$dy_x = \frac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.001599998$$
 
-$$\phi_s = \tan^{-1}\left(\frac{dz_z}{dz_y} \right) = \tan^{-1}\left(\frac{ 0.99858080467782662}{0.053257642916150753} \right) = 1.517513475$$
+Because $D(s_0) = D_s$, the cross slope is this segment's start cross slope, $\phi(s_0) = \phi_s = 1.517361336$.
 
 $$\mathbf{X}_s = (0.99999872,\ -0.001599998,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0.053257642916150753,\ 0.99858080467782662)$$
+$$\mathbf{Z}_s = (0,\ 0.05340956531005583,\ 0.9985726905605775)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0.0015977272423949591,\ 0.99857952649685078,\ -0.053257574746498774)$$
+$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0.0015977142598239782,\ 0.9985714123899877,\ -0.05340949694594351)$$
 
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (8.5212010523094261e-05,\ 0.053257506576933983,\ 0.99858080467782662)$$
+$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (8.545508573106977e-05,\ 0.05340942858191868,\ 0.9985726905605775)$$
 
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.99999872,\ -0.001599998,\ 0)$$
+$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.9999987127,\ -0.00159999794,\ 0)$$
 
 $$M_{PCS} = \begin{bmatrix}
-   0.999998720002458 &  0.00159772077888481 &  8.5333114880559e-05 &                    0 \\
--0.00159999795200393 &     0.99857548680301 &   0.0533331968003495 &   0.0400000000000001 \\
-                   0 &  -0.0533332650667977 &    0.998576764978815 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999998712699877 &   0.00159771425982398 &  8.54550857310698e-05 &                     0 \\
+  -0.0015999979403198 &     0.998571412389988 &    0.0534094285819187 &    0.0400000000000001 \\
+                    0 &   -0.0534094969459435 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate the parent curve at $\ell = 25\ m$ — $M_{PC\ell}$
@@ -884,26 +882,28 @@ $$dx_x = \cos(\theta) = 0.99999968000015360$$
 
 $$dx_y = \sin(\theta) = -0.00079999974400011946$$
 
-$$\phi(\ell) = 1.517437677 + \left(\frac{\frac{\pi}{2} - 1.517437677}{-0.04}\right)(0.01 - 0.08) = 1.5574756139049735$$
+The second half runs from $D_s = 0.04\ m$ to $D_e = 0$, so $\Delta D = -0.04\ m$, and its cross slope runs from $\phi_s = 1.517361336$ to $\phi_e = \frac{\pi}{2}$.
 
-$$dz_y = \cos(1.5574756139049735) = 0.013320318952445506$$
+$$\phi(\ell) = 1.517361336 + \left(\frac{\frac{\pi}{2} - 1.517361336}{-0.04}\right)(0.01 - 0.04) = 1.5574375791735484$$
 
-$$dz_z = \sin(1.5574756139049735) = 0.99991128061593804$$
+$$dz_y = \cos(1.5574375791735484) = 0.013358350299808584$$
+
+$$dz_z = \sin(1.5574375791735484) = 0.9999107732579281$$
 
 $$\mathbf{X} _{\ell} = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.013320318952445506,\ 0.99991128061593804)$$
+$$\mathbf{Z} _{\ell} = (0,\ 0.013358350299808584,\ 0.9999107732579281)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.00079992876851558200,\ 0.99991096064448182,\ -0.013320314689945486)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.000799928362629304,\ 0.9999104532866342,\ -0.01335834602513854)$$
 
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (1.0656248341957419e-05,\ 0.013320310427446832,\ 0.99991128061593804)$$
+$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (1.0686673400375845e-05,\ 0.013358341750469864,\ 0.9999107732579281)$$
 
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$$
+$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.9999996798859486,\ -0.0007999997439087555,\ 0)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-    0.999999680000154 &  0.000799928566440938 &  1.06714066139122e-05 &                    25 \\
--0.000799999744000119 &     0.999910708051177 &    0.0133392582673903 &    0.0100000000000002 \\
-                    0 &   -0.0133392625359523 &     0.999911028022552 &                     0 \\
+    0.999999679885949 &  0.000799928362629304 &  1.06866734003758e-05 &                    25 \\
+-0.000799999743908755 &     0.999910453286634 &    0.0133583417504699 &    0.0100000000000001 \\
+                    0 &   -0.0133583460251385 &     0.999910773257928 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
@@ -926,9 +926,9 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-    0.999999677269901 &  0.000799928563528498 &  -7.4661790264052e-05 &                    75 \\
--0.000798861459176414 &     0.999910704410622 &    0.0133393264368146 &    0.0100000000000001 \\
- 8.53256315305252e-05 &   -0.0133392624873857 &     0.999911020741441 &                     0 \\
+    0.999999666194004 &  0.000799928356787759 & -7.47684938117213e-05 &                    75 \\
+-0.000798858192532276 &     0.999910445984698 &    0.0133584100170531 &    0.0100000000000001 \\
+ 8.54475696008679e-05 &    -0.013358345927588 &     0.999910765955989 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
