@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-08-03
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates a complete highway superelevation transition — normal crown, runoff, full
@@ -12,34 +12,8 @@ import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
-import ifcopenshell.util.element
-
-
-def fix_stationing_referent_placement(file, alignment):
-    # ifcopenshell.api.alignment.create() creates the starting-station referent before any
-    # horizontal segments exist, so add_stationing_referent's curve-has-segments check fails and
-    # it falls back to an IfcLocalPlacement copied from IfcAlignment's own placeholder placement
-    # at (0, 0) -- the "semantic-only alignment" case (§9.3.3). Now that the horizontal layout has
-    # real segments, rebuild the referent's placement as the IfcLinearPlacement /
-    # IfcPointByDistanceExpression at DistanceAlong = 0.0 that add_stationing_referent would have
-    # produced had the curve existed at creation time.
-    nest = ifcopenshell.api.alignment.get_stationing_nest(file, alignment)
-    referent = nest.RelatedObjects[0]
-    old_placement = referent.ObjectPlacement
-    only_referenced_by_referent = file.get_total_inverses(old_placement) == 1
-    curve = ifcopenshell.api.alignment.get_basis_curve(alignment)
-    referent.ObjectPlacement = file.createIfcLinearPlacement(
-        RelativePlacement=file.createIfcAxis2PlacementLinear(
-            Location=file.createIfcPointByDistanceExpression(
-                DistanceAlong=file.createIfcLengthMeasure(0.0),
-                BasisCurve=curve
-            )
-        )
-    )
-    ifcopenshell.api.alignment.update_fallback_position(file, referent.ObjectPlacement)
-    if only_referenced_by_referent:
-        ifcopenshell.util.element.remove_deep2(file, old_placement)
 
 
 def get_superelevation_event_nest(alignment):
@@ -126,7 +100,7 @@ body = ifcopenshell.api.context.add_context(
 ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products=[site,])
 
 start_station = 10000.
-alignment = ifcopenshell.api.alignment.create(file, "A-Line", include_vertical=True, start_station=start_station)
+alignment = ifcopenshell.api.alignment.create(file, "A-Line", include_vertical=True)
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 
 segment1 = file.createIfcAlignmentHorizontalSegment(
@@ -183,7 +157,15 @@ vsegment1 = file.createIfcAlignmentVerticalSegment(
 )
 ifcopenshell.api.alignment.create_layout_segment(file, vlayout, vsegment1)
 
-fix_stationing_referent_placement(file, alignment)
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+    alignment=alignment,
+    distance_along=0.0,
+    station=start_station,
+)
 
 r1 = add_superelevation(file, "Start Transition",       alignment, 11776.79,       start_station, "BOTH",  -0.02)
 add_superelevation(file, "Start Runoff Left",            alignment, 11836.79,       start_station, "LEFT",   0.00)

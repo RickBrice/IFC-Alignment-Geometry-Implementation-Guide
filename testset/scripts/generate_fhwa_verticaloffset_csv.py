@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-07-07
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Generates the reference CSV for FHWA_Alignment_LinearPlacement_VerticalOffset.ifc.
@@ -8,7 +8,7 @@
 # and re-evaluates the bare basis curve, ignoring offsets), this script evaluates each
 # IfcLinearPlacement's fully resolved placement -- including OffsetVertical and, for the
 # PlacementRelTo variants, the nested local placement -- via
-# ifcopenshell.util.placement.get_local_placement(). That function recurses through
+# ifcopenshell.util.placement.get_placement(). That function recurses through
 # PlacementRelTo and, for an IfcPointByDistanceExpression Location, delegates to the geometry
 # kernel with convert-back-units=True, so the returned matrix is already in project units.
 #
@@ -43,15 +43,16 @@ def main():
 
     rows = []
     for referent in ifc.by_type("IfcReferent"):
-        if " " not in referent.Name:
-            # Skip the single start-station referent auto-created by
-            # ifcopenshell.api.alignment.create(start_station=...); it has no variant suffix.
+        if referent.PredefinedType != "STATION" or " " not in referent.Name:
+            # Skip the key-point referents (POSITION) added by update_key_point_referents(),
+            # and the start-station referent created by common.add_start_station(), whose
+            # name is the bare station string with no variant suffix.
             continue
         label, variant = referent.Name.split(" ", 1)
         lp = referent.ObjectPlacement
         dist_along = lp.RelativePlacement.Location.DistanceAlong.wrappedValue
 
-        m = ifcopenshell.util.placement.get_local_placement(lp)
+        m = ifcopenshell.util.placement.get_placement(lp)
 
         rows.append([
             f"{dist_along:.6f}", variant,

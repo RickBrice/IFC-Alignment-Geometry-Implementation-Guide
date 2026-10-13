@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-07-13
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates the INTERSECTION referent pattern from Guide Section 9.5.1 (grounded in ISO 19148
@@ -42,7 +42,6 @@ import ifcopenshell.api.aggregate
 import ifcopenshell.api.spatial
 import ifcopenshell.api.pset
 import ifcopenshell.util.alignment
-import ifcopenshell.util.element
 import ifcopenshell.guid
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
@@ -73,7 +72,7 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products
 # layout functions are called on it explicitly.
 def create_straight_graded_alignment(name, start_point, end_point, gradient, start_station):
     length = ((end_point[0] - start_point[0]) ** 2 + (end_point[1] - start_point[1]) ** 2) ** 0.5
-    alignment = ifcopenshell.api.alignment.create(file, name, include_vertical=True, start_station=start_station)
+    alignment = ifcopenshell.api.alignment.create(file, name, include_vertical=True)
 
     horizontal_layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
     ifcopenshell.api.alignment.layout_horizontal_alignment_by_pi_method(
@@ -85,41 +84,17 @@ def create_straight_graded_alignment(name, start_point, end_point, gradient, sta
         file, vertical_layout, [(0.0, 0.0), (length, gradient * length)], []
     )
 
-    fix_starting_referent_placement(alignment)
+    # Define the stationing now that the horizontal layout has segments, so the starting
+    # referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+    ifcopenshell.api.alignment.add_stationing_referent(
+        file,
+        name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+        alignment=alignment,
+        distance_along=0.0,
+        station=start_station,
+    )
 
     return alignment
-
-# create() (called above) builds the alignment's starting STATION referent -- via
-# add_stationing_referent() -- before the horizontal layout has any segments. At that point
-# get_basis_curve(alignment) returns an empty IfcCompositeCurve, so add_stationing_referent() falls back
-# to IfcLocalPlacement at the alignment's own local origin (0.0, 0.0) with PlacementRelTo=None. That
-# fallback is never revisited once real geometry exists, so every alignment's starting referent ends up
-# placed at literal world (0, 0, 0) regardless of where that alignment's curve actually starts -- e.g.
-# First Avenue's Sta. 7+00 referent would resolve to the same point as Washington Street's Sta. 5+00
-# referent, even though First Avenue starts at (500, -500), not (0, 0). This rebuilds that referent's
-# ObjectPlacement as a proper IfcLinearPlacement / IfcPointByDistanceExpression at DistanceAlong = 0.0
-# against the now-populated basis curve, the same construction add_stationing_referent() would have used
-# had the curve existed when it ran.
-def fix_starting_referent_placement(alignment):
-    nest = ifcopenshell.api.alignment.get_stationing_nest(file, alignment)
-    referent = nest.RelatedObjects[0]
-    old_placement = referent.ObjectPlacement
-
-    curve = ifcopenshell.api.alignment.get_basis_curve(alignment)
-    object_placement = file.createIfcLinearPlacement(
-        RelativePlacement=file.createIfcAxis2PlacementLinear(
-            Location=file.createIfcPointByDistanceExpression(
-                DistanceAlong=file.createIfcLengthMeasure(0.0),
-                OffsetLateral=None,
-                OffsetVertical=None,
-                OffsetLongitudinal=None,
-                BasisCurve=curve,
-            )
-        ),
-    )
-    ifcopenshell.api.alignment.update_fallback_position(file, object_placement)
-    referent.ObjectPlacement = object_placement
-    ifcopenshell.util.element.remove_deep2(file, old_placement)
 
 # Washington Street -- straight tangent from (0, 0) heading due east for 1000 ft, elevation 0 climbing
 # at 3%, stationing starting at 5+00 (station 500.0), chosen so the crossing 500 ft in lands on Sta.

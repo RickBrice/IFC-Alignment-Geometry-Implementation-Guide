@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-21
+# Date: 2026-10-13
 # This script produces two IFC models for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSolidHorizontal with a transforming cross-section: a retaining
@@ -12,6 +12,7 @@
 import os
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
 
 # Retaining wall geometry parameters.
@@ -49,8 +50,7 @@ def build_model(explicit_axis):
     alignment = ifcopenshell.api.alignment.create(
         file, "Alignment",
         include_vertical=True,
-        include_cant=False,
-        start_station=0.
+        include_cant=False
     )
 
     layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
@@ -63,6 +63,16 @@ def build_model(explicit_axis):
         PredefinedType="LINE"
     )
     ifcopenshell.api.alignment.create_layout_segment(file, layout, h_segment)
+
+    # Define the stationing now that the horizontal layout has segments, so the starting
+    # referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+    ifcopenshell.api.alignment.add_stationing_referent(
+        file,
+        name=ifcopenshell.util.alignment.station_as_string(file, 0.),
+        alignment=alignment,
+        distance_along=0.0,
+        station=0.,
+    )
 
     vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
     v_segment = file.createIfcAlignmentVerticalSegment(

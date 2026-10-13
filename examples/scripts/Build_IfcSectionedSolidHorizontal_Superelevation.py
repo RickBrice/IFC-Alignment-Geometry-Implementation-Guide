@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-08-03
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Demonstrates IfcSectionedSolidHorizontal with a crowned pavement cross-section swept along a
@@ -23,7 +23,6 @@ import ifcopenshell.api.alignment
 import ifcopenshell.api.pset
 import ifcopenshell.api.unit
 import ifcopenshell.util.alignment
-import ifcopenshell.util.element
 import ifcopenshell.util.unit
 
 CROWN_SLOPE = 0.02   # 2 % normal cross-slope (rise/run)
@@ -64,8 +63,7 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products
 start_station = 3000.
 alignment = ifcopenshell.api.alignment.create(
     file, "A-Line",
-    include_vertical=True,
-    start_station=start_station
+    include_vertical=True
 )
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 
@@ -131,32 +129,6 @@ road_part = file.createIfcRoadPart(
     UsageType="LONGITUDINAL"
 )
 ifcopenshell.api.aggregate.assign_object(file, relating_object=road, products=[road_part])
-
-
-def fix_stationing_referent_placement(file, alignment):
-    # ifcopenshell.api.alignment.create() creates the starting-station referent before any
-    # horizontal segments exist, so add_stationing_referent's curve-has-segments check fails and
-    # it falls back to an IfcLocalPlacement copied from IfcAlignment's own placeholder placement
-    # at (0, 0) -- the "semantic-only alignment" case (§9.3.3). Now that the horizontal layout has
-    # real segments, rebuild the referent's placement as the IfcLinearPlacement /
-    # IfcPointByDistanceExpression at DistanceAlong = 0.0 that add_stationing_referent would have
-    # produced had the curve existed at creation time.
-    nest = ifcopenshell.api.alignment.get_stationing_nest(file, alignment)
-    referent = nest.RelatedObjects[0]
-    old_placement = referent.ObjectPlacement
-    only_referenced_by_referent = file.get_total_inverses(old_placement) == 1
-    curve = ifcopenshell.api.alignment.get_basis_curve(alignment)
-    referent.ObjectPlacement = file.createIfcLinearPlacement(
-        RelativePlacement=file.createIfcAxis2PlacementLinear(
-            Location=file.createIfcPointByDistanceExpression(
-                DistanceAlong=file.createIfcLengthMeasure(0.0),
-                BasisCurve=curve
-            )
-        )
-    )
-    ifcopenshell.api.alignment.update_fallback_position(file, referent.ObjectPlacement)
-    if only_referenced_by_referent:
-        ifcopenshell.util.element.remove_deep2(file, old_placement)
 
 
 def get_superelevation_event_nest(alignment):
@@ -262,7 +234,15 @@ def make_profile(slope_right, slope_left):
 # below. Start/End Runoff sit at the distance where the moving shoulder's slope crosses zero
 # between the flanking anchors; their slope values are the exact linear interpolation this unguided
 # (no string-line) solid geometry already implies at that distance, not independently authored.
-fix_stationing_referent_placement(file, alignment)
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+    alignment=alignment,
+    distance_along=0.0,
+    station=start_station,
+)
 
 r1 = add_superelevation(file, "Start Transition",       alignment, directrix, 540.0,   start_station, "BOTH",  -CROWN_SLOPE)
 add_superelevation(file, "Start Runoff Left",            alignment, directrix, 560.0,   start_station, "LEFT",   0.0)

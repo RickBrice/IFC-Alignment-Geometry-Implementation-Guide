@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-22 (revised 2026-07-31)
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Solid counterpart to Build_IfcSectionedSurface_with_stringlines_independent_guide_curves.py.
@@ -28,6 +28,7 @@ import os
 import math
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
 
 
@@ -139,7 +140,7 @@ ifcopenshell.api.aggregate.assign_object(file, relating_object=project, products
 # Main alignment — 200 m straight, due East, flat grade. This remains a real IfcAlignment product
 # — it is the solid's actual Directrix and isn't part of what this example is demonstrating.
 start_station = 500.
-alignment = ifcopenshell.api.alignment.create(file, "Main-Line", include_vertical=True, start_station=start_station)
+alignment = ifcopenshell.api.alignment.create(file, "Main-Line", include_vertical=True)
 layout = ifcopenshell.api.alignment.get_horizontal_layout(alignment)
 ifcopenshell.api.alignment.create_layout_segment(file, layout,
     file.createIfcAlignmentHorizontalSegment(
@@ -150,6 +151,15 @@ ifcopenshell.api.alignment.create_layout_segment(file, layout,
         SegmentLength=200.,
         PredefinedType="LINE"
     )
+)
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+    alignment=alignment,
+    distance_along=0.0,
+    station=start_station,
 )
 vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)
 ifcopenshell.api.alignment.create_layout_segment(file, vlayout,

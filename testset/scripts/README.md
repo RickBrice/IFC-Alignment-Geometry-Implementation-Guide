@@ -314,8 +314,17 @@ Shared IFC construction helpers used by all semantic IFC generators.
 Creates an IFC file with project, site, unit assignments (meter, radian), model
 context, and an empty `IfcAlignment` with the requested layout types. The alignment is
 aggregated to the project and referenced into the site's spatial structure per
-CT 4.1.5.1. When `include_cant=True`, sets `RailHeadDistance = 1.5` m on the cant
-layout. Returns `(ifc, alignment)`.
+CT 4.1.5.1. Defines the alignment's stationing with `add_start_station()`. When
+`include_cant=True`, sets `RailHeadDistance = 1.5` m on the cant layout. Returns
+`(ifc, alignment)`.
+
+**`add_start_station(ifc, alignment, station=0.0)`**  
+Adds the starting-station `IfcReferent` (distance along 0) with
+`ifcopenshell.api.alignment.add_stationing_referent()`, named with the bare station string
+(e.g. `0+000.000`). `ifcopenshell.api.alignment.create()` no longer defines stationing. The
+semantic files have no geometry, so the referent is placed at the origin;
+`create_representation()` in `generate_geometry.py` restates it onto the curve with an
+`IfcLinearPlacement`.
 
 **`add_h_segment(ifc, layout, start_r, end_r, length, ptype)`**  
 Appends one `IfcAlignmentHorizontalSegment` to the layout. Radius values follow the

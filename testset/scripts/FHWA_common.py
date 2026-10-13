@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-07-07
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Shared alignment-building code for the FHWA Bridge Geometry Manual Appendix B
@@ -69,8 +69,8 @@ def setup_eline_project(project_name="FHWA Alignment"):
 
     alignment = ifcopenshell.api.alignment.create(
         ifc, ALIGNMENT_NAME, include_vertical=True, include_geometry=False,
-        start_station=START_STATION_FT,
     )
+    common.add_start_station(ifc, alignment, START_STATION_FT)
     ifcopenshell.api.spatial.reference_structure(ifc, products=[alignment], relating_structure=site)
 
     return ifc, alignment

@@ -1,5 +1,5 @@
 # Author: Richard Brice, PE
-# Date: 2026-05-22
+# Date: 2026-10-13
 # This script produces an example IFC model for the IFC Alignment Geometry Implementation Guide.
 #
 # Surface counterpart to Build_IfcSectionedSolidHorizontal.py.
@@ -13,6 +13,7 @@
 import os
 import ifcopenshell
 import ifcopenshell.api.alignment
+import ifcopenshell.util.alignment
 import ifcopenshell.api.unit
 
 file = ifcopenshell.file(schema="IFC4X3_ADD2")
@@ -45,7 +46,6 @@ alignment = ifcopenshell.api.alignment.create(
     file, "Alignment",
     include_vertical=True,
     include_cant=True,
-    start_station=start_station,
     #include_geometry=False
 )
 
@@ -61,6 +61,16 @@ h_segment = file.createIfcAlignmentHorizontalSegment(
     PredefinedType="BLOSSCURVE"
 )
 ifcopenshell.api.alignment.create_layout_segment(file, layout, h_segment)
+
+# Define the stationing now that the horizontal layout has segments, so the starting
+# referent is placed on the curve (ifcopenshell.api.alignment.create() no longer does this).
+ifcopenshell.api.alignment.add_stationing_referent(
+    file,
+    name=ifcopenshell.util.alignment.station_as_string(file, start_station),
+    alignment=alignment,
+    distance_along=0.0,
+    station=start_station,
+)
 
 # Vertical layout — flat grade.
 vlayout = ifcopenshell.api.alignment.get_vertical_layout(alignment)

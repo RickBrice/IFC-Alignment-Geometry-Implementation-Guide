@@ -15,7 +15,7 @@ Default (no flag) — real-world alignments:
 
   Linear-placement sampling (files in LINEAR_PLACEMENT_FILES):
     Each IfcLinearPlacement is resolved directly via
-    ifcopenshell.util.placement.get_local_placement(), rather than sampling the
+    ifcopenshell.util.placement.get_placement(), rather than sampling the
     bare 3D curve at the placement's DistanceAlong -- this is what actually
     exercises IfcLinearPlacement evaluation (OffsetVertical, PlacementRelTo,
     etc.), not just curve evaluation at matching distances.
@@ -163,13 +163,17 @@ def _sorted_linear_placements(ifc, basis_curve):
     sorted by distance.
 
     Filtering by BasisCurve excludes placements that reference some other curve, such as
-    the single start-station IfcReferent auto-created by
-    ifcopenshell.api.alignment.create(start_station=...), whose Location.BasisCurve is the
+    the single start-station IfcReferent created by common.add_start_station()
+    (ifcopenshell.api.alignment.add_stationing_referent), whose Location.BasisCurve is the
     2D horizontal composite curve rather than the alignment's 3D curve.
+
+    Only placements of STATION referents are kept. That excludes the key-point referents
+    (P.C., P.V.T., ...) that ifcopenshell.api.alignment.update_key_point_referents() adds,
+    which are POSITION referents and may also be placed on the 3D curve.
 
     dist_along is in project units, taken directly from the placement's
     IfcPointByDistanceExpression -- no unit conversion needed since
-    get_local_placement() below already returns project units.
+    get_placement() below already returns project units.
     """
     items = []
     for lp in ifc.by_type('IfcLinearPlacement'):
@@ -177,6 +181,8 @@ def _sorted_linear_placements(ifc, basis_curve):
         if not pde.is_a('IfcPointByDistanceExpression'):
             continue
         if pde.BasisCurve != basis_curve:
+            continue
+        if not any(o.is_a('IfcReferent') and o.PredefinedType == 'STATION' for o in lp.PlacesObject):
             continue
         items.append((pde.DistanceAlong.wrappedValue, lp))
     return sorted(items, key=lambda item: item[0])
@@ -195,7 +201,7 @@ def _fmt(v):
 def _eval_linear_placement_row(lp, dist_along):
     """Resolve lp's full placement chain (including PlacementRelTo, if any) and
     return a formatted CSV row."""
-    m = ifcopenshell.util.placement.get_local_placement(lp)
+    m = ifcopenshell.util.placement.get_placement(lp)
     return [
         _fmt(dist_along),
         _fmt(m[0, 3]), _fmt(m[1, 3]), _fmt(m[2, 3]),
