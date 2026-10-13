@@ -86,13 +86,13 @@ The `StartCantLeft` $D_{sl}$, `EndCantLeft` $D_{el}$, `StartCantRight` $D_{sr}$,
 
 $$D_s = \frac{D_{sl} + D_{sr}}{2}, \quad D_e = \frac{D_{el} + D_{er}}{2} \quad \Delta D = D_e - D_s$$
 
-The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the start and end cross-slope angles encoded in the `Axis` vector of the `IfcCurveSegment.Placement`, using the deviating elevation as the interpolation parameter:
+The cross-slope angle $\phi$ at a given point is not obtained directly from the parent curve equation; instead it is interpolated between the cross-slope angle of the segment's own `IfcCurveSegment.Placement.Axis` and that of the next segment's `Placement.Axis`, using the deviating elevation as the interpolation parameter:
 
 $$\phi(\ell) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)\bigl(D(\ell) - D_s\bigr)$$
 
 $$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right)$$
 
-where $\phi_s$ and $\phi_e$ are the cross-slope angles at the start and end of the segment and $D(\ell)$ is the deviating elevation at $\ell$. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the projection of the `Axis` vector onto the Y-Z plane. In sections without cant, $\phi = \frac{\pi}{2}$.
+where $\phi_s$ is the cross-slope angle of this segment's `Placement.Axis`, $\phi_e$ is that of the next segment's `Placement.Axis` (for the last segment, the zero-length closing segment of §4.12), $D_s$ and $\Delta D$ are the deviating elevation of the parent curve at the start of the trimmed segment and its change over the segment, and $D(\ell)$ is the deviating elevation at $\ell$. The cross-slope angle $\phi$ is the angle from the transverse $y$ axis to the projection of the `Axis` vector onto the Y-Z plane. In sections without cant, $\phi = \frac{\pi}{2}$.
 
 The cross-slope angle can be determined from the `Axis` vector as $\phi = \tan^{-1}\left(\frac{Axis.dz}{Axis.dy}\right)$
 
@@ -110,9 +110,11 @@ Let $s_0$ = `IfcCurveSegment.SegmentStart`.
 
 $M_{CSP}$ is constructed from `IfcCurveSegment.Placement`: $(s_p, D_p)$ is the `Location` (distance along, deviating elevation).
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|}$$
 
 $$\mathbf{X}_p = \mathbf{Y}_p \times \mathbf{Axis}_p$$
+
+`RefDir` need not be perpendicular to `Axis` (a cant segment's `RefDir` follows the slope of the deviating elevation while its `Axis` is tilted in the cross section), so $\mathbf{Y}_p$ is normalized as for any `IfcAxis2Placement3D`.
 
 $$\mathbf{Z}_p = \mathbf{Axis}_p$$
 
@@ -134,19 +136,19 @@ $$\phi(s_0) = \phi_s + \left(\frac{\phi_e - \phi_s}{\Delta D}\right)(D(s_0) - D_
 
 Because $D(s_0) = D_s,\ \phi(s_0) = \phi_s$.
 
-Construct the orthogonal vectors
+Construct the frame vectors
 
-$$\mathbf{X}_{pcs} = (\cos\theta_s,\ \sin\theta_s,\ 0)$$
-$$\mathbf{Z}_{pcs} = (0,\ \cos\phi_s,\ \sin\phi_s)$$
-$$\mathbf{Y}_{pcs} = \mathbf{Z}_{pcs} \times \mathbf{X}_{pcs}$$
-$$\mathbf{Axis}_{pcs} = \mathbf{X}_{pcs} \times \mathbf{Y}_{pcs}$$
-$$\mathbf{RefDir}_{pcs} = \mathbf{Y}_{pcs} \times \mathbf{Axis}_{pcs}$$
+$$\mathbf{RefDir}_{pcs} = (\cos\theta_s,\ \sin\theta_s,\ 0)$$
+$$\mathbf{Axis}_{pcs} = (0,\ \cos\phi_s,\ \sin\phi_s)$$
+$$\mathbf{Y}_{pcs} = \mathbf{Axis}_{pcs} \times \mathbf{RefDir}_{pcs}$$
+
+`RefDir` lies in the distance-along/deviating-elevation plane and `Axis` in the cross section. They are used as computed and are not re-orthogonalized, so the frame is not exactly orthonormal when both the slope and the cross slope are non-zero. This is how IfcOpenShell evaluates cant segments.
 
 
 In matrix form
 
 $$M_{PCS} = \begin{bmatrix}
-RefDir_{pcs}.x & Y_{pcs}.x & Axis_{pcs}.x & s_0 \\
+RefDir_{pcs}.x & Y_{pcs}.x & Axis_{pcs}.x & 0 \\
 RefDir_{pcs}.y & Y_{pcs}.y & Axis_{pcs}.y & D_s \\
 RefDir_{pcs}.z & Y_{pcs}.z & Axis_{pcs}.z & 0 \\
 0 & 0 & 0 & 1
@@ -154,7 +156,7 @@ RefDir_{pcs}.z & Y_{pcs}.z & Axis_{pcs}.z & 0 \\
 
 #### Step 3 — Evaluate the parent curve at the point under consideration, $\ell$ - $M_{PC\ell}$
 
-This step follows the same calculations as Step 2, except $D$ and $D'$ are evaluated at $\ell$.
+This step follows the same calculations as Step 2, except $D$, $D'$ and $\phi$ are evaluated at $\ell$, the distance from the start of the trimmed segment (parent curve parameter $s_0 + \ell$).
 
 The resulting matrix is
 
@@ -832,12 +834,12 @@ $$\mathbf{RefDir}_p = (0.9999987200024576,\ -0.0015999979520039342,\ 0.)$$
 
 $$\mathbf{Axis}_p = (0.,\ 0.05340956531005583,\ 0.9985726905605775)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.001597714,\ 0.9985714,\ -0.0534095)$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|} = (0.001597714,\ 0.9985714,\ -0.0534095)$$
 
 $$M_{CSP} = \begin{bmatrix}
-    0.999998720002458 &   0.00159771425982398 &                     0 &                    50 \\
- -0.00159543382717944 &     0.998571412389988 &    0.0534095653100558 &                  0.04 \\
- 8.53332241068765e-05 &   -0.0534094969459435 &     0.998572690560578 &                     0 \\
+    0.999998723653748 &   0.00159771426565771 &                     0 &                    50 \\
+ -0.00159543383300484 &     0.998571416036067 &    0.0534095653100558 &                  0.04 \\
+ 8.53332244184533e-05 &   -0.0534094971409574 &     0.998572690560578 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
@@ -853,19 +855,15 @@ $$dy_x = \frac{-0.0016}{\sqrt{(-0.0016)^2 + 1}} = -0.001599998$$
 
 Because $D(s_0) = D_s$, the cross slope is this segment's start cross slope, $\phi(s_0) = \phi_s = 1.517361336$.
 
-$$\mathbf{X}_s = (0.99999872,\ -0.001599998,\ 0)$$
+$$\mathbf{RefDir}_s = (0.9999987200024576,\ -0.0015999979520039342,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0.05340956531005583,\ 0.9985726905605775)$$
+$$\mathbf{Axis}_s = (0,\ 0.05340956531005585,\ 0.9985726905605775)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0.0015977142598239782,\ 0.9985714123899877,\ -0.05340949694594351)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (8.545508573106977e-05,\ 0.05340942858191868,\ 0.9985726905605775)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.9999987127,\ -0.00159999794,\ 0)$$
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0.0015977142598239782,\ 0.9985714123899877,\ -0.05340949694594351)$$
 
 $$M_{PCS} = \begin{bmatrix}
-    0.999998712699877 &   0.00159771425982398 &  8.54550857310698e-05 &                     0 \\
-  -0.0015999979403198 &     0.998571412389988 &    0.0534094285819187 &    0.0400000000000001 \\
+    0.999998720002458 &   0.00159771425982398 &                     0 &                     0 \\
+ -0.00159999795200393 &     0.998571412389988 &    0.0534095653100558 &    0.0400000000000001 \\
                     0 &   -0.0534094969459435 &     0.998572690560578 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
@@ -890,19 +888,15 @@ $$dz_y = \cos(1.5574375791735484) = 0.013358350299808584$$
 
 $$dz_z = \sin(1.5574375791735484) = 0.9999107732579281$$
 
-$$\mathbf{X} _{\ell} = (0.99999968000015360,\ -0.00079999974400011946,\ 0)$$
+$$\mathbf{RefDir} _{\ell} = (0.9999996800001536,\ -0.0007999997440001195,\ 0)$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.013358350299808584,\ 0.9999107732579281)$$
+$$\mathbf{Axis} _{\ell} = (0,\ 0.013358350299808584,\ 0.9999107732579281)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.000799928362629304,\ 0.9999104532866342,\ -0.01335834602513854)$$
-
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (1.0686673400375845e-05,\ 0.013358341750469864,\ 0.9999107732579281)$$
-
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.9999996798859486,\ -0.0007999997439087555,\ 0)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (0.000799928362629304,\ 0.9999104532866342,\ -0.01335834602513854)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-    0.999999679885949 &  0.000799928362629304 &  1.06866734003758e-05 &                    25 \\
--0.000799999743908755 &     0.999910453286634 &    0.0133583417504699 &    0.0100000000000001 \\
+    0.999999680000154 &  0.000799928362629304 &                     0 &                    25 \\
+-0.000799999744000119 &     0.999910453286634 &    0.0133583502998086 &    0.0100000000000001 \\
                     0 &   -0.0133583460251385 &     0.999910773257928 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
@@ -926,9 +920,9 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-    0.999999666194004 &  0.000799928356787759 & -7.47684938117213e-05 &                    75 \\
--0.000798858192532276 &     0.999910445984698 &    0.0133584100170531 &    0.0100000000000001 \\
- 8.54475696008679e-05 &    -0.013358345927588 &     0.999910765955989 &                     0 \\
+     0.99999967634886 &  0.000799928359708533 & -8.54551677678602e-05 &                    75 \\
+-0.000799999741079088 &     0.999910449635666 &    0.0133584186639428 &    0.0100000000000001 \\
+                    0 &   -0.0133583459763633 &     0.999910773257928 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
