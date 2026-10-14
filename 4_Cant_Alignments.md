@@ -303,7 +303,7 @@ $$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
-#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+#104=IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 ### 4.3.3 Compute Point on Curve
@@ -331,15 +331,11 @@ $$s_0 = 0,\ D(0) = 0\ m,\ D'(0) = 0,\ \theta_s = 0$$
 
 For constant cant $\Delta D = 0$, so $\phi(s_0) = \phi_s = \phi_e = 1.463926346$.
 
-$$\mathbf{X}_s = (1,\ 0,\ 0)$$
+$$\mathbf{RefDir}_s = (1,\ 0,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0.106667,\ 0.994295)$$
+$$\mathbf{Axis}_s = (0,\ 0.106667,\ 0.994295)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.994295,\ -0.106667)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106667,\ 0.994295)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0,\ 0.994295,\ -0.106667)$$
 
 $$M_{PCS} = \begin{bmatrix}
         1 &        0 &         0 &         0 \\
@@ -354,11 +350,11 @@ $$D(50\ m) = 0\ m,\ D'(50\ m) = 0,\ \theta_{\ell} = 0$$
 
 Since $\Delta D = 0$, $\phi(50\ m) = \phi_s = 1.463926346$.
 
-$$\mathbf{X} _{\ell} = (1,\ 0,\ 0)$$
+$$\mathbf{RefDir} _{\ell} = (1,\ 0,\ 0)$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.106667,\ 0.994295)$$
+$$\mathbf{Axis} _{\ell} = (0,\ 0.106667,\ 0.994295)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0,\ 0.994295,\ -0.106667)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (0,\ 0.994295,\ -0.106667)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
         1 &        0 &         0 &        50 \\
@@ -524,7 +520,7 @@ $$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((0.999999680,-0.000799999744,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
-#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+#104=IFCCURVESEGMENT(.CONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 ### 4.4.3 Compute Point on Curve
@@ -533,11 +529,11 @@ Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of t
 
 #### Step 1 — Form the curve segment placement matrix $M_{CSP}$
 
-$$\mathbf{RefDir}_p = (0.9999996800,\ -0.000799999744,\ 0)$$
+$$\mathbf{RefDir}_p = (0.9999996800001536,\ -0.0007999997440001227,\ 0)$$
 
-$$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$$
+$$\mathbf{Axis}_p = (0,\ 0.10666666666666667,\ 0.9942948366667818)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0.0007954871,\ 0.9943588828,\ -0.1060649471)$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|} = (0.0007954356177,\ 0.9942945221,\ -0.1066666329)$$
 
 $$M_{CSP} = \begin{bmatrix}
     0.999999683641039 &   0.00079543561769016 &                     0 &                     0 \\
@@ -548,56 +544,44 @@ $$M_{CSP} = \begin{bmatrix}
 
 #### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 
-$$s_0 = 0,\ D(0) = 0\ m,\ D'(0) = -0.0008,\ \theta_s = -0.00079999$$
+`IfcClothoid` has no constant term, so the parent curve's deviating elevation is $D(s) = L^{2}\frac{A_{1}}{\left| A_{1}^{3} \right|}s$, which is $0$ at the trim start. The $0.08\ m$ deviating elevation at the start of the segment is carried by the placement `Location`, and only the change in $D$ from the trim start enters $M_c$.
 
-$$dx_x = \cos(\theta_s) = \cos(-0.00079999) = 0.999999680$$
+$$s_0 = 0,\ D(0) = 0\ m,\ D'(0) = -0.0008,\ \theta_s = \tan^{-1}(D'(0)) = -0.0007999998293$$
 
-$$dx_y = \sin(\theta_s) = \sin(-0.00079999) = -0.000799999744$$
+The cross slope at the trim start is that of the segment's `Placement.Axis`, $\phi_s = \tan^{-1}\left(\frac{Axis_p.dz}{Axis_p.dy}\right) = 1.463926346$.
 
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.16 - 0.0}{1.5}\right) = 1.463926346$$
+$$\mathbf{RefDir}_s = (\cos\theta_s,\ \sin\theta_s,\ 0) = (0.99999968,\ -0.000799999744,\ 0)$$
 
-The cross slope orientation is
+$$\mathbf{Axis}_s = (0,\ \cos\phi_s,\ \sin\phi_s) = (0,\ 0.1066666667,\ 0.9942948367)$$
 
-$$dy_z = \cos(\phi_s) = \cos(1.463926346) = 0.106666667$$
-
-$$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
-
-$$\mathbf{X}_s = (0.999999680,\ -0.000799999744,\ 0)$$
-
-$$\mathbf{Z}_s = (0,\ 0.106666667,\ 0.994294837)$$
-
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0.0007954871,\ 0.9943588828,\ -0.1060649471)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0.0000849,\ 0.106666667,\ 0.994294837)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (0.999999680,\ -0.000799999744,\ 0)$$
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0.0007954356148,\ 0.9942945185,\ -0.1066666325)$$
 
 $$M_{PCS} = \begin{bmatrix}
-      0.999999999968 & 7.95435869307971e-06 &  8.5333333327872e-07 &                    0 \\
- -7.999999999744e-06 &    0.994294836634964 &     0.10666666665984 &                   -0 \\
-                   0 &   -0.106666666663253 &    0.994294836666782 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999999680000154 &  0.000795435614794069 &                     0 &                     0 \\
+-0.000799999744000123 &     0.994294518492587 &     0.106666666666667 &                     0 \\
+                    0 &     -0.10666663253335 &     0.994294836666782 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 
-$$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_{\ell} = -0.00079999$$
+$$D(50\ m) = -0.04\ m,\ D'(50\ m) = -0.0008,\ \theta_{\ell} = \tan^{-1}(D'(50\ m)) = -0.0007999998293$$
 
-$\phi_e = \cos^{-1}(\frac{0.0}{1.5}) = \frac{\pi}{2}$ (both rails level at segment end)
+The cross slope at the end of the segment is that of the next segment's `Placement.Axis`, $\phi_e = 1.570796327$, and the parent curve's deviating elevation changes by $\Delta D = D(100\ m) - D(0) = -0.08\ m$ over the segment.
 
-$$\phi(50\ m) = 1.463926346 + \left(\frac{\frac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$$
+$$\phi(\ell) = 1.463926346 + \left(\frac{1.570796327 - 1.463926346}{-0.08}\right)(-0.04 - 0) = 1.517361336$$
 
-$$\mathbf{X} _{\ell} = (0.999999680,\ -0.000799999744,\ 0)$$
+$$\mathbf{RefDir} _{\ell} = (\cos\theta_{\ell},\ \sin\theta_{\ell},\ 0) = (0.99999968,\ -0.000799999744,\ 0)$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.053107436,\ 0.998588804)$$
+$$\mathbf{Axis} _{\ell} = (0,\ \cos\phi(\ell),\ \sin\phi(\ell)) = (0,\ 0.05340956531,\ 0.9985726906)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.000798871,\ 0.998588485,\ -0.053107419)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (0.0007988578968,\ 0.998572371,\ -0.05340954822)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-      0.999999999968 & 7.98858152422898e-06 & 4.27276522453101e-07 &                   50 \\
- -7.999999999744e-06 &    0.998572690528623 &   0.0534095653066376 &                -0.04 \\
-                   0 &  -0.0534095653083467 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999999680000154 &   0.00079885789681383 &                     0 &                    50 \\
+-0.000799999744000123 &     0.998572371017288 &    0.0534095653134642 &                 -0.04 \\
+                    0 &   -0.0534095482224115 &     0.998572690560395 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
@@ -619,9 +603,9 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-    0.999999683613726 &  0.000795469840510406 &  -4.2605681082593e-07 &                    50 \\
--0.000794311703395977 &      0.99857237464344 &    0.0534095653134254 &                  0.04 \\
- 4.29111469629201e-05 &   -0.0534095480769501 &      0.99857269055985 &                     0 \\
+    0.999999676359268 &  0.000798857893905279 & -8.53332787200349e-05 &                    50 \\
+-0.000799999741087415 &     0.998572367381599 &    0.0534096335800873 &                  0.04 \\
+                    0 &   -0.0534095480279535 &     0.998572690560395 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
@@ -1011,11 +995,11 @@ $$dy_z = \cos(\phi_s) = \cos(1.57079633) = 0.0$$
 $$dz_z = \sin(\phi_s) = \sin(1.57079633) = 1.0$$
 
 ~~~
-#100=IFCCARTESIANPOINT((0.,0.08,0.));
+#100=IFCCARTESIANPOINT((0.,0.,0.));
 #101=IFCDIRECTION((0.,0.0,1.0));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
-#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+#104=IFCCURVESEGMENT(.CONTSAMEGRADIENT.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 ### 4.6.3 Compute Point on Curve
@@ -1028,67 +1012,55 @@ $$\mathbf{RefDir}_p = (1,\ 0,\ 0)$$
 
 $$\mathbf{Axis}_p = (0,\ 0,\ 1)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 1,\ 0)$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|} = (0,\ 1,\ 0)$$
 
 $$M_{CSP} = \begin{bmatrix}
-                 1 & 0 & 0 & 0 \\
-                 0 & 1 & 0 & 0.08 \\
-                 0 & 0 & 1 & 0 \\
-                 0 & 0 & 0 & 1
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &                     1 &                     0 &                     0 \\
+                    0 &                     0 &                     1 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 
-$$s_0 = 0,\ D(0) = 0.0\ m,\ D'(0) = 0,\ \theta_s = 0$$
+$$s_0 = 0,\ D(0) = 0\ m,\ D'(0) = 0,\ \theta_s = \tan^{-1}(D'(0)) = 0$$
 
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\frac{{0 - 0}}{1.5} \right) = 1.57079633$$
+The cross slope at the trim start is that of the segment's `Placement.Axis`, $\phi_s = \tan^{-1}\left(\frac{Axis_p.dz}{Axis_p.dy}\right) = 1.570796327$.
 
-$$\mathbf{X}_s = (1,\ 0,\ 0)$$
+$$\mathbf{RefDir}_s = (\cos\theta_s,\ \sin\theta_s,\ 0) = (1,\ 0,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0,\ 1)$$
+$$\mathbf{Axis}_s = (0,\ \cos\phi_s,\ \sin\phi_s) = (0,\ 6.123233996e-17,\ 1)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 1,\ 0)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0,\ 1)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0,\ 1,\ -6.123233996e-17)$$
 
 $$M_{PCS} = \begin{bmatrix}
-                 1 & 0 & 0 & 0 \\
-                 0 & 1 & 0 & 0.08 \\
-                 0 & 0 & 1 & 0 \\
-                 0 & 0 & 0 & 1
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &                     1 &  6.12323399573677e-17 &                     0 \\
+                    0 & -6.12323399573677e-17 &                     1 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
+The rotation part of $M_{PCS}$ equals that of $M_{CSP}$ because $\theta_s = 0$ and the parent curve starts with the placement's cross slope.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 
-$$D(50\ m) = 0.04\ m$$
+$$D(50\ m) = 0.04\ m,\ D'(50\ m) = 0.0012,\ \theta_{\ell} = \tan^{-1}(D'(50\ m)) = 0.001199999424$$
 
-$$D'(50\ m) = (100\ m)^{2}\left( 3\frac{-500\ m}{\left| (-500\ m)^{5} \right|}(50\ m)^{2} + \frac{2}{(746.9007911\ m)^{3}}(50\ m) \right) = 0.0012$$
+The cross slope at the end of the segment is that of the next segment's `Placement.Axis`, $\phi_e = 1.463926346$, and the parent curve's deviating elevation changes by $\Delta D = D(100\ m) - D(0) = 0.08\ m$ over the segment.
 
-$$\theta_{\ell} =\tan^{-1}(0.0012) = 0.0011999994240005001$$
+$$\phi(\ell) = 1.570796327 + \left(\frac{1.463926346 - 1.570796327}{0.08}\right)(0.04 - 0) = 1.517361336$$
 
-$$\phi_e = \cos^{-1}\left(\frac{D_{er} - D_{el}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.16 - 0.0}{1.5}\right) = 1.46392634$$
+$$\mathbf{RefDir} _{\ell} = (\cos\theta_{\ell},\ \sin\theta_{\ell},\ 0) = (0.99999928,\ 0.001199999136,\ 0)$$
 
-$$\phi(\ell) = 1.57079633 + \left(\frac{1.46392634 - \frac{\pi}{2}}{0.08}\right)(0.08 - 0.04) = 1.517361336$$
+$$\mathbf{Axis} _{\ell} = (0,\ \cos\phi(\ell),\ \sin\phi(\ell)) = (0,\ 0.05340956531,\ 0.9985726906)$$
 
-$$\mathbf{X} _{\ell} = (0.9999980,\ 0.0012,\ 0)$$
-
-$$\mathbf{Z} _{\ell} = (0,\ 0.05340957,\ 0.99857269)$$
-
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (-0.001997,\ 0.998572,\ -0.0534095)$$
-
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (0,\ 0.0534095,\ 0.9985727)$$
-
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.9999980,\ 0.0012,\ 0)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (-0.001198286366,\ 0.9985719716,\ -0.05340952686)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-   0.99999928 & -0.0012 &                    0 &                   50 \\
- 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0.04 \\
-                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1                   
+    0.999999280000778 &  -0.00119828636590682 &                     0 &                    50 \\
+  0.00119999913600094 &     0.998571971589017 &    0.0534095653100558 &    0.0400000000000001 \\
+                    0 &   -0.0534095268552104 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
@@ -1110,10 +1082,10 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-   0.999999280000778 & -0.00119828636590682 & 0 &                   50 \\
- 0.00119999913600094 &    0.998571971589017 &   0.0534095653100558 &   0.04 \\
-                   0 &  -0.0534095268552103 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1                   
+    0.999999280000778 &  -0.00119828636590682 &                     0 &                    50 \\
+  0.00119999913600094 &     0.998571971589017 &    0.0534095653100558 &    0.0400000000000001 \\
+                    0 &   -0.0534095268552103 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 ## 4.7 Cosine Curve
@@ -1190,7 +1162,7 @@ $$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
-#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+#104=IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 ### 4.7.3 Compute Point on Curve
@@ -1201,63 +1173,57 @@ Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of t
 
 $$\mathbf{RefDir}_p = (1,\ 0,\ 0)$$
 
-$$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$$
+$$\mathbf{Axis}_p = (0,\ 0.10666666666666667,\ 0.9942948366667818)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|} = (0,\ 0.9942948367,\ -0.1066666667)$$
 
 $$M_{CSP} = \begin{bmatrix}
-                 1 &                  0 &                  0 &                  0 \\
-                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
-                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
-                 0 &                  0 &                  0 &                  1
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
+                    0 &    -0.106666666666667 &     0.994294836666782 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 
-$$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$$
+$$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = \tan^{-1}(D'(0)) = 0$$
 
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\frac{0.16 - 0}{1.5} \right) = 1.463926346$$
+The cross slope at the trim start is that of the segment's `Placement.Axis`, $\phi_s = \tan^{-1}\left(\frac{Axis_p.dz}{Axis_p.dy}\right) = 1.463926346$.
 
-$$\mathbf{X}_s = (1,\ 0,\ 0)$$
+$$\mathbf{RefDir}_s = (\cos\theta_s,\ \sin\theta_s,\ 0) = (1,\ 0,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0.106064981,\ 0.994359201)$$
+$$\mathbf{Axis}_s = (0,\ \cos\phi_s,\ \sin\phi_s) = (0,\ 0.1066666667,\ 0.9942948367)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.9943592,\ -0.10606498)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.994359201)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0,\ 0.9942948367,\ -0.1066666667)$$
 
 $$M_{PCS} = \begin{bmatrix}
-                 1 &                  0 &                  0 &                  0 \\
-                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
-                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
-                 0 &                  0 &                  0 &                  1
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
+                    0 &    -0.106666666666667 &     0.994294836666782 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
+The rotation part of $M_{PCS}$ equals that of $M_{CSP}$ because $\theta_s = 0$ and the parent curve starts with the placement's cross slope.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 
-$$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.00125664,\ \theta_{\ell} = -0.001256636$$
+$$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.001256637061,\ \theta_{\ell} = \tan^{-1}(D'(50\ m)) = -0.0012566364$$
 
-$$\phi(\ell) = 1.463926346 + \left(\frac{\frac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$$
+The cross slope at the end of the segment is that of the next segment's `Placement.Axis`, $\phi_e = 1.570796327$, and the parent curve's deviating elevation changes by $\Delta D = D(100\ m) - D(0) = -0.08\ m$ over the segment.
 
-$$\mathbf{X} _{\ell} = (0.99999921,\ -0.001256636,\ 0)$$
+$$\phi(\ell) = 1.463926346 + \left(\frac{1.570796327 - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.053107436,\ 0.998588804)$$
+$$\mathbf{RefDir} _{\ell} = (\cos\theta_{\ell},\ \sin\theta_{\ell},\ 0) = (0.9999992104,\ -0.001256636069,\ 0)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.001255,\ 0.998588,\ -0.053107)$$
+$$\mathbf{Axis} _{\ell} = (0,\ \cos\phi(\ell),\ \sin\phi(\ell)) = (0,\ 0.05340956531,\ 0.9985726906)$$
 
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (0.0000667,\ 0.053107,\ 0.998589)$$
-
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.99999921,\ -0.001256636,\ 0)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (0.001254842461,\ 0.9985719021,\ -0.05340952314)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-   0.999999999921043 & 1.25484345139712e-05 & 6.71164391931997e-07 &                   50 \\
--1.2566370613367e-05 &    0.998572690481733 &   0.0534095653016217 &                 0.04 \\
-                   0 &  -0.0534095653058388 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999999210432583 &    0.0012548424607127 &                     0 &                    50 \\
+ -0.00125663606923624 &     0.998571902120117 &    0.0534095653100558 &                  0.04 \\
+                    0 &   -0.0534095231396033 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
@@ -1279,10 +1245,10 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-   0.999999999921043 & 1.25484345139712e-05 & 6.71164391931997e-07 &                   50 \\
--1.2566370613367e-05 &    0.998572690481733 &   0.0534095653016218 &                 0.04 \\
-                   0 &  -0.0534095653058388 &    0.998572690560577 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999999210432583 &    0.0012548424607127 &                     0 &                    50 \\
+ -0.00125663606923624 &     0.998571902120117 &    0.0534095653100559 &                  0.04 \\
+                    0 &   -0.0534095231396034 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 ## 4.8 Sine Curve
@@ -1371,7 +1337,7 @@ $$dz_z = \sin(\phi_s) = \sin(1.463926346) = 0.994294837$$
 #101=IFCDIRECTION((0.,0.10666666666666667,0.99429483666678176));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
-#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+#104=IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 ### 4.8.3 Compute Point on Curve
@@ -1382,63 +1348,57 @@ Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of t
 
 $$\mathbf{RefDir}_p = (1,\ 0,\ 0)$$
 
-$$\mathbf{Axis}_p = (0,\ 0.106064981,\ 0.994359201)$$
+$$\mathbf{Axis}_p = (0,\ 0.10666666666666667,\ 0.9942948366667818)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.9943592,\ -0.10606498)$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|} = (0,\ 0.9942948367,\ -0.1066666667)$$
 
 $$M_{CSP} = \begin{bmatrix}
-                 1 &                  0 &                  0 &                  0 \\
-                -0 &  0.994294836666782 &  0.106666666666667 &               0.08 \\
-                 0 & -0.106666666666667 &  0.994294836666782 &                  0 \\
-                 0 &                  0 &                  0 &                  1
-\end{bmatrix}$$
-
-#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
-
-$$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = 0$$
-
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\frac{0.16 - 0}{1.5} \right) = 1.463926346$$
-
-$$\mathbf{X}_s = (1,\ 0,\ 0)$$
-
-$$\mathbf{Z}_s = (0,\ 0.106064981,\ 0.994359201)$$
-
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.9943592,\ -0.10606498)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.106064981,\ 0.994359201)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
-
-$$M_{PCS} = \begin{bmatrix}
-                    1 &  0 & 0 &                     0 \\
+                    1 &                     0 &                     0 &                     0 \\
                     0 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
                     0 &    -0.106666666666667 &     0.994294836666782 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
+#### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
+
+$$s_0 = 0,\ D(0) = 0.08\ m,\ D'(0) = 0,\ \theta_s = \tan^{-1}(D'(0)) = 0$$
+
+The cross slope at the trim start is that of the segment's `Placement.Axis`, $\phi_s = \tan^{-1}\left(\frac{Axis_p.dz}{Axis_p.dy}\right) = 1.463926346$.
+
+$$\mathbf{RefDir}_s = (\cos\theta_s,\ \sin\theta_s,\ 0) = (1,\ 0,\ 0)$$
+
+$$\mathbf{Axis}_s = (0,\ \cos\phi_s,\ \sin\phi_s) = (0,\ 0.1066666667,\ 0.9942948367)$$
+
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0,\ 0.9942948367,\ -0.1066666667)$$
+
+$$M_{PCS} = \begin{bmatrix}
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &     0.994294836666782 &     0.106666666666667 &                  0.08 \\
+                    0 &    -0.106666666666667 &     0.994294836666782 &                     0 \\
+                    0 &                     0 &                     0 &                     1
+\end{bmatrix}$$
+
+The rotation part of $M_{PCS}$ equals that of $M_{CSP}$ because $\theta_s = 0$ and the parent curve starts with the placement's cross slope.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 
-$$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_{\ell} = -0.0016$$
+$$D(50\ m) = 0.04\ m,\ D'(50\ m) = -0.0016,\ \theta_{\ell} = \tan^{-1}(D'(50\ m)) = -0.001599998635$$
 
-$$\phi(\ell) = 1.463926346 + \left(\frac{\frac{\pi}{2} - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$$
+The cross slope at the end of the segment is that of the next segment's `Placement.Axis`, $\phi_e = 1.570796327$, and the parent curve's deviating elevation changes by $\Delta D = D(100\ m) - D(0) = -0.08\ m$ over the segment.
 
-$$\mathbf{X} _{\ell} = (0.99999872,\ -0.0016,\ 0)$$
+$$\phi(\ell) = 1.463926346 + \left(\frac{1.570796327 - 1.463926346}{-0.08}\right)(0.04 - 0.08) = 1.517361336$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.053107436,\ 0.998588804)$$
+$$\mathbf{RefDir} _{\ell} = (\cos\theta_{\ell},\ \sin\theta_{\ell},\ 0) = (0.99999872,\ -0.001599997952,\ 0)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.001598,\ 0.998588,\ -0.053107)$$
+$$\mathbf{Axis} _{\ell} = (0,\ \cos\phi(\ell),\ \sin\phi(\ell)) = (0,\ 0.05340956531,\ 0.9985726906)$$
 
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (0.0000850,\ 0.053107,\ 0.998589)$$
-
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.99999872,\ -0.0016,\ 0)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (0.00159771426,\ 0.9985714124,\ -0.05340949695)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-      0.999999999872 & 1.59771630469242e-05 & 8.54553044742128e-07 &                   50 \\
--1.5999999997952e-05 &     0.99857269043276 &    0.053409565296383 &                 0.04 \\
-                   0 &  -0.0534095653032194 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1
+    0.999998720002458 &   0.00159771425982398 &                     0 &                    50 \\
+ -0.00159999795200393 &     0.998571412389988 &    0.0534095653100558 &                  0.04 \\
+                    0 &   -0.0534094969459435 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 4 — Compute the cant placement matrix $M_c$
@@ -1460,13 +1420,11 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-       0.999999999872 &  1.59771630469242e-05 &  8.54553044742129e-07 &                    50 \\
- -1.5999999997952e-05 &      0.99857269043276 &     0.053409565296383 &                  0.04 \\
--1.80958646087621e-22 &   -0.0534095653032194 &     0.998572690560578 &                     0 \\
+    0.999998720002458 &   0.00159771425982398 &                     0 &                    50 \\
+ -0.00159999795200393 &     0.998571412389988 &    0.0534095653100559 &                  0.04 \\
+                    0 &   -0.0534094969459435 &     0.998572690560578 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
-
-$$\mathbf{Axis} = (0.0000850,\ 0.053107,\ 0.998589),\quad \phi(50\ m) = 1.517361336$$
 
 ## 4.9 Viennese Bend
 
@@ -1592,7 +1550,7 @@ $$dz_z = \sin(\phi_s) = 0.997775303$$
 #101=IFCDIRECTION((0.,0.066666666666666666,0.99777530313971774));
 #102=IFCDIRECTION((1.,0.,0.));
 #103=IFCAXIS2PLACEMENT3D(#100,#101,#102);
-#104=IFCCURVESEGMENT(.DISCONTINUOUS.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
+#104=IFCCURVESEGMENT(.CONTSAMEGRADIENT.,#103,IFCLENGTHMEASURE(0.),IFCLENGTHMEASURE(100.),#99);
 ~~~
 
 
@@ -1604,64 +1562,56 @@ Compute the cant placement matrix for a point $\ell = 50\ m$ from the start of t
 
 $$\mathbf{RefDir}_p = (1,\ 0,\ 0)$$
 
-$$\mathbf{Axis}_p = (0,\ 0.066519011,\ 0.99778516)$$
+$$\mathbf{Axis}_p = (0,\ 0.06666666666666667,\ 0.9977753031397177)$$
 
-$$\mathbf{Y}_p = \mathbf{Axis}_p \times \mathbf{RefDir}_p = (0,\ 0.99778516,\ -0.066519011)$$
+$$\mathbf{Y}_p = \frac{\mathbf{Axis}_p \times \mathbf{RefDir}_p}{\left|\mathbf{Axis}_p \times \mathbf{RefDir}_p\right|} = (0,\ 0.9977753031,\ -0.06666666667)$$
 
 $$M_{CSP} = \begin{bmatrix}
-                  1 &                   0 &                   0 &                   0 \\
-                 -0 &   0.997775303139718 &  0.0666666666666667 &                0.05 \\
-                  0 & -0.0666666666666667 &   0.997775303139718 &                   0 \\
-                  0 &                   0 &                   0 &                   1
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &     0.997775303139718 &    0.0666666666666667 &                  0.05 \\
+                    0 &   -0.0666666666666667 &     0.997775303139718 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 2 — Evaluate the parent curve at the trim start — $M_{PCS}$
 
-$$s_0 = 0,\ D(0) = 0.05\ m,\ D'(0) = 0,\ \theta_s = 0$$
+$$s_0 = 0,\ D(0) = 0.05\ m,\ D'(0) = 0,\ \theta_s = \tan^{-1}(D'(0)) = 0$$
 
-$$\phi_s = \cos^{-1}\left(\frac{D_{sr} - D_{sl}}{D_{rh}} \right) = \cos^{-1}\left(\frac{0.10 - 0.0}{1.5} \right) = 1.504080178$$
+The cross slope at the trim start is that of the segment's `Placement.Axis`, $\phi_s = \tan^{-1}\left(\frac{Axis_p.dz}{Axis_p.dy}\right) = 1.504080178$.
 
-$$\mathbf{X}_s = (1,\ 0,\ 0)$$
+$$\mathbf{RefDir}_s = (\cos\theta_s,\ \sin\theta_s,\ 0) = (1,\ 0,\ 0)$$
 
-$$\mathbf{Z}_s = (0,\ 0.066666667,\ 0.997775303)$$
+$$\mathbf{Axis}_s = (0,\ \cos\phi_s,\ \sin\phi_s) = (0,\ 0.06666666667,\ 0.9977753031)$$
 
-$$\mathbf{Y}_s = \mathbf{Z}_s \times \mathbf{X}_s = (0,\ 0.99778516,\ -0.066519011)$$
-
-$$\mathbf{Axis}_s = \mathbf{X}_s \times \mathbf{Y}_s = (0,\ 0.066519011,\ 0.99778516)$$
-
-$$\mathbf{RefDir}_s = \mathbf{Y}_s \times \mathbf{Axis}_s = (1,\ 0,\ 0)$$
+$$\mathbf{Y}_s = \mathbf{Axis}_s \times \mathbf{RefDir}_s = (0,\ 0.9977753031,\ -0.06666666667)$$
 
 $$M_{PCS} = \begin{bmatrix}
-                  1 &                   0 &                  -0 &                   0 \\
-                  0 &   0.997775303139718 &  0.0666666666666667 &                0.05 \\
-                  0 & -0.0666666666666667 &   0.997775303139718 &                   0 \\
-                  0 &                   0 &                   0 &                   1
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &     0.997775303139718 &    0.0666666666666667 &                  0.05 \\
+                    0 &   -0.0666666666666667 &     0.997775303139718 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-$M_{PCS} = M_{CSP}$, because $\theta_s = 0$ and the placement location and orientation match the parent curve at the trim start exactly.
+The rotation part of $M_{PCS}$ equals that of $M_{CSP}$ because $\theta_s = 0$ and the parent curve starts with the placement's cross slope.
 
 #### Step 3 — Evaluate the parent curve at $\ell = 50\ m$ — $M_{PC\ell}$
 
-$$D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.00076525,\ \theta_{\ell} = -0.00076562$$
+$$D(50\ m) = 0.0325\ m,\ D'(50\ m) = -0.000765625,\ \theta_{\ell} = \tan^{-1}(D'(50\ m)) = -0.0007656248504$$
 
-$$\phi_e = \cos^{-1}\left(\frac{D_{er} - D_{el}}{D_{rh}}\right) = \cos^{-1}\left(\frac{0.03 - 0.0}{1.5}\right) = 1.550794993$$
+The cross slope at the end of the segment is that of the next segment's `Placement.Axis`, $\phi_e = 1.550794993$, and the parent curve's deviating elevation changes by $\Delta D = D(100\ m) - D(0) = -0.035\ m$ over the segment.
 
-$$\phi(\ell) = 1.504080178 + \left(\frac{1.550799 - 1.504080178}{-0.035}\right)(0.0325 - 0.05) = 1.527439589$$
+$$\phi(\ell) = 1.504080178 + \left(\frac{1.550794993 - 1.504080178}{-0.035}\right)(0.0325 - 0.05) = 1.527437586$$
 
-$$\mathbf{X} _{\ell} = (0.999999707,\ -0.00076562,\ 0)$$
+$$\mathbf{RefDir} _{\ell} = (\cos\theta_{\ell},\ \sin\theta_{\ell},\ 0) = (0.9999997069,\ -0.0007656247756,\ 0)$$
 
-$$\mathbf{Z} _{\ell} = (0,\ 0.04327,\ 0.999063)$$
+$$\mathbf{Axis} _{\ell} = (0,\ \cos\phi(\ell),\ \sin\phi(\ell)) = (0,\ 0.04334515667,\ 0.999060157)$$
 
-$$\mathbf{Y} _{\ell} = \mathbf{Z} _{\ell} \times \mathbf{X} _{\ell} = (0.000765,\ 0.999063,\ -0.04327)$$
-
-$$\mathbf{Axis} _{\ell} = \mathbf{X} _{\ell} \times \mathbf{Y} _{\ell} = (3.31e-05,\ 0.04327,\ 0.999063)$$
-
-$$\mathbf{RefDir} _{\ell} = \mathbf{Y} _{\ell} \times \mathbf{Axis} _{\ell} = (0.999999707,\ -0.00076562,\ 0)$$
+$$\mathbf{Y} _{\ell} = \mathbf{Axis} _{\ell} \times \mathbf{RefDir} _{\ell} = (0.0007649052086,\ 0.9990598642,\ -0.04334514397)$$
 
 $$M_{PC\ell} = \begin{bmatrix}
-    0.999999706909309 &  0.000764905208550319 &    3.318611612348e-05 &                    50 \\
--0.000765624775602475 &     0.999059864228941 &    0.0433451312633188 &    0.0324999999999996 \\
-                    0 &    -0.043345143967377 &     0.999060157044173 &                     0 \\
+    0.999999706909309 &  0.000764905208550319 &                     0 &                    50 \\
+-0.000765624775602475 &     0.999059864228941 &    0.0433451566714392 &    0.0324999999999996 \\
+                    0 &   -0.0433451439673772 &     0.999060157044173 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
@@ -1684,9 +1634,9 @@ R_c & \mathbf{T}_c \\
 \end{bmatrix}$$
 
 $$M_c = \begin{bmatrix}
-    0.999999706909309 &  0.000764905208550319 &    3.318611612348e-05 &                    50 \\
--0.000765624775602475 &     0.999059864228941 &    0.0433451312633188 &    0.0324999999999996 \\
-                    0 &    -0.043345143967377 &     0.999060157044173 &                     0 \\
+    0.999999706909309 &  0.000764905208550319 &                     0 &                    50 \\
+-0.000765624775602475 &     0.999059864228941 &    0.0433451566714392 &    0.0324999999999996 \\
+                    0 &   -0.0433451439673772 &     0.999060157044174 &                     0 \\
                     0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
@@ -1716,114 +1666,113 @@ $$M_v = \begin{bmatrix}
 From the Bloss cant example in Section 4.6
 
 $$M_c = \begin{bmatrix}
-   0.99999928 & -0.0012 &                    0 &                   50 \\
- 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0.04 \\
-                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1                   
+    0.999999280000778 &  -0.00119828636590682 &                     0 &                    50 \\
+  0.00119999913600094 &     0.998571971589017 &    0.0534095653100558 &    0.0400000000000001 \\
+                    0 &   -0.0534095268552103 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 #### Step 5 — Combine with horizontal and vertical to produce the 3D placement matrix
 
-Construct $M^\prime_v$ as described in Section 3.2
+Construct $M^\prime_v$ as described in Section 3.2: zero the distance along and swap rows and columns 2 and 3. For a flat grade $M_v$ has no rotation, so swapping both its rows and its columns leaves the identity:
 
-$$M'_v =
- \begin{bmatrix}
-1 & 0 & 0 & 0\\
-0 & 0 & 1 & 0\\
-0 & 1 & 0 & 0\\
-0 & 0 & 0 & 1 
+$$M'_v = \begin{bmatrix}
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &                     1 &                     0 &                     0 \\
+                    0 &                     0 &                     1 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 Construct $M^\prime_c$ by zeroing the distance-along $\ell$ component in row 1, column 4 and moving the deviating elevation $D$ from row 2 to row 3 in column 4 of $M_c$:
 
 $$M'_c = \begin{bmatrix}
-   0.99999928 & -0.0012 &                    0 &                   0 \\
- 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0 \\
-                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0.04 \\
-                   0 &                    0 &                    0 &                    1                   
+    0.999999280000778 &  -0.00119828636590682 &                     0 &                     0 \\
+  0.00119999913600094 &     0.998571971589017 &    0.0534095653100558 &                     0 \\
+                    0 &   -0.0534095268552103 &     0.998572690560578 &    0.0400000000000001 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 Extract position vectors from each modified matrix, $M^\prime_v,\ M^\prime_c$, (setting row 4 to zero), then zero column 4:
 
-$$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0.04 \\ 0 \end{bmatrix}$$
+$$P_v = M'_v \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \end{bmatrix}, \qquad P_c = M'_c \text{ column 4, row 4 set to 0} = \begin{bmatrix} 0 \\ 0 \\ 0.0400000000000001 \\ 0 \end{bmatrix}$$
 
 $$M''_v = M'_v \text{ with column 4 set to } (0,0,0,1)^T, \qquad M''_c = M'_c \text{ with column 4 set to } (0,0,0,1)^T$$
 
 $$M''_{v} = \begin{bmatrix}
-1 & 0 & 0 & 0\\  
-0 & 0 & 1 & 0\\  
-0 & 1 & 0 & 0\\  
-0 & 0 & 0 & 1   
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &                     1 &                     0 &                     0 \\
+                    0 &                     0 &                     1 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 $$M''_c = \begin{bmatrix}
-   0.99999928 & -0.0012 &                    0 &                   0 \\
- 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0 \\
-                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1                   
+    0.999999280000778 &  -0.00119828636590682 &                     0 &                     0 \\
+  0.00119999913600094 &     0.998571971589017 &    0.0534095653100558 &                     0 \\
+                    0 &   -0.0534095268552103 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
 Multiply the three orientation matrices, then add back both position offsets:
 
 $$M' = M_h \cdot M''_v \cdot M''_c$$
 
-$$M' = 
+$$M' =
 \begin{bmatrix}
 0.999512 & -0.031245 & 0 & 49.9962109\\
 0.031245 & 0.999512 & 0 & 0.416638875\\
 0 & 0 & 1 & 0\\
-0 & 0 & 0 & 1 
+0 & 0 & 0 & 1
 \end{bmatrix}
 \begin{bmatrix}
-1 & 0 & 0 & 0\\  
-0 & 0 & 1 & 0\\  
-0 & 1 & 0 & 0\\  
-0 & 0 & 0 & 1   
+                    1 &                     0 &                     0 &                     0 \\
+                    0 &                     1 &                     0 &                     0 \\
+                    0 &                     0 &                     1 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}
 \begin{bmatrix}
-   0.99999928 & -0.0012 &                    0 &                   0 \\
- 0.0012 &    0.998571971589017 &   0.0534095653100558 &   0 \\
-                   0 &  -0.0534095268552104 &    0.998572690560578 &                    0 \\
-                   0 &                    0 &                    0 &                    1                   
+    0.999999280000778 &  -0.00119828636590682 &                     0 &                     0 \\
+  0.00119999913600094 &     0.998571971589017 &    0.0534095653100558 &                     0 \\
+                    0 &   -0.0534095268552103 &     0.998572690560578 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}
 $$
 
 $$M' = \begin{bmatrix}
-0.999474 & -0.0323981 & -0.00167 & 49.9962109 \\
-0.032444 & 0.9980472 & 0.053383 & 0.416638875 \\
-0 & -0.0534095 & 0.998573 & 0 \\
-0 & 0 & 0 & 1 \\
+            0.9994738 &           -0.03239808 &          -0.001668782 &              49.99621 \\
+           0.03244439 &             0.9980472 &             0.0533835 &             0.4166389 \\
+                    0 &           -0.05340953 &             0.9985727 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}$$
 
-$$M_{3Dcant} = 
+$$M_{3Dcant} =
 \begin{bmatrix}
-0.999474 & -0.0323981 & -0.00167 & 49.9962109 \\
-0.032444 & 0.9980472 & 0.053383 & 0.416638875 \\
-0 & -0.0534095 & 0.998573 & 0 \\
-0 & 0 & 0 & 1 \\
+            0.9994738 &           -0.03239808 &          -0.001668782 &              49.99621 \\
+           0.03244439 &             0.9980472 &             0.0533835 &             0.4166389 \\
+                    0 &           -0.05340953 &             0.9985727 &                     0 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}
 +
 \begin{bmatrix}
-0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0
+                    0 &                     0 &                     0 &                     0 \\
+                    0 &                     0 &                     0 &                     0 \\
+                    0 &                     0 &                     0 &                     0 \\
+                    0 &                     0 &                     0 &                     0
 \end{bmatrix}
 +
 \begin{bmatrix}
-0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0\\
-0 & 0 & 0 & 0.04\\
-0 & 0 & 0 & 0
+                    0 &                     0 &                     0 &                     0 \\
+                    0 &                     0 &                     0 &                     0 \\
+                    0 &                     0 &                     0 &                  0.04 \\
+                    0 &                     0 &                     0 &                     0
 \end{bmatrix}
 $$
 
-$$M_{3Dcant} = 
+$$M_{3Dcant} =
 \begin{bmatrix}
-0.999474 & -0.0323981 & -0.00167 & 49.9962109 \\
-0.032444 & 0.9980472 & 0.053383 & 0.416638875 \\
-0 & -0.0534095 & 0.998573 & 0.04 \\
-0 & 0 & 0 & 1 \\
+            0.9994738 &           -0.03239808 &          -0.001668782 &              49.99621 \\
+           0.03244439 &             0.9980472 &             0.0533835 &             0.4166389 \\
+                    0 &           -0.05340953 &             0.9985727 &                  0.04 \\
+                    0 &                     0 &                     0 &                     1
 \end{bmatrix}
 $$
 
@@ -1948,3 +1897,5 @@ The same guidance regarding `EndPoint` described in §3.8 applies to `IfcSegment
 | 3 | When forming $M^\prime_c$ for Step 5, zero the distance-along in column 4, row 1 and move the deviating elevation $D$ from row 2 to row 3 in column 4 | This maps the deviating elevation onto the Z axis where $M_h$ expects it; failure to do so incorrectly applies the translation offsets to the rotated frame |
 | 4 | Do not mix the EnrichIfc4x3 semantic-to-geometry mapping with the deviating elevation equations from this guide | EnrichIfc4x3 contains two compensating errors that yield correct results within its own implementation; mixing its coefficient mapping with this guide's deviating elevation equation (or vice versa) breaks the cancellation and produces results off by a factor of $L$ or $1/L$ — see Section 4.11 |
 | 5 | Include a zero-length `IfcCurveSegment` at the end of `IfcSegmentedReferenceCurve`; treat `IfcSegmentedReferenceCurve.EndPoint` as secondary | The zero-length segment is required by the IFC Concept Templates and is the normative endpoint; `EndPoint` is optional — if present, it must agree with the zero-length segment placement |
+| 6 | Interpolate the cross slope between the segment's own `Placement.Axis` and the next segment's `Placement.Axis` | The end cross slope $\phi_e$ comes from the next segment's placement (the zero-length closing segment for the last segment), not from the segment's own design parameters (Section 4.1.3) |
+| 7 | Build the parent-curve frame from $\mathbf{RefDir} = (\cos\theta, \sin\theta, 0)$ and $\mathbf{Axis} = (0, \cos\phi, \sin\phi)$ without re-orthogonalizing them | Re-orthogonalizing gives `Axis` an x component and changes `RefDir`; results then differ from IfcOpenShell by up to about $10^{-5}$ (Section 4.2, Steps 2 and 3) |
