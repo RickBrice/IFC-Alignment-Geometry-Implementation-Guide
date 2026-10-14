@@ -265,7 +265,7 @@ matrix components are extracted.
 |---|---|---|
 | Horizontal | `dist_along, X, Y, RefDir_dx, RefDir_dy` | `m[3,0]`, `m[3,1]`, `m[0,0]`, `m[0,1]` |
 | Vertical | `dist_along, Y, RefDir_dx, RefDir_dy` | `m[3,0]`, `m[3,2]`, `m[0,0]`, `m[0,2]` |
-| Cant | `dist_along, Y, RefDir_dx, RefDir_dy, Axis_dy, Axis_dz` | `m[3,1]`, `m[0,0]`, `m[0,1]`, `m[2,1]`, `m[2,2]` |
+| Cant | `dist_along, Y, RefDir_dx, RefDir_dy, RefDir_dz, Axis_dx, Axis_dy, Axis_dz` | `m[3,1]`, `m[0,0]`, `m[0,1]`, `m[0,2]`, `m[2,0]`, `m[2,1]`, `m[2,2]` |
 
 ---
 

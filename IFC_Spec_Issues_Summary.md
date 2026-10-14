@@ -36,6 +36,8 @@
 
 10. The EnrichIfc4x3 reference implementation contains compensating errors in cant coefficient mapping that produce correct deviating elevation values; mixing that mapping with independently derived equations produces results off by a factor of L (§4.11).
 
+34. The frame of a cant `IfcCurveSegment` in an `IfcSegmentedReferenceCurve` is not defined where the deviating elevation varies. `IfcSegmentedReferenceCurve` says only that, with no deviation, the `Axis` and `RefDirection` directions are interpolated between consecutive placements. It does not say how the slope of the deviating elevation orients the frame, and the cant placement mixes two coordinate conventions: `Location` and `RefDirection` are in the (distance along, deviating elevation) plane, while `Axis` is in the cross section with $y$ to the left and $z$ up. The guide pitches the cross section by the slope of the deviating elevation and rolls it by the cross slope, so that `RefDirection` is the tangent of the 3D curve and `Axis` is exactly perpendicular to the railheads. This follows `IfcAxis2PlacementLinear`, whose `Axis` is exact and whose `RefDirection` defaults to the curve tangent (§4.2).
+
 ---
 
 ## Chapter 5 — Offset Curves

@@ -26,6 +26,7 @@
 | $\phi$ | Cross-slope angle; angle from the transverse $y$-axis to the `Axis` vector |
 | $\phi_s,\ \phi_e$ | Cross-slope angle at the start and end of a cant segment |
 | $\phi_p$ | Cross-slope angle of `IfcCurveSegment.Placement.Axis` |
+| $\varepsilon$ | Pitch correction in the cant 3D composition; $\varepsilon = \tan^{-1}(g + D') - \tan^{-1}(g) - \tan^{-1}(D')$ (Section 4.2, Step 5) |
 | $\Delta$ | Sweep angle of a circular arc; angle subtended at the center by the arc from the trim start to an evaluation point |
 | $\Delta_0$ | Angular position of the trim-start point on the parent circle; angle from the circle's positive $x$-axis to the radius vector at the trim start (Section 3.4) |
 | $\Delta_{pc}$ | Radial angle at the evaluation point on the parent circle; $\Delta_{pc} = \Delta_0 - \Delta$ for a clockwise segment, $\Delta_0 + \Delta$ for counter-clockwise (Section 3.4) |
@@ -113,15 +114,15 @@ All matrices are $4 \times 4$ homogeneous transformation matrices. Column 4 carr
 | $M_{CSP}$ | Curve segment placement matrix; constructed from `IfcCurveSegment.Placement`; maps the trimmed segment into the alignment coordinate system |
 | $M_N$ | Normalization matrix; translates the trim-start point to the origin and rotates the tangent to align with the positive $x$-direction |
 | $M_{PC}$ | Parent curve matrix at the evaluation point; encodes $x(s)$, $y(s)$, and $\theta(s)$ |
-| $M_{PCS}$ | Cant parent curve matrix evaluated at the trim start $s_0$ |
-| $M_{PC\ell}$ | Cant parent curve matrix evaluated at the point under consideration $\ell$ |
+| $R_x(\phi)$ | Cant roll matrix; rotates the cross section by the cross-slope angle $\phi$ about $x$ (Section 4.2, Step 4) |
+| $P(\theta)$ | Cant pitch matrix; rotates the cross section by $\theta$ about $y$ so that `RefDir` follows the slope of the deviating elevation (Section 4.2, Step 4) |
 | $M_h$ | Horizontal placement matrix; $M_h = M_{CSP}\,M_N\,M_{PC}$ |
 | $M_v$ | Vertical placement matrix; $M_v = M_{CSP}\,M_N\,M_{PC}$ in the (distance-along, elevation) plane |
 | $M'_v$ | Modified vertical matrix; rows 2 and 3 of $M_v$ swapped, distance-along component zeroed, for multiplication with $M_h$ |
 | $M''_v$ | Orientation-only form of $M'_v$; column 4 set to $(0,0,0,1)^T$ for use in the cant 3D composition |
-| $M_c$ | Cant placement matrix; $M_c = M_{CSP}\,M_N\,M_{PC}$ in the (distance-along, deviating elevation) plane |
+| $M_c$ | Cant placement matrix; rotation $P(\theta_\ell)\,R_x(\phi(\ell))$ and position (distance along, deviating elevation) in column 4 (Section 4.2) |
 | $M'_c$ | Modified cant matrix; deviating elevation moved from row 2 to row 3, distance-along component zeroed, for multiplication |
 | $M''_c$ | Orientation-only form of $M'_c$; column 4 set to $(0,0,0,1)^T$ for use in the cant 3D composition |
 | $M_{3D}$ | Full 3D placement matrix combining horizontal and vertical; $M_{3D} = M_h\,M'_v$ |
-| $M_{3Dcant}$ | Full 3D placement matrix combining horizontal, vertical, and cant; $M_{3Dcant} = M_h\,M''_v\,M''_c$ |
+| $M_{3Dcant}$ | Full 3D placement matrix combining horizontal, vertical, and cant; $M_{3Dcant} = M_h\,M''_v\,P(\varepsilon)\,M''_c$ plus the position offsets |
 | $I$ | $4 \times 4$ identity matrix |

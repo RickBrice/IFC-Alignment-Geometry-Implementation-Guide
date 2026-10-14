@@ -392,7 +392,7 @@ Each reference file contains 101 rows plus a header row. The rows are sampled at
 intervals of horizontal distance (0.0 m to 100.0 m), so `dist_along` values in
 `SurveyFoot` and `IntlFoot` files are not round numbers. All length columns (`dist_along`,
 `X`, `Y`) are in the project unit declared by the corresponding IFC file. Direction
-columns (`RefDir_dx`, `RefDir_dy`, `Axis_dy`, `Axis_dz`) are dimensionless and identical across all
+columns (`RefDir_dx`, `RefDir_dy`, `RefDir_dz`, `Axis_dx`, `Axis_dy`, `Axis_dz`) are dimensionless and identical across all
 three unit variants. The columns differ by alignment type.
 
 **Horizontal alignment** — `HorizontalAlignment/**/*.csv`
@@ -428,14 +428,20 @@ consistent with the IFC specification for `IfcAlignmentVerticalSegment.Horizonta
 |--------------------|--------------------------------------------------------------------------------|
 | `dist_along` | Distance along the horizontal alignment (project units) |
 | `Y` | Track centerline deviating elevation due to cant (project units) |
-| `RefDir_dx` | X component of the forward tangent (`RefDirection`) |
-| `RefDir_dy` | Y component of the forward tangent (`RefDirection`) |
-| `Axis_dy` | Y component of the banked "up" axis vector |
-| `Axis_dz` | Z component of the banked "up" axis vector |
+| `RefDir_dx` | X (along) component of the forward tangent (`RefDirection`) |
+| `RefDir_dy` | Y (left) component of the forward tangent; always 0.0 |
+| `RefDir_dz` | Z (up) component of the forward tangent; the sine of the slope of the deviating elevation |
+| `Axis_dx` | X (along) component of the banked "up" axis vector |
+| `Axis_dy` | Y (left) component of the banked "up" axis vector |
+| `Axis_dz` | Z (up) component of the banked "up" axis vector |
 
-The banked axis (`Axis_dy`, `Axis_dz`) is the cross-track "up" direction after applying
-the cant rotation about the forward tangent. For a planar track the X component of
-the axis is always 0.0 and `Axis_dz` approaches 1.0 when cant is zero.
+The direction columns are in the cant frame of Section 4.2: X along the alignment, Y to the
+left and Z up. The forward tangent rises and falls with the deviating elevation, so its Y
+component (`RefDir_dy`) is always 0.0; the column is kept to make that explicit. The banked axis is the cross-track "up" direction after applying
+the cant rotation about the forward tangent. Where the deviating elevation changes, the
+axis tilts back along the track (`Axis_dx`) by the slope so that it stays perpendicular to
+the tangent. `Axis_dx` is 0.0 where the deviating elevation is constant, and `Axis_dz`
+approaches 1.0 when cant is zero.
 
 ### 12.4.2 3D Alignment Reference Coordinates
 
