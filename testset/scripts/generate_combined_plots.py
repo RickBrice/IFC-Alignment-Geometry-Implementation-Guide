@@ -26,6 +26,9 @@ import matplotlib
 matplotlib.use('svg')
 import matplotlib.pyplot as plt
 
+# Fixed element ids and no timestamp, so unchanged plots regenerate byte for byte.
+plt.rcParams['svg.hashsalt'] = 'alignment-testset'
+
 CSV_ROOT    = Path(__file__).parent.parent / 'Alignment-reference-testset'
 OUTPUT_ROOT = Path(__file__).parent.parent / 'Alignment-plots'
 
@@ -105,7 +108,7 @@ def make_combined_plot(cant_csv: Path, horiz_csv: Path, dest: Path):
 
         fig.tight_layout()
         dest.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(str(dest), format='svg', bbox_inches='tight')
+        fig.savefig(str(dest), format='svg', bbox_inches='tight', metadata={'Date': None})
     finally:
         plt.close(fig)
 

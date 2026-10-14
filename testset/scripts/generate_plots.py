@@ -17,6 +17,9 @@ import matplotlib
 matplotlib.use('svg')
 import matplotlib.pyplot as plt
 
+# Fixed element ids and no timestamp, so unchanged plots regenerate byte for byte.
+plt.rcParams['svg.hashsalt'] = 'alignment-testset'
+
 CSV_ROOT   = Path(__file__).parent.parent / 'Alignment-reference-testset'
 PLOTS_ROOT = Path(__file__).parent.parent / 'Alignment-plots'
 
@@ -72,7 +75,7 @@ def plot_csv(src: Path):
     rel = src.relative_to(CSV_ROOT)
     dest = PLOTS_ROOT / rel.with_suffix('.svg')
     dest.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(str(dest), format='svg', bbox_inches='tight')
+    fig.savefig(str(dest), format='svg', bbox_inches='tight', metadata={'Date': None})
     plt.close(fig)
     return dest
 
