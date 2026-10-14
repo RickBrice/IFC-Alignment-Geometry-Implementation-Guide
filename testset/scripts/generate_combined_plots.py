@@ -4,10 +4,10 @@ For each cant CSV, finds the matching horizontal CSV by curve type and radius
 labels, then produces a three-panel SVG:
   Top    — Horizontal plan view (X vs Y, equal aspect)
   Middle — Cant centerline elevation profile (dist_along vs Y)
-  Bottom — Cross-slope angle phi = atan2(Axis_dz, Axis_dy) in radians
+  Bottom — Cross-slope angle phi in radians
 
 phi is the angle of the banked Axis vector measured from the cross-track
-horizontal (Axis_dy axis).  When cant is zero the Axis points straight up and
+horizontal (Axis_dy axis), in the cross section normal to RefDir.  When cant is zero the Axis points straight up and
 phi = pi/2.  Increasing cant tilts the Axis toward positive Axis_dy, reducing
 phi below pi/2.  Because the IFC cant representation always stores Axis_dy >= 0
 regardless of curve hand, phi ranges between ~1.46 rad (full cant at 0.16 m /
@@ -71,11 +71,14 @@ def find_horizontal_csv(cant_csv: Path) -> Path:
 
 def make_combined_plot(cant_csv: Path, horiz_csv: Path, dest: Path):
     horiz_x, horiz_y = read_csv(horiz_csv, 'X', 'Y')
-    cant_d, cant_y, axis_dy, axis_dz = read_csv(
-        cant_csv, 'dist_along', 'Y', 'Axis_dy', 'Axis_dz'
+    cant_d, cant_y, ref_dx, ref_dz, axis_dx, axis_dy, axis_dz = read_csv(
+        cant_csv, 'dist_along', 'Y', 'RefDir_dx', 'RefDir_dz', 'Axis_dx', 'Axis_dy', 'Axis_dz'
     )
 
-    phi = [math.atan2(dz, dy) for dz, dy in zip(axis_dz, axis_dy)]
+    # Measure phi in the cross section normal to RefDir: its "up" direction there is
+    # N = RefDir x Y0 = (-RefDir_dz, 0, RefDir_dx), with Y0 = (0, 1, 0) to the left.
+    phi = [math.atan2(adz * rdx - adx * rdz, ady)
+           for rdx, rdz, adx, ady, adz in zip(ref_dx, ref_dz, axis_dx, axis_dy, axis_dz)]
 
     cant_type  = cant_csv.parts[-2]
     horiz_type = horiz_csv.parts[-2]

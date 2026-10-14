@@ -7,7 +7,7 @@ corresponding path under Alignment-reference-testset/.
 Columns by file type:
   Horizontal : dist_along, X, Y, RefDir_dx, RefDir_dy
   Vertical   : dist_along, Y, RefDir_dx, RefDir_dy
-  Cant       : dist_along, Y, RefDir_dx, RefDir_dy, Axis_dy, Axis_dz
+  Cant       : dist_along, Y, RefDir_dx, RefDir_dy, RefDir_dz, Axis_dx, Axis_dy, Axis_dz
 
 evaluate_segment is called for each real IfcCurveSegment with a local distance
 (in metres) measured from the start of that segment.  The zero-length terminator
@@ -112,12 +112,16 @@ def write_cant_csv(alignment, dest, unit_scale):
         rows.append([
             f'{dist:.6f}',
             f'{y:.6f}',        # Y  — centreline deviating elevation (project units)
+            # The cant frame is x along, y left, z up (guide §4.2): the slope of the deviating
+            # elevation pitches RefDirection in z, and Axis tilts back in x to stay perpendicular.
             f'{m[0,0]:.6f}',   # RefDir_dx — RefDirection x (dimensionless)
-            f'{m[0,1]:.6f}',   # RefDir_dy — RefDirection y (dimensionless)
+            f'{m[0,1]:.6f}',   # RefDir_dy — RefDirection y, always 0 (dimensionless)
+            f'{m[0,2]:.6f}',   # RefDir_dz — RefDirection z, the slope of the deviating elevation (dimensionless)
+            f'{m[2,0]:.6f}',   # Axis_dx — banked Axis x component (dimensionless)
             f'{m[2,1]:.6f}',   # Axis_dy — banked Axis y component (dimensionless)
             f'{m[2,2]:.6f}',   # Axis_dz — banked Axis z component (dimensionless)
         ])
-    write_csv(dest, ['dist_along', 'Y', 'RefDir_dx', 'RefDir_dy', 'Axis_dy', 'Axis_dz'], rows)
+    write_csv(dest, ['dist_along', 'Y', 'RefDir_dx', 'RefDir_dy', 'RefDir_dz', 'Axis_dx', 'Axis_dy', 'Axis_dz'], rows)
 
 
 def process_file(src: Path):
