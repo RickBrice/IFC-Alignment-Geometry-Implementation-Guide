@@ -59,7 +59,8 @@ def main():
     generate_geometry.main()
 
     section("Reference CSVs")
-    generate_csv.main()
+    if generate_csv.main():
+        sys.exit("Reference CSV checks failed; plots not generated.")
 
     section("Plots")
     generate_plots.main()

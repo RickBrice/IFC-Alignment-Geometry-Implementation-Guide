@@ -99,32 +99,43 @@ def write_vertical_csv(alignment, dest, unit_scale):
 
 
 def write_cant_csv(alignment, dest, unit_scale):
+    """Write the cant CSV and return the RefDir_dy values that are not exactly zero, as
+    [(dist_along, RefDir_dy), ...].
+
+    The slope of the deviating elevation pitches RefDirection about the cant frame's y
+    axis, so RefDirection's y component must be computed as exactly 0 (guide §4.2).
+    """
     _, n_points = horizontal_n_points(alignment, unit_scale)
     c_layout = align_api.get_cant_layout(alignment)
     cant_curve = align_api.get_layout_curve(c_layout)
     real_segs = get_real_segments(cant_curve)
     rows = []
+    nonzero_refdir_dy = []
     for i in range(n_points):
         d_m = float(i)
         m = evaluate_at(real_segs, d_m, unit_scale)
         dist = d_m / unit_scale
         y    = m[3, 1] / unit_scale
+        if m[0, 1] != 0.0:
+            nonzero_refdir_dy.append((dist, m[0, 1]))
         rows.append([
             f'{dist:.6f}',
             f'{y:.6f}',        # Y  — centreline deviating elevation (project units)
             # The cant frame is x along, y left, z up (guide §4.2): the slope of the deviating
             # elevation pitches RefDirection in z, and Axis tilts back in x to stay perpendicular.
             f'{m[0,0]:.6f}',   # RefDir_dx — RefDirection x (dimensionless)
-            f'{m[0,1]:.6f}',   # RefDir_dy — RefDirection y, always 0 (dimensionless)
+            f'{m[0,1] + 0.0:.6f}',   # RefDir_dy — RefDirection y, computed, checked to be 0 (+ 0.0 writes -0.0 as 0)
             f'{m[0,2]:.6f}',   # RefDir_dz — RefDirection z, the slope of the deviating elevation (dimensionless)
             f'{m[2,0]:.6f}',   # Axis_dx — banked Axis x component (dimensionless)
             f'{m[2,1]:.6f}',   # Axis_dy — banked Axis y component (dimensionless)
             f'{m[2,2]:.6f}',   # Axis_dz — banked Axis z component (dimensionless)
         ])
     write_csv(dest, ['dist_along', 'Y', 'RefDir_dx', 'RefDir_dy', 'RefDir_dz', 'Axis_dx', 'Axis_dy', 'Axis_dz'], rows)
+    return nonzero_refdir_dy
 
 
 def process_file(src: Path):
+    """Write the CSV for src and return (dest, check failures)."""
     rel  = src.relative_to(GEOMETRY_ROOT)
     csv_name = rel.stem.removeprefix('Generated_') + '.csv'
     dest = CSV_ROOT / rel.parent / csv_name
@@ -135,14 +146,15 @@ def process_file(src: Path):
 
     top_dir = rel.parts[0]  # HorizontalAlignment, VerticalAlignment, CantAlignment
 
+    failures = []
     if top_dir == 'VerticalAlignment':
         write_vertical_csv(alignment, dest, unit_scale)
     elif top_dir == 'CantAlignment':
-        write_cant_csv(alignment, dest, unit_scale)
+        failures = write_cant_csv(alignment, dest, unit_scale)
     else:
         write_horizontal_csv(alignment, dest, unit_scale)
 
-    return dest
+    return dest, failures
 
 
 def main():
@@ -150,11 +162,14 @@ def main():
     print(f'Processing {len(ifc_files)} files...')
     skipped = []
     written = []
+    failed = []
     for src in ifc_files:
         try:
-            dest = process_file(src)
+            dest, failures = process_file(src)
             written.append(dest)
             print(f'  {dest.relative_to(CSV_ROOT)}')
+            if failures:
+                failed.append((dest, failures))
         except Exception as e:
             rel = src.relative_to(GEOMETRY_ROOT)
             skipped.append((rel, e))
@@ -163,8 +178,17 @@ def main():
     if skipped:
         for rel, e in skipped:
             print(f'  {rel}: {e}')
+    if failed:
+        print(f'\nCHECK FAILED: RefDir_dy is not exactly 0 in {len(failed)} cant CSV(s):')
+        for dest, failures in failed:
+            worst = max(failures, key=lambda f: abs(f[1]))
+            print(f'  {dest.relative_to(CSV_ROOT)}: {len(failures)} row(s), '
+                  f'largest {worst[1]:.3e} at dist_along {worst[0]:.6f}')
+    else:
+        print('Check passed: RefDir_dy is exactly 0 in every cant CSV.')
     print(f'Done. CSV files written to {CSV_ROOT.name}/')
+    return 1 if failed else 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
