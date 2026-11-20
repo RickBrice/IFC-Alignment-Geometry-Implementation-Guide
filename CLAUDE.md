@@ -6,38 +6,52 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a pure markdown documentation project: an **IFC4x3 Alignment Geometry Implementation Guide** authored by Richard Brice, PE. It captures implementation lessons learned while adding alignment geometry support to IfcOpenShell and provides mathematical reference for developers implementing IFC alignment-based geometry in infrastructure software.
 
-There are no build, lint, or test commands — the project is entirely markdown documents, images, and IFC example files.
+There are no lint or test commands — the project is markdown documents, images, and IFC example files. The Word editions are built with `common/tools/make_docx.py` (see Build below).
 
 ## Repository Structure
 
-The guide is organized as numbered markdown chapters at the repository root:
+The guide is published as **two separate documents** (released at different times), developed by the **buildingSMART USA** chapter of buildingSMART International. Chapter, section, figure, and table numbers are **continuous across both parts** — a number identifies one location in the whole guide. When text in one part refers to the other, say so explicitly ("Part 2, Chapter 9"; "Part 1, Section 4.2") and link with `../Part2/...` / `../Part1/...`.
 
-| File | Topic | Status |
-|------|-------|--------|
-| `1_IFC_Alignment_Concepts.md` | IFC alignment concepts, semantic vs. geometric representations | Complete |
-| `2_Horizontal_Alignments.md` | Parametric equations for all horizontal curve types | Complete (longest, ~1,300 lines) |
-| `3_Vertical_Alignments.md` | Vertical alignment: grade lines, parabolic & circular arcs | Complete |
-| `4_Cant_Alignments.md` | Rail superelevation via IfcSegmentedReferenceCurve | Complete |
-| `5_OffsetCurves.md` | Offset curve definitions | Complete |
-| `6_Approximate_Alignment_Geometry.md` | IfcPolyline and IfcIndexedPolyCurve — survey/early-planning representations | Complete |
-| `7_Alignments_Reusing_Horizontal_Layout.md` | Multiple alignments sharing a common horizontal layout | Complete |
-| `8_LinearPlacement.md` | Linear placement concepts | Complete |
-| `9_Referents_and_Stationing.md` | Referents and stationing | Complete |
-| `10_Sectioned_Surfaces_and_Solids.md` | Sectioned surfaces and solids (IfcSectionedSurface, IfcSectionedSolidHorizontal) | Complete |
-| `11_Precision_and_Tolerance.md` | Precision and tolerance guidance | Complete |
-| `12_Alignment_Geometry_Testset.md` | Alignment geometry testset | Complete |
-| `13_References.md` | References | Complete |
-| `Appendix_A_LandXML.md` | LandXML-to-IFC conversion (Appendix A) | Complete |
+```
+Part1/    Part 1: Fundamentals — Alignment Curve Geometry
+Part2/    Part 2: Advanced Topics — Placement, Referencing, and Derived Geometry
+common/   shared material (references, notices, testsets, build tools, branding, archive)
+```
+
+| Part | File | Topic |
+|------|------|-------|
+| 1 | `Part1/1_IFC_Alignment_Concepts.md` | IFC alignment concepts, semantic vs. geometric representations |
+| 1 | `Part1/2_Horizontal_Alignments.md` | Parametric equations for all horizontal curve types (longest) |
+| 1 | `Part1/3_Vertical_Alignments.md` | Vertical alignment: grade lines, parabolic & circular arcs |
+| 1 | `Part1/4_Cant_Alignments.md` | Rail superelevation via IfcSegmentedReferenceCurve |
+| 1 | `Part1/5_Alignment_Geometry_Testset.md` | Alignment geometry testset |
+| 1 | `Part1/Appendix_A_LandXML.md` | LandXML-to-IFC conversion (Appendix A) |
+| 2 | `Part2/6_OffsetCurves.md` | Offset curve definitions |
+| 2 | `Part2/7_Approximate_Alignment_Geometry.md` | IfcPolyline and IfcIndexedPolyCurve |
+| 2 | `Part2/8_Alignments_Reusing_Horizontal_Layout.md` | Multiple alignments sharing a horizontal layout |
+| 2 | `Part2/9_LinearPlacement.md` | Linear placement |
+| 2 | `Part2/10_Referents_and_Stationing.md` | Referents and stationing |
+| 2 | `Part2/11_Sectioned_Surfaces_and_Solids.md` | IfcSectionedSurface, IfcSectionedSolidHorizontal |
+| 2 | `Part2/12_Precision_and_Tolerance.md` | Precision and tolerance |
+| both | `common/References.md` | References (unnumbered back matter; citation numbers `[n]` shared by both parts) |
+
+Each part folder also holds its own front and back matter: `Cover.md`, `DocumentControl.md` (bSI-style document control + document history — log new revisions here), `ExecutiveSummary.md`, `TableOfContents.md`, `Index.md`, and `IFC_Spec_Issues_Part{N}.md`. Spec issues are numbered independently per part. `Part1/Notation.md` holds the notation (Part 1 only). `common/Notices.md` (copyright, origin, status, disclaimer) is included in both builds. `common/archive/RevisionLog_PreSplit.md` is the frozen single-volume history and uses the **old** numbering (Part 2 was Ch. 5–11, testset was Ch. 12, references Ch. 13).
+
+### Build
+
+`python common/tools/make_docx.py [--part 1|2]` writes `Part{N}/IFC_Alignment_Geometry_Implementation_Guide_Part{N}.docx`. The file lists for each part live in the `PARTS` table at the top of the script. Styling (A4, Cambria headings in bSI teal `#00A0AF`, Calibri body, grid tables with shaded header) comes from `common/tools/reference.docx`, which is regenerated by `common/tools/style_reference_docx.py` — change styles there, not by hand in Word. The cover logos (bSI left, bS-USA right, equal height) are `common/branding/bsi_logo.png` and `bsusa_logo.png`.
 
 ### Figures
 
-`figures/` contains hand-edited IFC source files used as input to figure generation scripts. `figures/scripts/` contains the Python scripts that read those IFC files and write SVG output to `images/`. These IFC files have been manually adjusted to produce specific visual results and are not general-purpose alignment examples.
+`Part1/figures/` contains hand-edited IFC source files used as input to figure generation scripts. `Part1/figures/scripts/` contains the Python scripts that read those IFC files and write SVG output to `Part1/images/`. These IFC files have been manually adjusted to produce specific visual results and are not general-purpose alignment examples. `Part2/images/scripts/` holds the generator for a Part 2 figure.
 
-### Examples
+### Examples and testsets
 
-`examples/IfcOffsetCurveByDistances.ifc` is a standalone IFC example for offset curves.
+`Part2/examples/` contains the IFC example models (offset curves, sectioned surfaces/solids, intersection referents) and their build scripts.
 
-`examples/Alignment-atomic-testset/` contains 48 test cases across 6 transition curve types (Clothoid, Bloss, Cosine, Sine, Helmert, VienneseBend), each with 5 IFC variants. All IFC examples use schema version IFC4X3_ADD2 (ISO 16739-1:2024).
+`common/testset/` is the alignment geometry test set described in Part 1, Chapter 5.
+
+`common/BIM_Fit_Check_testset/Alignment-atomic-testset/` contains 48 test cases across 6 transition curve types (Clothoid, Bloss, Cosine, Sine, Helmert, VienneseBend), each with 5 IFC variants. All IFC examples use schema version IFC4X3_ADD2 (ISO 16739-1:2024).
 
 #### Testset file naming convention
 
@@ -71,7 +85,7 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 ## Writing Conventions
 
 - Mathematical equations use LaTeX syntax rendered by GitHub Markdown (fenced with `$$` for display math, `$...$` for inline).
-- Figures reference files in `images/` using relative markdown links. Both PNG and SVG files exist in `images/`; SVGs are used for technical line-art diagrams.
+- Figures reference files in the part's own `images/` folder using relative markdown links. Both PNG and SVG files exist in `images/`; SVGs are used for technical line-art diagrams.
 - IFC attribute names are written in `code style` (e.g., `StartRadiusOfCurvature`, `EndRadiusOfCurvature`, `SegmentLength`).
 - Positive curvature convention: curves to the left (from the perspective of a traveler moving in the direction of increasing chainage).
 - The guide distinguishes **semantic** alignment (business/design intent, `IfcAlignmentSegment` subtypes) from **geometric** alignment (mathematical curve representation, `IfcCurveSegment`).
@@ -80,19 +94,19 @@ These combine into a 3D alignment via `IfcGradientCurve` (horizontal + vertical 
 
 ### Image naming
 
-Two naming schemes exist in `images/`:
+Two naming schemes exist in `Part1/images/` and `Part2/images/`:
 - Older chapters use generic names: `image1.png`, `image2.1.png`, etc.
-- Newer chapters use descriptive names: `Figure_9.1_Superelevation_Transition.png`. Prefer this style for new figures.
+- Newer chapters use descriptive names: `Figure_11.3-1_Superelevation_Transition.png`. Prefer this style for new figures.
 
-Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own `images/` folder for testset plot images — these are separate from the root `images/` directory.
+Each curve-type subdirectory under `Alignment-atomic-testset/` also has its own `images/` folder for testset plot images — these are separate from the part `images/` directories.
 
 ### ERD (entity relationship diagram) figures
 
 Several figures illustrate IFC entity relationships (which entity references which, via which attribute or relationship class) rather than geometry. These are **hand-authored raw SVG** — there is no generator script or diagramming tool involved; new ones are built by copying the structure of an existing one and editing it directly.
 
 Canonical examples to copy from:
-- `images/Figure_9.4.1-1_Referent_Entity_Relationship.svg` — best source for the shared `<defs>` block (arrow marker, text classes, color classes) and the legend box pattern.
-- `images/Figure_9.3.2-1_Alignment_RelNests_ERD.svg` — best source for the "spine + branches" idiom (one entity fanning out to several related entities via a single trunk line).
+- `Part2/images/Figure_10.4.1-1_Referent_Entity_Relationship.svg` — best source for the shared `<defs>` block (arrow marker, text classes, color classes) and the legend box pattern.
+- `Part2/images/Figure_10.3.2-1_Alignment_RelNests_ERD.svg` — best source for the "spine + branches" idiom (one entity fanning out to several related entities via a single trunk line).
 
 Shared conventions across all ERD figures:
 - **Color semantics** (applied via `c-purple`/`c-blue`/`c-teal`/`c-gray` classes on a `<g>` wrapping each box): purple = rooted product/root entity, blue = representation/placement infrastructure, teal = geometry or tag-carrying content, gray = relationship entities (`IfcRelNests`, `IfcRelAggregates`, etc.).
@@ -107,4 +121,6 @@ Shared conventions across all ERD figures:
 
 The following of a list of things to address for the next version of this document.
 
-[ ] add a note in chapter 10, sectioned surfaces and solids, about the Tag attribute on IfcBuiltElement and reference the discussion here: https://community.osarch.org/discussion/comment/25421#Comment_25421
+[ ] add a note in chapter 11 (Part 2), sectioned surfaces and solids, about the Tag attribute on IfcBuiltElement and reference the discussion here: https://community.osarch.org/discussion/comment/25421#Comment_25421
+
+[ ] When Part 2 is published, update the Document History date in `Part2/DocumentControl.md` (currently 20 Nov 2026, the date Part 1 was prepared) and the copyright year in `common/Notices.md`/`LICENSE` if it has changed.

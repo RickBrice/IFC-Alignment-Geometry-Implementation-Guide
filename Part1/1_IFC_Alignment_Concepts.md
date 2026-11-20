@@ -1,0 +1,266 @@
+# Chapter 1 — IFC Alignment Concepts
+
+## 1.0 Introduction
+
+IFC4x3 ADD2, published as ISO 16739-1:2024 [1], is the current IFC standard and includes full support for infrastructure alignment geometry. Despite the standard's publication, software adoption has lagged — not because the standard is new, but because implementation guidance has been scarce. This guide addresses that gap by documenting the relevant concepts and mathematics a software developer needs to implement alignment-based geometry.
+
+If you are unfamiliar with infrastructure alignment geometry, information is available in a multitude of highway engineering, rail engineering, and surveying texts. A concise primer is available in the US Federal Highway Administration (FHWA), [Bridge Geometry Manual](https://rosap.ntl.bts.gov/view/dot/62673) [2], Chapters 1 - 5 and Appendix B. 
+
+This guide assumes the reader has a basic working knowledge of IFC and is familar with the specifications including the fundamental concepts and assumptions.
+
+The IFC specification provides concept templates for mapping semantic alignment representations to their geometric counterparts. The concept templates — covering aggregation to project, alignment layout nesting, and the four alignment geometry variants (horizontal; horizontal+vertical; horizontal+vertical+cant; segments) —
+provide the minimum information required to properly structure alignment semantic and geometric entities an IFC model. The *partial* concept templates that
+cover individual curve segment geometry types, however, are sparse: they show class relationships but do not provide mathematical equations or parameter mappings. 
+
+This guide aims to encompass the full scope of IFC alignment implementation. It is published in two parts. **Part 1 — Fundamentals: Alignment Curve Geometry** covers the parametric equations for horizontal, vertical, and cant curve segments (Chapters 2–4) and the alignment geometry test set and validation data (Chapter 5); LandXML-to-IFC conversion is covered in [Appendix A](Appendix_A_LandXML.md). **Part 2 — Advanced Topics: Placement, Referencing, and Derived Geometry** covers offset curves (Chapter 6); approximate polyline representations (Chapter 7); alignments that share a common horizontal layout (Chapter 8); linear placement of objects along an alignment (Chapter 9); referents and stationing, including station equations (Chapter 10); alignment-based physical geometry — sectioned surfaces and solids (Chapter 11); and precision and tolerance guidance (Chapter 12). Chapter numbering is continuous across the two parts, so a chapter, section, figure, or table number identifies a single location in the guide. 
+
+## 1.1 Horizontal Alignment
+
+A horizontal alignment typically consists of straight lines called
+**tangents** (or tangent runs) that are connected by **horizontal curves**. The curves are usually circular
+arcs. Easement or **transition curves** in the form of spirals can be used
+to provide gradual transitions between tangents and circular curves. The
+horizontal alignment is a plan view curvilinear path in a Cartesian
+coordinate system aligned with East and North. Positions along an
+alignment, measured along the plan view projection of the 3D alignment
+curve, are typically denoted with *stations* (also called *chainage* in British and Australian practice; the two terms are used interchangeably throughout this guide).
+
+## 1.2 Vertical Alignment
+
+A vertical alignment (often referred to as the vertical profile by civil engineers) consists of straight sections of **grade lines** connected by **vertical curves**. The vertical curves are typically
+parabolas for roadway and circular arcs or clothoid curves for rail. A
+vertical alignment is defined along the curvilinear path of a horizontal
+alignment in a 2D "Distance Along Horizontal Alignment, Elevation" coordinate system. Combined,
+the horizontal and vertical alignments define a 3D curve. This
+combination of two 2D curves is sometimes referred to as a 2.5D or 2+1D
+geometry. The IFC specification notes that contemporary alignment design
+almost always implements this 2.5D approach, with precision varying
+based on management priorities, design era, and available software tools.
+
+## 1.3 Cant Alignment
+
+When a rail vehicle traverses a horizontal curve, centrifugal force acts laterally on passengers and cargo. Tilting the track cross-section — raising the outer (high) rail above the inner (low) rail — converts part of that lateral force into a downward component, improving ride comfort and permitting higher operating speeds through curves. This tilt is called **cant** (or *superelevation*).
+
+Cant is measured as the height difference (deviating elevation) between the two rail heads, perpendicular to the track. The low (inner-curve) rail is the conventional pivot point for rotation; the high (outer-curve) rail rises by the cant amount.
+
+A cant alignment is structured similarly to the horizontal and vertical alignments: **constant-cant zones** — corresponding to the tangent and circular arc sections of the horizontal alignment, where cant is held at a fixed value — are connected by **cant transitions** that ramp over the length of the horizontal transition spiral. Transitions may be linear or may follow the same non-linear curve families used for horizontal spirals.
+
+Like the vertical alignment, the cant alignment is defined in a two-dimensional profile: distance along the horizontal alignment on one axis, cant value on the other. The cant profile encodes not only a deviating elevation but also the cross slope of the rail head, fully defining the rotated cross-section. This profile is then layered onto the combined horizontal and vertical alignment to produce a full 3D alignment curve incorporating cross-sectional banking.
+
+## 1.4 Semantic Definition (Business Logic)
+
+The semantic definition of alignment allows for the alignment to be
+described as close as possible to the terminology and concepts used in a
+business context. Examples include horizontal, vertical and cant
+layouts, stationing, and anchor points for domain specific properties
+such as design speed, cant deficiency, superelevation transitions, and
+widenings.
+
+Specialized applications can analyze alignments using the semantic
+information. Alignments can be evaluated against design criteria such as
+speed requirements, sight distances, and maximum gradient, to name a
+few.
+
+Importantly, the semantic and geometric representations are independent
+and can be used and exchanged separately. A proper IFC file may contain only the semantic definition without any geometric
+representation, which is common in early design stages when geometry
+has not yet been computed.
+
+An `IfcAlignment` may be defined with a horizontal layout only, a horizontal and vertical layout, or a full horizontal, vertical, and cant layout. Each layout type is composed through an `IfcRelNests` relationship: `IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant` are nested within the `IfcAlignment` as applicable. Each layout is in turn composed of one or more `IfcAlignmentSegment` entities, also through `IfcRelNests`. The `IfcAlignmentSegment` models the segment design parameters in a subtype of `IfcAlignmentParameterSegment`: `IfcAlignmentHorizontalSegment`, `IfcAlignmentVerticalSegment`, or `IfcAlignmentCantSegment`, depending on the layout. The semantic definition model is shown in Figure 1.4-1.
+
+> NOTE: Multiple vertical and cant alignments can reuse the same horizontal alignment in more complex modelling scenarios. This is discussed in Part 2, Chapter 8.
+
+![Figure 1.4-1 — Entity-relationship diagram: IfcAlignment nests via IfcRelNests to IfcAlignmentHorizontal, IfcAlignmentVertical, and IfcAlignmentCant (cant highlighted in purple). Each layout contains IfcAlignmentSegment instances, which hold subtypes of the abstract IfcAlignmentParameterSegment (IfcAlignmentHorizontalSegment, IfcAlignmentVerticalSegment, IfcAlignmentCantSegment).](images/Figure_1.4-1_Semantic_Alignment_Model.svg)
+
+*Figure 1.4-1 Semantic alignment model*
+
+`IfcRelNests.RelatedObjects` is an ordered collection, so the layout sub-objects have a defined sequence within the nest. The IFC specification does not state this order explicitly, but it can be inferred from the diagrams in the [`IfcAlignment` documentation (§5.4.3.1.5)](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/lexical/IfcAlignment.htm#5.4.3.1.5-Concept-usage): `IfcAlignmentHorizontal` precedes `IfcAlignmentVertical`, which precedes `IfcAlignmentCant`.
+
+The ordering of `IfcAlignmentSegment` instances within each layout's nest is similarly unspecified by the schema. For `IfcAlignmentHorizontalSegment` the only logical order is start to end. For `IfcAlignmentVerticalSegment` and `IfcAlignmentCantSegment`, positional order could theoretically be derived from the `StartDistAlong` attribute regardless of list order, but relying on this is unnecessarily complex. Segments should always be ordered start to end in `IfcRelNests.RelatedObjects`.
+
+An interesting caveat of the alignment layout entities (`IfcAlignmentHorizontal`, `IfcAlignmentVertical`, and `IfcAlignmentCant`) is that the last
+`IfcAlignmentSegment.DesignParameters` must be zero length. If a geometric
+representation is provided, then its corresponding last segment must
+also be zero length. For a continuous composition of segments, the end
+of one segment is at the same location as the start of the next segment.
+The zero-length segment is intended to provide the end point of the last
+segment. See §2.12 for full implementation details.
+
+**Aggregation to project.** `IfcAlignment` is a mandatory participant
+in the IFC spatial structure. Every alignment must be aggregated to
+`IfcProject` — directly, or indirectly through a parent alignment —
+via an `IfcRelAggregates` relationship. An alignment not connected to
+the project is invalid.
+
+**Referencing to site.** Alignments can traverse
+multiple administrative or physical sites. For this reason, `IfcAlignment` associates
+with `IfcSite` using `IfcRelReferencedInSpatialStructure` rather than
+`IfcRelContainedInSpatialStructure`. The referenced-in relationship is
+non-exclusive: a single alignment may be referenced by every `IfcSite`
+it crosses. This is the key distinction between *containment* (one
+element, one spatial zone) and *referencing* (one element, many zones). Figure 1.4-2 shows multiple sites along an alignment. The central East-West alignment is contained in the spatial structure of the project and referenced into the spatial structure of all the sites it traverses.
+
+![](images/Figure_1.4-2.png)
+
+*Figure 1.4-2 Alignments spanning multiple sites*
+
+## 1.5 Geometric Representation
+
+### 1.5.1 Overview
+
+[Section 4.1.7.1.1](https://ifc43-docs.standards.buildingsmart.org/IFC/RELEASE/IFC4x3/HTML/concepts/Product_Shape/Product_Geometric_Representation/Alignment_Geometry/content.html) of the IFC4x3 specification indicates that the valid
+representations of `IfcAlignment` are:
+
+- `IfcCompositeCurve` as a 2D horizontal alignment (represented by its
+  horizontal alignment segments), without a vertical layout.
+
+- `IfcGradientCurve` as a 3D horizontal and vertical alignment
+  (represented by their alignment segments), without a cant layout.
+
+- `IfcSegmentedReferenceCurve` as a 3D curve defined relative to an
+  IfcGradientCurve to incorporate the application of cant.
+
+- `IfcOffsetCurveByDistances` as a 2D or 3D curve defined relative to an
+  `IfcGradientCurve` or another `IfcOffsetCurveByDistances`.
+
+- `IfcPolyline` or `IfcIndexedPolyCurve` as a 3D alignment by a 3D polyline
+  representation (such as coming from a survey).
+
+- `IfcPolyline` or `IfcIndexedPolyCurve` as a 2D horizontal alignment by a
+  2D polyline representation (such as in very early planning phases or
+  as a map representation).
+
+
+The `RepresentationIdentifier` and `RepresentationType` values required
+by the IFC concept templates for each alignment geometry variant are listed in Table 1.5.1-1.
+
+| Alignment variant | Curve entity | `RepresentationIdentifier` | `RepresentationType` |
+|------------------------------|-----------------------------------|--------------------|---------------|
+| Horizontal only | `IfcCompositeCurve` | `'Axis'` | `'Curve2D'` |
+| Horizontal + Vertical | `IfcCompositeCurve` (plan view) | `'FootPrint'` | `'Curve2D'` |
+| Horizontal + Vertical | `IfcGradientCurve` (3D) | `'Axis'` | `'Curve3D'` |
+| Horizontal + Vertical + Cant | `IfcCompositeCurve` (plan view) | `'FootPrint'` | `'Curve2D'` |
+| Horizontal + Vertical + Cant | `IfcSegmentedReferenceCurve` (3D) | `'Axis'` | `'Curve3D'` |
+
+*Table 1.5.1-1 — Required RepresentationIdentifier and RepresentationType for each alignment geometry variant*
+
+`IfcGradientCurve` and `IfcSegmentedReferenceCurve` inherit from
+`IfcCompositeCurve`. These curves consist of a sequence of segments
+defined by `IfcCurveSegment`. The mathematical computations for
+`IfcCurveSegment` geometry are the primary focus of Chapters 2 - 4.
+
+`IfcPolyline` and `IfcIndexedPolyCurve` produce approximate, discrete geometry
+rather than exact parametric curves. They arise in survey-derived alignments and early
+planning contexts. Their use, limitations, and incompatibility with the full semantic
+alignment definition are discussed in [Part 2, Chapter 7](../Part2/7_Approximate_Alignment_Geometry.md). The IFC specification does not indicate the proper `RepresentationIdentifier` or `RepresentationType`; by analogy with the parametric curve variants, `'Axis'` with either `'Curve2D'` or `'Curve3D'` is appropriate.
+
+`IfcOffsetCurveByDistances` is treated in [Part 2, Chapter 6](../Part2/6_OffsetCurves.md). Again, the representation identifier and representation type are not indicated in the specification. The most logical choice is to match the `BasisCurve`.
+
+### 1.5.2 Understanding Geometric Representation of Alignment
+
+The semantic definition of an alignment and its geometric representation carry overlapping information — both describe segment types, lengths, and radii — but they serve different consumers. The semantic representation encodes design intent in domain vocabulary: a horizontal segment typed as `CLOTHOID` with a `StartRadiusOfCurvature` of infinity, an `EndRadiusOfCurvature` of 300 m, and a `SegmentLength` of 100 m tells a design application *what* the engineer specified and enables evaluation against standards for minimum radius, design speed, and sight distance. The geometric representation encodes the computed mathematical form: the exact start coordinates, the tangent bearing at each point, and parametric equations that yield position and direction at any arc-length along the curve — the form that a rendering engine, clash-detection tool, or quantity-takeoff calculation requires.
+
+The geometric representation of `IfcAlignment` consists of one or more `IfcShapeRepresentation` instances: a plan-view 2D curve and, where vertical or cant geometry is present, a 3D curve. These are illustrated in Figure 1.5.2-1.
+
+Geometrically, the horizontal alignment is defined by an
+`IfcCompositeCurve` and the vertical alignment is defined by an
+`IfcGradientCurve`. The horizontal alignment is the basis curve for the
+vertical alignment.
+
+![Figure 1.5.2-1 — Three-row diagram contrasting semantic (left) and geometric (right) representations. Row 1 (horizontal-only): IfcAlignment → IfcAlignmentHorizontal maps to IfcCompositeCurve. Row 2 (H+V): adds IfcAlignmentVertical; IfcCompositeCurve feeds IfcGradientCurve via BaseCurve. Row 3 (H+V+C): adds IfcAlignmentCant; IfcGradientCurve feeds IfcSegmentedReferenceCurve as the 3D axis representation.](images/Figure_1.5.2-1_Alignment_Geometry_Variants.svg)
+
+*Figure 1.5.2-1 Geometric representation variants for the three alignment constructs (H, H+V, H+V+C). The dashed `IfcGradientCurve` box in the H+V+C row appears as a `BaseCurve` intermediate only — it is not itself a shape representation.*
+
+
+The geometric elements are modeled with `IfcCurveSegment`. `IfcCurveSegment`
+cuts a segment from a parent curve and places it in the alignment
+coordinate system. A horizontal circular arc is modeled with an
+`IfcCurveSegment` that cuts an arc from an `IfcCircle`. Figure 1.5.2-2 shows an
+alignment consisting of a tangent run (red) and a horizontal curve
+(green). The line and curve segments are cut from their `IfcLine` and
+`IfcCircle` parent curves, respectively. The process of defining a parent
+curve, cutting a segment from that curve, and placing the cut segment
+into the alignment is repeated to define the entire horizontal
+alignment. All the horizontal alignment `IfcCurveSegment` objects are then
+combined to create an `IfcCompositeCurve` to complete the plan view
+geometric representation of the horizontal alignment.
+
+![Figure 1.5.2-2 — Schematic showing two IfcCurveSegment instances trimmed from parent curves. An IfcLine (passing through the origin) yields a red tangent segment with SegmentStart and SegmentLength labeled. An IfcCircle (center Cx,Cy) yields a green arc segment. The two segments combine into an IfcCompositeCurve on the right.](images/Figure_1.5.2-2_Parent_Curves_Placement.png)
+
+*Figure 1.5.2-2 Illustration of parent curves and their placement with `IfcCurveSegment.Placement`*
+
+> NOTE: Angles start on the positive coordinate axis (X-axis for this example) and increase in counter-clockwise direction.
+
+
+A similar process is used to create the vertical alignment.
+`IfcCurveSegment` instances trim geometry from parent curves and combine end to start to
+create an `IfcGradientCurve`. `IfcGradientCurve` is a sub-type of
+`IfcCompositeCurve` with the additional attribute `BaseCurve`. The segments
+of the gradient curve are placed in a 2-dimensional plane in a
+"distance along the horizontal alignment, elevation" coordinate system.
+The `IfcGradientCurve` uses the horizontal alignment `IfcCompositeCurve` as
+its base curve.
+
+`IfcSegmentedReferenceCurve` is also a sub-type of `IfcCompositeCurve`. It
+defines a deviating elevation and rail head cross slope along the base
+curve. The base curve is an `IfcGradientCurve`. The "distance along"
+value is along the gradient curve's base curve, which is the horizontal alignment curve.
+
+#### 1.5.2.1 Curve segment geometry
+
+When defining curve segment geometry with an `IfcCurveSegment`, the location and orientation of the
+parent curve are not particularly important. The `IfcCurveSegment.Placement` defines the location of the start point of the trimmed curve as well as the orientation of the tangent at the start of the trimmed curve. In the example above, the `IfcLine` parent curve starts at (0,0) and progresses in horizontal direction, but the tangent segment of the alignment starts at a specific (X,Y) position and is oriented in a North-East direction. The `IfcCurveSegment.Placement` attribute establishes this position and orientation.
+
+#### 1.5.2.2 Vertical and Cant Curve Extents
+
+For `IfcGradientCurve` and `IfcSegmentedReferenceCurve` the segments do not
+need to start or end at the same location of their base curve. These
+curves can be shorter or longer than the horizontal alignment. This is illustrated
+in Figure 1.5.2.2-1 where the blue curve is the full horizontal curve and the
+orange curve is the portion of the horizontal curve coinciding with the
+vertical curve. The `IfcGradientCurve` (#770) has the `IfcCompositeCurve`
+(#657) as its base curve. The placement of the first `IfcCurveSegment`
+(#771) in the `IfcGradientCurve` is defined by `IfcAxis2Placement2D` (#777)
+with Location as `IfcCartesianPoint` (#778). The first segment is located
+at a distance of 250.0036 along the horizontal `IfcCompositeCurve` at an
+elevation of 145.3129 m. The IFC specification does not provide guidance
+on how to define complete 3D geometry in the regions of the horizontal
+alignment that do not overlap with the vertical or cant curves.
+
+~~~
+#657=IFCCOMPOSITECURVE((#658,#671,#684,#697,#710,#723,#736,#749,#762),.F.)
+#770=IFCGRADIENTCURVE((#771,#784,#796,#809,#821,#834,#846,#859,#871),.F.,#657,#887)
+#771 = IFCCURVESEGMENT(.CONTSAMEGRADIENTSAMECURVATURE., #777, IFCLENGTHMEASURE(0.),
+IFCLENGTHMEASURE(40.0002408172751), #780);
+#777 = IFCAXIS2PLACEMENT2D(#778, #779);
+#778 = IFCCARTESIANPOINT((250.003634293681, 145.312908277025));
+~~~
+
+![Figure 1.5.2.2-1 — Plan-view plot of two closely overlapping horizontal alignment traces (#657 and #770) in easting/northing coordinates, tracing an S-curve. Used to illustrate how an IfcGradientCurve follows the 2D horizontal footprint of an alignment.](images/Figure_1.5.2.2-1_GradientCurve_Extents.png)
+
+*Figure 1.5.2.2-1 — Example of `IfcGradientCurve` with a start location and length different than the `IfcCompositeCurve` BaseCurve.*
+
+## 1.6 Reference Implementation and Segment Mapping
+
+Chapters [2](2_Horizontal_Alignments.md), [3](3_Vertical_Alignments.md), and [4](4_Cant_Alignments.md) discuss the mapping of the semantic definition of alignment segments (`IfcAlignmentSegment` subtypes) to their corresponding geometric representation (`IfcCurveSegment.ParentCurve`). In general, the mapping formulas are given without derivation and have been developed from the reference implementation, EnrichIFC4x3, published at
+[IFC-Rail-Unit-Test-Reference-Code/EnrichIFC4x3/EnrichIFC4x3/business2geometry
+at master · bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code
+(github.com)](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code/tree/master/EnrichIFC4x3/EnrichIFC4x3/business2geometry) [3].
+
+The cant segment mappings in the EnrichIfc4x3 reference implementation are incorrect. These errors are documented in Chapter 4, which presents corrected formulas and explains why the reference implementation is incorrect.
+
+## 1.7 Units of Measure
+
+Unless otherwise specified, the following unit conventions apply throughout this guide:
+
+| Quantity | Unit |
+|------------------------------------------------------------|----------------------------------------|
+| Length, distance, elevation, offset, cant | meter (m) |
+| Spiral and polynomial coefficients ($A$, $A_0$, $A_1$, …) | meter (m) |
+| Curvature ($\kappa = 1/R$) | reciprocal meter (m⁻¹) |
+| Angles (bearings, grade angles, cross-slope angles) | radian (rad) |
+| Gradient (vertical slope) | dimensionless ratio (m/m) |
+
+*Table 1.7-1 — Unit conventions used throughout this guide*
+
+Gradient is expressed as a decimal rise-over-run value — 0.02 represents a 2% grade — not as a percentage or angle.

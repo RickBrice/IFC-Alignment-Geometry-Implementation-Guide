@@ -1,0 +1,560 @@
+# Chapter 5 — Alignment Geometry Testset
+
+## 5.1 Background
+
+The test cases in this chapter are inspired by the alignment test sets developed by
+Andreas Pinzenöhler for the buildingSMART Germany chapter's BIM Fit Check competition [7],
+and by the EnrichIFC4x3 reference implementation developed by Peter Bonsma and published
+in the [IFC-Rail-Unit-Test-Reference-Code](https://github.com/bSI-RailwayRoom/IFC-Rail-Unit-Test-Reference-Code)
+repository. Both bodies of work established the principle of pairing semantic IFC files
+with independently computed reference coordinates as a practical validation strategy.
+
+The goal of this testset is to give implementors a concrete, mechanically verifiable
+check for their alignment geometry code. Each test case is deliberately simple: a single
+100 m segment of one curve type, with known input parameters and published reference
+coordinates sampled at 1 m intervals. Each test case is provided in three unit variants — SI meters, US survey feet, and international feet — making the set a direct check for unit-conversion correctness as well as geometric accuracy.
+
+## 5.2 Testset Structure
+
+The testset provides each test case in three complementary forms, together with plots
+for visual inspection, all located under the `testset/` folder in this repository.
+
+```
+testset/
+├── Alignment-semantic-testset/    # Semantic IFC files (no geometry)
+├── Alignment-geometry-testset/    # IFC files with geometric representations
+├── Alignment-reference-testset/   # Reference coordinate tables
+└── Alignment-plots/               # SVG plots for visual inspection
+```
+
+All four folders share the same internal hierarchy: alignment type then curve type subfolder.
+
+**Table 5.2-1 — Curve type subfolders by alignment type**
+
+| Alignment type | Curve type subfolders |
+|-------------------------|-------------------------------------------------------------------------|
+| HorizontalAlignment | Line, CircularArc, Clothoid, BlossCurve, CosineCurve, HelmertCurve, SineCurve, VienneseBend |
+| VerticalAlignment | ConstantGradient, ParabolicArc, CircularArc |
+| CantAlignment | ConstantCant, LinearTransition, BlossCurve, CosineCurve, HelmertCurve, SineCurve, VienneseBend |
+
+### 5.2.1 Unit Systems
+
+Every test case is provided in three unit variants, identified by the `{Unit}` token at
+the end of each filename:
+
+| Token | Unit | Conversion to meters |
+|--------------------|------------------------------|--------------------------------------------------|
+| `Meter` | SI meter | 1.0 (exact) |
+| `SurveyFoot` | US survey foot | 1200 / 3937 ≈ 0.304 800 609 … m |
+| `IntlFoot` | International foot | 0.3048 m (exact) |
+
+All dimensional quantities in each IFC file — segment lengths, curve radii, elevations,
+cant values, `RailHeadDistance`, and spiral coefficients — are expressed in the declared project unit.
+Gradients are dimensionless percentage values and are identical across all three variants.
+The reference coordinates are likewise in project units, so a `SurveyFoot` file
+contains distances and positions in survey feet.
+
+### 5.2.2 Semantic IFC Files
+
+The semantic IFC files express the design intent of each alignment through
+`IfcAlignmentSegment` subtypes (`IfcAlignmentHorizontalSegment`,
+`IfcAlignmentVerticalSegment`, `IfcAlignmentCantSegment`). No geometric representation
+(`IfcCurveSegment`) is attached. These files are useful for testing the semantic layer
+of an implementation: can the software read the alignment parameters, classify the
+segment type, and display or export the design intent without requiring geometric
+evaluation? They also serve as inputs for testing geometric representation generation —
+an implementation can construct its own geometry IFC files from the semantic definitions
+and benchmark the result against the reference geometry files in `Alignment-geometry-testset/`.
+
+**File naming.** Each filename is prefixed with the alignment type — `Horizontal`, `Vertical`, or `Cant` — so the alignment type is unambiguous without inspecting the file or its folder path. All numeric tokens in the filename (length, radii) use meter-based values regardless of unit system, so the same filename prefix identifies the same physical alignment across all three unit variants.
+
+**Horizontal and cant:**
+
+```
+Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+```
+
+The radius tokens use `inf` and `-inf` for infinite radius (straight tangent). Positive radii denote left curves; negative radii denote right curves.
+
+Examples:
+- `Horizontal_Clothoid_100.0_inf_300_Meter.ifc` — Clothoid entry spiral, R = ∞ → +300 m, SI units
+- `Horizontal_Clothoid_100.0_inf_300_SurveyFoot.ifc` — same alignment, US survey feet
+- `Horizontal_HelmertCurve_100.0_-300_-1000_Meter.ifc` — Helmert arc-to-arc, R = −300 → −1000 m
+- `Cant_BlossCurve_100.0_-inf_-300_Meter.ifc` — Bloss cant entry spiral, right curve
+
+**Vertical:**
+
+```
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+```
+
+Examples:
+- `Vertical_ParabolicArc_100.0_10.0_0.5_-1.0_Meter.ifc` — parabolic crest, +0.5 % to −1.0 %, starting at elevation 10.0 m
+- `Vertical_ConstantGradient_100.0_10.0_-0.5_-0.5_Meter.ifc` — constant descent at −0.5 %
+
+### 5.2.3 Geometry IFC Files
+
+The geometry IFC files extend the semantic files with `IfcCurveSegment`-based geometric
+representations attached to each layout curve (`IfcCompositeCurve`,
+`IfcGradientCurve`, `IfcSegmentedReferenceCurve`). Each geometric curve also carries a
+zero-length terminator segment that marks the end of the parametric domain.
+
+The primary purpose of these files is to validate an implementation's mapping from
+semantic to geometric alignment definitions — specifically, whether the
+`IfcAlignmentSegment` attributes are correctly translated into the corresponding
+`IfcCurveSegment` representations. They also provide everything needed to evaluate the
+alignment curve at any point along its length, making them the input for coordinate
+comparison against the reference values in `Alignment-reference-testset/`.
+
+**File naming.** Geometry files carry the same name as their semantic counterpart with `Generated_` prepended, distinguishing machine-generated files from the hand-authored semantic definitions:
+
+```
+Generated_Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+Generated_Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.ifc
+Generated_Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.ifc
+```
+
+### 5.2.4 Reference Coordinates
+
+The reference coordinate files are CSV tables of coordinates sampled at every 1 m of
+horizontal distance along each alignment, from 0.0 m to 100.0 m inclusive (101 rows per
+file). Their purpose is to provide concrete values that any implementation can compare
+its output against, independent of the IFC files. The file format and column
+definitions are described in §5.4.
+
+Vertical and cant alignment folders each contain an additional `3D/` subfolder with a
+second set of reference files in the same 13-column format used for real-world
+alignments (§5.4.2). These 3D files are produced by evaluating the combined 3D curve
+(`IfcGradientCurve` for vertical, `IfcSegmentedReferenceCurve` for cant) at the same
+101 sample points. They let an implementor validate the complete evaluation pipeline —
+not just the component-plane output — against controlled, single-component synthetic
+geometry.
+
+The following excerpt shows the first five rows of
+`HorizontalAlignment/BlossCurve/Horizontal_BlossCurve_100.0_300_1000_Meter.csv` — a Bloss
+arc-to-arc transition from R = +300 m to R = +1000 m:
+
+```
+dist_along,X,Y,RefDir_dx,RefDir_dy
+0.000000,0.000000,0.000000,1.000000,0.000000
+1.000000,0.999998,0.001667,0.999994,0.003333
+2.000000,1.999985,0.006666,0.999978,0.006665
+3.000000,2.999950,0.014995,0.999950,0.009994
+4.000000,3.999882,0.026652,0.999911,0.013318
+```
+
+At the start of the segment the position is at the origin, the tangent points due East
+(`RefDir_dx` = 1, `RefDir_dy` = 0), and the curve is already bending left — the
+Y coordinate and `RefDir_dy` both increase as the alignment curves away from the
+initial straight.
+
+**File naming.** Reference CSV files use the same name as the corresponding semantic IFC file with the `.ifc` extension replaced by `.csv`:
+
+```
+Horizontal_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.csv
+Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+```
+
+### 5.2.5 Plots
+
+The `Alignment-plots/` folder contains plots for visual inspection, organized into
+three subfolders that mirror the alignment type structure:
+
+- **`HorizontalAlignment/{type}/`** — one plan-view plot per horizontal file.
+- **`VerticalAlignment/{type}/`** — one elevation profile plot per vertical file.
+- **`CantAlignment/{type}/`** — one two-panel plot per cant file, pairing the cant profile with its matching horizontal plan view.
+
+Figure 5.2.5-1 shows a representative example: a Helmert arc-to-arc transition from
+R = +300 m to R = +1000 m. The upper panel shows the horizontal plan view; the middle
+panel shows the corresponding cant profile; the lower panel shows the cross-slope direction.
+
+![Figure 5.2.5-1 — Combined horizontal plan view and cant profile for a Helmert arc-to-arc transition (R = +300 m to R = +1000 m)](../common/testset/Alignment-plots/CantAlignment/HelmertCurve/Cant_HelmertCurve_100.0_300_1000_Meter.svg)
+
+**Figure 5.2.5-1** — Combined horizontal and cant plot for `Cant_HelmertCurve_100.0_300_1000_Meter`.
+
+## 5.3 Test Cases
+
+The test cases are organized by alignment component — horizontal, vertical, and cant —
+and each component is tested in isolation. Horizontal cases contain no vertical or cant
+layouts. Vertical cases use a straight horizontal to avoid introducing horizontal
+curvature. Cant cases use a flat zero-grade vertical for the same reason. This isolation
+strategy means that discrepancies in the reference coordinates can be attributed
+unambiguously to a single geometric component. Real-world alignments combining all three
+components are covered in Section 5.3.4.
+
+### 5.3.1 Horizontal Alignment
+
+All horizontal segments are 100 m long. These cases contain only a horizontal layout —
+no vertical or cant layouts are present — so any coordinate discrepancy is attributable
+entirely to horizontal curve evaluation. Table 5.3.1-1 summarises the curve types and
+case counts. All six transition types share the same eight geometry cases shown in
+Table 5.3.1-2.
+
+**Table 5.3.1-1 — Horizontal curve types**
+
+| Curve type | IFC predefined type | Cases |
+|-----------------------------------|---------------------------------------------|-------------------|
+| Line | `LINE` | 1 |
+| Circular arc | `CIRCULARARC` | 4 |
+| Clothoid | `CLOTHOID` | 8 |
+| Bloss curve | `BLOSSCURVE` | 8 |
+| Cosine curve | `COSINECURVE` | 8 |
+| Helmert curve | `HELMERTCURVE` | 8 |
+| Sine curve | `SINECURVE` | 8 |
+| Viennese bend | `VIENNESEBEND` | 8 |
+
+**Table 5.3.1-2 — Horizontal transition cases (applied to all six transition types)**
+
+| Start radius | End radius | Description |
+|------------------|------------------|----------------------------------------------------------------|
+| ∞ | +300 m | Entry spiral — straight to tight left arc |
+| +300 m | ∞ | Exit spiral — tight left arc to straight |
+| ∞ | −300 m | Entry spiral — straight to tight right arc |
+| −300 m | ∞ | Exit spiral — tight right arc to straight |
+| +300 m | +1000 m | Arc-to-arc — tighter to looser (left) |
+| +1000 m | +300 m | Arc-to-arc — looser to tighter (left) |
+| −300 m | −1000 m | Arc-to-arc — tighter to looser (right) |
+| −1000 m | −300 m | Arc-to-arc — looser to tighter (right) |
+
+> **Viennese bend note:** The Viennese bend (`VIENNESEBEND`) is unique among horizontal
+> transition types: its geometric representation requires cant parameters to be present.
+> The VienneseBend files in `HorizontalAlignment/VienneseBend/` therefore include all
+> three alignment layouts (horizontal, vertical, and cant), with the same parameter values
+> as the corresponding `CantAlignment/VienneseBend/` files. When extracting horizontal
+> coordinates, only the horizontal layout is evaluated; the vertical and cant layouts are
+> present solely to satisfy the geometry generation requirement.
+
+### 5.3.2 Vertical Alignment
+
+All vertical segments are 100 m horizontal length, starting at an elevation of 10.0 m.
+Gradients are expressed in percent (e.g. `0.5` = 0.5 %).
+
+Each vertical test file includes a horizontal layout consisting of a single straight
+`LINE` segment of the same length. A straight horizontal alignment satisfies the IFC
+schema constraint that a vertical layout must have an associated horizontal, while
+isolating the vertical geometry so results can be verified independently.
+
+**Table 5.3.2-1 — Vertical curve types**
+
+| Curve type | IFC predefined type | Cases |
+|-----------------------------------|---------------------------------------------|-------------------|
+| Constant gradient | `CONSTANTGRADIENT` | 5 |
+| Parabolic arc | `PARABOLICARC` | 12 |
+| Circular arc | `CIRCULARARC` | 12 |
+
+> **Note:** Clothoid vertical curves are not included. See Chapter 3 for discussion.
+
+The five constant gradient cases cover 0.0 %, ±0.5 %, and ±1.0 % grade. The twelve
+vertical transition cases cover the full range of sag and crest combinations across
+flat, ascending, and descending grade pairs.
+
+### 5.3.3 Cant Alignment
+
+All cant segments are 100 m horizontal length. The `RailHeadDistance` is 1.5 m for all cases.
+
+Each cant file includes a matching horizontal layout of the corresponding curve type and
+a flat vertical layout at 0.0 % grade and elevation 0.0 m. The flat vertical isolates
+the cant geometry from vertical curvature, so reference coordinate errors reflect only
+the cant evaluation. Table 5.3.3-1 lists the cant curve types, their paired horizontal
+types, and case counts.
+
+**Table 5.3.3-1 — Cant curve types**
+
+| Cant type | IFC predefined type | Paired horizontal type | Cases | Cant range |
+|----------------------|---------------------|---------------------|---------|-------------------------|
+| Constant cant | `CONSTANTCANT` | `CIRCULARARC` | 4 | 0.16 m constant |
+| Linear transition | `LINEARTRANSITION` | `CLOTHOID` | 8 | 0.0 ↔ 0.16 m |
+| Bloss curve | `BLOSSCURVE` | `BLOSSCURVE` | 8 | 0.0 ↔ 0.16 m |
+| Cosine curve | `COSINECURVE` | `COSINECURVE` | 8 | 0.0 ↔ 0.16 m |
+| Helmert curve | `HELMERTCURVE` | `HELMERTCURVE` | 8 | 0.0 ↔ 0.16 m |
+| Sine curve | `SINECURVE` | `SINECURVE` | 8 | 0.0 ↔ 0.16 m |
+| Viennese bend | `VIENNESEBEND` | `VIENNESEBEND` | 8 | 0.03 ↔ 0.10 m |
+
+### 5.3.4 Real-World Alignments
+
+Four real-world alignments are provided as 3D test cases under `testset/real-world-alignments/`. Unlike the
+single-component cases in Sections 5.3.1–5.3.3, these exercise the complete evaluation
+pipeline — from combined horizontal, vertical, and (where present) cant layouts — and
+produce full 3D placement matrices at each sample point.
+
+#### FHWA Bridge Geometry Manual
+
+The first case is an alignment from Appendix B of the US Federal Highway
+Administration *Bridge Geometry Manual* (see Chapter 1). It combines horizontal and
+vertical layouts only — no cant is present — and exercises `IfcGradientCurve` evaluation.
+The alignment is approximately 12,337 ft (3,760 m) long and is expressed in international
+feet.
+
+| | |
+|-----------------------------|-------------------------------------------------------------------|
+| IFC file | `testset/real-world-alignments/FHWA_Alignment.ifc` |
+| Reference coordinates | `testset/real-world-alignments/FHWA_Alignment.csv` |
+| Alignment name | Unnamed Alignment |
+| Project unit | International foot |
+| 3D curve type | `IfcGradientCurve` |
+
+#### FHWA Bridge Geometry Manual — Linear Placement Variant
+
+A second variant of the FHWA alignment is provided to support validation of `IfcLinearPlacement` evaluation. It carries the same horizontal and vertical geometry as the base case and adds 124 `IfcReferent` objects, one at every 100 ft station from 100+00 to 223+00, each with a populated `CartesianPosition` fallback. Each `IfcPointByDistanceExpression.BasisCurve` is the alignment's `IfcGradientCurve`, not the 2D horizontal composite curve, so `DistanceAlong` is measured along the gradient curve's horizontal projection while the evaluated position carries the true 3D (graded) elevation. Linear placement is discussed in [Part 2, Chapter 9](../Part2/9_LinearPlacement.md).
+
+| | |
+|-----------------------------|-------------------------------------------------------------------|
+| IFC file | `testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.ifc` |
+| Reference coordinates | `testset/real-world-alignments/FHWA_Alignment_with_Linear_Placement.csv` |
+| Alignment name | E-Line |
+| Project unit | International foot |
+| 3D curve type | `IfcGradientCurve` |
+
+The reference CSV uses the same 13-column format as the other real-world alignment files (Section 5.4.2), but contains 124 rows rather than 101 — one row per `IfcLinearPlacement`, ordered by station distance rather than sampled at uniform intervals. An implementation validates its linear placement support by resolving each `IfcLinearPlacement`'s full placement (not merely evaluating the bare gradient curve at its `DistanceAlong`) and comparing the result against the matching row in the CSV.
+
+#### FHWA Bridge Geometry Manual — Vertical Offset / PlacementRelTo Variant
+
+A third variant of the FHWA alignment tests two mechanisms for shifting a linear placement vertically, contrasted in [Part 2, Chapter 9](../Part2/9_LinearPlacement.md) section 9.3.3: `IfcPointByDistanceExpression.OffsetVertical` (measured perpendicular to the curve's tangent, per section 9.2.1) versus `IfcLinearPlacement.PlacementRelTo` (a true elevation shift). At each of the same 124 100 ft stations as the Linear Placement Variant, four `IfcReferent` objects are provided:
+
+- `OffsetVertical = +2.5` / `-2.5` (project units), `PlacementRelTo` omitted
+- `PlacementRelTo` referencing a shared `IfcLocalPlacement` at *z* = +2.5 / −2.5, with `OffsetVertical` omitted
+
+On a graded segment the two mechanisms diverge: `OffsetVertical` perturbs X and Y slightly (it is perpendicular to an inclined tangent, not to the global XY plane) and lands at an elevation that only approximates the intended ±2.5 ft shift, while `PlacementRelTo` leaves X and Y unchanged and lands at exactly the intended elevation.
+
+`CartesianPosition` is populated on all four variants by resolving each placement's full placement chain — including `PlacementRelTo` — so every `CartesianPosition` matches its corresponding row in the reference CSV. (This file was originally built while an implementation's fallback logic evaluated only the immediate `RelativePlacement` and ignored `PlacementRelTo`; it continues to serve as a regression check for that behavior.)
+
+| | |
+|-----------------------------|-------------------------------------------------------------------|
+| IFC file | `testset/real-world-alignments/FHWA_Alignment_LinearPlacement_VerticalOffset.ifc` |
+| Reference coordinates | `testset/real-world-alignments/FHWA_Alignment_LinearPlacement_VerticalOffset.csv` |
+| Alignment name | E-Line |
+| Project unit | International foot |
+| 3D curve type | `IfcGradientCurve` |
+
+Unlike the Linear Placement Variant, this file's reference CSV is generated by fully resolving each `IfcLinearPlacement` — including `OffsetVertical` and, for the `PlacementRelTo` variants, the nested local placement — rather than by evaluating the bare 3D curve at `DistanceAlong` alone. This is necessary because the two variants being contrasted only differ in attributes that a bare curve evaluation would ignore. The CSV uses a long format instead of the 13-column format used elsewhere in this section: one row per `IfcReferent` (four rows per station — `DistAlong, Variant, X, Y, Z, RefDir_dx/dy/dz, Y_dx/dy/dz, Axis_dx/dy/dz`), identified by a `Variant` column (`OffsetVertical+2.5`, `OffsetVertical-2.5`, `PlacementRelTo+2.5`, `PlacementRelTo-2.5`).
+
+#### BPaimio–Kupittaa
+
+The second case is alignment `001` from the BPaimio–Kupittaa railway line in Finland.
+The IFC file was provided by the Finnish Transport Infrastructure Agency (Väylävirasto)
+and distributed as part of the buildingSMART Germany BIM Fit Check competition. It is a
+full 3D railway alignment including horizontal, vertical, and cant layouts, exercising the
+complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment is approximately
+25.6 km long and is expressed in SI meters with ETRS-TM35FIN coordinates.
+
+| | |
+|-----------------------------|-------------------------------------------------------------------|
+| IFC file | `testset/real-world-alignments/BPaimio-Kupittaa_GK23_N2000_2020.ifc` |
+| Reference coordinates | `testset/real-world-alignments/BPaimio-Kupittaa_GK23_N2000_2020.csv` |
+| Alignment name | 001 |
+| Project unit | Meter (ETRS-TM35FIN) |
+| 3D curve type | `IfcSegmentedReferenceCurve` |
+
+The horizontal layout contains ten Helmert transition curves (`HELMERTCURVE`). In the
+source data, these segments do not end exactly where the next segment starts. A Helmert
+curve evaluated from its design parameters, as defined in [Section 2.7](2_Horizontal_Alignments.md),
+ends 0.5–9.6 cm from the following segment's `StartPoint` and 2.5–6.3 × 10⁻⁴ rad from its
+`StartDirection`. These gaps are a property of the design data, not of the evaluation, so the
+reference coordinates jump at those locations. The curve segments that follow each Helmert
+curve are placed at their own `StartPoint`.
+
+#### Exit Turnout — Huni Valley Station
+
+The third case is the mainline alignment of an exit turnout at Huni Valley Station on a
+Swiss railway line. The IFC file was created using IfcOpenShell from LandXML source data.
+It is a full 3D railway alignment including horizontal, vertical, and cant layouts,
+exercising the complete `IfcSegmentedReferenceCurve` evaluation pipeline. The alignment
+runs from station 84+521.000 to 88+524.656 (approximately 4003.656 m) and is expressed in
+SI meters with LV95 coordinates (Swiss national coordinate system). The horizontal layout
+consists of clothoid transitions and circular arcs; the vertical layout is a single flat
+constant-gradient segment; and the cant layout uses linear transitions and constant-cant
+segments with a rail head distance of 1.0 m.
+
+| | |
+|-----------------------------|-------------------------------------------------------------------|
+| IFC file | `testset/real-world-alignments/Exit_Turnout_Huni_Valley_Station.ifc` |
+| Reference coordinates | `testset/real-world-alignments/Exit_Turnout_Huni_Valley_Station.csv` |
+| Alignment name | Centerline |
+| Project unit | Meter (LV95) |
+| 3D curve type | `IfcSegmentedReferenceCurve` |
+
+#### Reference coordinate format
+
+All three CSV files are sampled at every whole metre of distance along the 3D curve,
+starting at 0, plus a final row at the end of the curve when it does not fall on a whole
+metre. The sampling interval is 1 m (SI) regardless of the project unit, so in
+`FHWA_Alignment.csv` (international feet) `DistAlong` advances by 3.280840 ft per row.
+All positions are in project units; direction components are dimensionless. The
+column definitions are given in Section 5.4.2.
+
+## 5.4 Reference Coordinates
+
+### 5.4.1 File Format
+
+Each reference file contains 101 rows plus a header row. The rows are sampled at 1 m
+intervals of horizontal distance (0.0 m to 100.0 m), so `dist_along` values in
+`SurveyFoot` and `IntlFoot` files are not round numbers. All length columns (`dist_along`,
+`X`, `Y`) are in the project unit declared by the corresponding IFC file. Direction
+columns (`RefDir_dx`, `RefDir_dy`, `RefDir_dz`, `Axis_dx`, `Axis_dy`, `Axis_dz`) are dimensionless and identical across all
+three unit variants. The columns differ by alignment type.
+
+**Horizontal alignment** — `HorizontalAlignment/**/*.csv`
+
+| Column | Description |
+|--------------------|--------------------------------------------------------------------------------|
+| `dist_along` | Distance along the alignment from the segment start (project units) |
+| `X` | Easting in the alignment plane (project units) |
+| `Y` | Northing in the alignment plane (project units) |
+| `RefDir_dx` | X component of the forward tangent unit vector (`RefDirection`) |
+| `RefDir_dy` | Y component of the forward tangent unit vector (`RefDirection`) |
+
+The segment starts at the origin (0, 0) with a forward tangent pointing due East
+(+X direction). `RefDir_dx` and `RefDir_dy` together form a unit vector; the tangent angle
+$\theta = \tan^{-1}(dy / dx)$.
+
+**Vertical alignment** — `VerticalAlignment/**/*.csv`
+
+| Column | Description |
+|--------------------|--------------------------------------------------------------------------------|
+| `dist_along` | Horizontal distance from the segment start (project units) |
+| `Y` | Elevation (project units) |
+| `RefDir_dx` | X component of the tangent direction ($\cos\theta$) |
+| `RefDir_dy` | Y component of the tangent direction ($\sin\theta$, proportional to grade) |
+
+The parameter passed to the evaluator is horizontal distance, not arc length, even
+though `SegmentLength` in the IFC file stores the arc length of the curve. This is
+consistent with the IFC specification for `IfcAlignmentVerticalSegment.HorizontalLength`.
+
+**Cant alignment** — `CantAlignment/**/*.csv`
+
+| Column | Description |
+|--------------------|--------------------------------------------------------------------------------|
+| `dist_along` | Distance along the horizontal alignment (project units) |
+| `Y` | Track centerline deviating elevation due to cant (project units) |
+| `RefDir_dx` | X (along) component of the forward tangent (`RefDirection`) |
+| `RefDir_dy` | Y (left) component of the forward tangent; always 0.0 |
+| `RefDir_dz` | Z (up) component of the forward tangent; the sine of the slope of the deviating elevation |
+| `Axis_dx` | X (along) component of the banked "up" axis vector |
+| `Axis_dy` | Y (left) component of the banked "up" axis vector |
+| `Axis_dz` | Z (up) component of the banked "up" axis vector |
+
+The direction columns are in the cant frame of Section 4.2: X along the alignment, Y to the
+left and Z up. The forward tangent rises and falls with the deviating elevation, so its Y
+component (`RefDir_dy`) is always 0.0; the column is kept to make that explicit. The banked axis is the cross-track "up" direction after applying
+the cant rotation about the forward tangent. Where the deviating elevation changes, the
+axis tilts back along the track (`Axis_dx`) by the slope so that it stays perpendicular to
+the tangent. `Axis_dx` is 0.0 where the deviating elevation is constant, and `Axis_dz`
+approaches 1.0 when cant is zero.
+
+### 5.4.2 3D Alignment Reference Coordinates
+
+Most of the 3D CSV files under `testset/real-world-alignments/` are produced by evaluating the combined 3D curve
+(`IfcGradientCurve` or `IfcSegmentedReferenceCurve`) directly at each sample point. Each
+evaluation returns a 4 × 4 placement matrix; the CSV extracts all three orientation
+vectors and the position.
+
+`FHWA_Alignment_with_Linear_Placement.csv` and `FHWA_Alignment_LinearPlacement_VerticalOffset.csv` (§5.3.4) instead resolve each `IfcLinearPlacement`'s full placement chain rather than sampling the bare 3D curve, so that the reference values actually exercise `IfcLinearPlacement` evaluation. `FHWA_Alignment_with_Linear_Placement.csv` uses the same 13-column format as the curve-sampled files, just ordered by station rather than sampled at uniform intervals. `FHWA_Alignment_LinearPlacement_VerticalOffset.csv` uses a 14-column layout with an added `Variant` column, since it contrasts four placement variants per station. Its other columns match the table below.
+
+| Column | Description |
+|--------------------|--------------------------------------------------------------------------------|
+| `DistAlong` | Distance along the 3D curve from the start (project units) |
+| `X` | X coordinate of the point (project units) |
+| `Y` | Y coordinate of the point (project units) |
+| `Z` | Z (vertical) coordinate of the point (project units) |
+| `RefDir_dx` | X component of the forward tangent unit vector |
+| `RefDir_dy` | Y component of the forward tangent unit vector |
+| `RefDir_dz` | Z component of the forward tangent unit vector |
+| `Y_dx` | X component of the cross-track unit vector |
+| `Y_dy` | Y component of the cross-track unit vector |
+| `Y_dz` | Z component of the cross-track unit vector |
+| `Axis_dx` | X component of the "up" axis unit vector |
+| `Axis_dy` | Y component of the "up" axis unit vector |
+| `Axis_dz` | Z component of the "up" axis unit vector |
+
+The three direction vectors (`RefDir`, `Y`, `Axis`) form an orthonormal right-handed
+frame at each point. For alignments without cant, `Axis` is perpendicular to the
+horizontal plane and `Y_dz` is zero. For railway alignments with cant, `Axis` is banked
+about the forward tangent and both `Y_dz` and `Axis_dy` become non-zero.
+
+### 5.4.3 3D Synthetic Testset Coordinates
+
+The `3D/` subfolders under `Alignment-reference-testset/VerticalAlignment/` and
+`…/CantAlignment/` contain combined 3D reference coordinates for each synthetic test
+case. Each file uses the same 13-column header as §5.4.2 and is sampled at the same
+101 points (0–100 m at 1 m intervals in SI metres, reported in project units).
+
+**File naming** follows the same convention as the 2D files, with the `.ifc` extension
+replaced by `.csv`:
+
+```
+VerticalAlignment/{CurveType}/3D/Vertical_{CurveType}_{Length}_{StartHeight}_{StartGrade}_{EndGrade}_{Unit}.csv
+CantAlignment/{CurveType}/3D/Cant_{CurveType}_{Length}_{StartRadius}_{EndRadius}_{Unit}.csv
+```
+
+**Curve evaluated.** For vertical test cases (which include a straight horizontal
+layout), the evaluated curve is `IfcGradientCurve`. For cant test cases (which include a
+matching horizontal and a flat zero-grade vertical), the evaluated curve is
+`IfcSegmentedReferenceCurve`.
+
+**Interpreting the output.** Because vertical test cases use a straight horizontal
+alignment, the X and Y position columns are collinear with distance along, and curvature
+appears only in the Z (elevation) column and the `RefDir_dz` component. Because cant
+test cases add a flat zero-elevation vertical to the same straight horizontal, Z is
+always 0.0 at position, but the `Axis` and `Y` vectors rotate about the forward tangent
+to reflect the applied cant. This isolation makes the 3D synthetic files a controlled
+integration check: a position error in X or Y points to a horizontal evaluation bug; an
+error in Z or `RefDir_dz` points to a vertical bug; an error in `Axis_dy`/`Axis_dz`
+(with correct position) points to a cant rotation bug.
+
+## 5.5 Validation Guidance
+
+### 5.5.1 What to Check
+
+The three forms of the testset support three distinct validation activities:
+
+**Semantic round-trip.** Read a semantic IFC file and verify that the
+`IfcAlignmentSegment` attributes (`StartRadiusOfCurvature`, `EndRadiusOfCurvature`,
+`SegmentLength`, `PredefinedType`, etc.) are correctly parsed and preserved. This test
+does not require any geometric evaluation.
+
+**Geometric representation.** Verify that each `IfcAlignmentSegment` maps to the
+correct `IfcCurveSegment` parent curve type, placement, and zero-length terminator.
+This applies both when constructing a geometry IFC file from a semantic file and when
+reading a reference geometry file — in either case no numerical evaluation is required.
+
+**Geometric accuracy.** Evaluate a geometry IFC alignment at 1 m intervals and compare
+the resulting coordinates against the reference values. This is the primary numerical
+test. For vertical and cant cases, compare both the component-plane 2D output (§5.4.1)
+and the full 3D placement matrix output (§5.4.3) to isolate pipeline bugs from
+component evaluation bugs.
+
+### 5.5.2 Comparison Approach
+
+Load a geometry IFC file, evaluate the alignment curve at
+$d = 0.0, 1.0, 2.0, \ldots, 100.0$ meters, and compare each computed value against the
+corresponding row in the reference file.
+
+The most useful comparisons are:
+
+- **Position** (`X`, `Y` for horizontal; `Y` for vertical and cant) — the absolute
+  coordinate values.
+- **Tangent direction** (`RefDir_dx`, `RefDir_dy`) — the forward tangent components.
+- **Banked axis** (`Axis_dy`, `Axis_dz`, cant only) — the cross-track "up" direction.
+  Errors here indicate a problem in the cant rotation logic.
+
+### 5.5.3 Cross-Unit Validation
+
+Because the three unit variants encode the same physical alignment, they provide an
+independent check for unit-handling correctness that does not require any external
+ground truth. The procedure is:
+
+1. Evaluate the `Meter`, `SurveyFoot`, and `IntlFoot` variants of the same test case.
+2. Convert all `SurveyFoot` coordinates to meters by multiplying by 1200/3937.
+3. Convert all `IntlFoot` coordinates to meters by multiplying by 0.3048.
+4. Compare the three meter-equivalent result sets row by row.
+
+If the implementation handles units correctly, the differences should be below 10⁻⁶ m
+at every sample point — consistent with double-precision floating-point rounding in the
+unit conversion arithmetic. Differences larger than 10⁻³ m, or differences that grow
+systematically with distance along the alignment, indicate a unit-handling defect.
+
+This cross-unit check is most effective at isolating unit bugs from algorithmic bugs,
+because a geometric error will appear in all three variants while a unit error will
+appear only in the scaled variants.
